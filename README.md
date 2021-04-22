@@ -8,7 +8,7 @@
 
 ## ⚠⚠⚠ Still under development ⚠⚠⚠
 
-This package is still under development. This message will disappear one the package is ready for testing.
+This package is still under development. This message will disappear once the package is ready for testing.
 
 ## LICENSE
 
