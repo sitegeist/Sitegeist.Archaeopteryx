@@ -1,0 +1,12 @@
+bin/
+Build/
+Packages/
+Web/
+Data/
+vendor/
+node_modules/
+**/node_modules/**
+composer.lock
+.phpunit.result.cache
+.idea
+lerna-debug.log

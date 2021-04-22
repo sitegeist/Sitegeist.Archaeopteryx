@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<phpunit
+        beStrictAboutChangesToGlobalState="true"
+        beStrictAboutOutputDuringTests="true"
+        bootstrap="Build/BuildEssentials/PhpUnit/UnitTestBootstrap.php"
+        convertErrorsToExceptions="true"
+        convertNoticesToExceptions="true"
+        convertWarningsToExceptions="true"
+        timeoutForSmallTests="0">
+    <testsuites>
+        <testsuite name="unit">
+            <directory>Tests/Unit</directory>
+        </testsuite>
+    </testsuites>
+    <coverage
+          includeUncoveredFiles="true"
+          processUncoveredFiles="true"
+          pathCoverage="true"
+          ignoreDeprecatedCodeUnits="true"
+          disableCodeCoverageIgnore="false">
+        <include>
+            <directory suffix=".php">Classes</directory>
+        </include>
+    </coverage>
+    <php>
+        <ini name="date.timezone" value="Africa/Tunis" />
+    </php>
+</phpunit>

@@ -1,0 +1,25 @@
+name: CI
+on: [push, pull_request]
+jobs:
+
+  jest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install node modules
+        run: yarn
+      - name: Bootstrap Lerna
+        run: yarn lerna bootstrap
+      - name: Run tests
+        run: yarn test
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install node modules
+        run: yarn
+      - name: Bootstrap Lerna
+        run: yarn lerna bootstrap
+      - name: Run tests
+        run: yarn build

@@ -1,0 +1,15 @@
+{
+    "name": "@sitegeist/archaeopteryx-plugin",
+    "license": "MIT",
+    "version": "0.0.0",
+    "scripts": {
+        "build": "neos-react-scripts build",
+        "watch": "neos-react-scripts watch"
+    },
+    "neos": {
+        "buildTargetDirectory": "../../Resources/Public/JavaScript"
+    },
+    "dependencies": {
+        "@sitegeist/archaeopteryx-inspector-editor": "^0.0.0"
+    }
+}

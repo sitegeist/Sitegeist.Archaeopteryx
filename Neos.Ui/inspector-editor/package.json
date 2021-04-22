@@ -1,0 +1,16 @@
+{
+    "name": "@sitegeist/archaeopteryx-inspector-editor",
+    "license": "MIT",
+    "version": "0.0.0",
+    "main": "./lib/index.js",
+    "scripts": {
+        "build": "tsc",
+        "watch": "tsc -w"
+    },
+    "dependencies": {
+        "react": "^17.0.2"
+    },
+    "devDependencies": {
+        "typescript": "^4.2.4"
+    }
+}

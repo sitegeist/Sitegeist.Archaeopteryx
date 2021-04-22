@@ -1,0 +1,23 @@
+{
+  "name": "@sitegeist/archaeopteryx",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "lerna run --stream build",
+    "test": "lerna run --stream test"
+  },
+  "workspaces": [
+    "Neos.Ui/*"
+  ],
+  "devDependencies": {
+    "@neos-project/neos-ui-extensibility": "^7.0.2",
+    "@testing-library/react": "^11.2.6",
+    "@types/jest": "^26.0.22",
+    "@types/react": "^17.0.3",
+    "jest": "^26.6.3",
+    "lerna": "^4.0.0",
+    "ts-jest": "^26.5.5",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.4"
+  }
+}

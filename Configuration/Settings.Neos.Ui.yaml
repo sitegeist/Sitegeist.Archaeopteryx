@@ -1,0 +1,7 @@
+Neos:
+  Neos:
+    Ui:
+      resources:
+        javascript:
+          '@sitegeist/archaeopteryx-plugin':
+            resource: 'resource://Sitegeist.Archaeopteryx/Public/JavaScript/Plugin.js'
