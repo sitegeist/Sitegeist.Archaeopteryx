@@ -3,7 +3,7 @@
 > The missing link editor for Neos
 
 <p align="center">
-  <img width="400" height="332" src="./archaeopteryx.svg">
+  <img width="180" height="150" src="./archaeopteryx.svg">
 </p>
 
 ## ⚠⚠⚠ Still under development ⚠⚠⚠
