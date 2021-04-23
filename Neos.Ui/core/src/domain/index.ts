@@ -1,2 +1,2 @@
-export type { ILinkEditor } from './LinkEditor';
-export { useLinkEditors, useLinkEditorForHref } from './LinkEditor';
+export type {ILinkType, ILinkTypeIcon, ILinkTypeTitle, ILinkTypePreview, ILinkTypeEditor, ILinkTypeIsSatisfiedBy} from './LinkType';
+export {useLinkTypes, useLinkTypeForUri} from './LinkType';

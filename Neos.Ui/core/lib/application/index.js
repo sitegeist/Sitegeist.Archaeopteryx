@@ -19,19 +19,6 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 exports.__esModule = true;
-exports.InspectorEditor = void 0;
-var React = __importStar(require("react"));
-var archaeopteryx_core_1 = require("@sitegeist/archaeopteryx-core");
-var InspectorEditor = function (props) {
-    var value = typeof props.value === 'string' ? props.value : '';
-    var linkType = archaeopteryx_core_1.useLinkTypeForUri(value || 'http://example.com');
-    if (linkType) {
-        var Preview = linkType.Preview;
-        return (React.createElement(Preview, { uri: value }));
-    }
-    return (React.createElement("div", null,
-        "No Editor for ",
-        value));
-};
-exports.InspectorEditor = InspectorEditor;
-//# sourceMappingURL=InspectorEditor.js.map
+exports.LinkTypes = void 0;
+exports.LinkTypes = __importStar(require("./LinkTypes"));
+//# sourceMappingURL=index.js.map

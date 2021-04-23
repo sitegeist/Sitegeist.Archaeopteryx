@@ -913,6 +913,365 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
 
 /***/ }),
 
+/***/ "../core/lib/acl/NeosContext.js":
+/*!**************************************!*\
+  !*** ../core/lib/acl/NeosContext.js ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function get() {
+            return m[k];
+        } });
+} : function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+var __setModuleDefault = undefined && undefined.__setModuleDefault || (Object.create ? function (o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+} : function (o, v) {
+    o["default"] = v;
+});
+var __importStar = undefined && undefined.__importStar || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) {
+        if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    }__setModuleDefault(result, mod);
+    return result;
+};
+exports.__esModule = true;
+exports.useNeos = exports.NeosContext = void 0;
+var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
+exports.NeosContext = React.createContext(null);
+function useNeos() {
+    return React.useContext(exports.NeosContext);
+}
+exports.useNeos = useNeos;
+//# sourceMappingURL=NeosContext.js.map
+
+/***/ }),
+
+/***/ "../core/lib/acl/index.js":
+/*!********************************!*\
+  !*** ../core/lib/acl/index.js ***!
+  \********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function get() {
+            return m[k];
+        } });
+} : function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+exports.__esModule = true;
+exports.useNeos = exports.NeosContext = void 0;
+var NeosContext_1 = __webpack_require__(/*! ./NeosContext */ "../core/lib/acl/NeosContext.js");
+__createBinding(exports, NeosContext_1, "NeosContext");
+__createBinding(exports, NeosContext_1, "useNeos");
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "../core/lib/application/LinkTypes/WebLink/WebLink.js":
+/*!************************************************************!*\
+  !*** ../core/lib/application/LinkTypes/WebLink/WebLink.js ***!
+  \************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function get() {
+            return m[k];
+        } });
+} : function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+var __setModuleDefault = undefined && undefined.__setModuleDefault || (Object.create ? function (o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+} : function (o, v) {
+    o["default"] = v;
+});
+var __importStar = undefined && undefined.__importStar || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) {
+        if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    }__setModuleDefault(result, mod);
+    return result;
+};
+exports.__esModule = true;
+exports.WebLink = void 0;
+var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
+var Icon = function Icon() {
+    return React.createElement("div", null, "ICON");
+};
+var Title = function Title(props) {
+    return "WebLink " + (props.uri.startsWith('https://') ? '(secure)' : '(not secure)');
+};
+var Preview = function Preview() {
+    return React.createElement("div", null, "PREVIEW");
+};
+var Editor = function Editor() {
+    return React.createElement("div", null, "EDITOR");
+};
+var isSatisfiedBy = function isSatisfiedBy(_a) {
+    var uri = _a.uri;
+    var isHttp = uri.startsWith('http://');
+    var isHttps = uri.startsWith('https://');
+    return isHttp || isHttps;
+};
+exports.WebLink = {
+    Icon: Icon,
+    Title: Title,
+    Preview: Preview,
+    Editor: Editor,
+    isSatisfiedBy: isSatisfiedBy
+};
+//# sourceMappingURL=WebLink.js.map
+
+/***/ }),
+
+/***/ "../core/lib/application/LinkTypes/WebLink/index.js":
+/*!**********************************************************!*\
+  !*** ../core/lib/application/LinkTypes/WebLink/index.js ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function get() {
+            return m[k];
+        } });
+} : function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+exports.__esModule = true;
+exports.WebLink = void 0;
+var WebLink_1 = __webpack_require__(/*! ./WebLink */ "../core/lib/application/LinkTypes/WebLink/WebLink.js");
+__createBinding(exports, WebLink_1, "WebLink");
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "../core/lib/application/LinkTypes/index.js":
+/*!**************************************************!*\
+  !*** ../core/lib/application/LinkTypes/index.js ***!
+  \**************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function get() {
+            return m[k];
+        } });
+} : function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+exports.__esModule = true;
+exports.WebLink = void 0;
+var WebLink_1 = __webpack_require__(/*! ./WebLink */ "../core/lib/application/LinkTypes/WebLink/index.js");
+__createBinding(exports, WebLink_1, "WebLink");
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "../core/lib/application/index.js":
+/*!****************************************!*\
+  !*** ../core/lib/application/index.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function get() {
+            return m[k];
+        } });
+} : function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+var __setModuleDefault = undefined && undefined.__setModuleDefault || (Object.create ? function (o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+} : function (o, v) {
+    o["default"] = v;
+});
+var __importStar = undefined && undefined.__importStar || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) {
+        if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    }__setModuleDefault(result, mod);
+    return result;
+};
+exports.__esModule = true;
+exports.LinkTypes = void 0;
+exports.LinkTypes = __importStar(__webpack_require__(/*! ./LinkTypes */ "../core/lib/application/LinkTypes/index.js"));
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "../core/lib/domain/LinkType.js":
+/*!**************************************!*\
+  !*** ../core/lib/domain/LinkType.js ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function get() {
+            return m[k];
+        } });
+} : function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+var __setModuleDefault = undefined && undefined.__setModuleDefault || (Object.create ? function (o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+} : function (o, v) {
+    o["default"] = v;
+});
+var __importStar = undefined && undefined.__importStar || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) {
+        if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    }__setModuleDefault(result, mod);
+    return result;
+};
+exports.__esModule = true;
+exports.useLinkTypeForUri = exports.useLinkTypes = exports.LinkType = void 0;
+var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
+var acl_1 = __webpack_require__(/*! ../acl */ "../core/lib/acl/index.js");
+var LinkType = function () {
+    function LinkType() {}
+    return LinkType;
+}();
+exports.LinkType = LinkType;
+function useLinkTypes() {
+    var neosContext = acl_1.useNeos();
+    if (neosContext) {
+        var globalRegistry = neosContext.globalRegistry;
+        var linkTypesRegistry = globalRegistry.get('@sitegeist/archaeopteryx/link-types');
+        if (linkTypesRegistry) {
+            return linkTypesRegistry.getAllAsList();
+        }
+    }
+    return [];
+}
+exports.useLinkTypes = useLinkTypes;
+function useLinkTypeForUri(uri) {
+    var linkTypes = useLinkTypes();
+    var result = React.useMemo(function () {
+        for (var _i = 0, linkTypes_1 = linkTypes; _i < linkTypes_1.length; _i++) {
+            var linkType = linkTypes_1[_i];
+            if (linkType.isSatisfiedBy({ uri: uri })) {
+                return linkType;
+            }
+        }
+        return null;
+    }, [linkTypes, uri]);
+    return result;
+}
+exports.useLinkTypeForUri = useLinkTypeForUri;
+//# sourceMappingURL=LinkType.js.map
+
+/***/ }),
+
+/***/ "../core/lib/domain/index.js":
+/*!***********************************!*\
+  !*** ../core/lib/domain/index.js ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function get() {
+            return m[k];
+        } });
+} : function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+exports.__esModule = true;
+exports.useLinkTypeForUri = exports.useLinkTypes = void 0;
+var LinkType_1 = __webpack_require__(/*! ./LinkType */ "../core/lib/domain/LinkType.js");
+__createBinding(exports, LinkType_1, "useLinkTypes");
+__createBinding(exports, LinkType_1, "useLinkTypeForUri");
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "../core/lib/index.js":
+/*!****************************!*\
+  !*** ../core/lib/index.js ***!
+  \****************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function get() {
+            return m[k];
+        } });
+} : function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+exports.__esModule = true;
+exports.LinkTypes = exports.useLinkTypeForUri = exports.NeosContext = void 0;
+var acl_1 = __webpack_require__(/*! ./acl */ "../core/lib/acl/index.js");
+__createBinding(exports, acl_1, "NeosContext");
+var domain_1 = __webpack_require__(/*! ./domain */ "../core/lib/domain/index.js");
+__createBinding(exports, domain_1, "useLinkTypeForUri");
+var application_1 = __webpack_require__(/*! ./application */ "../core/lib/application/index.js");
+__createBinding(exports, application_1, "LinkTypes");
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
 /***/ "../inspector-editor/lib/InspectorEditor.js":
 /*!**************************************************!*\
   !*** ../inspector-editor/lib/InspectorEditor.js ***!
@@ -948,8 +1307,15 @@ var __importStar = undefined && undefined.__importStar || function (mod) {
 exports.__esModule = true;
 exports.InspectorEditor = void 0;
 var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
+var archaeopteryx_core_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-core */ "../core/lib/index.js");
 var InspectorEditor = function InspectorEditor(props) {
-    return React.createElement("pre", null, JSON.stringify(props, null, 2));
+    var value = typeof props.value === 'string' ? props.value : '';
+    var linkType = archaeopteryx_core_1.useLinkTypeForUri(value || 'http://example.com');
+    if (linkType) {
+        var Preview = linkType.Preview;
+        return React.createElement(Preview, { uri: value });
+    }
+    return React.createElement("div", null, "No Editor for ", value);
 };
 exports.InspectorEditor = InspectorEditor;
 //# sourceMappingURL=InspectorEditor.js.map
@@ -1007,21 +1373,44 @@ __webpack_require__(/*! ./manifest */ "./src/manifest.js");
 "use strict";
 
 
+var _react = __webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js");
+
+var React = _interopRequireWildcard(_react);
+
 var _neosUiExtensibility = __webpack_require__(/*! @neos-project/neos-ui-extensibility */ "../../node_modules/@neos-project/neos-ui-extensibility/dist/index.js");
 
 var _neosUiExtensibility2 = _interopRequireDefault(_neosUiExtensibility);
+
+var _archaeopteryxCore = __webpack_require__(/*! @sitegeist/archaeopteryx-core */ "../core/lib/index.js");
 
 var _archaeopteryxInspectorEditor = __webpack_require__(/*! @sitegeist/archaeopteryx-inspector-editor */ "../inspector-editor/lib/index.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 (0, _neosUiExtensibility2.default)('@sitegeist/archaeopteryx-plugin', {}, function (globalRegistry) {
+    registerLinkTypes(globalRegistry);
+    registerInspectorEditors(globalRegistry);
+});
+
+function registerLinkTypes(globalRegistry) {
+    var linkTypeRegistry = new _neosUiExtensibility.SynchronousRegistry('\n        # Sitegeist.Archaeopteryx LinkType Registry\n    ');
+
+    globalRegistry.set('@sitegeist/archaeopteryx/link-types', linkTypeRegistry);
+
+    linkTypeRegistry.set('Sitegeist.Archaeopteryx:WebLink', _archaeopteryxCore.LinkTypes.WebLink);
+}
+
+function registerInspectorEditors(globalRegistry) {
     var editorsRegistry = globalRegistry.get('inspector').get('editors');
 
     editorsRegistry.set('Sitegeist.Archaeopteryx/Inspector/Editors/LinkEditor', {
-        component: _archaeopteryxInspectorEditor.InspectorEditor
+        component: function component(props) {
+            return React.createElement(_archaeopteryxCore.NeosContext.Provider, { value: { globalRegistry: globalRegistry } }, React.createElement(_archaeopteryxInspectorEditor.InspectorEditor, props));
+        }
     });
-});
+}
 
 /***/ })
 

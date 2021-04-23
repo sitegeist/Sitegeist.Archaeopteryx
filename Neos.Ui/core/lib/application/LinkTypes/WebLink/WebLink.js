@@ -19,19 +19,25 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 exports.__esModule = true;
-exports.InspectorEditor = void 0;
+exports.WebLink = void 0;
 var React = __importStar(require("react"));
-var archaeopteryx_core_1 = require("@sitegeist/archaeopteryx-core");
-var InspectorEditor = function (props) {
-    var value = typeof props.value === 'string' ? props.value : '';
-    var linkType = archaeopteryx_core_1.useLinkTypeForUri(value || 'http://example.com');
-    if (linkType) {
-        var Preview = linkType.Preview;
-        return (React.createElement(Preview, { uri: value }));
-    }
-    return (React.createElement("div", null,
-        "No Editor for ",
-        value));
+var Icon = function () { return React.createElement("div", null, "ICON"); };
+var Title = function (props) {
+    return "WebLink " + (props.uri.startsWith('https://') ? '(secure)' : '(not secure)');
 };
-exports.InspectorEditor = InspectorEditor;
-//# sourceMappingURL=InspectorEditor.js.map
+var Preview = function () { return React.createElement("div", null, "PREVIEW"); };
+var Editor = function () { return React.createElement("div", null, "EDITOR"); };
+var isSatisfiedBy = function (_a) {
+    var uri = _a.uri;
+    var isHttp = uri.startsWith('http://');
+    var isHttps = uri.startsWith('https://');
+    return isHttp || isHttps;
+};
+exports.WebLink = {
+    Icon: Icon,
+    Title: Title,
+    Preview: Preview,
+    Editor: Editor,
+    isSatisfiedBy: isSatisfiedBy
+};
+//# sourceMappingURL=WebLink.js.map
