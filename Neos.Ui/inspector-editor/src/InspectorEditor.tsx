@@ -22,29 +22,43 @@ interface Props {
     identifier: string
     value: any
     hooks: null | any
+    commit: (value: any) => void
 }
 
 export const InspectorEditor: React.FC<Props> = props => {
-    const {editLink} = useEditorTransaction();
+    const tx = useEditorTransaction();
     const value = typeof props.value === 'string' ? props.value : '';
     const linkType = useLinkTypeForUri(value);
+
+    const editLink = React.useCallback(async () => {
+        console.log({ value });
+        const result = await tx.editLink(value);
+        if (result.change) {
+            props.commit(result.value);
+        }
+    }, [value, tx.editLink]);
 
     if (linkType) {
         const {getPreview: Preview} = linkType;
         const link = {uri: value};
 
         return (
-            <Preview link={link}/>
+            <div>
+                <Preview link={link}/>
+                <Button onClick={editLink}>
+                    Edit Link
+                </Button>
+            </div>
         );
     } else if (Boolean(value) === false) {
         return (
-            <Button onClick={() => editLink(null)}>
+            <Button onClick={editLink}>
                 Create Link
             </Button>
         );
     } else {
         return (
-            <div>No Editor for {JSON.stringify(props.value)}</div>
+            <div>No Editor found for {JSON.stringify(props.value)}</div>
         );
     }
 };

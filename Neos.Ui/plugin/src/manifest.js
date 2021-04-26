@@ -48,9 +48,11 @@ function registerContainers(globalRegistry, editor) {
     containersRegistry.set(
         'Modals/Sitegeist.Archaeopteryx',
         props => (
-            <EditorContext.Provider value={editor}>
-                <Modal {...props} i18n={globalRegistry.get('i18n')}/>
-            </EditorContext.Provider>
+            <NeosContext.Provider value={{globalRegistry}}>
+                <EditorContext.Provider value={editor}>
+                    {React.createElement(Modal, props)}
+                </EditorContext.Provider>
+            </NeosContext.Provider>
         )
     );
 }

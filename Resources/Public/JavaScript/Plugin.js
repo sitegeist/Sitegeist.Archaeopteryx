@@ -2272,6 +2272,7 @@ exports.WebLink = new (function (_super) {
     __extends(class_1, _super);
     function class_1() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.id = 'Sitegeist.Archaeopteryx:WebLink';
         _this.isSuitableFor = function (props) {
             var _a, _b;
             var isHttp = (_a = props.link) === null || _a === void 0 ? void 0 : _a.uri.startsWith('http://');
@@ -2296,7 +2297,13 @@ exports.WebLink = new (function (_super) {
             return React.createElement("div", null, _this.getTitle(props));
         };
         _this.getEditor = function () {
-            return React.createElement("div", null, "EDITOR");
+            var value = domain_1.useEditorValue().value;
+            var update = domain_1.useEditorTransaction().update;
+            var onChange = React.useCallback(function (ev) {
+                return update(ev.target.value);
+            }, [update]);
+            console.log('WebLink', { value: value });
+            return React.createElement("input", { type: "text", value: value !== null && value !== void 0 ? value : '', onChange: onChange });
         };
         return _this;
     }
@@ -2398,9 +2405,26 @@ var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@n
 var react_ui_components_1 = __webpack_require__(/*! @neos-project/react-ui-components */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/react-ui-components/index.js");
 var domain_1 = __webpack_require__(/*! ../../domain */ "../core/lib/domain/index.js");
 var Modal = function Modal() {
-    var isOpen = domain_1.useEditorState().isOpen;
-    var dismiss = domain_1.useEditorTransaction().dismiss;
-    return React.createElement(react_ui_components_1.Dialog, { title: "Sitegeist.Archaeopteryx", isOpen: isOpen }, "Hello World!", React.createElement(react_ui_components_1.Button, { onClick: dismiss }, "Click here!"));
+    var _a = domain_1.useEditorState(),
+        isOpen = _a.isOpen,
+        value = _a.value;
+    var _b = domain_1.useEditorTransaction(),
+        dismiss = _b.dismiss,
+        apply = _b.apply;
+    var linkTypes = domain_1.useLinkTypes();
+    var _c = React.useState(linkTypes[0]),
+        activeLinkType = _c[0],
+        setActiveLinkType = _c[1];
+    var Editor = activeLinkType.getEditor;
+    return React.createElement(react_ui_components_1.Dialog, { title: "Sitegeist.Archaeopteryx", isOpen: isOpen, onRequestClose: dismiss }, linkTypes.map(function (linkType) {
+        var Icon = linkType.getIcon,
+            id = linkType.id;
+        return React.createElement(react_ui_components_1.Button, { isActive: linkType.id === activeLinkType.id, key: id, onClick: function onClick() {
+                return setActiveLinkType(linkType);
+            } }, React.createElement(Icon, null));
+    }), React.createElement("div", null, React.createElement(Editor, null)), React.createElement(react_ui_components_1.Button, { onClick: dismiss }, "Click here!"), React.createElement(react_ui_components_1.Button, { onClick: function onClick() {
+            return apply(value.transient);
+        } }, "Apply"));
 };
 exports.Modal = Modal;
 //# sourceMappingURL=Modal.js.map
@@ -2536,6 +2560,7 @@ function editorReducer(state, action) {
     if (state === void 0) {
         state = initialState;
     }
+    console.log('editorReducer', state, action);
     switch (action.type) {
         case typesafe_actions_1.getType(actions.EditorWasOpened):
             return {
@@ -2580,7 +2605,7 @@ function createEditor() {
     var _a = wonka_1.makeSubject(),
         actions$ = _a.source,
         dispatch = _a.next;
-    var state$ = wonka_1.pipe(actions$, wonka_1.scan(editorReducer, initialState));
+    var state$ = wonka_1.pipe(actions$, wonka_1.scan(editorReducer, initialState), wonka_1.share);
     var open = function open(uri) {
         return dispatch(actions.EditorWasOpened(uri));
     };
@@ -2627,13 +2652,16 @@ function useEditorState() {
         state = _b[0],
         setState = _b[1];
     React.useEffect(function () {
+        console.log('useEditorState (subscribe)');
         var subscription = wonka_1.pipe(state$, wonka_1.subscribe(function (state) {
+            console.log('useEditorState (update)', state);
             setState(state);
         }));
         return function () {
             return subscription.unsubscribe();
         };
     }, [state$, initialState]);
+    console.log('useEditorState (read)', state);
     return state;
 }
 exports.useEditorState = useEditorState;
@@ -2642,6 +2670,7 @@ function useEditorValue() {
         persistent = _a.persistent,
         transient = _a.transient;
     var isDirty = persistent !== transient;
+    console.log('useEditorValue', { persistent: persistent, transient: transient });
     return { value: transient, isDirty: isDirty };
 }
 exports.useEditorValue = useEditorValue;
@@ -2888,25 +2917,124 @@ var __importStar = undefined && undefined.__importStar || function (mod) {
     }__setModuleDefault(result, mod);
     return result;
 };
+var __awaiter = undefined && undefined.__awaiter || function (thisArg, _arguments, P, generator) {
+    function adopt(value) {
+        return value instanceof P ? value : new P(function (resolve) {
+            resolve(value);
+        });
+    }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) {
+            try {
+                step(generator.next(value));
+            } catch (e) {
+                reject(e);
+            }
+        }
+        function rejected(value) {
+            try {
+                step(generator["throw"](value));
+            } catch (e) {
+                reject(e);
+            }
+        }
+        function step(result) {
+            result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+        }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = undefined && undefined.__generator || function (thisArg, body) {
+    var _ = { label: 0, sent: function sent() {
+            if (t[0] & 1) throw t[1];return t[1];
+        }, trys: [], ops: [] },
+        f,
+        y,
+        t,
+        g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function () {
+        return this;
+    }), g;
+    function verb(n) {
+        return function (v) {
+            return step([n, v]);
+        };
+    }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) {
+            try {
+                if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+                if (y = 0, t) op = [op[0] & 2, t.value];
+                switch (op[0]) {
+                    case 0:case 1:
+                        t = op;break;
+                    case 4:
+                        _.label++;return { value: op[1], done: false };
+                    case 5:
+                        _.label++;y = op[1];op = [0];continue;
+                    case 7:
+                        op = _.ops.pop();_.trys.pop();continue;
+                    default:
+                        if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
+                            _ = 0;continue;
+                        }
+                        if (op[0] === 3 && (!t || op[1] > t[0] && op[1] < t[3])) {
+                            _.label = op[1];break;
+                        }
+                        if (op[0] === 6 && _.label < t[1]) {
+                            _.label = t[1];t = op;break;
+                        }
+                        if (t && _.label < t[2]) {
+                            _.label = t[2];_.ops.push(op);break;
+                        }
+                        if (t[2]) _.ops.pop();
+                        _.trys.pop();continue;
+                }
+                op = body.call(thisArg, _);
+            } catch (e) {
+                op = [6, e];y = 0;
+            } finally {
+                f = t = 0;
+            }
+        }if (op[0] & 5) throw op[1];return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
 exports.__esModule = true;
 exports.InspectorEditor = void 0;
 var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
 var react_ui_components_1 = __webpack_require__(/*! @neos-project/react-ui-components */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/react-ui-components/index.js");
 var archaeopteryx_core_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-core */ "../core/lib/index.js");
 var InspectorEditor = function InspectorEditor(props) {
-    var editLink = archaeopteryx_core_1.useEditorTransaction().editLink;
+    var tx = archaeopteryx_core_1.useEditorTransaction();
     var value = typeof props.value === 'string' ? props.value : '';
     var linkType = archaeopteryx_core_1.useLinkTypeForUri(value);
+    var editLink = React.useCallback(function () {
+        return __awaiter(void 0, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        console.log({ value: value });
+                        return [4, tx.editLink(value)];
+                    case 1:
+                        result = _a.sent();
+                        if (result.change) {
+                            props.commit(result.value);
+                        }
+                        return [2];
+                }
+            });
+        });
+    }, [value, tx.editLink]);
     if (linkType) {
         var Preview = linkType.getPreview;
         var link = { uri: value };
-        return React.createElement(Preview, { link: link });
+        return React.createElement("div", null, React.createElement(Preview, { link: link }), React.createElement(react_ui_components_1.Button, { onClick: editLink }, "Edit Link"));
     } else if (Boolean(value) === false) {
-        return React.createElement(react_ui_components_1.Button, { onClick: function onClick() {
-                return editLink(null);
-            } }, "Create Link");
+        return React.createElement(react_ui_components_1.Button, { onClick: editLink }, "Create Link");
     } else {
-        return React.createElement("div", null, "No Editor for ", JSON.stringify(props.value));
+        return React.createElement("div", null, "No Editor found for ", JSON.stringify(props.value));
     }
 };
 exports.InspectorEditor = InspectorEditor;
@@ -2965,8 +3093,6 @@ __webpack_require__(/*! ./manifest */ "./src/manifest.js");
 "use strict";
 
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 var _react = __webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js");
 
 var React = _interopRequireWildcard(_react);
@@ -3022,9 +3148,13 @@ function registerContainers(globalRegistry, editor) {
 
     containersRegistry.set('Modals/Sitegeist.Archaeopteryx', function (props) {
         return React.createElement(
-            _archaeopteryxCore.EditorContext.Provider,
-            { value: editor },
-            React.createElement(_archaeopteryxCore.Modal, _extends({}, props, { i18n: globalRegistry.get('i18n') }))
+            _archaeopteryxCore.NeosContext.Provider,
+            { value: { globalRegistry: globalRegistry } },
+            React.createElement(
+                _archaeopteryxCore.EditorContext.Provider,
+                { value: editor },
+                React.createElement(_archaeopteryxCore.Modal, props)
+            )
         );
     });
 }

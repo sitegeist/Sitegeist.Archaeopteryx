@@ -44,6 +44,7 @@ var initialState = {
 };
 function editorReducer(state, action) {
     if (state === void 0) { state = initialState; }
+    console.log('editorReducer', state, action);
     switch (action.type) {
         case typesafe_actions_1.getType(actions.EditorWasOpened):
             return {
@@ -86,7 +87,7 @@ function editorReducer(state, action) {
 exports.editorReducer = editorReducer;
 function createEditor() {
     var _a = wonka_1.makeSubject(), actions$ = _a.source, dispatch = _a.next;
-    var state$ = wonka_1.pipe(actions$, wonka_1.scan(editorReducer, initialState));
+    var state$ = wonka_1.pipe(actions$, wonka_1.scan(editorReducer, initialState), wonka_1.share);
     var open = function (uri) { return dispatch(actions.EditorWasOpened(uri)); };
     var dismiss = function () { return dispatch(actions.EditorWasDismissed()); };
     var update = function (updatedUri) {
@@ -121,17 +122,21 @@ function useEditorState() {
     var _a = React.useContext(exports.EditorContext), state$ = _a.state$, initialState = _a.initialState;
     var _b = React.useState(initialState), state = _b[0], setState = _b[1];
     React.useEffect(function () {
+        console.log('useEditorState (subscribe)');
         var subscription = wonka_1.pipe(state$, wonka_1.subscribe(function (state) {
+            console.log('useEditorState (update)', state);
             setState(state);
         }));
         return function () { return subscription.unsubscribe(); };
     }, [state$, initialState]);
+    console.log('useEditorState (read)', state);
     return state;
 }
 exports.useEditorState = useEditorState;
 function useEditorValue() {
     var _a = useEditorState().value, persistent = _a.persistent, transient = _a.transient;
     var isDirty = persistent !== transient;
+    console.log('useEditorValue', { persistent: persistent, transient: transient });
     return { value: transient, isDirty: isDirty };
 }
 exports.useEditorValue = useEditorValue;

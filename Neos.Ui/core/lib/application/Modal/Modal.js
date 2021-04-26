@@ -24,11 +24,21 @@ var React = __importStar(require("react"));
 var react_ui_components_1 = require("@neos-project/react-ui-components");
 var domain_1 = require("../../domain");
 var Modal = function () {
-    var isOpen = domain_1.useEditorState().isOpen;
-    var dismiss = domain_1.useEditorTransaction().dismiss;
-    return (React.createElement(react_ui_components_1.Dialog, { title: "Sitegeist.Archaeopteryx", isOpen: isOpen },
-        "Hello World!",
-        React.createElement(react_ui_components_1.Button, { onClick: dismiss }, "Click here!")));
+    var _a = domain_1.useEditorState(), isOpen = _a.isOpen, value = _a.value;
+    var _b = domain_1.useEditorTransaction(), dismiss = _b.dismiss, apply = _b.apply;
+    var linkTypes = domain_1.useLinkTypes();
+    var _c = React.useState(linkTypes[0]), activeLinkType = _c[0], setActiveLinkType = _c[1];
+    var Editor = activeLinkType.getEditor;
+    return (React.createElement(react_ui_components_1.Dialog, { title: "Sitegeist.Archaeopteryx", isOpen: isOpen, onRequestClose: dismiss },
+        linkTypes.map(function (linkType) {
+            var Icon = linkType.getIcon, id = linkType.id;
+            return (React.createElement(react_ui_components_1.Button, { isActive: linkType.id === activeLinkType.id, key: id, onClick: function () { return setActiveLinkType(linkType); } },
+                React.createElement(Icon, null)));
+        }),
+        React.createElement("div", null,
+            React.createElement(Editor, null)),
+        React.createElement(react_ui_components_1.Button, { onClick: dismiss }, "Click here!"),
+        React.createElement(react_ui_components_1.Button, { onClick: function () { return apply(value.transient); } }, "Apply")));
 };
 exports.Modal = Modal;
 //# sourceMappingURL=Modal.js.map

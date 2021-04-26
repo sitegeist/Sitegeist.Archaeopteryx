@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {ActionType, getType} from 'typesafe-actions';
-import {makeSubject, pipe, scan, subscribe} from 'wonka';
+import {makeSubject, pipe, scan, share, subscribe} from 'wonka';
 
 import * as actions from './EditorAction';
 
@@ -29,6 +29,7 @@ export function editorReducer(
     state: IEditorState = initialState,
     action: ActionType<typeof actions>
 ): IEditorState {
+    console.log('editorReducer', state, action);
     switch (action.type) {
         case getType(actions.EditorWasOpened):
             return {
@@ -82,7 +83,8 @@ export function createEditor() {
     } = makeSubject<ActionType<typeof actions>>();
     const state$ = pipe(
         actions$,
-        scan(editorReducer, initialState)
+        scan(editorReducer, initialState),
+        share
     );
 
     const open = (uri: null | string) => dispatch(actions.EditorWasOpened(uri));
@@ -123,19 +125,24 @@ export function useEditorState() {
     const [state, setState] = React.useState(initialState);
 
     React.useEffect(() => {
+        console.log('useEditorState (subscribe)');
         const subscription = pipe(state$, subscribe(state => {
+            console.log('useEditorState (update)', state);
             setState(state);
         }));
 
         return () => subscription.unsubscribe();
     }, [state$, initialState]);
 
+    console.log('useEditorState (read)', state);
     return state;
 }
 
 export function useEditorValue() {
     const {value: {persistent, transient}} = useEditorState();
     const isDirty = persistent !== transient;
+
+    console.log('useEditorValue', {persistent, transient});
 
     return {value: transient, isDirty};
 }

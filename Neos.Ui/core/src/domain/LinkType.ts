@@ -10,6 +10,7 @@ export interface ILinkTypeProps {
 }
 
 export abstract class LinkType {
+    public abstract id: string;
     public abstract isSuitableFor: (props: ILinkTypeProps) => boolean;
     public abstract getIcon: React.FC<ILinkTypeProps>;
     public abstract getTitle: (props: ILinkTypeProps) => string;

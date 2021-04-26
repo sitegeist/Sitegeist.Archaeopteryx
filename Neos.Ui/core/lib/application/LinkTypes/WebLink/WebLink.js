@@ -41,6 +41,7 @@ exports.WebLink = new (function (_super) {
     __extends(class_1, _super);
     function class_1() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.id = 'Sitegeist.Archaeopteryx:WebLink';
         _this.isSuitableFor = function (props) {
             var _a, _b;
             var isHttp = (_a = props.link) === null || _a === void 0 ? void 0 : _a.uri.startsWith('http://');
@@ -62,7 +63,15 @@ exports.WebLink = new (function (_super) {
             }
         };
         _this.getPreview = function (props) { return (React.createElement("div", null, _this.getTitle(props))); };
-        _this.getEditor = function () { return (React.createElement("div", null, "EDITOR")); };
+        _this.getEditor = function () {
+            var value = domain_1.useEditorValue().value;
+            var update = domain_1.useEditorTransaction().update;
+            var onChange = React.useCallback(function (ev) {
+                return update(ev.target.value);
+            }, [update]);
+            console.log('WebLink', { value: value });
+            return (React.createElement("input", { type: "text", value: value !== null && value !== void 0 ? value : '', onChange: onChange }));
+        };
         return _this;
     }
     return class_1;

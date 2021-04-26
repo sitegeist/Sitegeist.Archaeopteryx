@@ -16,6 +16,7 @@ interface Props {
     identifier: string;
     value: any;
     hooks: null | any;
+    commit: (value: any) => void;
 }
 export declare const InspectorEditor: React.FC<Props>;
 export {};

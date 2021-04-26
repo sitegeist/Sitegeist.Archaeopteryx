@@ -1,8 +1,10 @@
 import * as React from 'react';
 
-import {LinkType, ILinkTypeProps} from '../../../domain';
+import {LinkType, ILinkTypeProps, useEditorTransaction, useEditorValue} from '../../../domain';
 
 export const WebLink = new class extends LinkType {
+    public readonly id = 'Sitegeist.Archaeopteryx:WebLink';
+
     public readonly isSuitableFor = (props: ILinkTypeProps) => {
         const isHttp = props.link?.uri.startsWith('http://');
         const isHttps = props.link?.uri.startsWith('https://');
@@ -30,7 +32,19 @@ export const WebLink = new class extends LinkType {
         <div>{this.getTitle(props)}</div>
     );
 
-    public readonly getEditor = () => (
-        <div>EDITOR</div>
-    );
+    public readonly getEditor = () => {
+        const {value} = useEditorValue();
+        const {update} = useEditorTransaction();
+        const onChange = React.useCallback(
+            (ev: React.SyntheticEvent) =>
+                update((ev.target as HTMLInputElement).value),
+            [update]
+        );
+
+        console.log('WebLink', {value});
+
+        return (
+            <input type="text" value={value ?? ''} onChange={onChange}/>
+        );
+    };
 }
