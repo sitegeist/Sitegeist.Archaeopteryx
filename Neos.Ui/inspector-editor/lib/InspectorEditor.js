@@ -23,11 +23,12 @@ exports.InspectorEditor = void 0;
 var React = __importStar(require("react"));
 var archaeopteryx_core_1 = require("@sitegeist/archaeopteryx-core");
 var InspectorEditor = function (props) {
-    var value = typeof props.value === 'string' ? props.value : '';
-    var linkType = archaeopteryx_core_1.useLinkTypeForUri(value || 'http://example.com');
+    var value = (typeof props.value === 'string' ? props.value : 'https://example.com') || 'https://example.com';
+    var linkType = archaeopteryx_core_1.useLinkTypeForUri(value);
     if (linkType) {
-        var Preview = linkType.Preview;
-        return (React.createElement(Preview, { uri: value }));
+        var Preview = linkType.getPreview;
+        var link = { uri: value };
+        return (React.createElement(Preview, { link: link }));
     }
     return (React.createElement("div", null,
         "No Editor for ",

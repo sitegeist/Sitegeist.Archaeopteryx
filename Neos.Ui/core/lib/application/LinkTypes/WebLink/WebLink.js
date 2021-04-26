@@ -1,4 +1,19 @@
 "use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
@@ -21,23 +36,35 @@ var __importStar = (this && this.__importStar) || function (mod) {
 exports.__esModule = true;
 exports.WebLink = void 0;
 var React = __importStar(require("react"));
-var Icon = function () { return React.createElement("div", null, "ICON"); };
-var Title = function (props) {
-    return "WebLink " + (props.uri.startsWith('https://') ? '(secure)' : '(not secure)');
-};
-var Preview = function () { return React.createElement("div", null, "PREVIEW"); };
-var Editor = function () { return React.createElement("div", null, "EDITOR"); };
-var isSatisfiedBy = function (_a) {
-    var uri = _a.uri;
-    var isHttp = uri.startsWith('http://');
-    var isHttps = uri.startsWith('https://');
-    return isHttp || isHttps;
-};
-exports.WebLink = {
-    Icon: Icon,
-    Title: Title,
-    Preview: Preview,
-    Editor: Editor,
-    isSatisfiedBy: isSatisfiedBy
-};
+var domain_1 = require("../../../domain");
+exports.WebLink = new (function (_super) {
+    __extends(class_1, _super);
+    function class_1() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.isSuitableFor = function (props) {
+            var _a, _b;
+            var isHttp = (_a = props.link) === null || _a === void 0 ? void 0 : _a.uri.startsWith('http://');
+            var isHttps = (_b = props.link) === null || _b === void 0 ? void 0 : _b.uri.startsWith('https://');
+            return Boolean(isHttp || isHttps);
+        };
+        _this.getIcon = function () { return (React.createElement("div", null, "ICON")); };
+        _this.getTitle = function (props) {
+            var _a;
+            var isSecure = (_a = props.link) === null || _a === void 0 ? void 0 : _a.uri.startsWith('https://');
+            if (isSecure === true) {
+                return 'Web Link (secure)';
+            }
+            else if (isSecure === false) {
+                return 'Web Link (not secure)';
+            }
+            else {
+                return 'Web Link';
+            }
+        };
+        _this.getPreview = function (props) { return (React.createElement("div", null, _this.getTitle(props))); };
+        _this.getEditor = function () { return (React.createElement("div", null, "EDITOR")); };
+        return _this;
+    }
+    return class_1;
+}(domain_1.LinkType));
 //# sourceMappingURL=WebLink.js.map

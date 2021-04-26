@@ -7,8 +7,9 @@ var __createBinding = (this && this.__createBinding) || (Object.create ? (functi
     o[k2] = m[k];
 }));
 exports.__esModule = true;
-exports.useLinkTypeForUri = exports.useLinkTypes = void 0;
+exports.useLinkTypeForUri = exports.useLinkTypes = exports.LinkType = void 0;
 var LinkType_1 = require("./LinkType");
+__createBinding(exports, LinkType_1, "LinkType");
 __createBinding(exports, LinkType_1, "useLinkTypes");
 __createBinding(exports, LinkType_1, "useLinkTypeForUri");
 //# sourceMappingURL=index.js.map

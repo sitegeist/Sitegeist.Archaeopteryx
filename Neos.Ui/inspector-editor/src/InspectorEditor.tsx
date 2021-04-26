@@ -23,18 +23,19 @@ interface Props {
 }
 
 export const InspectorEditor: React.FC<Props> = props => {
-    const value = typeof props.value === 'string' ? props.value : '';
-    const linkType = useLinkTypeForUri(value || 'http://example.com');
+    const value = (typeof props.value === 'string' ? props.value : 'https://example.com') || 'https://example.com';
+    const linkType = useLinkTypeForUri(value);
 
     if (linkType) {
-        const {Preview} = linkType;
+        const {getPreview: Preview} = linkType;
+        const link = {uri: value};
 
         return (
-            <Preview uri={value}/>
+            <Preview link={link}/>
         );
     }
 
     return (
-        <div>No Editor for {value}</div>
+        <div>No Editor for {JSON.stringify(value)}</div>
     );
 };

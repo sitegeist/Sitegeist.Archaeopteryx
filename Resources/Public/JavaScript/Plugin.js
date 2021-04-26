@@ -995,6 +995,26 @@ __createBinding(exports, NeosContext_1, "useNeos");
 "use strict";
 
 
+var __extends = undefined && undefined.__extends || function () {
+    var _extendStatics = function extendStatics(d, b) {
+        _extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function (d, b) {
+            d.__proto__ = b;
+        } || function (d, b) {
+            for (var p in b) {
+                if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
+            }
+        };
+        return _extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null) throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        _extendStatics(d, b);
+        function __() {
+            this.constructor = d;
+        }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+}();
 var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     Object.defineProperty(o, k2, { enumerable: true, get: function get() {
@@ -1020,31 +1040,41 @@ var __importStar = undefined && undefined.__importStar || function (mod) {
 exports.__esModule = true;
 exports.WebLink = void 0;
 var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
-var Icon = function Icon() {
-    return React.createElement("div", null, "ICON");
-};
-var Title = function Title(props) {
-    return "WebLink " + (props.uri.startsWith('https://') ? '(secure)' : '(not secure)');
-};
-var Preview = function Preview() {
-    return React.createElement("div", null, "PREVIEW");
-};
-var Editor = function Editor() {
-    return React.createElement("div", null, "EDITOR");
-};
-var isSatisfiedBy = function isSatisfiedBy(_a) {
-    var uri = _a.uri;
-    var isHttp = uri.startsWith('http://');
-    var isHttps = uri.startsWith('https://');
-    return isHttp || isHttps;
-};
-exports.WebLink = {
-    Icon: Icon,
-    Title: Title,
-    Preview: Preview,
-    Editor: Editor,
-    isSatisfiedBy: isSatisfiedBy
-};
+var domain_1 = __webpack_require__(/*! ../../../domain */ "../core/lib/domain/index.js");
+exports.WebLink = new (function (_super) {
+    __extends(class_1, _super);
+    function class_1() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.isSuitableFor = function (props) {
+            var _a, _b;
+            var isHttp = (_a = props.link) === null || _a === void 0 ? void 0 : _a.uri.startsWith('http://');
+            var isHttps = (_b = props.link) === null || _b === void 0 ? void 0 : _b.uri.startsWith('https://');
+            return Boolean(isHttp || isHttps);
+        };
+        _this.getIcon = function () {
+            return React.createElement("div", null, "ICON");
+        };
+        _this.getTitle = function (props) {
+            var _a;
+            var isSecure = (_a = props.link) === null || _a === void 0 ? void 0 : _a.uri.startsWith('https://');
+            if (isSecure === true) {
+                return 'Web Link (secure)';
+            } else if (isSecure === false) {
+                return 'Web Link (not secure)';
+            } else {
+                return 'Web Link';
+            }
+        };
+        _this.getPreview = function (props) {
+            return React.createElement("div", null, _this.getTitle(props));
+        };
+        _this.getEditor = function () {
+            return React.createElement("div", null, "EDITOR");
+        };
+        return _this;
+    }
+    return class_1;
+}(domain_1.LinkType))();
 //# sourceMappingURL=WebLink.js.map
 
 /***/ }),
@@ -1200,7 +1230,7 @@ function useLinkTypeForUri(uri) {
     var result = React.useMemo(function () {
         for (var _i = 0, linkTypes_1 = linkTypes; _i < linkTypes_1.length; _i++) {
             var linkType = linkTypes_1[_i];
-            if (linkType.isSatisfiedBy({ uri: uri })) {
+            if (linkType.isSuitableFor({ link: { uri: uri } })) {
                 return linkType;
             }
         }
@@ -1233,8 +1263,9 @@ var __createBinding = undefined && undefined.__createBinding || (Object.create ?
     o[k2] = m[k];
 });
 exports.__esModule = true;
-exports.useLinkTypeForUri = exports.useLinkTypes = void 0;
+exports.useLinkTypeForUri = exports.useLinkTypes = exports.LinkType = void 0;
 var LinkType_1 = __webpack_require__(/*! ./LinkType */ "../core/lib/domain/LinkType.js");
+__createBinding(exports, LinkType_1, "LinkType");
 __createBinding(exports, LinkType_1, "useLinkTypes");
 __createBinding(exports, LinkType_1, "useLinkTypeForUri");
 //# sourceMappingURL=index.js.map
@@ -1309,11 +1340,12 @@ exports.InspectorEditor = void 0;
 var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
 var archaeopteryx_core_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-core */ "../core/lib/index.js");
 var InspectorEditor = function InspectorEditor(props) {
-    var value = typeof props.value === 'string' ? props.value : '';
-    var linkType = archaeopteryx_core_1.useLinkTypeForUri(value || 'http://example.com');
+    var value = (typeof props.value === 'string' ? props.value : 'https://example.com') || 'https://example.com';
+    var linkType = archaeopteryx_core_1.useLinkTypeForUri(value);
     if (linkType) {
-        var Preview = linkType.Preview;
-        return React.createElement(Preview, { uri: value });
+        var Preview = linkType.getPreview;
+        var link = { uri: value };
+        return React.createElement(Preview, { link: link });
     }
     return React.createElement("div", null, "No Editor for ", value);
 };

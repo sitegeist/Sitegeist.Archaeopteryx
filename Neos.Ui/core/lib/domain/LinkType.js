@@ -45,7 +45,7 @@ function useLinkTypeForUri(uri) {
     var result = React.useMemo(function () {
         for (var _i = 0, linkTypes_1 = linkTypes; _i < linkTypes_1.length; _i++) {
             var linkType = linkTypes_1[_i];
-            if (linkType.isSatisfiedBy({ uri: uri })) {
+            if (linkType.isSuitableFor({ link: { uri: uri } })) {
                 return linkType;
             }
         }

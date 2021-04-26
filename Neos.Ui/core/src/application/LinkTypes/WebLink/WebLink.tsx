@@ -1,28 +1,36 @@
 import * as React from 'react';
 
-import {ILinkType, ILinkTypeEditor, ILinkTypeIcon, ILinkTypeIsSatisfiedBy, ILinkTypePreview, ILinkTypeTitle} from '../../../domain';
+import {LinkType, ILinkTypeProps} from '../../../domain';
 
-interface Props {
-    uri: string
-    isSecure: boolean
+export const WebLink = new class extends LinkType {
+    public readonly isSuitableFor = (props: ILinkTypeProps) => {
+        const isHttp = props.link?.uri.startsWith('http://');
+        const isHttps = props.link?.uri.startsWith('https://');
+
+        return Boolean(isHttp || isHttps);
+    }
+
+    public readonly getIcon = () => (
+        <div>ICON</div>
+    );
+
+    public readonly getTitle = (props: ILinkTypeProps) => {
+        const isSecure = props.link?.uri.startsWith('https://');
+
+        if (isSecure === true) {
+            return 'Web Link (secure)';
+        } else if (isSecure === false) {
+            return 'Web Link (not secure)';
+        } else {
+            return 'Web Link';
+        }
+    }
+
+    public readonly getPreview = (props: ILinkTypeProps) => (
+        <div>{this.getTitle(props)}</div>
+    );
+
+    public readonly getEditor = () => (
+        <div>EDITOR</div>
+    );
 }
-
-const Icon: ILinkTypeIcon = () => <div>ICON</div>;
-const Title: ILinkTypeTitle = props =>
-    `WebLink ${props.uri.startsWith('https://') ? '(secure)' : '(not secure)'}`;
-const Preview: ILinkTypePreview = () => <div>PREVIEW</div>;
-const Editor: ILinkTypeEditor = () => <div>EDITOR</div>;
-const isSatisfiedBy: ILinkTypeIsSatisfiedBy = ({uri}) => {
-    const isHttp = uri.startsWith('http://');
-    const isHttps = uri.startsWith('https://');
-
-    return isHttp || isHttps;
-};
-
-export const WebLink: ILinkType = {
-    Icon,
-    Title,
-    Preview,
-    Editor,
-    isSatisfiedBy
-};
