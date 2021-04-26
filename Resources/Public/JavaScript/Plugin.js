@@ -376,6 +376,26 @@ exports.SynchronousMetaRegistry = SynchronousMetaRegistry_1["default"];
 
 /***/ }),
 
+/***/ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/react-ui-components/index.js":
+/*!******************************************************************************************************************************************************************************************************************************!*\
+  !*** /home/behncke/Workspaces/Neos/neos-contributions/instances/sitegeist-archaeopteryx/sitegeist-archaeopteryx/node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/react-ui-components/index.js ***!
+  \******************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _readFromConsumerApi = __webpack_require__(/*! ../../../../dist/readFromConsumerApi */ "../../node_modules/@neos-project/neos-ui-extensibility/dist/readFromConsumerApi.js");
+
+var _readFromConsumerApi2 = _interopRequireDefault(_readFromConsumerApi);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+module.exports = (0, _readFromConsumerApi2.default)('NeosProjectPackages')().ReactUiComponents;
+
+/***/ }),
+
 /***/ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js":
 /*!***************************************************************************************************************************************************************************************************!*\
   !*** /home/behncke/Workspaces/Neos/neos-contributions/instances/sitegeist-archaeopteryx/sitegeist-archaeopteryx/node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js ***!
@@ -913,6 +933,1213 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
 
 /***/ }),
 
+/***/ "../../node_modules/typesafe-actions/dist/typesafe-actions.umd.production.js":
+/*!****************************************************************************************************************************************************************************************!*\
+  !*** /home/behncke/Workspaces/Neos/neos-contributions/instances/sitegeist-archaeopteryx/sitegeist-archaeopteryx/node_modules/typesafe-actions/dist/typesafe-actions.umd.production.js ***!
+  \****************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+!function(n,t){ true?t(exports):undefined}(this,(function(n){"use strict";function t(n){return null==n}function r(n){throw new Error("Argument "+n+" is empty.")}function e(n){return"function"==typeof n&&"getType"in n}function i(n){throw new Error("Argument "+n+' is invalid, it should be an action-creator instance from "typesafe-actions"')}function o(n,t){if(null==n)throw new Error("Argument contains array with empty element at index "+t);if(null==n.getType)throw new Error("Argument contains array with invalid element at index "+t+', it should be an action-creator instance from "typesafe-actions"')}function u(n){return"string"==typeof n||"symbol"==typeof n}function a(n){return!u(n)}function c(n){throw new Error("Argument "+n+" is invalid, it should be an action type of type: string | symbol")}function f(n,t){if(null==n)throw new Error("Argument contains array with empty element at index "+t);if("string"!=typeof n&&"symbol"!=typeof n)throw new Error("Argument contains array with invalid element at index "+t+", it should be of type: string | symbol")}function s(n,e,o,u){return t(n)&&r(1),a(n)&&i(1),{type:n,payload:e,meta:o,error:u}}function y(n,e){t(n)&&r(1),a(n)&&c(1);return Object.assign((function(){var t=null!=e?e.apply(void 0,arguments):void 0;return Object.assign({type:n},t)}),{getType:function(){return n},toString:function(){return n}})}function l(n,e,i){return t(n)&&r(1),a(n)&&c(1),function(){return y(n,(function(){var n=arguments.length<=0?void 0:arguments[0],t=arguments.length<=1?void 0:arguments[1];return null==e&&null==i||(n=null!=e?e.apply(void 0,arguments):void 0,t=null!=i?i.apply(void 0,arguments):void 0),Object.assign({},void 0!==n&&{payload:n},{},void 0!==t&&{meta:t})}))}}function p(n){return t(n)&&r(1),e(n)||i(1),n.getType()}function d(n,e){t(n)&&r(1),a(n)&&c(1);var i=null!=e?e(n):function(){return{type:n}};return Object.assign(i,{getType:function(){return n},toString:function(){return n}})}var g={createAction:function(n,t){var r=null==t?function(){return s(n)}:t(s.bind(null,n));return Object.assign(r,{getType:function(){return n},toString:function(){return n}})},createCustomAction:d,createStandardAction:function(n){return t(n)&&r(1),a(n)&&c(1),Object.assign((function(){return d(n,(function(n){return function(t,r){return{type:n,payload:t,meta:r}}}))}),{map:function(t){return d(n,(function(n){return function(r,e){return Object.assign(t(r,e),{type:n})}}))}})}};n.action=s,n.createAction=l,n.createAsyncAction=function(n,t,r,e){return function(){var i=[n,t,r,e].map((function(n,t){return Array.isArray(n)?l(n[0],n[1],n[2])():"string"==typeof n||"symbol"==typeof n?l(n)():void(t<3&&function(n){throw new Error("Argument "+n+' is invalid, it should be an action type of "string | symbol" or a tuple of "[string | symbol, Function, Function?]"')}(t))}));return{request:i[0],success:i[1],failure:i[2],cancel:i[3]}}},n.createCustomAction=y,n.createReducer=function n(t,r){void 0===r&&(r={});var i=Object.assign({},r),o=function(r,o){var a=Array.isArray(r)?r:[r],c={};return a.map((function(n,t){return e(n)?p(n):u(n)?n:function(n){throw new Error("Argument "+n+' is invalid, it should be an action-creator instance from "typesafe-actions" or action type of type: string | symbol')}(t+1)})).forEach((function(n){return c[n]=o})),n(t,Object.assign({},i,{},c))};return Object.assign((function(n,r){if(void 0===n&&(n=t),i.hasOwnProperty(r.type)){var e=i[r.type];if("function"!=typeof e)throw Error('Reducer under "'+r.type+'" key is not a valid reducer');return e(n,r)}return n}),{handlers:Object.assign({},i),handleAction:o,handleType:o})},n.deprecated=g,n.getType=p,n.isActionOf=function(n,e){t(n)&&r(1);var i=Array.isArray(n)?n:[n];i.forEach(o);var u=function(n){return i.some((function(t){return n.type===t.getType()}))};return void 0===e?u:u(e)},n.isOfType=function(n,e){t(n)&&r(1);var i=Array.isArray(n)?n:[n];i.forEach(f);var o=function(n){return i.includes(n.type)};return void 0===e?o:o(e)}}));
+//# sourceMappingURL=typesafe-actions.umd.production.js.map
+
+
+/***/ }),
+
+/***/ "../../node_modules/wonka/dist/wonka.mjs":
+/*!****************************************************************************************************************************************************!*\
+  !*** /home/behncke/Workspaces/Neos/neos-contributions/instances/sitegeist-archaeopteryx/sitegeist-archaeopteryx/node_modules/wonka/dist/wonka.mjs ***!
+  \****************************************************************************************************************************************************/
+/*! exports provided: buffer, combine, concat, concatAll, concatMap, debounce, delay, empty, filter, flatten, forEach, fromArray, fromCallbag, fromDomEvent, fromList, fromObservable, fromPromise, fromValue, interval, make, makeSubject, map, merge, mergeAll, mergeMap, never, onEnd, onPush, onStart, pipe, publish, sample, scan, share, skip, skipUntil, skipWhile, subscribe, switchAll, switchMap, take, takeLast, takeUntil, takeWhile, tap, throttle, toArray, toCallbag, toObservable, toPromise */
+/***/ (function(__webpack_module__, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "buffer", function() { return buffer$1; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "combine", function() { return combine$1; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "concat", function() { return concat$1; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "concatAll", function() { return concatAll$1; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "concatMap", function() { return z; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "debounce", function() { return debounce$1; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "delay", function() { return delay$1; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "empty", function() { return u; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "filter", function() { return filter$1; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "flatten", function() { return G; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "forEach", function() { return forEach$1; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fromArray", function() { return p; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fromCallbag", function() { return fromCallbag$2; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fromDomEvent", function() { return fromDomEvent$1; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fromList", function() { return fromList$1; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fromObservable", function() { return fromObservable$2; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fromPromise", function() { return fromPromise$1; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fromValue", function() { return fromValue$1; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "interval", function() { return interval$1; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "make", function() { return make$1; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "makeSubject", function() { return makeSubject$1; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "map", function() { return map$1; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "merge", function() { return merge$1; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mergeAll", function() { return G; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mergeMap", function() { return D; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "never", function() { return never$1; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "onEnd", function() { return onEnd$1; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "onPush", function() { return H; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "onStart", function() { return onStart$1; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "pipe", function() { return pipe; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "publish", function() { return publish$1; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sample", function() { return sample$1; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "scan", function() { return scan$1; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "share", function() { return share$1; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "skip", function() { return skip$1; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "skipUntil", function() { return skipUntil$1; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "skipWhile", function() { return skipWhile$1; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "subscribe", function() { return N; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "switchAll", function() { return switchAll$1; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "switchMap", function() { return K; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "take", function() { return take$1; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "takeLast", function() { return M; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "takeUntil", function() { return takeUntil$1; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "takeWhile", function() { return takeWhile$1; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "tap", function() { return H; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "throttle", function() { return throttle$1; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "toArray", function() { return toArray$1; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "toCallbag", function() { return toCallbag$2; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "toObservable", function() { return toObservable$2; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "toPromise", function() { return toPromise$1; });
+function l(a, b) {
+  b.tag = a;
+  return b;
+}
+
+function m() {}
+
+function p(a) {
+  return function (b) {
+    var c = a.length;
+    let d = !1,
+      e = !1,
+      f = !1,
+      g = 0;
+    b(
+      l(0, [
+        function (h) {
+          if (h) {
+            d = !0;
+          } else if (e) {
+            f = !0;
+          } else {
+            for (e = f = !0; f && !d; ) {
+              g < c ? ((h = a[g]), (g = (g + 1) | 0), (f = !1), b(l(1, [h]))) : ((d = !0), b(0));
+            }
+            e = !1;
+          }
+        },
+      ])
+    );
+  };
+}
+
+function r() {}
+
+function t(a) {
+  a(0);
+}
+
+function u(a) {
+  let b = !1;
+  a(
+    l(0, [
+      function (c) {
+        c ? (b = !0) : b || a(0);
+      },
+    ])
+  );
+}
+
+function w(a) {
+  if (void 0 === a) {
+    return ((a = [v, 0]).tag = 256), a;
+  }
+  if (null === a || a[0] !== v) {
+    return a;
+  }
+  (a = [v, (a[1] + 1) | 0]).tag = 256;
+  return a;
+}
+
+function x(a) {
+  if (null === a || a[0] !== v) {
+    return a;
+  }
+  if (0 !== (a = a[1])) {
+    return [v, (a - 1) | 0];
+  }
+}
+
+function z(a) {
+  return function (b) {
+    return function (c) {
+      function d(b) {
+        'number' == typeof b
+          ? k &&
+            ((k = !1),
+            void 0 !== (b = e.shift())
+              ? ((b = a(x(b))), (k = !0), b(d))
+              : q
+              ? c(0)
+              : g || ((g = !0), f(0)))
+          : b.tag
+          ? k && (c(b), n ? (n = !1) : h(0))
+          : ((h = b = b[0]), (n = !1), b(0));
+      }
+      let e = [],
+        f = m,
+        g = !1,
+        h = m,
+        k = !1,
+        n = !1,
+        q = !1;
+      b(function (b) {
+        'number' == typeof b
+          ? q || ((q = !0), k || 0 !== e.length || c(0))
+          : b.tag
+          ? q || ((b = b[0]), (g = !1), k ? e.push(b) : ((b = a(b)), (k = !0), b(d)))
+          : (f = b[0]);
+      });
+      c(
+        l(0, [
+          function (c) {
+            if (c) {
+              if ((q || ((q = !0), f(1)), k)) {
+                return (k = !1), h(1);
+              }
+            } else {
+              q || g || ((g = !0), f(0)), k && !n && ((n = !0), h(0));
+            }
+          },
+        ])
+      );
+    };
+  };
+}
+
+function A(a) {
+  return a;
+}
+
+function B(a) {
+  return a;
+}
+
+function C(a) {
+  return a(0);
+}
+
+function D(a) {
+  return function (b) {
+    return function (c) {
+      let e = m,
+        f = !1,
+        g = [],
+        h = !1;
+      b(function (b) {
+        'number' == typeof b
+          ? h || ((h = !0), 0 === g.length && c(0))
+          : b.tag
+          ? h ||
+            ((f = !1),
+            (function (a) {
+              function b(a) {
+                'number' == typeof a
+                  ? 0 !== g.length &&
+                    ((g = g.filter(d)),
+                    (a = 0 === g.length),
+                    h && a ? c(0) : !f && a && ((f = !0), e(0)))
+                  : a.tag
+                  ? 0 !== g.length && (c(l(1, [a[0]])), k(0))
+                  : ((k = a = a[0]), (g = g.concat(a)), a(0));
+              }
+              function d(a) {
+                return a !== k;
+              }
+              let k = m;
+              1 === a.length ? a(b) : a.bind(null, b);
+            })(a(b[0])),
+            f || ((f = !0), e(0)))
+          : (e = b[0]);
+      });
+      c(
+        l(0, [
+          function (a) {
+            a
+              ? (h || ((h = !0), e(a)),
+                g.forEach(function (c) {
+                  return c(a);
+                }),
+                (g = []))
+              : (f || h ? (f = !1) : ((f = !0), e(0)), g.forEach(C));
+          },
+        ])
+      );
+    };
+  };
+}
+
+function E(a) {
+  return a;
+}
+
+function F(a) {
+  return a;
+}
+
+function G(a) {
+  return D(F)(a);
+}
+
+function H(a) {
+  return function (b) {
+    return function (c) {
+      let d = !1;
+      return b(function (e) {
+        if ('number' == typeof e) {
+          d || ((d = !0), c(e));
+        } else if (e.tag) {
+          d || (a(e[0]), c(e));
+        } else {
+          var g = e[0];
+          c(
+            l(0, [
+              function (a) {
+                if (!d) {
+                  return a && (d = !0), g(a);
+                }
+              },
+            ])
+          );
+        }
+      });
+    };
+  };
+}
+
+function J(a) {
+  a(0);
+}
+
+function K(a) {
+  return function (b) {
+    return function (c) {
+      function d(a) {
+        h &&
+          ('number' == typeof a
+            ? ((h = !1), n ? c(a) : f || ((f = !0), e(0)))
+            : a.tag
+            ? (c(a), k ? (k = !1) : g(0))
+            : ((g = a = a[0]), (k = !1), a(0)));
+      }
+      let e = m,
+        f = !1,
+        g = m,
+        h = !1,
+        k = !1,
+        n = !1;
+      b(function (b) {
+        'number' == typeof b
+          ? n || ((n = !0), h || c(0))
+          : b.tag
+          ? n ||
+            (h && (g(1), (g = m)), f ? (f = !1) : ((f = !0), e(0)), (b = a(b[0])), (h = !0), b(d))
+          : (e = b[0]);
+      });
+      c(
+        l(0, [
+          function (a) {
+            if (a) {
+              if ((n || ((n = !0), e(1)), h)) {
+                return (h = !1), g(1);
+              }
+            } else {
+              n || f || ((f = !0), e(0)), h && !k && ((k = !0), g(0));
+            }
+          },
+        ])
+      );
+    };
+  };
+}
+
+function L(a) {
+  return a;
+}
+
+function M(a) {
+  return function (b) {
+    return function (c) {
+      let d = [],
+        e = m;
+      return b(function (b) {
+        'number' == typeof b
+          ? p(d)(c)
+          : b.tag
+          ? (d.length >= a && 0 < a && d.shift(), d.push(b[0]), e(0))
+          : ((b = b[0]), 0 >= a ? (b(1), u(c)) : ((e = b), b(0)));
+      });
+    };
+  };
+}
+
+function N(a) {
+  return function (b) {
+    let c = m,
+      d = !1;
+    b(function (e) {
+      'number' == typeof e ? (d = !0) : e.tag ? d || (a(e[0]), c(0)) : ((c = e = e[0]), e(0));
+    });
+    return {
+      unsubscribe: function () {
+        if (!d) {
+          return (d = !0), c(1);
+        }
+      },
+    };
+  };
+}
+
+function O() {}
+
+function Q() {}
+
+function R() {}
+
+function S() {}
+
+function buffer$1(a) {
+  return function (b) {
+    return function (c) {
+      function d(a) {
+        'number' == typeof a
+          ? k || ((k = !0), f(1), 0 < e.length && c(l(1, [e])), c(0))
+          : a.tag
+          ? !k && 0 < e.length && ((a = e), (e = []), c(l(1, [a])))
+          : (g = a[0]);
+      }
+      let e = [],
+        f = m,
+        g = m,
+        h = !1,
+        k = !1;
+      b(function (b) {
+        'number' == typeof b
+          ? k || ((k = !0), g(1), 0 < e.length && c(l(1, [e])), c(0))
+          : b.tag
+          ? k || (e.push(b[0]), h ? (h = !1) : ((h = !0), f(0), g(0)))
+          : ((f = b[0]), a(d));
+      });
+      c(
+        l(0, [
+          function (a) {
+            if (!k) {
+              if (a) {
+                return (k = !0), f(1), g(1);
+              }
+              if (!h) {
+                return (h = !0), f(0), g(0);
+              }
+            }
+          },
+        ])
+      );
+    };
+  };
+}
+
+function combine$1(a, b) {
+  return (function (a, b) {
+    return function (c) {
+      let d = m,
+        e = m,
+        f = void 0,
+        g = void 0,
+        h = !1,
+        k = 0,
+        n = !1;
+      a(function (a) {
+        var b = g;
+        'number' == typeof a
+          ? 1 > k
+            ? (k = (k + 1) | 0)
+            : n || ((n = !0), c(0))
+          : a.tag
+          ? ((a = a[0]),
+            void 0 !== b
+              ? n || ((f = w(a)), (h = !1), c(l(1, [[a, x(b)]])))
+              : ((f = w(a)), h ? (h = !1) : e(0)))
+          : (d = a[0]);
+      });
+      b(function (a) {
+        var b = f;
+        'number' == typeof a
+          ? 1 > k
+            ? (k = (k + 1) | 0)
+            : n || ((n = !0), c(0))
+          : a.tag
+          ? ((a = a[0]),
+            void 0 !== b
+              ? n || ((g = w(a)), (h = !1), c(l(1, [[x(b), a]])))
+              : ((g = w(a)), h ? (h = !1) : d(0)))
+          : (e = a[0]);
+      });
+      c(
+        l(0, [
+          function (c) {
+            if (!n) {
+              if (c) {
+                return (n = !0), d(1), e(1);
+              }
+              if (!h) {
+                return (h = !0), d(c), e(c);
+              }
+            }
+          },
+        ])
+      );
+    };
+  })(a, b);
+}
+
+function concat$1(a) {
+  return z(B)(p(a));
+}
+
+function concatAll$1(a) {
+  return z(A)(a);
+}
+
+function debounce$1(a) {
+  return function (b) {
+    return function (c) {
+      function d() {
+        var a = e;
+        void 0 !== a && ((e = void 0), clearTimeout(x(a)));
+      }
+      let e = void 0,
+        f = !1,
+        g = !1;
+      return b(function (b) {
+        if ('number' == typeof b) {
+          g || ((g = !0), void 0 !== e ? (f = !0) : c(0));
+        } else if (b.tag) {
+          g ||
+            (d(),
+            (e = w(
+              setTimeout(function () {
+                e = void 0;
+                c(b);
+                f && c(0);
+              }, a(b[0]))
+            )));
+        } else {
+          var n = b[0];
+          c(
+            l(0, [
+              function (a) {
+                if (!g) {
+                  return a ? ((g = !0), (f = !1), d(), n(1)) : n(0);
+                }
+              },
+            ])
+          );
+        }
+      });
+    };
+  };
+}
+
+function delay$1(a) {
+  return function (b) {
+    return function (c) {
+      let d = 0;
+      return b(function (b) {
+        'number' == typeof b || b.tag
+          ? ((d = (d + 1) | 0),
+            setTimeout(function () {
+              0 !== d && ((d = (d - 1) | 0), c(b));
+            }, a))
+          : c(b);
+      });
+    };
+  };
+}
+
+function filter$1(a) {
+  return function (b) {
+    return function (c) {
+      let d = m;
+      return b(function (b) {
+        'number' == typeof b ? c(b) : b.tag ? (a(b[0]) ? c(b) : d(0)) : ((d = b[0]), c(b));
+      });
+    };
+  };
+}
+
+function forEach$1(a) {
+  return function (b) {
+    N(a)(b);
+  };
+}
+
+function fromCallbag$2(a) {
+  return function (b) {
+    function c(a, c) {
+      switch (a) {
+        case 0:
+          b(
+            l(0, [
+              function (a) {
+                return a ? c(2) : c(1);
+              },
+            ])
+          );
+          break;
+
+        case 1:
+          b(l(1, [c]));
+          break;
+
+        case 2:
+          b(0);
+      }
+    }
+    return 2 === a.length ? a(0, c) : a.bind(null, 0, c);
+  };
+}
+
+function fromDomEvent$1(a, b) {
+  return (function (a, b) {
+    return function (c) {
+      function d(a) {
+        c(l(1, [a]));
+      }
+      c(
+        l(0, [
+          function (c) {
+            c && a.removeEventListener(b, d);
+          },
+        ])
+      );
+      a.addEventListener(b, d);
+    };
+  })(a, b);
+}
+
+function fromList$1(a) {
+  return function (b) {
+    let c = !1,
+      d = !1,
+      e = !1,
+      f = a;
+    b(
+      l(0, [
+        function (a) {
+          if (a) {
+            c = !0;
+          } else if (d) {
+            e = !0;
+          } else {
+            for (d = e = !0; e && !c; ) {
+              (a = f) ? ((f = a[1]), (e = !1), b(l(1, [a[0]]))) : ((c = !0), b(0));
+            }
+            d = !1;
+          }
+        },
+      ])
+    );
+  };
+}
+
+function fromObservable$2(a) {
+  var b = void 0 !== a[P] ? a[P]() : a;
+  return function (a) {
+    var c = b.subscribe({
+      next: function (c) {
+        a(l(1, [c]));
+      },
+      complete: function () {
+        a(0);
+      },
+      error: Q,
+    });
+    a(
+      l(0, [
+        function (a) {
+          if (a) {
+            return c.unsubscribe();
+          }
+        },
+      ])
+    );
+  };
+}
+
+function fromPromise$1(a) {
+  return function (b) {
+    let c = !1;
+    a.then(function (a) {
+      c || (b(l(1, [a])), b(0));
+      return Promise.resolve(void 0);
+    });
+    b(
+      l(0, [
+        function (a) {
+          a && (c = !0);
+        },
+      ])
+    );
+  };
+}
+
+function fromValue$1(a) {
+  return function (b) {
+    let c = !1;
+    b(
+      l(0, [
+        function (d) {
+          d ? (c = !0) : c || ((c = !0), b(l(1, [a])), b(0));
+        },
+      ])
+    );
+  };
+}
+
+function interval$1(a) {
+  return function (b) {
+    let c = 0;
+    var d = setInterval(function () {
+      var a = c;
+      c = (c + 1) | 0;
+      b(l(1, [a]));
+    }, a);
+    b(
+      l(0, [
+        function (a) {
+          a && clearInterval(d);
+        },
+      ])
+    );
+  };
+}
+
+function make$1(a) {
+  return function (b) {
+    let c = r,
+      d = !1;
+    c = a({
+      next: function (a) {
+        d || b(l(1, [a]));
+      },
+      complete: function () {
+        d || ((d = !0), b(0));
+      },
+    });
+    b(
+      l(0, [
+        function (a) {
+          if (a && !d) {
+            return (d = !0), c();
+          }
+        },
+      ])
+    );
+  };
+}
+
+function makeSubject$1() {
+  let a = [],
+    b = !1;
+  return {
+    source: function (c) {
+      function b(a) {
+        return a !== c;
+      }
+      a = a.concat(c);
+      c(
+        l(0, [
+          function (c) {
+            c && (a = a.filter(b));
+          },
+        ])
+      );
+    },
+    next: function (c) {
+      b ||
+        a.forEach(function (a) {
+          a(l(1, [c]));
+        });
+    },
+    complete: function () {
+      b || ((b = !0), a.forEach(t));
+    },
+  };
+}
+
+function map$1(a) {
+  return function (b) {
+    return function (c) {
+      return b(function (b) {
+        b = 'number' == typeof b ? 0 : b.tag ? l(1, [a(b[0])]) : l(0, [b[0]]);
+        c(b);
+      });
+    };
+  };
+}
+
+function merge$1(a) {
+  return D(E)(p(a));
+}
+
+function never$1(a) {
+  a(l(0, [m]));
+}
+
+function onEnd$1(a) {
+  return function (b) {
+    return function (c) {
+      let d = !1;
+      return b(function (b) {
+        if ('number' == typeof b) {
+          if (d) {
+            return;
+          }
+          d = !0;
+          c(b);
+          return a();
+        }
+        if (b.tag) {
+          d || c(b);
+        } else {
+          var e = b[0];
+          c(
+            l(0, [
+              function (c) {
+                if (!d) {
+                  return c ? ((d = !0), e(c), a()) : e(c);
+                }
+              },
+            ])
+          );
+        }
+      });
+    };
+  };
+}
+
+function onStart$1(a) {
+  return function (b) {
+    return function (c) {
+      return b(function (b) {
+        'number' == typeof b ? c(b) : b.tag ? c(b) : (c(b), a());
+      });
+    };
+  };
+}
+
+function pipe() {
+  for (var a = arguments, b = arguments[0], c = 1, d = arguments.length; c < d; c++) {
+    b = a[c](b);
+  }
+  return b;
+}
+
+function publish$1(a) {
+  return N(O)(a);
+}
+
+function sample$1(a) {
+  return function (b) {
+    return function (c) {
+      let d = m,
+        e = m,
+        f = void 0,
+        g = !1,
+        h = !1;
+      b(function (a) {
+        'number' == typeof a
+          ? h || ((h = !0), e(1), c(0))
+          : a.tag
+          ? ((f = w(a[0])), g ? (g = !1) : ((g = !0), e(0), d(0)))
+          : (d = a[0]);
+      });
+      a(function (a) {
+        var b = f;
+        'number' == typeof a
+          ? h || ((h = !0), d(1), c(0))
+          : a.tag
+          ? void 0 === b || h || ((f = void 0), c(l(1, [x(b)])))
+          : (e = a[0]);
+      });
+      c(
+        l(0, [
+          function (a) {
+            if (!h) {
+              if (a) {
+                return (h = !0), d(1), e(1);
+              }
+              if (!g) {
+                return (g = !0), d(0), e(0);
+              }
+            }
+          },
+        ])
+      );
+    };
+  };
+}
+
+function scan$1(a, b) {
+  return (function (a, b) {
+    return function (c) {
+      return function (d) {
+        let e = b;
+        return c(function (c) {
+          'number' == typeof c
+            ? (c = 0)
+            : c.tag
+            ? ((e = a(e, c[0])), (c = l(1, [e])))
+            : (c = l(0, [c[0]]));
+          d(c);
+        });
+      };
+    };
+  })(a, b);
+}
+
+function share$1(a) {
+  function b(a) {
+    'number' == typeof a
+      ? (c.forEach(J), (c = []))
+      : a.tag
+      ? ((e = !1),
+        c.forEach(function (b) {
+          b(a);
+        }))
+      : (d = a[0]);
+  }
+  let c = [],
+    d = m,
+    e = !1;
+  return function (f) {
+    function g(a) {
+      return a !== f;
+    }
+    c = c.concat(f);
+    1 === c.length && a(b);
+    f(
+      l(0, [
+        function (a) {
+          if (a) {
+            if (((c = c.filter(g)), 0 === c.length)) {
+              return d(1);
+            }
+          } else {
+            e || ((e = !0), d(a));
+          }
+        },
+      ])
+    );
+  };
+}
+
+function skip$1(a) {
+  return function (b) {
+    return function (c) {
+      let d = m,
+        e = a;
+      return b(function (a) {
+        'number' == typeof a
+          ? c(a)
+          : a.tag
+          ? 0 < e
+            ? ((e = (e - 1) | 0), d(0))
+            : c(a)
+          : ((d = a[0]), c(a));
+      });
+    };
+  };
+}
+
+function skipUntil$1(a) {
+  return function (b) {
+    return function (c) {
+      function d(a) {
+        'number' == typeof a
+          ? g && ((k = !0), e(1))
+          : a.tag
+          ? ((g = !1), f(1))
+          : ((f = a = a[0]), a(0));
+      }
+      let e = m,
+        f = m,
+        g = !0,
+        h = !1,
+        k = !1;
+      b(function (b) {
+        'number' == typeof b
+          ? (g && f(1), (k = !0), c(0))
+          : b.tag
+          ? g || k
+            ? h
+              ? (h = !1)
+              : ((h = !0), e(0), f(0))
+            : ((h = !1), c(b))
+          : ((e = b[0]), a(d));
+      });
+      c(
+        l(0, [
+          function (a) {
+            if (!k) {
+              if (a) {
+                if (((k = !0), e(1), g)) {
+                  return f(1);
+                }
+              } else {
+                h || ((h = !0), g && f(0), e(0));
+              }
+            }
+          },
+        ])
+      );
+    };
+  };
+}
+
+function skipWhile$1(a) {
+  return function (b) {
+    return function (c) {
+      let d = m,
+        e = !0;
+      return b(function (b) {
+        'number' == typeof b
+          ? c(b)
+          : b.tag
+          ? e
+            ? a(b[0])
+              ? d(0)
+              : ((e = !1), c(b))
+            : c(b)
+          : ((d = b[0]), c(b));
+      });
+    };
+  };
+}
+
+function switchAll$1(a) {
+  return K(L)(a);
+}
+
+function take$1(a) {
+  return function (b) {
+    return function (c) {
+      let d = !1,
+        e = 0,
+        f = m;
+      b(function (b) {
+        'number' == typeof b
+          ? d || ((d = !0), c(0))
+          : b.tag
+          ? e < a && !d && ((e = (e + 1) | 0), c(b), !d && e >= a && ((d = !0), c(0), f(1)))
+          : ((b = b[0]), 0 >= a ? ((d = !0), c(0), b(1)) : (f = b));
+      });
+      c(
+        l(0, [
+          function (b) {
+            if (!d) {
+              if (b) {
+                return (d = !0), f(1);
+              }
+              if (e < a) {
+                return f(0);
+              }
+            }
+          },
+        ])
+      );
+    };
+  };
+}
+
+function takeUntil$1(a) {
+  return function (b) {
+    return function (c) {
+      function d(a) {
+        'number' != typeof a && (a.tag ? ((e = !0), f(1), c(0)) : ((g = a = a[0]), a(0)));
+      }
+      let e = !1,
+        f = m,
+        g = m;
+      b(function (b) {
+        'number' == typeof b ? e || ((e = !0), g(1), c(0)) : b.tag ? e || c(b) : ((f = b[0]), a(d));
+      });
+      c(
+        l(0, [
+          function (a) {
+            if (!e) {
+              return a ? ((e = !0), f(1), g(1)) : f(0);
+            }
+          },
+        ])
+      );
+    };
+  };
+}
+
+function takeWhile$1(a) {
+  return function (b) {
+    return function (c) {
+      let d = m,
+        e = !1;
+      return b(function (b) {
+        'number' == typeof b
+          ? e || ((e = !0), c(0))
+          : b.tag
+          ? e || (a(b[0]) ? c(b) : ((e = !0), c(0), d(1)))
+          : ((d = b[0]), c(b));
+      });
+    };
+  };
+}
+
+function throttle$1(a) {
+  return function (b) {
+    return function (c) {
+      function d() {
+        void 0 !== g && clearTimeout(x(g));
+      }
+      function e() {
+        g = void 0;
+        f = !1;
+      }
+      let f = !1,
+        g = void 0;
+      return b(function (b) {
+        if ('number' == typeof b) {
+          d(), c(0);
+        } else if (b.tag) {
+          f || ((f = !0), d(), (g = w(setTimeout(e, a(b[0])))), c(b));
+        } else {
+          var h = b[0];
+          c(
+            l(0, [
+              function (a) {
+                return a ? (d(), h(1)) : h(a);
+              },
+            ])
+          );
+        }
+      });
+    };
+  };
+}
+
+function toArray$1(a) {
+  let b = [],
+    c = m,
+    d = !1;
+  a(function (a) {
+    'number' == typeof a ? (d = !0) : a.tag ? (b.push(a[0]), c(0)) : ((c = a = a[0]), a(0));
+  });
+  d || c(1);
+  return b;
+}
+
+function toCallbag$2(a) {
+  return function (b, c) {
+    if (0 === b) {
+      return a(function (a) {
+        function b(a) {
+          switch (a) {
+            case 1:
+              d(0);
+              break;
+
+            case 2:
+              d(1);
+          }
+        }
+        if ('number' == typeof a) {
+          return 2 === c.length ? c(2, void 0) : c.bind(null, 2, void 0);
+        }
+        if (a.tag) {
+          return (a = a[0]), 2 === c.length ? c(1, a) : c.bind(null, 1, a);
+        }
+        var d = a[0];
+        return 2 === c.length ? c(0, b) : c.bind(null, 0, b);
+      });
+    }
+  };
+}
+
+function toObservable$2(a) {
+  var b = {
+    subscribe: function (b, d, e) {
+      var c = ('object' == typeof b ? b.next.bind(b) : b) || R,
+        g = ('object' == typeof b ? b.complete.bind(b) : e) || S;
+      let h = m,
+        k = !1;
+      a(function (a) {
+        if ('number' == typeof a) {
+          return (k = !0), g();
+        }
+        if (a.tag) {
+          if (k) {
+            return;
+          }
+          c(a[0]);
+          return h(0);
+        }
+        h = a = a[0];
+        a(0);
+      });
+      return {
+        unsubscribe: function () {
+          if (!k) {
+            return (this.closed = !1), (k = !0), h(1);
+          }
+        },
+        closed: !1,
+      };
+    },
+  };
+  b[P] = function () {
+    return b;
+  };
+  return b;
+}
+
+function toPromise$1(a) {
+  return new Promise(function (b) {
+    M(1)(a)(function (a) {
+      if ('number' != typeof a) {
+        if (a.tag) {
+          b(a[0]);
+        } else {
+          a[0](0);
+        }
+      }
+    });
+  });
+}
+
+var v = [],
+  P =
+    'function' == typeof Symbol
+      ? Symbol.observable || (Symbol.observable = Symbol('observable'))
+      : '@@observable';
+
+
+
+
+/***/ }),
+
 /***/ "../core/lib/acl/NeosContext.js":
 /*!**************************************!*\
   !*** ../core/lib/acl/NeosContext.js ***!
@@ -1133,6 +2360,80 @@ __createBinding(exports, WebLink_1, "WebLink");
 
 /***/ }),
 
+/***/ "../core/lib/application/Modal/Modal.js":
+/*!**********************************************!*\
+  !*** ../core/lib/application/Modal/Modal.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function get() {
+            return m[k];
+        } });
+} : function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+var __setModuleDefault = undefined && undefined.__setModuleDefault || (Object.create ? function (o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+} : function (o, v) {
+    o["default"] = v;
+});
+var __importStar = undefined && undefined.__importStar || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) {
+        if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    }__setModuleDefault(result, mod);
+    return result;
+};
+exports.__esModule = true;
+exports.Modal = void 0;
+var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
+var react_ui_components_1 = __webpack_require__(/*! @neos-project/react-ui-components */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/react-ui-components/index.js");
+var domain_1 = __webpack_require__(/*! ../../domain */ "../core/lib/domain/index.js");
+var Modal = function Modal() {
+    var isOpen = domain_1.useEditorState().isOpen;
+    var dismiss = domain_1.useEditorTransaction().dismiss;
+    return React.createElement(react_ui_components_1.Dialog, { title: "Sitegeist.Archaeopteryx", isOpen: isOpen }, "Hello World!", React.createElement(react_ui_components_1.Button, { onClick: dismiss }, "Click here!"));
+};
+exports.Modal = Modal;
+//# sourceMappingURL=Modal.js.map
+
+/***/ }),
+
+/***/ "../core/lib/application/Modal/index.js":
+/*!**********************************************!*\
+  !*** ../core/lib/application/Modal/index.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function get() {
+            return m[k];
+        } });
+} : function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+exports.__esModule = true;
+exports.Modal = void 0;
+var Modal_1 = __webpack_require__(/*! ./Modal */ "../core/lib/application/Modal/Modal.js");
+__createBinding(exports, Modal_1, "Modal");
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
 /***/ "../core/lib/application/index.js":
 /*!****************************************!*\
   !*** ../core/lib/application/index.js ***!
@@ -1166,8 +2467,248 @@ var __importStar = undefined && undefined.__importStar || function (mod) {
     return result;
 };
 exports.__esModule = true;
-exports.LinkTypes = void 0;
+exports.Modal = exports.LinkTypes = void 0;
 exports.LinkTypes = __importStar(__webpack_require__(/*! ./LinkTypes */ "../core/lib/application/LinkTypes/index.js"));
+var Modal_1 = __webpack_require__(/*! ./Modal */ "../core/lib/application/Modal/index.js");
+__createBinding(exports, Modal_1, "Modal");
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "../core/lib/domain/Editor/Editor.js":
+/*!*******************************************!*\
+  !*** ../core/lib/domain/Editor/Editor.js ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __assign = undefined && undefined.__assign || function () {
+    __assign = Object.assign || function (t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) {
+                if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+            }
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function get() {
+            return m[k];
+        } });
+} : function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+var __setModuleDefault = undefined && undefined.__setModuleDefault || (Object.create ? function (o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+} : function (o, v) {
+    o["default"] = v;
+});
+var __importStar = undefined && undefined.__importStar || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) {
+        if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    }__setModuleDefault(result, mod);
+    return result;
+};
+exports.__esModule = true;
+exports.useEditorTransaction = exports.useEditorValue = exports.useEditorState = exports.EditorContext = exports.createEditor = exports.editorReducer = void 0;
+var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
+var typesafe_actions_1 = __webpack_require__(/*! typesafe-actions */ "../../node_modules/typesafe-actions/dist/typesafe-actions.umd.production.js");
+var wonka_1 = __webpack_require__(/*! wonka */ "../../node_modules/wonka/dist/wonka.mjs");
+var actions = __importStar(__webpack_require__(/*! ./EditorAction */ "../core/lib/domain/Editor/EditorAction.js"));
+var initialState = {
+    isOpen: false,
+    value: {
+        persistent: null,
+        transient: null
+    }
+};
+function editorReducer(state, action) {
+    if (state === void 0) {
+        state = initialState;
+    }
+    switch (action.type) {
+        case typesafe_actions_1.getType(actions.EditorWasOpened):
+            return {
+                isOpen: true,
+                value: {
+                    transient: action.payload,
+                    persistent: action.payload
+                }
+            };
+        case typesafe_actions_1.getType(actions.EditorWasDismissed):
+            return {
+                isOpen: false,
+                value: {
+                    transient: null,
+                    persistent: null
+                }
+            };
+        case typesafe_actions_1.getType(actions.UriWasUpdated):
+            return {
+                isOpen: true,
+                value: __assign(__assign({}, state.value), { transient: action.payload })
+            };
+        case typesafe_actions_1.getType(actions.UriWasCleared):
+            return {
+                isOpen: true,
+                value: __assign(__assign({}, state.value), { transient: null })
+            };
+        case typesafe_actions_1.getType(actions.UpdatedUriWasApplied):
+            return {
+                isOpen: false,
+                value: {
+                    transient: null,
+                    persistent: null
+                }
+            };
+        default:
+            return state;
+    }
+}
+exports.editorReducer = editorReducer;
+function createEditor() {
+    var _a = wonka_1.makeSubject(),
+        actions$ = _a.source,
+        dispatch = _a.next;
+    var state$ = wonka_1.pipe(actions$, wonka_1.scan(editorReducer, initialState));
+    var open = function open(uri) {
+        return dispatch(actions.EditorWasOpened(uri));
+    };
+    var dismiss = function dismiss() {
+        return dispatch(actions.EditorWasDismissed());
+    };
+    var update = function update(updatedUri) {
+        return dispatch(actions.UriWasUpdated(updatedUri));
+    };
+    var clear = function clear() {
+        return dispatch(actions.UriWasCleared());
+    };
+    var apply = function apply(updatedUri) {
+        return dispatch(actions.UpdatedUriWasApplied(updatedUri));
+    };
+    var editLink = function editLink(uri) {
+        return new Promise(function (resolve) {
+            open(uri);
+            wonka_1.pipe(actions$, wonka_1.subscribe(function (action) {
+                switch (action.type) {
+                    case typesafe_actions_1.getType(actions.EditorWasDismissed):
+                        return resolve({ change: false });
+                    case typesafe_actions_1.getType(actions.UpdatedUriWasApplied):
+                        return resolve({ change: true, value: action.payload });
+                    default:
+                        return;
+                }
+            }));
+        });
+    };
+    return {
+        state$: state$,
+        tx: { dismiss: dismiss, update: update, clear: clear, apply: apply, editLink: editLink },
+        initialState: initialState
+    };
+}
+exports.createEditor = createEditor;
+exports.EditorContext = React.createContext(createEditor());
+function useEditorState() {
+    var _a = React.useContext(exports.EditorContext),
+        state$ = _a.state$,
+        initialState = _a.initialState;
+    var _b = React.useState(initialState),
+        state = _b[0],
+        setState = _b[1];
+    React.useEffect(function () {
+        var subscription = wonka_1.pipe(state$, wonka_1.subscribe(function (state) {
+            setState(state);
+        }));
+        return function () {
+            return subscription.unsubscribe();
+        };
+    }, [state$, initialState]);
+    return state;
+}
+exports.useEditorState = useEditorState;
+function useEditorValue() {
+    var _a = useEditorState().value,
+        persistent = _a.persistent,
+        transient = _a.transient;
+    var isDirty = persistent !== transient;
+    return { value: transient, isDirty: isDirty };
+}
+exports.useEditorValue = useEditorValue;
+function useEditorTransaction() {
+    var tx = React.useContext(exports.EditorContext).tx;
+    return tx;
+}
+exports.useEditorTransaction = useEditorTransaction;
+//# sourceMappingURL=Editor.js.map
+
+/***/ }),
+
+/***/ "../core/lib/domain/Editor/EditorAction.js":
+/*!*************************************************!*\
+  !*** ../core/lib/domain/Editor/EditorAction.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.UpdatedUriWasApplied = exports.UriWasCleared = exports.UriWasUpdated = exports.EditorWasDismissed = exports.EditorWasOpened = void 0;
+var typesafe_actions_1 = __webpack_require__(/*! typesafe-actions */ "../../node_modules/typesafe-actions/dist/typesafe-actions.umd.production.js");
+exports.EditorWasOpened = typesafe_actions_1.createAction('http://sitegeist.de/Sitegeist.Archaeopteryx/EditorWasOpened', function (uri) {
+  return uri;
+})();
+exports.EditorWasDismissed = typesafe_actions_1.createAction('http://sitegeist.de/Sitegeist.Archaeopteryx/EditorWasDismissed')();
+exports.UriWasUpdated = typesafe_actions_1.createAction('http://sitegeist.de/Sitegeist.Archaeopteryx/UriWasUpdated', function (updatedUri) {
+  return updatedUri;
+})();
+exports.UriWasCleared = typesafe_actions_1.createAction('http://sitegeist.de/Sitegeist.Archaeopteryx/UriWasCleared')();
+exports.UpdatedUriWasApplied = typesafe_actions_1.createAction('http://sitegeist.de/Sitegeist.Archaeopteryx/UpdatedUriWasApplied', function (updatedUri) {
+  return updatedUri;
+})();
+//# sourceMappingURL=EditorAction.js.map
+
+/***/ }),
+
+/***/ "../core/lib/domain/Editor/index.js":
+/*!******************************************!*\
+  !*** ../core/lib/domain/Editor/index.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function get() {
+            return m[k];
+        } });
+} : function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+exports.__esModule = true;
+exports.useEditorTransaction = exports.useEditorValue = exports.useEditorState = exports.EditorContext = exports.createEditor = void 0;
+var Editor_1 = __webpack_require__(/*! ./Editor */ "../core/lib/domain/Editor/Editor.js");
+__createBinding(exports, Editor_1, "createEditor");
+__createBinding(exports, Editor_1, "EditorContext");
+__createBinding(exports, Editor_1, "useEditorState");
+__createBinding(exports, Editor_1, "useEditorValue");
+__createBinding(exports, Editor_1, "useEditorTransaction");
 //# sourceMappingURL=index.js.map
 
 /***/ }),
@@ -1263,11 +2804,17 @@ var __createBinding = undefined && undefined.__createBinding || (Object.create ?
     o[k2] = m[k];
 });
 exports.__esModule = true;
-exports.useLinkTypeForUri = exports.useLinkTypes = exports.LinkType = void 0;
+exports.useEditorTransaction = exports.useEditorValue = exports.useEditorState = exports.EditorContext = exports.createEditor = exports.useLinkTypeForUri = exports.useLinkTypes = exports.LinkType = void 0;
 var LinkType_1 = __webpack_require__(/*! ./LinkType */ "../core/lib/domain/LinkType.js");
 __createBinding(exports, LinkType_1, "LinkType");
 __createBinding(exports, LinkType_1, "useLinkTypes");
 __createBinding(exports, LinkType_1, "useLinkTypeForUri");
+var Editor_1 = __webpack_require__(/*! ./Editor */ "../core/lib/domain/Editor/index.js");
+__createBinding(exports, Editor_1, "createEditor");
+__createBinding(exports, Editor_1, "EditorContext");
+__createBinding(exports, Editor_1, "useEditorState");
+__createBinding(exports, Editor_1, "useEditorValue");
+__createBinding(exports, Editor_1, "useEditorTransaction");
 //# sourceMappingURL=index.js.map
 
 /***/ }),
@@ -1292,13 +2839,19 @@ var __createBinding = undefined && undefined.__createBinding || (Object.create ?
     o[k2] = m[k];
 });
 exports.__esModule = true;
-exports.LinkTypes = exports.useLinkTypeForUri = exports.NeosContext = void 0;
+exports.Modal = exports.LinkTypes = exports.useEditorTransaction = exports.useEditorValue = exports.useEditorState = exports.EditorContext = exports.createEditor = exports.useLinkTypeForUri = exports.NeosContext = void 0;
 var acl_1 = __webpack_require__(/*! ./acl */ "../core/lib/acl/index.js");
 __createBinding(exports, acl_1, "NeosContext");
 var domain_1 = __webpack_require__(/*! ./domain */ "../core/lib/domain/index.js");
 __createBinding(exports, domain_1, "useLinkTypeForUri");
+__createBinding(exports, domain_1, "createEditor");
+__createBinding(exports, domain_1, "EditorContext");
+__createBinding(exports, domain_1, "useEditorState");
+__createBinding(exports, domain_1, "useEditorValue");
+__createBinding(exports, domain_1, "useEditorTransaction");
 var application_1 = __webpack_require__(/*! ./application */ "../core/lib/application/index.js");
 __createBinding(exports, application_1, "LinkTypes");
+__createBinding(exports, application_1, "Modal");
 //# sourceMappingURL=index.js.map
 
 /***/ }),
@@ -1338,16 +2891,23 @@ var __importStar = undefined && undefined.__importStar || function (mod) {
 exports.__esModule = true;
 exports.InspectorEditor = void 0;
 var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
+var react_ui_components_1 = __webpack_require__(/*! @neos-project/react-ui-components */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/react-ui-components/index.js");
 var archaeopteryx_core_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-core */ "../core/lib/index.js");
 var InspectorEditor = function InspectorEditor(props) {
-    var value = (typeof props.value === 'string' ? props.value : 'https://example.com') || 'https://example.com';
+    var editLink = archaeopteryx_core_1.useEditorTransaction().editLink;
+    var value = typeof props.value === 'string' ? props.value : '';
     var linkType = archaeopteryx_core_1.useLinkTypeForUri(value);
     if (linkType) {
         var Preview = linkType.getPreview;
         var link = { uri: value };
         return React.createElement(Preview, { link: link });
+    } else if (Boolean(value) === false) {
+        return React.createElement(react_ui_components_1.Button, { onClick: function onClick() {
+                return editLink(null);
+            } }, "Create Link");
+    } else {
+        return React.createElement("div", null, "No Editor for ", JSON.stringify(props.value));
     }
-    return React.createElement("div", null, "No Editor for ", value);
 };
 exports.InspectorEditor = InspectorEditor;
 //# sourceMappingURL=InspectorEditor.js.map
@@ -1405,6 +2965,8 @@ __webpack_require__(/*! ./manifest */ "./src/manifest.js");
 "use strict";
 
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _react = __webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js");
 
 var React = _interopRequireWildcard(_react);
@@ -1422,8 +2984,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 (0, _neosUiExtensibility2.default)('@sitegeist/archaeopteryx-plugin', {}, function (globalRegistry) {
+    var editor = (0, _archaeopteryxCore.createEditor)();
+
     registerLinkTypes(globalRegistry);
-    registerInspectorEditors(globalRegistry);
+    registerInspectorEditors(globalRegistry, editor);
+    registerContainers(globalRegistry, editor);
 });
 
 function registerLinkTypes(globalRegistry) {
@@ -1434,13 +2999,33 @@ function registerLinkTypes(globalRegistry) {
     linkTypeRegistry.set('Sitegeist.Archaeopteryx:WebLink', _archaeopteryxCore.LinkTypes.WebLink);
 }
 
-function registerInspectorEditors(globalRegistry) {
+function registerInspectorEditors(globalRegistry, editor) {
     var editorsRegistry = globalRegistry.get('inspector').get('editors');
 
     editorsRegistry.set('Sitegeist.Archaeopteryx/Inspector/Editors/LinkEditor', {
         component: function component(props) {
-            return React.createElement(_archaeopteryxCore.NeosContext.Provider, { value: { globalRegistry: globalRegistry } }, React.createElement(_archaeopteryxInspectorEditor.InspectorEditor, props));
+            return React.createElement(
+                _archaeopteryxCore.NeosContext.Provider,
+                { value: { globalRegistry: globalRegistry } },
+                React.createElement(
+                    _archaeopteryxCore.EditorContext.Provider,
+                    { value: editor },
+                    React.createElement(_archaeopteryxInspectorEditor.InspectorEditor, props)
+                )
+            );
         }
+    });
+}
+
+function registerContainers(globalRegistry, editor) {
+    var containersRegistry = globalRegistry.get('containers');
+
+    containersRegistry.set('Modals/Sitegeist.Archaeopteryx', function (props) {
+        return React.createElement(
+            _archaeopteryxCore.EditorContext.Provider,
+            { value: editor },
+            React.createElement(_archaeopteryxCore.Modal, _extends({}, props, { i18n: globalRegistry.get('i18n') }))
+        );
     });
 }
 

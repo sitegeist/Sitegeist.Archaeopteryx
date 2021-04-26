@@ -1,6 +1,8 @@
 import * as React from 'react';
 
-import {useLinkTypeForUri} from '@sitegeist/archaeopteryx-core';
+import {Button} from '@neos-project/react-ui-components';
+
+import {useLinkTypeForUri, useEditorTransaction} from '@sitegeist/archaeopteryx-core';
 
 interface Props {
     neos: unknown
@@ -23,7 +25,8 @@ interface Props {
 }
 
 export const InspectorEditor: React.FC<Props> = props => {
-    const value = (typeof props.value === 'string' ? props.value : 'https://example.com') || 'https://example.com';
+    const {editLink} = useEditorTransaction();
+    const value = typeof props.value === 'string' ? props.value : '';
     const linkType = useLinkTypeForUri(value);
 
     if (linkType) {
@@ -33,9 +36,15 @@ export const InspectorEditor: React.FC<Props> = props => {
         return (
             <Preview link={link}/>
         );
+    } else if (Boolean(value) === false) {
+        return (
+            <Button onClick={() => editLink(null)}>
+                Create Link
+            </Button>
+        );
+    } else {
+        return (
+            <div>No Editor for {JSON.stringify(props.value)}</div>
+        );
     }
-
-    return (
-        <div>No Editor for {JSON.stringify(value)}</div>
-    );
 };

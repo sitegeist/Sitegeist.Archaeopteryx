@@ -7,11 +7,7 @@ var __createBinding = (this && this.__createBinding) || (Object.create ? (functi
     o[k2] = m[k];
 }));
 exports.__esModule = true;
-exports.useEditorTransaction = exports.useEditorValue = exports.useEditorState = exports.EditorContext = exports.createEditor = exports.useLinkTypeForUri = exports.useLinkTypes = exports.LinkType = void 0;
-var LinkType_1 = require("./LinkType");
-__createBinding(exports, LinkType_1, "LinkType");
-__createBinding(exports, LinkType_1, "useLinkTypes");
-__createBinding(exports, LinkType_1, "useLinkTypeForUri");
+exports.useEditorTransaction = exports.useEditorValue = exports.useEditorState = exports.EditorContext = exports.createEditor = void 0;
 var Editor_1 = require("./Editor");
 __createBinding(exports, Editor_1, "createEditor");
 __createBinding(exports, Editor_1, "EditorContext");

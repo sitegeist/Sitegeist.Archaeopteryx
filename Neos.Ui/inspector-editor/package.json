@@ -8,6 +8,7 @@
         "watch": "tsc -w"
     },
     "dependencies": {
+        "@neos-project/react-ui-components": "^7.0.2",
         "@sitegeist/archaeopteryx-core": "^0.0.0",
         "react": "^17.0.2"
     },

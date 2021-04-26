@@ -19,27 +19,16 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 exports.__esModule = true;
-exports.InspectorEditor = void 0;
+exports.Modal = void 0;
 var React = __importStar(require("react"));
 var react_ui_components_1 = require("@neos-project/react-ui-components");
-var archaeopteryx_core_1 = require("@sitegeist/archaeopteryx-core");
-var InspectorEditor = function (props) {
-    var editLink = archaeopteryx_core_1.useEditorTransaction().editLink;
-    var value = typeof props.value === 'string' ? props.value : '';
-    var linkType = archaeopteryx_core_1.useLinkTypeForUri(value);
-    if (linkType) {
-        var Preview = linkType.getPreview;
-        var link = { uri: value };
-        return (React.createElement(Preview, { link: link }));
-    }
-    else if (Boolean(value) === false) {
-        return (React.createElement(react_ui_components_1.Button, { onClick: function () { return editLink(null); } }, "Create Link"));
-    }
-    else {
-        return (React.createElement("div", null,
-            "No Editor for ",
-            JSON.stringify(props.value)));
-    }
+var domain_1 = require("../../domain");
+var Modal = function () {
+    var isOpen = domain_1.useEditorState().isOpen;
+    var dismiss = domain_1.useEditorTransaction().dismiss;
+    return (React.createElement(react_ui_components_1.Dialog, { title: "Sitegeist.Archaeopteryx", isOpen: isOpen },
+        "Hello World!",
+        React.createElement(react_ui_components_1.Button, { onClick: dismiss }, "Click here!")));
 };
-exports.InspectorEditor = InspectorEditor;
-//# sourceMappingURL=InspectorEditor.js.map
+exports.Modal = Modal;
+//# sourceMappingURL=Modal.js.map

@@ -19,6 +19,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 exports.__esModule = true;
-exports.LinkTypes = void 0;
+exports.Modal = exports.LinkTypes = void 0;
 exports.LinkTypes = __importStar(require("./LinkTypes"));
+var Modal_1 = require("./Modal");
+__createBinding(exports, Modal_1, "Modal");
 //# sourceMappingURL=index.js.map

@@ -1,5 +1,12 @@
 export {NeosContext} from './acl';
 
-export {useLinkTypeForUri} from './domain';
+export {
+    useLinkTypeForUri,
+    createEditor,
+    EditorContext,
+    useEditorState,
+    useEditorValue,
+    useEditorTransaction
+} from './domain';
 
-export {LinkTypes} from './application';
+export {LinkTypes, Modal} from './application';
