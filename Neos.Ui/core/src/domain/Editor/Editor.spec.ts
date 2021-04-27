@@ -1,4 +1,4 @@
-import {pipe, subscribe, Subscription} from 'wonka';
+import {Subscription} from 'rxjs';
 import {createEditor, IEditorState} from './Editor';
 
 describe('Editor', () => {
@@ -7,9 +7,9 @@ describe('Editor', () => {
     let subscription: Subscription;
 
     beforeEach(() => {
-        subscription = pipe(state$, subscribe(latest => {
+        subscription = state$.subscribe(latest => {
             state = latest;
-        }));
+        });
     });
 
     afterEach(() => {

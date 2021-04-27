@@ -25,7 +25,7 @@ var react_ui_components_1 = require("@neos-project/react-ui-components");
 var domain_1 = require("../../domain");
 var Modal = function () {
     var _a = domain_1.useEditorState(), isOpen = _a.isOpen, value = _a.value;
-    var _b = domain_1.useEditorTransaction(), dismiss = _b.dismiss, apply = _b.apply;
+    var _b = domain_1.useEditorTransactions(), dismiss = _b.dismiss, apply = _b.apply;
     var linkTypes = domain_1.useLinkTypes();
     var _c = React.useState(linkTypes[0]), activeLinkType = _c[0], setActiveLinkType = _c[1];
     var Editor = activeLinkType.getEditor;

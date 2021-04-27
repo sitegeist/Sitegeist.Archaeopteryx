@@ -65,11 +65,10 @@ exports.WebLink = new (function (_super) {
         _this.getPreview = function (props) { return (React.createElement("div", null, _this.getTitle(props))); };
         _this.getEditor = function () {
             var value = domain_1.useEditorValue().value;
-            var update = domain_1.useEditorTransaction().update;
+            var update = domain_1.useEditorTransactions().update;
             var onChange = React.useCallback(function (ev) {
                 return update(ev.target.value);
             }, [update]);
-            console.log('WebLink', { value: value });
             return (React.createElement("input", { type: "text", value: value !== null && value !== void 0 ? value : '', onChange: onChange }));
         };
         return _this;

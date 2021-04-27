@@ -1,10 +1,10 @@
 import * as React from 'react';
 import {Dialog, Button} from '@neos-project/react-ui-components';
-import {useEditorState, useEditorTransaction, useLinkTypes} from '../../domain';
+import {useEditorState, useEditorTransactions, useLinkTypes} from '../../domain';
 
 export const Modal: React.FC = () => {
     const {isOpen, value} = useEditorState();
-    const {dismiss, apply} = useEditorTransaction();
+    const {dismiss, apply} = useEditorTransactions();
     const linkTypes = useLinkTypes();
     const [activeLinkType, setActiveLinkType] = React.useState(linkTypes[0]);
     const {getEditor: Editor} = activeLinkType;

@@ -1,15 +1,14 @@
 "use strict";
 exports.__esModule = true;
-var wonka_1 = require("wonka");
 var Editor_1 = require("./Editor");
 describe('Editor', function () {
     var _a = Editor_1.createEditor(), state$ = _a.state$, _b = _a.tx, editLink = _b.editLink, dismiss = _b.dismiss, update = _b.update, clear = _b.clear, apply = _b.apply;
     var state;
     var subscription;
     beforeEach(function () {
-        subscription = wonka_1.pipe(state$, wonka_1.subscribe(function (latest) {
+        subscription = state$.subscribe(function (latest) {
             state = latest;
-        }));
+        });
     });
     afterEach(function () {
         subscription.unsubscribe();

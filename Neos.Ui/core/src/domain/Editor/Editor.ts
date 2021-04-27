@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {ActionType, getType} from 'typesafe-actions';
-import {makeSubject, pipe, scan, share, subscribe} from 'wonka';
+import {Subject} from 'rxjs';
+import {scan, shareReplay} from 'rxjs/operators';
 
 import * as actions from './EditorAction';
 
@@ -29,7 +30,6 @@ export function editorReducer(
     state: IEditorState = initialState,
     action: ActionType<typeof actions>
 ): IEditorState {
-    console.log('editorReducer', state, action);
     switch (action.type) {
         case getType(actions.EditorWasOpened):
             return {
@@ -77,14 +77,11 @@ export function editorReducer(
 }
 
 export function createEditor() {
-    const {
-        source: actions$,
-        next: dispatch
-    } = makeSubject<ActionType<typeof actions>>();
-    const state$ = pipe(
-        actions$,
+    const actions$ = new Subject<ActionType<typeof actions>>();
+    const dispatch = (action: ActionType<typeof actions>) => actions$.next(action);
+    const state$ = actions$.pipe(
         scan(editorReducer, initialState),
-        share
+        shareReplay(1)
     );
 
     const open = (uri: null | string) => dispatch(actions.EditorWasOpened(uri));
@@ -98,7 +95,7 @@ export function createEditor() {
         resolve => {
             open(uri);
 
-            pipe(actions$, subscribe(action => {
+            actions$.subscribe(action => {
                 switch (action.type) {
                     case getType(actions.EditorWasDismissed):
                         return resolve({change: false});
@@ -107,7 +104,7 @@ export function createEditor() {
                     default:
                         return;
                 }
-            }));
+            });
         }
     );
 
@@ -125,16 +122,10 @@ export function useEditorState() {
     const [state, setState] = React.useState(initialState);
 
     React.useEffect(() => {
-        console.log('useEditorState (subscribe)');
-        const subscription = pipe(state$, subscribe(state => {
-            console.log('useEditorState (update)', state);
-            setState(state);
-        }));
-
+        const subscription = state$.subscribe(setState);
         return () => subscription.unsubscribe();
     }, [state$, initialState]);
 
-    console.log('useEditorState (read)', state);
     return state;
 }
 
@@ -142,12 +133,10 @@ export function useEditorValue() {
     const {value: {persistent, transient}} = useEditorState();
     const isDirty = persistent !== transient;
 
-    console.log('useEditorValue', {persistent, transient});
-
     return {value: transient, isDirty};
 }
 
-export function useEditorTransaction() {
+export function useEditorTransactions() {
     const {tx} = React.useContext(EditorContext);
     return tx;
 }

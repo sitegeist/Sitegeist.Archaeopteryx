@@ -3,5 +3,5 @@ export {
     EditorContext,
     useEditorState,
     useEditorValue,
-    useEditorTransaction
+    useEditorTransactions
 } from './Editor';

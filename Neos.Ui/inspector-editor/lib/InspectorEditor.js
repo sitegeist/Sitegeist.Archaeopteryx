@@ -60,7 +60,7 @@ var React = __importStar(require("react"));
 var react_ui_components_1 = require("@neos-project/react-ui-components");
 var archaeopteryx_core_1 = require("@sitegeist/archaeopteryx-core");
 var InspectorEditor = function (props) {
-    var tx = archaeopteryx_core_1.useEditorTransaction();
+    var tx = archaeopteryx_core_1.useEditorTransactions();
     var value = typeof props.value === 'string' ? props.value : '';
     var linkType = archaeopteryx_core_1.useLinkTypeForUri(value);
     var editLink = React.useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {

@@ -30,10 +30,11 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 exports.__esModule = true;
-exports.useEditorTransaction = exports.useEditorValue = exports.useEditorState = exports.EditorContext = exports.createEditor = exports.editorReducer = void 0;
+exports.useEditorTransactions = exports.useEditorValue = exports.useEditorState = exports.EditorContext = exports.createEditor = exports.editorReducer = void 0;
 var React = __importStar(require("react"));
 var typesafe_actions_1 = require("typesafe-actions");
-var wonka_1 = require("wonka");
+var rxjs_1 = require("rxjs");
+var operators_1 = require("rxjs/operators");
 var actions = __importStar(require("./EditorAction"));
 var initialState = {
     isOpen: false,
@@ -44,7 +45,6 @@ var initialState = {
 };
 function editorReducer(state, action) {
     if (state === void 0) { state = initialState; }
-    console.log('editorReducer', state, action);
     switch (action.type) {
         case typesafe_actions_1.getType(actions.EditorWasOpened):
             return {
@@ -86,8 +86,9 @@ function editorReducer(state, action) {
 }
 exports.editorReducer = editorReducer;
 function createEditor() {
-    var _a = wonka_1.makeSubject(), actions$ = _a.source, dispatch = _a.next;
-    var state$ = wonka_1.pipe(actions$, wonka_1.scan(editorReducer, initialState), wonka_1.share);
+    var actions$ = new rxjs_1.Subject();
+    var dispatch = function (action) { return actions$.next(action); };
+    var state$ = actions$.pipe(operators_1.scan(editorReducer, initialState), operators_1.shareReplay(1));
     var open = function (uri) { return dispatch(actions.EditorWasOpened(uri)); };
     var dismiss = function () { return dispatch(actions.EditorWasDismissed()); };
     var update = function (updatedUri) {
@@ -99,7 +100,7 @@ function createEditor() {
     };
     var editLink = function (uri) { return new Promise(function (resolve) {
         open(uri);
-        wonka_1.pipe(actions$, wonka_1.subscribe(function (action) {
+        actions$.subscribe(function (action) {
             switch (action.type) {
                 case typesafe_actions_1.getType(actions.EditorWasDismissed):
                     return resolve({ change: false });
@@ -108,7 +109,7 @@ function createEditor() {
                 default:
                     return;
             }
-        }));
+        });
     }); };
     return {
         state$: state$,
@@ -122,27 +123,21 @@ function useEditorState() {
     var _a = React.useContext(exports.EditorContext), state$ = _a.state$, initialState = _a.initialState;
     var _b = React.useState(initialState), state = _b[0], setState = _b[1];
     React.useEffect(function () {
-        console.log('useEditorState (subscribe)');
-        var subscription = wonka_1.pipe(state$, wonka_1.subscribe(function (state) {
-            console.log('useEditorState (update)', state);
-            setState(state);
-        }));
+        var subscription = state$.subscribe(setState);
         return function () { return subscription.unsubscribe(); };
     }, [state$, initialState]);
-    console.log('useEditorState (read)', state);
     return state;
 }
 exports.useEditorState = useEditorState;
 function useEditorValue() {
     var _a = useEditorState().value, persistent = _a.persistent, transient = _a.transient;
     var isDirty = persistent !== transient;
-    console.log('useEditorValue', { persistent: persistent, transient: transient });
     return { value: transient, isDirty: isDirty };
 }
 exports.useEditorValue = useEditorValue;
-function useEditorTransaction() {
+function useEditorTransactions() {
     var tx = React.useContext(exports.EditorContext).tx;
     return tx;
 }
-exports.useEditorTransaction = useEditorTransaction;
+exports.useEditorTransactions = useEditorTransactions;
 //# sourceMappingURL=Editor.js.map

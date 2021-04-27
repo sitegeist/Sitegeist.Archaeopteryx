@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import {Button} from '@neos-project/react-ui-components';
 
-import {useLinkTypeForUri, useEditorTransaction} from '@sitegeist/archaeopteryx-core';
+import {useLinkTypeForUri, useEditorTransactions} from '@sitegeist/archaeopteryx-core';
 
 interface Props {
     neos: unknown
@@ -26,7 +26,7 @@ interface Props {
 }
 
 export const InspectorEditor: React.FC<Props> = props => {
-    const tx = useEditorTransaction();
+    const tx = useEditorTransactions();
     const value = typeof props.value === 'string' ? props.value : '';
     const linkType = useLinkTypeForUri(value);
 

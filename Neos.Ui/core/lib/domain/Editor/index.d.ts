@@ -1,1 +1,1 @@
-export { createEditor, EditorContext, useEditorState, useEditorValue, useEditorTransaction } from './Editor';
+export { createEditor, EditorContext, useEditorState, useEditorValue, useEditorTransactions } from './Editor';

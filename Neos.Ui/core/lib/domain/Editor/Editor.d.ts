@@ -16,7 +16,7 @@ declare type IEditorResult = {
 };
 export declare function editorReducer(state: IEditorState | undefined, action: ActionType<typeof actions>): IEditorState;
 export declare function createEditor(): {
-    state$: import("wonka").Source<IEditorState>;
+    state$: import("rxjs").Observable<IEditorState>;
     tx: {
         dismiss: () => void;
         update: (updatedUri: string) => void;
@@ -27,7 +27,7 @@ export declare function createEditor(): {
     initialState: IEditorState;
 };
 export declare const EditorContext: React.Context<{
-    state$: import("wonka").Source<IEditorState>;
+    state$: import("rxjs").Observable<IEditorState>;
     tx: {
         dismiss: () => void;
         update: (updatedUri: string) => void;
@@ -42,7 +42,7 @@ export declare function useEditorValue(): {
     value: string | null;
     isDirty: boolean;
 };
-export declare function useEditorTransaction(): {
+export declare function useEditorTransactions(): {
     dismiss: () => void;
     update: (updatedUri: string) => void;
     clear: () => void;

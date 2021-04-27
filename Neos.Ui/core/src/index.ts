@@ -6,7 +6,7 @@ export {
     EditorContext,
     useEditorState,
     useEditorValue,
-    useEditorTransaction
+    useEditorTransactions
 } from './domain';
 
 export {LinkTypes, Modal} from './application';

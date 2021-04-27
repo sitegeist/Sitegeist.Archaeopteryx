@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import {LinkType, ILinkTypeProps, useEditorTransaction, useEditorValue} from '../../../domain';
+import {LinkType, ILinkTypeProps, useEditorTransactions, useEditorValue} from '../../../domain';
 
 export const WebLink = new class extends LinkType {
     public readonly id = 'Sitegeist.Archaeopteryx:WebLink';
@@ -34,14 +34,12 @@ export const WebLink = new class extends LinkType {
 
     public readonly getEditor = () => {
         const {value} = useEditorValue();
-        const {update} = useEditorTransaction();
+        const {update} = useEditorTransactions();
         const onChange = React.useCallback(
             (ev: React.SyntheticEvent) =>
                 update((ev.target as HTMLInputElement).value),
             [update]
         );
-
-        console.log('WebLink', {value});
 
         return (
             <input type="text" value={value ?? ''} onChange={onChange}/>
