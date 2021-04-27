@@ -29,6 +29,22 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
 exports.__esModule = true;
 exports.useEditorTransactions = exports.useEditorValue = exports.useEditorState = exports.EditorContext = exports.createEditor = exports.editorReducer = void 0;
 var React = __importStar(require("react"));
@@ -121,7 +137,7 @@ exports.createEditor = createEditor;
 exports.EditorContext = React.createContext(createEditor());
 function useEditorState() {
     var _a = React.useContext(exports.EditorContext), state$ = _a.state$, initialState = _a.initialState;
-    var _b = React.useState(initialState), state = _b[0], setState = _b[1];
+    var _b = __read(React.useState(initialState), 2), state = _b[0], setState = _b[1];
     React.useEffect(function () {
         var subscription = state$.subscribe(setState);
         return function () { return subscription.unsubscribe(); };

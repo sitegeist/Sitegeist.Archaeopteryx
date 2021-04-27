@@ -7,6 +7,26 @@ interface NeosContextProperties {
             getAllAsList: <T>() => T[]
         } | undefined
     }
+    store: {
+        getState: () => {
+            cr?: {
+                nodes?: {
+                    siteNode?: string
+                    documentNode?: string
+                }
+            }
+        }
+    }
+    configuration: {
+        nodeTree?: {
+            loadingDepth?: number
+            presets?: {
+                default?: {
+                    baseNodeType?: string
+                }
+            }
+        }
+    }
 }
 
 export const NeosContext = React.createContext<null | NeosContextProperties>(null);

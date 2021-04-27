@@ -18,6 +18,22 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
 exports.__esModule = true;
 exports.Modal = void 0;
 var React = __importStar(require("react"));
@@ -27,7 +43,7 @@ var Modal = function () {
     var _a = domain_1.useEditorState(), isOpen = _a.isOpen, value = _a.value;
     var _b = domain_1.useEditorTransactions(), dismiss = _b.dismiss, apply = _b.apply;
     var linkTypes = domain_1.useLinkTypes();
-    var _c = React.useState(linkTypes[0]), activeLinkType = _c[0], setActiveLinkType = _c[1];
+    var _c = __read(React.useState(linkTypes[0]), 2), activeLinkType = _c[0], setActiveLinkType = _c[1];
     var Editor = activeLinkType.getEditor;
     return (React.createElement(react_ui_components_1.Dialog, { title: "Sitegeist.Archaeopteryx", isOpen: isOpen, onRequestClose: dismiss },
         linkTypes.map(function (linkType) {

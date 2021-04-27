@@ -5,16 +5,18 @@ import {NeosContext, LinkTypes, Modal, createEditor, EditorContext} from '@siteg
 import {InspectorEditor} from '@sitegeist/archaeopteryx-inspector-editor';
 import {LinkButton} from '@sitegeist/archaeopteryx-rte-formatter';
 
-manifest('@sitegeist/archaeopteryx-plugin', {}, globalRegistry => {
+manifest('@sitegeist/archaeopteryx-plugin', {}, (globalRegistry, {store, configuration, ...deps}) => {
+    console.log(deps);
     const editor = createEditor();
+    const neosContext = {globalRegistry, store, configuration};
 
-    registerLinkTypes(globalRegistry);
-    registerContainers(globalRegistry, editor);
-    registerInspectorEditors(globalRegistry, editor);
-    registerRteFormatter(globalRegistry, editor);
+    registerLinkTypes(neosContext);
+    registerContainers(neosContext, editor);
+    registerInspectorEditors(neosContext, editor);
+    registerRteFormatter(neosContext, editor);
 });
 
-function registerLinkTypes(globalRegistry) {
+function registerLinkTypes({globalRegistry}) {
     const linkTypeRegistry = new SynchronousRegistry(`
         # Sitegeist.Archaeopteryx LinkType Registry
     `);
@@ -28,14 +30,20 @@ function registerLinkTypes(globalRegistry) {
         'Sitegeist.Archaeopteryx:WebLink',
         LinkTypes.WebLink
     );
+
+    linkTypeRegistry.set(
+        'Sitegeist.Archaeopteryx:NodeTree',
+        LinkTypes.NodeTree
+    );
 }
 
-function registerInspectorEditors(globalRegistry, editor) {
+function registerInspectorEditors(neosContext, editor) {
+    const {globalRegistry} = neosContext;
     const editorsRegistry = globalRegistry.get('inspector').get('editors');
 
     editorsRegistry.set('Sitegeist.Archaeopteryx/Inspector/Editors/LinkEditor', {
         component: props => (
-            <NeosContext.Provider value={{globalRegistry}}>
+            <NeosContext.Provider value={neosContext}>
                 <EditorContext.Provider value={editor}>
                     {React.createElement(InspectorEditor, props)}
                 </EditorContext.Provider>
@@ -44,13 +52,14 @@ function registerInspectorEditors(globalRegistry, editor) {
     });
 }
 
-function registerContainers(globalRegistry, editor) {
+function registerContainers(neosContext, editor) {
+    const {globalRegistry} = neosContext;
     const containersRegistry = globalRegistry.get('containers');
 
     containersRegistry.set(
         'Modals/Sitegeist.Archaeopteryx',
         props => (
-            <NeosContext.Provider value={{globalRegistry}}>
+            <NeosContext.Provider value={neosContext}>
                 <EditorContext.Provider value={editor}>
                     {React.createElement(Modal, props)}
                 </EditorContext.Provider>
@@ -59,7 +68,8 @@ function registerContainers(globalRegistry, editor) {
     );
 }
 
-function registerRteFormatter(globalRegistry, editor) {
+function registerRteFormatter(neosContext, editor) {
+    const {globalRegistry} = neosContext;
     const ckeditor5Registry = globalRegistry.get('ckEditor5');
     if (!ckeditor5Registry) {
         console.warn('[Sitegeist.Archaeopteryx]: Could not find ckeditor5 registry.');
@@ -77,7 +87,7 @@ function registerRteFormatter(globalRegistry, editor) {
     richtextToolbarRegistry.set('link', {
         commandName: 'link',
         component: props => (
-            <NeosContext.Provider value={{globalRegistry}}>
+            <NeosContext.Provider value={neosContext}>
                 <EditorContext.Provider value={editor}>
                     {React.createElement(LinkButton, props)}
                 </EditorContext.Provider>

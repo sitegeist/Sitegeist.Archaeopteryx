@@ -7,9 +7,7 @@ var __createBinding = (this && this.__createBinding) || (Object.create ? (functi
     o[k2] = m[k];
 }));
 exports.__esModule = true;
-exports.NodeTree = exports.WebLink = void 0;
-var WebLink_1 = require("./WebLink");
-__createBinding(exports, WebLink_1, "WebLink");
+exports.NodeTree = void 0;
 var NodeTree_1 = require("./NodeTree");
 __createBinding(exports, NodeTree_1, "NodeTree");
 //# sourceMappingURL=index.js.map

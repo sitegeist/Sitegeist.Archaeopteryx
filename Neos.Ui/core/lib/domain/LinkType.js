@@ -18,6 +18,17 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __values = (this && this.__values) || function(o) {
+    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+    if (m) return m.call(o);
+    if (o && typeof o.length === "number") return {
+        next: function () {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+};
 exports.__esModule = true;
 exports.useLinkTypeForUri = exports.useLinkTypes = exports.LinkType = void 0;
 var React = __importStar(require("react"));
@@ -43,11 +54,21 @@ exports.useLinkTypes = useLinkTypes;
 function useLinkTypeForUri(uri) {
     var linkTypes = useLinkTypes();
     var result = React.useMemo(function () {
-        for (var _i = 0, linkTypes_1 = linkTypes; _i < linkTypes_1.length; _i++) {
-            var linkType = linkTypes_1[_i];
-            if (linkType.isSuitableFor({ link: { uri: uri } })) {
-                return linkType;
+        var e_1, _a;
+        try {
+            for (var linkTypes_1 = __values(linkTypes), linkTypes_1_1 = linkTypes_1.next(); !linkTypes_1_1.done; linkTypes_1_1 = linkTypes_1.next()) {
+                var linkType = linkTypes_1_1.value;
+                if (linkType.isSuitableFor({ link: { uri: uri } })) {
+                    return linkType;
+                }
             }
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (linkTypes_1_1 && !linkTypes_1_1.done && (_a = linkTypes_1["return"])) _a.call(linkTypes_1);
+            }
+            finally { if (e_1) throw e_1.error; }
         }
         return null;
     }, [linkTypes, uri]);

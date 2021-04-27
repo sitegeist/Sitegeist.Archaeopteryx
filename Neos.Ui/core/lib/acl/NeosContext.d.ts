@@ -6,6 +6,26 @@ interface NeosContextProperties {
             getAllAsList: <T>() => T[];
         } | undefined;
     };
+    store: {
+        getState: () => {
+            cr?: {
+                nodes?: {
+                    siteNode?: string;
+                    documentNode?: string;
+                };
+            };
+        };
+    };
+    configuration: {
+        nodeTree?: {
+            loadingDepth?: number;
+            presets?: {
+                default?: {
+                    baseNodeType?: string;
+                };
+            };
+        };
+    };
 }
 export declare const NeosContext: React.Context<NeosContextProperties | null>;
 export declare function useNeos(): NeosContextProperties | null;

@@ -8,6 +8,7 @@
         "removeComments": true,
         "sourceMap": true,
         "moduleResolution": "node",
+        "downlevelIteration": true,
         "lib": [
             "dom",
             "es2016",

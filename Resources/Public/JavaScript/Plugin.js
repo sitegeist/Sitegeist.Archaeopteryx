@@ -376,6 +376,33 @@ exports.SynchronousMetaRegistry = SynchronousMetaRegistry_1["default"];
 
 /***/ }),
 
+/***/ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/neos-ui-backend-connector/index.js":
+/*!************************************************************************************************************************************************************************************************************************************!*\
+  !*** /home/behncke/Workspaces/Neos/neos-contributions/instances/sitegeist-archaeopteryx/sitegeist-archaeopteryx/node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/neos-ui-backend-connector/index.js ***!
+  \************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.fetchWithErrorHandling = undefined;
+
+var _readFromConsumerApi = __webpack_require__(/*! ../../../../dist/readFromConsumerApi */ "../../node_modules/@neos-project/neos-ui-extensibility/dist/readFromConsumerApi.js");
+
+var _readFromConsumerApi2 = _interopRequireDefault(_readFromConsumerApi);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = (0, _readFromConsumerApi2.default)('NeosProjectPackages')().NeosUiBackendConnectorDefault;
+var fetchWithErrorHandling = (0, _readFromConsumerApi2.default)('NeosProjectPackages')().NeosUiBackendConnector.fetchWithErrorHandling;
+exports.fetchWithErrorHandling = fetchWithErrorHandling;
+
+/***/ }),
+
 /***/ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/react-ui-components/index.js":
 /*!******************************************************************************************************************************************************************************************************************************!*\
   !*** /home/behncke/Workspaces/Neos/neos-contributions/instances/sitegeist-archaeopteryx/sitegeist-archaeopteryx/node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/react-ui-components/index.js ***!
@@ -676,6 +703,42 @@ var positionalArraySorter = function positionalArraySorter(subject, position, id
 };
 exports["default"] = positionalArraySorter;
 //# sourceMappingURL=positionalArraySorter.js.map
+
+/***/ }),
+
+/***/ "../../node_modules/immer/dist/immer.esm.js":
+/*!*******************************************************************************************************************************************************!*\
+  !*** /home/behncke/Workspaces/Neos/neos-contributions/instances/sitegeist-archaeopteryx/sitegeist-archaeopteryx/node_modules/immer/dist/immer.esm.js ***!
+  \*******************************************************************************************************************************************************/
+/*! exports provided: default, Immer, applyPatches, castDraft, castImmutable, createDraft, current, enableAllPlugins, enableES5, enableMapSet, enablePatches, finishDraft, freeze, immerable, isDraft, isDraftable, nothing, original, produce, produceWithPatches, setAutoFreeze, setUseProxies */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Immer", function() { return un; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "applyPatches", function() { return pn; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "castDraft", function() { return K; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "castImmutable", function() { return $; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createDraft", function() { return ln; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "current", function() { return D; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "enableAllPlugins", function() { return J; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "enableES5", function() { return N; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "enableMapSet", function() { return C; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "enablePatches", function() { return T; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "finishDraft", function() { return dn; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "freeze", function() { return d; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "immerable", function() { return L; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isDraft", function() { return r; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isDraftable", function() { return t; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "nothing", function() { return H; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "original", function() { return e; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "produce", function() { return fn; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "produceWithPatches", function() { return cn; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setAutoFreeze", function() { return sn; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setUseProxies", function() { return vn; });
+function n(n){for(var r=arguments.length,t=Array(r>1?r-1:0),e=1;e<r;e++)t[e-1]=arguments[e];if(true){var i=Y[n],o=i?"function"==typeof i?i.apply(null,t):i:"unknown error nr: "+n;throw Error("[Immer] "+o)}throw Error("[Immer] minified error nr: "+n+(t.length?" "+t.map((function(n){return"'"+n+"'"})).join(","):"")+". Find the full error at: https://bit.ly/3cXEKWf")}function r(n){return!!n&&!!n[Q]}function t(n){return!!n&&(function(n){if(!n||"object"!=typeof n)return!1;var r=Object.getPrototypeOf(n);if(null===r)return!0;var t=Object.hasOwnProperty.call(r,"constructor")&&r.constructor;return"function"==typeof t&&Function.toString.call(t)===Z}(n)||Array.isArray(n)||!!n[L]||!!n.constructor[L]||s(n)||v(n))}function e(t){return r(t)||n(23,t),t[Q].t}function i(n,r,t){void 0===t&&(t=!1),0===o(n)?(t?Object.keys:nn)(n).forEach((function(e){t&&"symbol"==typeof e||r(e,n[e],n)})):n.forEach((function(t,e){return r(e,t,n)}))}function o(n){var r=n[Q];return r?r.i>3?r.i-4:r.i:Array.isArray(n)?1:s(n)?2:v(n)?3:0}function u(n,r){return 2===o(n)?n.has(r):Object.prototype.hasOwnProperty.call(n,r)}function a(n,r){return 2===o(n)?n.get(r):n[r]}function f(n,r,t){var e=o(n);2===e?n.set(r,t):3===e?(n.delete(r),n.add(t)):n[r]=t}function c(n,r){return n===r?0!==n||1/n==1/r:n!=n&&r!=r}function s(n){return X&&n instanceof Map}function v(n){return q&&n instanceof Set}function p(n){return n.o||n.t}function l(n){if(Array.isArray(n))return Array.prototype.slice.call(n);var r=rn(n);delete r[Q];for(var t=nn(r),e=0;e<t.length;e++){var i=t[e],o=r[i];!1===o.writable&&(o.writable=!0,o.configurable=!0),(o.get||o.set)&&(r[i]={configurable:!0,writable:!0,enumerable:o.enumerable,value:n[i]})}return Object.create(Object.getPrototypeOf(n),r)}function d(n,e){return void 0===e&&(e=!1),y(n)||r(n)||!t(n)?n:(o(n)>1&&(n.set=n.add=n.clear=n.delete=h),Object.freeze(n),e&&i(n,(function(n,r){return d(r,!0)}),!0),n)}function h(){n(2)}function y(n){return null==n||"object"!=typeof n||Object.isFrozen(n)}function b(r){var t=tn[r];return t||n(18,r),t}function m(n,r){tn[n]||(tn[n]=r)}function _(){return false||U||n(0),U}function j(n,r){r&&(b("Patches"),n.u=[],n.s=[],n.v=r)}function g(n){O(n),n.p.forEach(S),n.p=null}function O(n){n===U&&(U=n.l)}function w(n){return U={p:[],l:U,h:n,m:!0,_:0}}function S(n){var r=n[Q];0===r.i||1===r.i?r.j():r.g=!0}function P(r,e){e._=e.p.length;var i=e.p[0],o=void 0!==r&&r!==i;return e.h.O||b("ES5").S(e,r,o),o?(i[Q].P&&(g(e),n(4)),t(r)&&(r=M(e,r),e.l||x(e,r)),e.u&&b("Patches").M(i[Q],r,e.u,e.s)):r=M(e,i,[]),g(e),e.u&&e.v(e.u,e.s),r!==H?r:void 0}function M(n,r,t){if(y(r))return r;var e=r[Q];if(!e)return i(r,(function(i,o){return A(n,e,r,i,o,t)}),!0),r;if(e.A!==n)return r;if(!e.P)return x(n,e.t,!0),e.t;if(!e.I){e.I=!0,e.A._--;var o=4===e.i||5===e.i?e.o=l(e.k):e.o;i(3===e.i?new Set(o):o,(function(r,i){return A(n,e,o,r,i,t)})),x(n,o,!1),t&&n.u&&b("Patches").R(e,t,n.u,n.s)}return e.o}function A(e,i,o,a,c,s){if( true&&c===o&&n(5),r(c)){var v=M(e,c,s&&i&&3!==i.i&&!u(i.D,a)?s.concat(a):void 0);if(f(o,a,v),!r(v))return;e.m=!1}if(t(c)&&!y(c)){if(!e.h.F&&e._<1)return;M(e,c),i&&i.A.l||x(e,c)}}function x(n,r,t){void 0===t&&(t=!1),n.h.F&&n.m&&d(r,t)}function z(n,r){var t=n[Q];return(t?p(t):n)[r]}function I(n,r){if(r in n)for(var t=Object.getPrototypeOf(n);t;){var e=Object.getOwnPropertyDescriptor(t,r);if(e)return e;t=Object.getPrototypeOf(t)}}function k(n){n.P||(n.P=!0,n.l&&k(n.l))}function E(n){n.o||(n.o=l(n.t))}function R(n,r,t){var e=s(r)?b("MapSet").N(r,t):v(r)?b("MapSet").T(r,t):n.O?function(n,r){var t=Array.isArray(n),e={i:t?1:0,A:r?r.A:_(),P:!1,I:!1,D:{},l:r,t:n,k:null,o:null,j:null,C:!1},i=e,o=en;t&&(i=[e],o=on);var u=Proxy.revocable(i,o),a=u.revoke,f=u.proxy;return e.k=f,e.j=a,f}(r,t):b("ES5").J(r,t);return(t?t.A:_()).p.push(e),e}function D(e){return r(e)||n(22,e),function n(r){if(!t(r))return r;var e,u=r[Q],c=o(r);if(u){if(!u.P&&(u.i<4||!b("ES5").K(u)))return u.t;u.I=!0,e=F(r,c),u.I=!1}else e=F(r,c);return i(e,(function(r,t){u&&a(u.t,r)===t||f(e,r,n(t))})),3===c?new Set(e):e}(e)}function F(n,r){switch(r){case 2:return new Map(n);case 3:return Array.from(n)}return l(n)}function N(){function t(n,r){var t=s[n];return t?t.enumerable=r:s[n]=t={configurable:!0,enumerable:r,get:function(){var r=this[Q];return true&&f(r),en.get(r,n)},set:function(r){var t=this[Q]; true&&f(t),en.set(t,n,r)}},t}function e(n){for(var r=n.length-1;r>=0;r--){var t=n[r][Q];if(!t.P)switch(t.i){case 5:a(t)&&k(t);break;case 4:o(t)&&k(t)}}}function o(n){for(var r=n.t,t=n.k,e=nn(t),i=e.length-1;i>=0;i--){var o=e[i];if(o!==Q){var a=r[o];if(void 0===a&&!u(r,o))return!0;var f=t[o],s=f&&f[Q];if(s?s.t!==a:!c(f,a))return!0}}var v=!!r[Q];return e.length!==nn(r).length+(v?0:1)}function a(n){var r=n.k;if(r.length!==n.t.length)return!0;var t=Object.getOwnPropertyDescriptor(r,r.length-1);return!(!t||t.get)}function f(r){r.g&&n(3,JSON.stringify(p(r)))}var s={};m("ES5",{J:function(n,r){var e=Array.isArray(n),i=function(n,r){if(n){for(var e=Array(r.length),i=0;i<r.length;i++)Object.defineProperty(e,""+i,t(i,!0));return e}var o=rn(r);delete o[Q];for(var u=nn(o),a=0;a<u.length;a++){var f=u[a];o[f]=t(f,n||!!o[f].enumerable)}return Object.create(Object.getPrototypeOf(r),o)}(e,n),o={i:e?5:4,A:r?r.A:_(),P:!1,I:!1,D:{},l:r,t:n,k:i,o:null,g:!1,C:!1};return Object.defineProperty(i,Q,{value:o,writable:!0}),i},S:function(n,t,o){o?r(t)&&t[Q].A===n&&e(n.p):(n.u&&function n(r){if(r&&"object"==typeof r){var t=r[Q];if(t){var e=t.t,o=t.k,f=t.D,c=t.i;if(4===c)i(o,(function(r){r!==Q&&(void 0!==e[r]||u(e,r)?f[r]||n(o[r]):(f[r]=!0,k(t)))})),i(e,(function(n){void 0!==o[n]||u(o,n)||(f[n]=!1,k(t))}));else if(5===c){if(a(t)&&(k(t),f.length=!0),o.length<e.length)for(var s=o.length;s<e.length;s++)f[s]=!1;else for(var v=e.length;v<o.length;v++)f[v]=!0;for(var p=Math.min(o.length,e.length),l=0;l<p;l++)void 0===f[l]&&n(o[l])}}}}(n.p[0]),e(n.p))},K:function(n){return 4===n.i?o(n):a(n)}})}function T(){function e(n){if(!t(n))return n;if(Array.isArray(n))return n.map(e);if(s(n))return new Map(Array.from(n.entries()).map((function(n){return[n[0],e(n[1])]})));if(v(n))return new Set(Array.from(n).map(e));var r=Object.create(Object.getPrototypeOf(n));for(var i in n)r[i]=e(n[i]);return u(n,L)&&(r[L]=n[L]),r}function f(n){return r(n)?e(n):n}var c="add";m("Patches",{$:function(r,t){return t.forEach((function(t){for(var i=t.path,u=t.op,f=r,s=0;s<i.length-1;s++){var v=o(f),p=i[s];0!==v&&1!==v||"__proto__"!==p&&"constructor"!==p||n(24),"function"==typeof f&&"prototype"===p&&n(24),"object"!=typeof(f=a(f,p))&&n(15,i.join("/"))}var l=o(f),d=e(t.value),h=i[i.length-1];switch(u){case"replace":switch(l){case 2:return f.set(h,d);case 3:n(16);default:return f[h]=d}case c:switch(l){case 1:return f.splice(h,0,d);case 2:return f.set(h,d);case 3:return f.add(d);default:return f[h]=d}case"remove":switch(l){case 1:return f.splice(h,1);case 2:return f.delete(h);case 3:return f.delete(t.value);default:return delete f[h]}default:n(17,u)}})),r},R:function(n,r,t,e){switch(n.i){case 0:case 4:case 2:return function(n,r,t,e){var o=n.t,s=n.o;i(n.D,(function(n,i){var v=a(o,n),p=a(s,n),l=i?u(o,n)?"replace":c:"remove";if(v!==p||"replace"!==l){var d=r.concat(n);t.push("remove"===l?{op:l,path:d}:{op:l,path:d,value:p}),e.push(l===c?{op:"remove",path:d}:"remove"===l?{op:c,path:d,value:f(v)}:{op:"replace",path:d,value:f(v)})}}))}(n,r,t,e);case 5:case 1:return function(n,r,t,e){var i=n.t,o=n.D,u=n.o;if(u.length<i.length){var a=[u,i];i=a[0],u=a[1];var s=[e,t];t=s[0],e=s[1]}for(var v=0;v<i.length;v++)if(o[v]&&u[v]!==i[v]){var p=r.concat([v]);t.push({op:"replace",path:p,value:f(u[v])}),e.push({op:"replace",path:p,value:f(i[v])})}for(var l=i.length;l<u.length;l++){var d=r.concat([l]);t.push({op:c,path:d,value:f(u[l])})}i.length<u.length&&e.push({op:"replace",path:r.concat(["length"]),value:i.length})}(n,r,t,e);case 3:return function(n,r,t,e){var i=n.t,o=n.o,u=0;i.forEach((function(n){if(!o.has(n)){var i=r.concat([u]);t.push({op:"remove",path:i,value:n}),e.unshift({op:c,path:i,value:n})}u++})),u=0,o.forEach((function(n){if(!i.has(n)){var o=r.concat([u]);t.push({op:c,path:o,value:n}),e.unshift({op:"remove",path:o,value:n})}u++}))}(n,r,t,e)}},M:function(n,r,t,e){t.push({op:"replace",path:[],value:r}),e.push({op:"replace",path:[],value:n.t})}})}function C(){function r(n,r){function t(){this.constructor=n}a(n,r),n.prototype=(t.prototype=r.prototype,new t)}function e(n){n.o||(n.D=new Map,n.o=new Map(n.t))}function o(n){n.o||(n.o=new Set,n.t.forEach((function(r){if(t(r)){var e=R(n.A.h,r,n);n.p.set(r,e),n.o.add(e)}else n.o.add(r)})))}function u(r){r.g&&n(3,JSON.stringify(p(r)))}var a=function(n,r){return(a=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(n,r){n.__proto__=r}||function(n,r){for(var t in r)r.hasOwnProperty(t)&&(n[t]=r[t])})(n,r)},f=function(){function n(n,r){return this[Q]={i:2,l:r,A:r?r.A:_(),P:!1,I:!1,o:void 0,D:void 0,t:n,k:this,C:!1,g:!1},this}r(n,Map);var o=n.prototype;return Object.defineProperty(o,"size",{get:function(){return p(this[Q]).size}}),o.has=function(n){return p(this[Q]).has(n)},o.set=function(n,r){var t=this[Q];return u(t),p(t).has(n)&&p(t).get(n)===r||(e(t),k(t),t.D.set(n,!0),t.o.set(n,r),t.D.set(n,!0)),this},o.delete=function(n){if(!this.has(n))return!1;var r=this[Q];return u(r),e(r),k(r),r.D.set(n,!1),r.o.delete(n),!0},o.clear=function(){var n=this[Q];u(n),p(n).size&&(e(n),k(n),n.D=new Map,i(n.t,(function(r){n.D.set(r,!1)})),n.o.clear())},o.forEach=function(n,r){var t=this;p(this[Q]).forEach((function(e,i){n.call(r,t.get(i),i,t)}))},o.get=function(n){var r=this[Q];u(r);var i=p(r).get(n);if(r.I||!t(i))return i;if(i!==r.t.get(n))return i;var o=R(r.A.h,i,r);return e(r),r.o.set(n,o),o},o.keys=function(){return p(this[Q]).keys()},o.values=function(){var n,r=this,t=this.keys();return(n={})[V]=function(){return r.values()},n.next=function(){var n=t.next();return n.done?n:{done:!1,value:r.get(n.value)}},n},o.entries=function(){var n,r=this,t=this.keys();return(n={})[V]=function(){return r.entries()},n.next=function(){var n=t.next();if(n.done)return n;var e=r.get(n.value);return{done:!1,value:[n.value,e]}},n},o[V]=function(){return this.entries()},n}(),c=function(){function n(n,r){return this[Q]={i:3,l:r,A:r?r.A:_(),P:!1,I:!1,o:void 0,t:n,k:this,p:new Map,g:!1,C:!1},this}r(n,Set);var t=n.prototype;return Object.defineProperty(t,"size",{get:function(){return p(this[Q]).size}}),t.has=function(n){var r=this[Q];return u(r),r.o?!!r.o.has(n)||!(!r.p.has(n)||!r.o.has(r.p.get(n))):r.t.has(n)},t.add=function(n){var r=this[Q];return u(r),this.has(n)||(o(r),k(r),r.o.add(n)),this},t.delete=function(n){if(!this.has(n))return!1;var r=this[Q];return u(r),o(r),k(r),r.o.delete(n)||!!r.p.has(n)&&r.o.delete(r.p.get(n))},t.clear=function(){var n=this[Q];u(n),p(n).size&&(o(n),k(n),n.o.clear())},t.values=function(){var n=this[Q];return u(n),o(n),n.o.values()},t.entries=function(){var n=this[Q];return u(n),o(n),n.o.entries()},t.keys=function(){return this.values()},t[V]=function(){return this.values()},t.forEach=function(n,r){for(var t=this.values(),e=t.next();!e.done;)n.call(r,e.value,e.value,this),e=t.next()},n}();m("MapSet",{N:function(n,r){return new f(n,r)},T:function(n,r){return new c(n,r)}})}function J(){N(),C(),T()}function K(n){return n}function $(n){return n}var G,U,W="undefined"!=typeof Symbol&&"symbol"==typeof Symbol("x"),X="undefined"!=typeof Map,q="undefined"!=typeof Set,B="undefined"!=typeof Proxy&&void 0!==Proxy.revocable&&"undefined"!=typeof Reflect,H=W?Symbol.for("immer-nothing"):((G={})["immer-nothing"]=!0,G),L=W?Symbol.for("immer-draftable"):"__$immer_draftable",Q=W?Symbol.for("immer-state"):"__$immer_state",V="undefined"!=typeof Symbol&&Symbol.iterator||"@@iterator",Y={0:"Illegal state",1:"Immer drafts cannot have computed properties",2:"This object has been frozen and should not be mutated",3:function(n){return"Cannot use a proxy that has been revoked. Did you pass an object from inside an immer function to an async process? "+n},4:"An immer producer returned a new value *and* modified its draft. Either return a new value *or* modify the draft.",5:"Immer forbids circular references",6:"The first or second argument to `produce` must be a function",7:"The third argument to `produce` must be a function or undefined",8:"First argument to `createDraft` must be a plain object, an array, or an immerable object",9:"First argument to `finishDraft` must be a draft returned by `createDraft`",10:"The given draft is already finalized",11:"Object.defineProperty() cannot be used on an Immer draft",12:"Object.setPrototypeOf() cannot be used on an Immer draft",13:"Immer only supports deleting array indices",14:"Immer only supports setting array indices and the 'length' property",15:function(n){return"Cannot apply patch, path doesn't resolve: "+n},16:'Sets cannot have "replace" patches.',17:function(n){return"Unsupported patch operation: "+n},18:function(n){return"The plugin for '"+n+"' has not been loaded into Immer. To enable the plugin, import and call `enable"+n+"()` when initializing your application."},20:"Cannot use proxies if Proxy, Proxy.revocable or Reflect are not available",21:function(n){return"produce can only be called on things that are draftable: plain objects, arrays, Map, Set or classes that are marked with '[immerable]: true'. Got '"+n+"'"},22:function(n){return"'current' expects a draft, got: "+n},23:function(n){return"'original' expects a draft, got: "+n},24:"Patching reserved attributes like __proto__, prototype and constructor is not allowed"},Z=""+Object.prototype.constructor,nn="undefined"!=typeof Reflect&&Reflect.ownKeys?Reflect.ownKeys:void 0!==Object.getOwnPropertySymbols?function(n){return Object.getOwnPropertyNames(n).concat(Object.getOwnPropertySymbols(n))}:Object.getOwnPropertyNames,rn=Object.getOwnPropertyDescriptors||function(n){var r={};return nn(n).forEach((function(t){r[t]=Object.getOwnPropertyDescriptor(n,t)})),r},tn={},en={get:function(n,r){if(r===Q)return n;var e=p(n);if(!u(e,r))return function(n,r,t){var e,i=I(r,t);return i?"value"in i?i.value:null===(e=i.get)||void 0===e?void 0:e.call(n.k):void 0}(n,e,r);var i=e[r];return n.I||!t(i)?i:i===z(n.t,r)?(E(n),n.o[r]=R(n.A.h,i,n)):i},has:function(n,r){return r in p(n)},ownKeys:function(n){return Reflect.ownKeys(p(n))},set:function(n,r,t){var e=I(p(n),r);if(null==e?void 0:e.set)return e.set.call(n.k,t),!0;if(!n.P){var i=z(p(n),r),o=null==i?void 0:i[Q];if(o&&o.t===t)return n.o[r]=t,n.D[r]=!1,!0;if(c(t,i)&&(void 0!==t||u(n.t,r)))return!0;E(n),k(n)}return n.o[r]===t&&"number"!=typeof t||(n.o[r]=t,n.D[r]=!0,!0)},deleteProperty:function(n,r){return void 0!==z(n.t,r)||r in n.t?(n.D[r]=!1,E(n),k(n)):delete n.D[r],n.o&&delete n.o[r],!0},getOwnPropertyDescriptor:function(n,r){var t=p(n),e=Reflect.getOwnPropertyDescriptor(t,r);return e?{writable:!0,configurable:1!==n.i||"length"!==r,enumerable:e.enumerable,value:t[r]}:e},defineProperty:function(){n(11)},getPrototypeOf:function(n){return Object.getPrototypeOf(n.t)},setPrototypeOf:function(){n(12)}},on={};i(en,(function(n,r){on[n]=function(){return arguments[0]=arguments[0][0],r.apply(this,arguments)}})),on.deleteProperty=function(r,t){return true&&isNaN(parseInt(t))&&n(13),en.deleteProperty.call(this,r[0],t)},on.set=function(r,t,e){return true&&"length"!==t&&isNaN(parseInt(t))&&n(14),en.set.call(this,r[0],t,e,r[0])};var un=function(){function e(r){var e=this;this.O=B,this.F=!0,this.produce=function(r,i,o){if("function"==typeof r&&"function"!=typeof i){var u=i;i=r;var a=e;return function(n){var r=this;void 0===n&&(n=u);for(var t=arguments.length,e=Array(t>1?t-1:0),o=1;o<t;o++)e[o-1]=arguments[o];return a.produce(n,(function(n){var t;return(t=i).call.apply(t,[r,n].concat(e))}))}}var f;if("function"!=typeof i&&n(6),void 0!==o&&"function"!=typeof o&&n(7),t(r)){var c=w(e),s=R(e,r,void 0),v=!0;try{f=i(s),v=!1}finally{v?g(c):O(c)}return"undefined"!=typeof Promise&&f instanceof Promise?f.then((function(n){return j(c,o),P(n,c)}),(function(n){throw g(c),n})):(j(c,o),P(f,c))}if(!r||"object"!=typeof r){if((f=i(r))===H)return;return void 0===f&&(f=r),e.F&&d(f,!0),f}n(21,r)},this.produceWithPatches=function(n,r){return"function"==typeof n?function(r){for(var t=arguments.length,i=Array(t>1?t-1:0),o=1;o<t;o++)i[o-1]=arguments[o];return e.produceWithPatches(r,(function(r){return n.apply(void 0,[r].concat(i))}))}:[e.produce(n,r,(function(n,r){t=n,i=r})),t,i];var t,i},"boolean"==typeof(null==r?void 0:r.useProxies)&&this.setUseProxies(r.useProxies),"boolean"==typeof(null==r?void 0:r.autoFreeze)&&this.setAutoFreeze(r.autoFreeze)}var i=e.prototype;return i.createDraft=function(e){t(e)||n(8),r(e)&&(e=D(e));var i=w(this),o=R(this,e,void 0);return o[Q].C=!0,O(i),o},i.finishDraft=function(r,t){var e=r&&r[Q]; true&&(e&&e.C||n(9),e.I&&n(10));var i=e.A;return j(i,t),P(void 0,i)},i.setAutoFreeze=function(n){this.F=n},i.setUseProxies=function(r){r&&!B&&n(20),this.O=r},i.applyPatches=function(n,t){var e;for(e=t.length-1;e>=0;e--){var i=t[e];if(0===i.path.length&&"replace"===i.op){n=i.value;break}}var o=b("Patches").$;return r(n)?o(n,t):this.produce(n,(function(n){return o(n,t.slice(e+1))}))},e}(),an=new un,fn=an.produce,cn=an.produceWithPatches.bind(an),sn=an.setAutoFreeze.bind(an),vn=an.setUseProxies.bind(an),pn=an.applyPatches.bind(an),ln=an.createDraft.bind(an),dn=an.finishDraft.bind(an);/* harmony default export */ __webpack_exports__["default"] = (fn);
+//# sourceMappingURL=immer.esm.js.map
+
 
 /***/ }),
 
@@ -13589,6 +13652,521 @@ __createBinding(exports, NeosContext_1, "useNeos");
 
 /***/ }),
 
+/***/ "../core/lib/application/LinkTypes/NodeTree/NodeTree.js":
+/*!**************************************************************!*\
+  !*** ../core/lib/application/LinkTypes/NodeTree/NodeTree.js ***!
+  \**************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __extends = undefined && undefined.__extends || function () {
+    var _extendStatics = function extendStatics(d, b) {
+        _extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function (d, b) {
+            d.__proto__ = b;
+        } || function (d, b) {
+            for (var p in b) {
+                if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
+            }
+        };
+        return _extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null) throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        _extendStatics(d, b);
+        function __() {
+            this.constructor = d;
+        }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+}();
+var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function get() {
+            return m[k];
+        } });
+} : function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+var __setModuleDefault = undefined && undefined.__setModuleDefault || (Object.create ? function (o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+} : function (o, v) {
+    o["default"] = v;
+});
+var __importStar = undefined && undefined.__importStar || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) {
+        if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    }__setModuleDefault(result, mod);
+    return result;
+};
+exports.__esModule = true;
+exports.NodeTree = void 0;
+var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
+var domain_1 = __webpack_require__(/*! ../../../domain */ "../core/lib/domain/index.js");
+var NodeTreeAdapter_1 = __webpack_require__(/*! ./NodeTreeAdapter */ "../core/lib/application/LinkTypes/NodeTree/NodeTreeAdapter.js");
+exports.NodeTree = new (function (_super) {
+    __extends(class_1, _super);
+    function class_1() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.id = 'Sitegeist.Archaeopteryx:NodeTree';
+        _this.isSuitableFor = function (props) {
+            var _a;
+            return Boolean((_a = props.link) === null || _a === void 0 ? void 0 : _a.uri.startsWith('node://'));
+        };
+        _this.getIcon = function () {
+            return React.createElement("div", null, "NODE TREE");
+        };
+        _this.getTitle = function () {
+            return 'Node Tree';
+        };
+        _this.getPreview = function () {
+            return React.createElement("div", null, "NODE TREE PREVIEW");
+        };
+        _this.getEditor = function () {
+            var value = domain_1.useEditorValue().value;
+            var update = domain_1.useEditorTransactions().update;
+            var onChange = React.useCallback(function (ev) {
+                return update(ev.target.value);
+            }, [update]);
+            return React.createElement(NodeTreeAdapter_1.NodeTreeAdapter, null);
+        };
+        return _this;
+    }
+    return class_1;
+}(domain_1.LinkType))();
+//# sourceMappingURL=NodeTree.js.map
+
+/***/ }),
+
+/***/ "../core/lib/application/LinkTypes/NodeTree/NodeTreeAdapter.js":
+/*!*********************************************************************!*\
+  !*** ../core/lib/application/LinkTypes/NodeTree/NodeTreeAdapter.js ***!
+  \*********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function get() {
+            return m[k];
+        } });
+} : function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+var __setModuleDefault = undefined && undefined.__setModuleDefault || (Object.create ? function (o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+} : function (o, v) {
+    o["default"] = v;
+});
+var __importStar = undefined && undefined.__importStar || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) {
+        if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    }__setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = undefined && undefined.__awaiter || function (thisArg, _arguments, P, generator) {
+    function adopt(value) {
+        return value instanceof P ? value : new P(function (resolve) {
+            resolve(value);
+        });
+    }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) {
+            try {
+                step(generator.next(value));
+            } catch (e) {
+                reject(e);
+            }
+        }
+        function rejected(value) {
+            try {
+                step(generator["throw"](value));
+            } catch (e) {
+                reject(e);
+            }
+        }
+        function step(result) {
+            result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+        }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = undefined && undefined.__generator || function (thisArg, body) {
+    var _ = { label: 0, sent: function sent() {
+            if (t[0] & 1) throw t[1];return t[1];
+        }, trys: [], ops: [] },
+        f,
+        y,
+        t,
+        g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function () {
+        return this;
+    }), g;
+    function verb(n) {
+        return function (v) {
+            return step([n, v]);
+        };
+    }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) {
+            try {
+                if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+                if (y = 0, t) op = [op[0] & 2, t.value];
+                switch (op[0]) {
+                    case 0:case 1:
+                        t = op;break;
+                    case 4:
+                        _.label++;return { value: op[1], done: false };
+                    case 5:
+                        _.label++;y = op[1];op = [0];continue;
+                    case 7:
+                        op = _.ops.pop();_.trys.pop();continue;
+                    default:
+                        if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
+                            _ = 0;continue;
+                        }
+                        if (op[0] === 3 && (!t || op[1] > t[0] && op[1] < t[3])) {
+                            _.label = op[1];break;
+                        }
+                        if (op[0] === 6 && _.label < t[1]) {
+                            _.label = t[1];t = op;break;
+                        }
+                        if (t && _.label < t[2]) {
+                            _.label = t[2];_.ops.push(op);break;
+                        }
+                        if (t[2]) _.ops.pop();
+                        _.trys.pop();continue;
+                }
+                op = body.call(thisArg, _);
+            } catch (e) {
+                op = [6, e];y = 0;
+            } finally {
+                f = t = 0;
+            }
+        }if (op[0] & 5) throw op[1];return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+var __read = undefined && undefined.__read || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o),
+        r,
+        ar = [],
+        e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) {
+            ar.push(r.value);
+        }
+    } catch (error) {
+        e = { error: error };
+    } finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        } finally {
+            if (e) throw e.error;
+        }
+    }
+    return ar;
+};
+var __values = undefined && undefined.__values || function (o) {
+    var s = typeof Symbol === "function" && Symbol.iterator,
+        m = s && o[s],
+        i = 0;
+    if (m) return m.call(o);
+    if (o && typeof o.length === "number") return {
+        next: function next() {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+};
+var __importDefault = undefined && undefined.__importDefault || function (mod) {
+    return mod && mod.__esModule ? mod : { "default": mod };
+};
+exports.__esModule = true;
+exports.NodeTreeAdapter = void 0;
+var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
+var immer_1 = __webpack_require__(/*! immer */ "../../node_modules/immer/dist/immer.esm.js");
+var react_ui_components_1 = __webpack_require__(/*! @neos-project/react-ui-components */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/react-ui-components/index.js");
+var neos_ui_backend_connector_1 = __importDefault(__webpack_require__(/*! @neos-project/neos-ui-backend-connector */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/neos-ui-backend-connector/index.js"));
+var acl_1 = __webpack_require__(/*! ../../../acl */ "../core/lib/acl/index.js");
+function adoptStartingPoint(startingPoint, referenceNode) {
+    var _a = __read((startingPoint !== null && startingPoint !== void 0 ? startingPoint : '').split('@'), 1),
+        startingPointPath = _a[0];
+    var _b = __read((referenceNode !== null && referenceNode !== void 0 ? referenceNode : '').split('@'), 2),
+        referenceNodePath = _b[0],
+        referenceNodeContext = _b[1];
+    if (startingPointPath && referenceNodePath && referenceNodeContext) {
+        return startingPointPath + "@" + referenceNodeContext;
+    } else if (referenceNodePath && referenceNodeContext) {
+        return referenceNodePath + "@" + referenceNodeContext;
+    } else {
+        return null;
+    }
+}
+function useOperation() {
+    var ids = React.useRef(0);
+    var _a = __read(React.useState(false), 2),
+        loading = _a[0],
+        setLoading = _a[1];
+    var _b = __read(React.useState(null), 2),
+        error = _b[0],
+        setError = _b[1];
+    function start() {
+        var id = ids.current++;
+        setLoading(true);
+    }
+    function fail(reason) {
+        setError(reason);
+        setLoading(false);
+    }
+    function succeed() {
+        setLoading(false);
+    }
+    return { loading: loading, error: error, start: start, fail: fail, succeed: succeed };
+}
+function useTree(startingPoint) {
+    var _this = this;
+    var neos = acl_1.useNeos();
+    var initialization = useOperation();
+    var _a = __read(React.useState({
+        nodesByContextPath: {},
+        rootNodeContextPath: null,
+        open: [],
+        loading: []
+    }), 2),
+        treeState = _a[0],
+        setTreeState = _a[1];
+    var toggle = React.useCallback(function (contextPath) {
+        return __awaiter(_this, void 0, void 0, function () {
+            var node, q, children, nodes_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!treeState.open.includes(contextPath)) return [3, 1];
+                        setTreeState(function (treeState) {
+                            return immer_1.produce(treeState, function (draft) {
+                                var e_1, _a;
+                                try {
+                                    for (var _b = __values(treeState.open.entries()), _c = _b.next(); !_c.done; _c = _b.next()) {
+                                        var _d = __read(_c.value, 2),
+                                            index = _d[0],
+                                            c = _d[1];
+                                        if (c === contextPath) {
+                                            draft.open.slice(index, 1);
+                                            break;
+                                        }
+                                    }
+                                } catch (e_1_1) {
+                                    e_1 = { error: e_1_1 };
+                                } finally {
+                                    try {
+                                        if (_c && !_c.done && (_a = _b["return"])) _a.call(_b);
+                                    } finally {
+                                        if (e_1) throw e_1.error;
+                                    }
+                                }
+                            });
+                        });
+                        return [3, 4];
+                    case 1:
+                        node = treeState.nodesByContextPath[contextPath];
+                        if (!node) return [3, 4];
+                        if (!node.children.every(function (c) {
+                            return Boolean(treeState.nodesByContextPath[c.contextPath]);
+                        })) return [3, 2];
+                        setTreeState(function (treeState) {
+                            return immer_1.produce(treeState, function (draft) {
+                                draft.open.push(contextPath);
+                            });
+                        });
+                        return [3, 4];
+                    case 2:
+                        q = neos_ui_backend_connector_1["default"].get().q;
+                        children = node.children.filter(function (c) {
+                            return !Boolean(treeState.nodesByContextPath[c.contextPath]);
+                        }).map(function (c) {
+                            return c.contextPath;
+                        });
+                        return [4, q(children).getForTree()];
+                    case 3:
+                        nodes_1 = _a.sent();
+                        setTreeState(function (treeState) {
+                            return immer_1.produce(treeState, function (draft) {
+                                var e_2, _a;
+                                try {
+                                    for (var nodes_2 = __values(nodes_1), nodes_2_1 = nodes_2.next(); !nodes_2_1.done; nodes_2_1 = nodes_2.next()) {
+                                        var node_1 = nodes_2_1.value;
+                                        draft.nodesByContextPath[node_1.contextPath] = node_1;
+                                    }
+                                } catch (e_2_1) {
+                                    e_2 = { error: e_2_1 };
+                                } finally {
+                                    try {
+                                        if (nodes_2_1 && !nodes_2_1.done && (_a = nodes_2["return"])) _a.call(nodes_2);
+                                    } finally {
+                                        if (e_2) throw e_2.error;
+                                    }
+                                }
+                                draft.open.push(contextPath);
+                            });
+                        });
+                        _a.label = 4;
+                    case 4:
+                        return [2];
+                }
+            });
+        });
+    }, [treeState]);
+    React.useEffect(function () {
+        (function () {
+            return __awaiter(_this, void 0, void 0, function () {
+                var siteNode, root, q, documentNode, nodes_3, err_1;
+                var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p;
+                return __generator(this, function (_q) {
+                    switch (_q.label) {
+                        case 0:
+                            siteNode = (_c = (_b = (_a = neos === null || neos === void 0 ? void 0 : neos.store.getState()) === null || _a === void 0 ? void 0 : _a.cr) === null || _b === void 0 ? void 0 : _b.nodes) === null || _c === void 0 ? void 0 : _c.siteNode;
+                            root = adoptStartingPoint(startingPoint, siteNode);
+                            if (!root) return [3, 4];
+                            q = neos_ui_backend_connector_1["default"].get().q;
+                            documentNode = (_f = (_e = (_d = neos === null || neos === void 0 ? void 0 : neos.store.getState()) === null || _d === void 0 ? void 0 : _d.cr) === null || _e === void 0 ? void 0 : _e.nodes) === null || _f === void 0 ? void 0 : _f.documentNode;
+                            initialization.start();
+                            _q.label = 1;
+                        case 1:
+                            _q.trys.push([1, 3,, 4]);
+                            return [4, q([root, documentNode]).neosUiDefaultNodes((_l = (_k = (_j = (_h = (_g = neos === null || neos === void 0 ? void 0 : neos.configuration) === null || _g === void 0 ? void 0 : _g.nodeTree) === null || _h === void 0 ? void 0 : _h.presets) === null || _j === void 0 ? void 0 : _j["default"]) === null || _k === void 0 ? void 0 : _k.baseNodeType) !== null && _l !== void 0 ? _l : 'Neos.Neos:Document', (_p = (_o = (_m = neos === null || neos === void 0 ? void 0 : neos.configuration) === null || _m === void 0 ? void 0 : _m.nodeTree) === null || _o === void 0 ? void 0 : _o.loadingDepth) !== null && _p !== void 0 ? _p : 4, [], []).getForTree()];
+                        case 2:
+                            nodes_3 = _q.sent();
+                            setTreeState(immer_1.produce(treeState, function (draft) {
+                                var e_3, _a;
+                                try {
+                                    for (var nodes_4 = __values(nodes_3), nodes_4_1 = nodes_4.next(); !nodes_4_1.done; nodes_4_1 = nodes_4.next()) {
+                                        var node = nodes_4_1.value;
+                                        draft.nodesByContextPath[node.contextPath] = node;
+                                    }
+                                } catch (e_3_1) {
+                                    e_3 = { error: e_3_1 };
+                                } finally {
+                                    try {
+                                        if (nodes_4_1 && !nodes_4_1.done && (_a = nodes_4["return"])) _a.call(nodes_4);
+                                    } finally {
+                                        if (e_3) throw e_3.error;
+                                    }
+                                }
+                                draft.rootNodeContextPath = root;
+                            }));
+                            initialization.succeed();
+                            return [3, 4];
+                        case 3:
+                            err_1 = _q.sent();
+                            initialization.fail(err_1);
+                            return [3, 4];
+                        case 4:
+                            return [2];
+                    }
+                });
+            });
+        })();
+    }, [neos]);
+    return {
+        treeState: treeState,
+        toggle: toggle,
+        loading: initialization.loading,
+        error: initialization.error
+    };
+}
+var NodeTreeAdapter = function NodeTreeAdapter() {
+    var _a;
+    var _b = useTree(),
+        loading = _b.loading,
+        error = _b.error,
+        treeState = _b.treeState,
+        toggle = _b.toggle;
+    var handleToggle = React.useCallback(function (node) {
+        toggle(node.contextPath);
+    }, [toggle]);
+    var handleClick = React.useCallback(function (node) {
+        toggle(node.contextPath);
+    }, [toggle]);
+    if (loading) {
+        return React.createElement("div", null, "Loading...");
+    } else if (error) {
+        console.warn('[Sitegeist.Archaeopteryx]: Could not load node tree, because:');
+        console.error(error);
+        return React.createElement("div", null, "An error occurred :(");
+    } else {
+        var rootNode = treeState.nodesByContextPath[(_a = treeState.rootNodeContextPath) !== null && _a !== void 0 ? _a : ''];
+        if (rootNode) {
+            return React.createElement(react_ui_components_1.Tree, null, React.createElement(NodeAdapter, { node: rootNode, tree: treeState, onToggle: handleToggle, onClick: handleClick }));
+        } else {
+            return null;
+        }
+    }
+};
+exports.NodeTreeAdapter = NodeTreeAdapter;
+function useNodeType(nodeTypeName) {
+    var _a;
+    var neos = acl_1.useNeos();
+    var nodeTypesRegistry = neos === null || neos === void 0 ? void 0 : neos.globalRegistry.get('@neos-project/neos-ui-contentrepository');
+    return (_a = nodeTypesRegistry === null || nodeTypesRegistry === void 0 ? void 0 : nodeTypesRegistry.get(nodeTypeName)) !== null && _a !== void 0 ? _a : null;
+}
+var NodeAdapter = function NodeAdapter(props) {
+    var _a;
+    var nodeType = useNodeType(props.node.nodeType);
+    console.log('nodeType', nodeType);
+    var handleNodeToggle = React.useCallback(function () {
+        props.onToggle(props.node);
+    }, [props.node]);
+    var handleNodeClick = React.useCallback(function () {
+        props.onClick(props.node);
+    }, [props.node]);
+    return React.createElement(react_ui_components_1.Tree.Node, null, React.createElement(react_ui_components_1.Tree.Node.Header, { labelIdentifier: 'labelIdentifier', id: props.node.contextPath, hasChildren: props.node.children.length > 0, nodeDndType: undefined, isLastChild: true, isCollapsed: !props.tree.open.includes(props.node.contextPath), isActive: false, isFocused: false, isLoading: false, isDirty: false, isHidden: "$get('properties._hidden', node)", isHiddenInIndex: "$get('properties._hiddenInIndex', node) || this.isIntermediate()", isDragging: false, hasError: false, label: props.node.label, icon: (_a = nodeType === null || nodeType === void 0 ? void 0 : nodeType.ui) === null || _a === void 0 ? void 0 : _a.icon, customIconComponent: undefined, iconLabel: 'this.getNodeTypeLabel()', level: 1, onToggle: handleNodeToggle, onClick: handleNodeClick, dragAndDropContext: undefined, dragForbidden: true, title: props.node.label }));
+};
+//# sourceMappingURL=NodeTreeAdapter.js.map
+
+/***/ }),
+
+/***/ "../core/lib/application/LinkTypes/NodeTree/index.js":
+/*!***********************************************************!*\
+  !*** ../core/lib/application/LinkTypes/NodeTree/index.js ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function get() {
+            return m[k];
+        } });
+} : function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+exports.__esModule = true;
+exports.NodeTree = void 0;
+var NodeTree_1 = __webpack_require__(/*! ./NodeTree */ "../core/lib/application/LinkTypes/NodeTree/NodeTree.js");
+__createBinding(exports, NodeTree_1, "NodeTree");
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
 /***/ "../core/lib/application/LinkTypes/WebLink/WebLink.js":
 /*!************************************************************!*\
   !*** ../core/lib/application/LinkTypes/WebLink/WebLink.js ***!
@@ -13736,9 +14314,11 @@ var __createBinding = undefined && undefined.__createBinding || (Object.create ?
     o[k2] = m[k];
 });
 exports.__esModule = true;
-exports.WebLink = void 0;
+exports.NodeTree = exports.WebLink = void 0;
 var WebLink_1 = __webpack_require__(/*! ./WebLink */ "../core/lib/application/LinkTypes/WebLink/index.js");
 __createBinding(exports, WebLink_1, "WebLink");
+var NodeTree_1 = __webpack_require__(/*! ./NodeTree */ "../core/lib/application/LinkTypes/NodeTree/index.js");
+__createBinding(exports, NodeTree_1, "NodeTree");
 //# sourceMappingURL=index.js.map
 
 /***/ }),
@@ -13775,6 +14355,28 @@ var __importStar = undefined && undefined.__importStar || function (mod) {
     }__setModuleDefault(result, mod);
     return result;
 };
+var __read = undefined && undefined.__read || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o),
+        r,
+        ar = [],
+        e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) {
+            ar.push(r.value);
+        }
+    } catch (error) {
+        e = { error: error };
+    } finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        } finally {
+            if (e) throw e.error;
+        }
+    }
+    return ar;
+};
 exports.__esModule = true;
 exports.Modal = void 0;
 var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
@@ -13788,7 +14390,7 @@ var Modal = function Modal() {
         dismiss = _b.dismiss,
         apply = _b.apply;
     var linkTypes = domain_1.useLinkTypes();
-    var _c = React.useState(linkTypes[0]),
+    var _c = __read(React.useState(linkTypes[0]), 2),
         activeLinkType = _c[0],
         setActiveLinkType = _c[1];
     var Editor = activeLinkType.getEditor;
@@ -13919,6 +14521,28 @@ var __importStar = undefined && undefined.__importStar || function (mod) {
     }__setModuleDefault(result, mod);
     return result;
 };
+var __read = undefined && undefined.__read || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o),
+        r,
+        ar = [],
+        e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) {
+            ar.push(r.value);
+        }
+    } catch (error) {
+        e = { error: error };
+    } finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        } finally {
+            if (e) throw e.error;
+        }
+    }
+    return ar;
+};
 exports.__esModule = true;
 exports.useEditorTransactions = exports.useEditorValue = exports.useEditorState = exports.EditorContext = exports.createEditor = exports.editorReducer = void 0;
 var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
@@ -14025,7 +14649,7 @@ function useEditorState() {
     var _a = React.useContext(exports.EditorContext),
         state$ = _a.state$,
         initialState = _a.initialState;
-    var _b = React.useState(initialState),
+    var _b = __read(React.useState(initialState), 2),
         state = _b[0],
         setState = _b[1];
     React.useEffect(function () {
@@ -14145,6 +14769,19 @@ var __importStar = undefined && undefined.__importStar || function (mod) {
     }__setModuleDefault(result, mod);
     return result;
 };
+var __values = undefined && undefined.__values || function (o) {
+    var s = typeof Symbol === "function" && Symbol.iterator,
+        m = s && o[s],
+        i = 0;
+    if (m) return m.call(o);
+    if (o && typeof o.length === "number") return {
+        next: function next() {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+};
 exports.__esModule = true;
 exports.useLinkTypeForUri = exports.useLinkTypes = exports.LinkType = void 0;
 var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
@@ -14169,10 +14806,21 @@ exports.useLinkTypes = useLinkTypes;
 function useLinkTypeForUri(uri) {
     var linkTypes = useLinkTypes();
     var result = React.useMemo(function () {
-        for (var _i = 0, linkTypes_1 = linkTypes; _i < linkTypes_1.length; _i++) {
-            var linkType = linkTypes_1[_i];
-            if (linkType.isSuitableFor({ link: { uri: uri } })) {
-                return linkType;
+        var e_1, _a;
+        try {
+            for (var linkTypes_1 = __values(linkTypes), linkTypes_1_1 = linkTypes_1.next(); !linkTypes_1_1.done; linkTypes_1_1 = linkTypes_1.next()) {
+                var linkType = linkTypes_1_1.value;
+                if (linkType.isSuitableFor({ link: { uri: uri } })) {
+                    return linkType;
+                }
+            }
+        } catch (e_1_1) {
+            e_1 = { error: e_1_1 };
+        } finally {
+            try {
+                if (linkTypes_1_1 && !linkTypes_1_1.done && (_a = linkTypes_1["return"])) _a.call(linkTypes_1);
+            } finally {
+                if (e_1) throw e_1.error;
             }
         }
         return null;
@@ -14660,31 +15308,45 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-(0, _neosUiExtensibility2.default)('@sitegeist/archaeopteryx-plugin', {}, function (globalRegistry) {
-    var editor = (0, _archaeopteryxCore.createEditor)();
+function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
-    registerLinkTypes(globalRegistry);
-    registerContainers(globalRegistry, editor);
-    registerInspectorEditors(globalRegistry, editor);
-    registerRteFormatter(globalRegistry, editor);
+(0, _neosUiExtensibility2.default)('@sitegeist/archaeopteryx-plugin', {}, function (globalRegistry, _ref) {
+    var store = _ref.store,
+        configuration = _ref.configuration,
+        deps = _objectWithoutProperties(_ref, ['store', 'configuration']);
+
+    console.log(deps);
+    var editor = (0, _archaeopteryxCore.createEditor)();
+    var neosContext = { globalRegistry: globalRegistry, store: store, configuration: configuration };
+
+    registerLinkTypes(neosContext);
+    registerContainers(neosContext, editor);
+    registerInspectorEditors(neosContext, editor);
+    registerRteFormatter(neosContext, editor);
 });
 
-function registerLinkTypes(globalRegistry) {
+function registerLinkTypes(_ref2) {
+    var globalRegistry = _ref2.globalRegistry;
+
     var linkTypeRegistry = new _neosUiExtensibility.SynchronousRegistry('\n        # Sitegeist.Archaeopteryx LinkType Registry\n    ');
 
     globalRegistry.set('@sitegeist/archaeopteryx/link-types', linkTypeRegistry);
 
     linkTypeRegistry.set('Sitegeist.Archaeopteryx:WebLink', _archaeopteryxCore.LinkTypes.WebLink);
+
+    linkTypeRegistry.set('Sitegeist.Archaeopteryx:NodeTree', _archaeopteryxCore.LinkTypes.NodeTree);
 }
 
-function registerInspectorEditors(globalRegistry, editor) {
+function registerInspectorEditors(neosContext, editor) {
+    var globalRegistry = neosContext.globalRegistry;
+
     var editorsRegistry = globalRegistry.get('inspector').get('editors');
 
     editorsRegistry.set('Sitegeist.Archaeopteryx/Inspector/Editors/LinkEditor', {
         component: function component(props) {
             return React.createElement(
                 _archaeopteryxCore.NeosContext.Provider,
-                { value: { globalRegistry: globalRegistry } },
+                { value: neosContext },
                 React.createElement(
                     _archaeopteryxCore.EditorContext.Provider,
                     { value: editor },
@@ -14695,13 +15357,15 @@ function registerInspectorEditors(globalRegistry, editor) {
     });
 }
 
-function registerContainers(globalRegistry, editor) {
+function registerContainers(neosContext, editor) {
+    var globalRegistry = neosContext.globalRegistry;
+
     var containersRegistry = globalRegistry.get('containers');
 
     containersRegistry.set('Modals/Sitegeist.Archaeopteryx', function (props) {
         return React.createElement(
             _archaeopteryxCore.NeosContext.Provider,
-            { value: { globalRegistry: globalRegistry } },
+            { value: neosContext },
             React.createElement(
                 _archaeopteryxCore.EditorContext.Provider,
                 { value: editor },
@@ -14711,7 +15375,9 @@ function registerContainers(globalRegistry, editor) {
     });
 }
 
-function registerRteFormatter(globalRegistry, editor) {
+function registerRteFormatter(neosContext, editor) {
+    var globalRegistry = neosContext.globalRegistry;
+
     var ckeditor5Registry = globalRegistry.get('ckEditor5');
     if (!ckeditor5Registry) {
         console.warn('[Sitegeist.Archaeopteryx]: Could not find ckeditor5 registry.');
@@ -14731,7 +15397,7 @@ function registerRteFormatter(globalRegistry, editor) {
         component: function component(props) {
             return React.createElement(
                 _archaeopteryxCore.NeosContext.Provider,
-                { value: { globalRegistry: globalRegistry } },
+                { value: neosContext },
                 React.createElement(
                     _archaeopteryxCore.EditorContext.Provider,
                     { value: editor },
