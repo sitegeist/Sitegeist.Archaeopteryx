@@ -3,13 +3,15 @@ import manifest, {SynchronousRegistry} from '@neos-project/neos-ui-extensibility
 
 import {NeosContext, LinkTypes, Modal, createEditor, EditorContext} from '@sitegeist/archaeopteryx-core';
 import {InspectorEditor} from '@sitegeist/archaeopteryx-inspector-editor';
+import {LinkButton} from '@sitegeist/archaeopteryx-rte-formatter';
 
 manifest('@sitegeist/archaeopteryx-plugin', {}, globalRegistry => {
     const editor = createEditor();
 
     registerLinkTypes(globalRegistry);
-    registerInspectorEditors(globalRegistry, editor);
     registerContainers(globalRegistry, editor);
+    registerInspectorEditors(globalRegistry, editor);
+    registerRteFormatter(globalRegistry, editor);
 });
 
 function registerLinkTypes(globalRegistry) {
@@ -55,4 +57,32 @@ function registerContainers(globalRegistry, editor) {
             </NeosContext.Provider>
         )
     );
+}
+
+function registerRteFormatter(globalRegistry, editor) {
+    const ckeditor5Registry = globalRegistry.get('ckEditor5');
+    if (!ckeditor5Registry) {
+        console.warn('[Sitegeist.Archaeopteryx]: Could not find ckeditor5 registry.');
+        console.warn('[Sitegeist.Archaeopteryx]: Skipping registration of RTE formatter...');
+        return;
+    }
+
+    const richtextToolbarRegistry = ckeditor5Registry.get('richtextToolbar');
+    if (!richtextToolbarRegistry) {
+        console.warn('[Sitegeist.Archaeopteryx]: Could not find ckeditor5 richtextToolbar registry.');
+        console.warn('[Sitegeist.Archaeopteryx]: Skipping registration of RTE formatter...');
+        return;
+    }
+
+    richtextToolbarRegistry.set('link', {
+        commandName: 'link',
+        component: props => (
+            <NeosContext.Provider value={{globalRegistry}}>
+                <EditorContext.Provider value={editor}>
+                    {React.createElement(LinkButton, props)}
+                </EditorContext.Provider>
+            </NeosContext.Provider>
+        ),
+        isVisible: config => Boolean(config && config.formatting && config.formatting.a)
+    });
 }

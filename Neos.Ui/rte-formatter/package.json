@@ -1,5 +1,18 @@
 {
     "name": "@sitegeist/archaeopteryx-rte-formatter",
     "license": "MIT",
-    "version": "0.0.0"
+    "version": "0.0.0",
+    "main": "./lib/index.js",
+    "scripts": {
+        "build": "tsc",
+        "watch": "tsc -w"
+    },
+    "dependencies": {
+        "@neos-project/react-ui-components": "^7.0.2",
+        "@sitegeist/archaeopteryx-core": "^0.0.0",
+        "react": "^17.0.2"
+    },
+    "devDependencies": {
+        "typescript": "^4.2.4"
+    }
 }
