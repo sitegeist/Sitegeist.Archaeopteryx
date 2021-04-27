@@ -4,8 +4,8 @@
     "version": "0.0.0",
     "main": "./lib/index.js",
     "scripts": {
-        "build": "tsc",
-        "watch": "tsc -w"
+        "build": "tsc -p tsconfig.build.json",
+        "watch": "tsc -w -p tsconfig.build.json"
     },
     "dependencies": {
         "@neos-project/react-ui-components": "^7.0.2",

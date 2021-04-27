@@ -4,5 +4,6 @@
         "declaration": true,
         "outDir": "./lib",
         "module": "CommonJS"
-    }
+    },
+    "include": ["./src/**/*.*"]
 }
