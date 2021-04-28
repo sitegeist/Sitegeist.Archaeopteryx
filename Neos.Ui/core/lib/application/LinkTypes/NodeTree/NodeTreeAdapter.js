@@ -99,6 +99,7 @@ exports.__esModule = true;
 exports.NodeTreeAdapter = void 0;
 var React = __importStar(require("react"));
 var immer_1 = require("immer");
+var react_use_1 = require("react-use");
 var react_ui_components_1 = require("@neos-project/react-ui-components");
 var neos_ui_backend_connector_1 = __importDefault(require("@neos-project/neos-ui-backend-connector"));
 var acl_1 = require("../../../acl");
@@ -169,16 +170,18 @@ function useOperation() {
 }
 function useTree(startingPoint, selectedPath) {
     var _this = this;
-    var _a, _b, _c, _d, _e, _f, _g, _h;
-    console.log('useTree', startingPoint, selectedPath);
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
     var neos = acl_1.useNeos();
     var initialization = useOperation();
-    var _j = __read(React.useState({
+    var _k = __read(React.useState({
         nodesByContextPath: {},
+        filteredNodesByContextPath: null,
+        searchTerm: null,
+        nodeTypeFilter: null,
         rootNodeContextPath: null,
         open: [],
         loading: []
-    }), 2), treeState = _j[0], setTreeState = _j[1];
+    }), 2), treeState = _k[0], setTreeState = _k[1];
     var baseNodeType = (_e = (_d = (_c = (_b = (_a = neos === null || neos === void 0 ? void 0 : neos.configuration) === null || _a === void 0 ? void 0 : _a.nodeTree) === null || _b === void 0 ? void 0 : _b.presets) === null || _c === void 0 ? void 0 : _c["default"]) === null || _d === void 0 ? void 0 : _d.baseNodeType) !== null && _e !== void 0 ? _e : 'Neos.Neos:Document';
     var loadingDepth = (_h = (_g = (_f = neos === null || neos === void 0 ? void 0 : neos.configuration) === null || _f === void 0 ? void 0 : _f.nodeTree) === null || _g === void 0 ? void 0 : _g.loadingDepth) !== null && _h !== void 0 ? _h : 4;
     var filterNodes = function (nodes) { return nodes.map(function (node) { return (__assign(__assign({}, node), { children: node.children.filter(function (_a) {
@@ -278,6 +281,11 @@ function useTree(startingPoint, selectedPath) {
             }
         });
     }); };
+    var search = function (searchTerm) {
+        setTreeState(function (treeState) { return immer_1.produce(treeState, function (draft) {
+            draft.searchTerm = searchTerm;
+        }); });
+    };
     React.useEffect(function () {
         (function () { return __awaiter(_this, void 0, void 0, function () {
             var siteNode, root, offset, q, documentNode, selected, toggled_1, nodes_2, err_1;
@@ -331,36 +339,95 @@ function useTree(startingPoint, selectedPath) {
             });
         }); })();
     }, [neos, startingPoint, selectedPath]);
+    react_use_1.useDebounce(function () {
+        var _a, _b, _c;
+        var siteNode = (_c = (_b = (_a = neos === null || neos === void 0 ? void 0 : neos.store.getState()) === null || _a === void 0 ? void 0 : _a.cr) === null || _b === void 0 ? void 0 : _b.nodes) === null || _c === void 0 ? void 0 : _c.siteNode;
+        var root = adoptContextPath(startingPoint, siteNode);
+        if (root && (treeState.searchTerm || treeState.nodeTypeFilter)) {
+            (function () { return __awaiter(_this, void 0, void 0, function () {
+                var q, nodes_3, err_2;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            console.log('search', treeState.searchTerm);
+                            q = neos_ui_backend_connector_1["default"].get().q;
+                            initialization.start();
+                            _a.label = 1;
+                        case 1:
+                            _a.trys.push([1, 3, , 4]);
+                            return [4, q(root).search(treeState.searchTerm, treeState.nodeTypeFilter)
+                                    .getForTreeWithParents()];
+                        case 2:
+                            nodes_3 = _a.sent();
+                            setTreeState(immer_1.produce(treeState, function (draft) {
+                                var e_6, _a;
+                                draft.filteredNodesByContextPath = {};
+                                try {
+                                    for (var _b = __values(filterNodes(nodes_3)), _c = _b.next(); !_c.done; _c = _b.next()) {
+                                        var node = _c.value;
+                                        draft.filteredNodesByContextPath[node.contextPath] = node;
+                                    }
+                                }
+                                catch (e_6_1) { e_6 = { error: e_6_1 }; }
+                                finally {
+                                    try {
+                                        if (_c && !_c.done && (_a = _b["return"])) _a.call(_b);
+                                    }
+                                    finally { if (e_6) throw e_6.error; }
+                                }
+                            }));
+                            initialization.succeed();
+                            return [3, 4];
+                        case 3:
+                            err_2 = _a.sent();
+                            initialization.fail(err_2);
+                            return [3, 4];
+                        case 4: return [2];
+                    }
+                });
+            }); })();
+        }
+        else {
+            setTreeState(immer_1.produce(treeState, function (draft) {
+                draft.filteredNodesByContextPath = null;
+            }));
+        }
+    }, 500, [neos, startingPoint, selectedPath, treeState.searchTerm, treeState.nodeTypeFilter]);
     return {
-        treeState: treeState,
+        treeState: __assign(__assign({}, treeState), { nodesByContextPath: (_j = treeState.filteredNodesByContextPath) !== null && _j !== void 0 ? _j : treeState.nodesByContextPath }),
         toggle: toggle,
+        search: search,
         loading: initialization.loading,
         error: initialization.error
     };
 }
 var NodeTreeAdapter = function (props) {
-    var _a, _b;
-    var _c = useTree(undefined, (_a = props.selected) === null || _a === void 0 ? void 0 : _a.contextPath), loading = _c.loading, error = _c.error, treeState = _c.treeState, toggle = _c.toggle;
+    var _a, _b, _c;
+    var _d = useTree(undefined, (_a = props.selected) === null || _a === void 0 ? void 0 : _a.contextPath), loading = _d.loading, error = _d.error, treeState = _d.treeState, toggle = _d.toggle, search = _d.search;
     var handleToggle = function (node) { return toggle(node.contextPath); };
     var handleClick = function (node) { return props.onSelect(node); };
+    var treeView;
     if (loading) {
-        return (React.createElement("div", null, "Loading..."));
+        treeView = (React.createElement("div", null, "Loading..."));
     }
     else if (error) {
         console.warn('[Sitegeist.Archaeopteryx]: Could not load node tree, because:');
         console.error(error);
-        return (React.createElement("div", null, "An error occurred :("));
+        treeView = (React.createElement("div", null, "An error occurred :("));
     }
     else {
         var rootNode = treeState.nodesByContextPath[(_b = treeState.rootNodeContextPath) !== null && _b !== void 0 ? _b : ''];
         if (rootNode) {
-            return (React.createElement(react_ui_components_1.Tree, null,
+            treeView = (React.createElement(react_ui_components_1.Tree, null,
                 React.createElement(NodeAdapter, { selected: props.selected, node: rootNode, tree: treeState, level: 1, onToggle: handleToggle, onClick: handleClick })));
         }
         else {
-            return null;
+            treeView = null;
         }
     }
+    return (React.createElement(React.Fragment, null,
+        React.createElement("input", { type: "text", onChange: function (ev) { return search(ev.target.value || null); }, value: (_c = treeState.searchTerm) !== null && _c !== void 0 ? _c : '' }),
+        treeView));
 };
 exports.NodeTreeAdapter = NodeTreeAdapter;
 function useNodeType(nodeTypeName) {

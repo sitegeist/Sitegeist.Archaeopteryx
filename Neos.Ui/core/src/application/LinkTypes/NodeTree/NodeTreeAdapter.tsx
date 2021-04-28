@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {produce} from 'immer';
+import {useDebounce} from 'react-use';
 
 import {Tree} from '@neos-project/react-ui-components';
 import backend from '@neos-project/neos-ui-backend-connector';
@@ -9,6 +10,11 @@ interface ITreeState {
     nodesByContextPath: {
         [contextPath: string]: INode
     }
+    filteredNodesByContextPath: null | {
+        [contextPath: string]: INode
+    }
+    searchTerm: null | string
+    nodeTypeFilter: null | string
     rootNodeContextPath: null | string
     open: string[]
     loading: string[]
@@ -96,11 +102,13 @@ function useOperation() {
 }
 
 function useTree(startingPoint?: string, selectedPath?: string) {
-    console.log('useTree', startingPoint, selectedPath);
     const neos = useNeos();
     const initialization = useOperation();
     const [treeState, setTreeState] = React.useState<ITreeState>({
         nodesByContextPath: {},
+        filteredNodesByContextPath: null,
+        searchTerm: null,
+        nodeTypeFilter: null,
         rootNodeContextPath: null,
         open: [],
         loading: []
@@ -173,6 +181,12 @@ function useTree(startingPoint?: string, selectedPath?: string) {
         }
     };
 
+    const search = (searchTerm: null | string) => {
+        setTreeState(treeState => produce(treeState, draft => {
+            draft.searchTerm = searchTerm;
+        }));
+    };
+
     React.useEffect(() => {
         (async () => {
             const siteNode = neos?.store.getState()?.cr?.nodes?.siteNode;
@@ -214,9 +228,47 @@ function useTree(startingPoint?: string, selectedPath?: string) {
         })();
     }, [neos, startingPoint, selectedPath]);
 
+    useDebounce(() => {
+        const siteNode = neos?.store.getState()?.cr?.nodes?.siteNode;
+        const root = adoptContextPath(startingPoint, siteNode);
+
+        if (root && (treeState.searchTerm || treeState.nodeTypeFilter)) {
+            (async () => {
+                console.log('search', treeState.searchTerm);
+                const {q} = backend.get();
+
+                initialization.start();
+                try {
+                    const nodes = await q(root).search(treeState.searchTerm, treeState.nodeTypeFilter)
+                        .getForTreeWithParents();
+
+                    setTreeState(produce(treeState, draft => {
+                        draft.filteredNodesByContextPath = {};
+                        for (const node of filterNodes(nodes)) {
+                            draft.filteredNodesByContextPath[node.contextPath] = node;
+                        }
+                    }));
+
+                    initialization.succeed();
+                } catch (err) {
+                    initialization.fail(err);
+                }
+            })();
+        } else {
+            setTreeState(produce(treeState, draft => {
+                draft.filteredNodesByContextPath = null;
+            }));
+        }
+    }, 500, [neos, startingPoint, selectedPath, treeState.searchTerm, treeState.nodeTypeFilter]);
+
     return {
-        treeState,
+        treeState: {
+            ...treeState,
+            nodesByContextPath: treeState.filteredNodesByContextPath
+                ?? treeState.nodesByContextPath
+        },
         toggle,
+        search,
         loading: initialization.loading,
         error: initialization.error
     };
@@ -228,24 +280,25 @@ interface Props {
 }
 
 export const NodeTreeAdapter: React.FC<Props> = props => {
-    const {loading, error, treeState, toggle} = useTree(undefined, props.selected?.contextPath);
+    const {loading, error, treeState, toggle, search} = useTree(undefined, props.selected?.contextPath);
     const handleToggle = (node: INode) => toggle(node.contextPath);
     const handleClick = (node: INode) => props.onSelect(node);
 
+    let treeView;
     if (loading) {
-        return (
+        treeView = (
             <div>Loading...</div>
         );
     } else if (error) {
         console.warn('[Sitegeist.Archaeopteryx]: Could not load node tree, because:');
         console.error(error);
-        return (
+        treeView = (
             <div>An error occurred :(</div>
         );
     } else {
         const rootNode = treeState.nodesByContextPath[treeState.rootNodeContextPath ?? ''];
         if (rootNode) {
-            return (
+            treeView = (
                 <Tree>
                     <NodeAdapter
                         selected={props.selected}
@@ -258,9 +311,20 @@ export const NodeTreeAdapter: React.FC<Props> = props => {
                 </Tree>
             )
         } else {
-            return null;
+            treeView = null;
         }
     }
+
+    return (
+        <>
+            <input
+                type="text"
+                onChange={ev => search(ev.target.value || null)}
+                value={treeState.searchTerm ?? ''}
+                />
+            {treeView}
+        </>
+    )
 };
 
 function useNodeType(nodeTypeName: string) {

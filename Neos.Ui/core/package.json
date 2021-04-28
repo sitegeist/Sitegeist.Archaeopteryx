@@ -13,6 +13,7 @@
         "immer": "^9.0.2",
         "react": "^17.0.2",
         "react-dom": "^17.0.2",
+        "react-use": "^17.2.4",
         "rxjs": "^6.6.7",
         "typesafe-actions": "^5.1.0",
         "wonka": "^4.0.15"
