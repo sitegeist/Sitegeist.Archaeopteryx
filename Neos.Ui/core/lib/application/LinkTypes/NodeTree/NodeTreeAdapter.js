@@ -286,6 +286,11 @@ function useTree(startingPoint, selectedPath) {
             draft.searchTerm = searchTerm;
         }); });
     };
+    var filter = function (nodeTypeName) {
+        setTreeState(function (treeState) { return immer_1.produce(treeState, function (draft) {
+            draft.nodeTypeFilter = nodeTypeName;
+        }); });
+    };
     React.useEffect(function () {
         (function () { return __awaiter(_this, void 0, void 0, function () {
             var siteNode, root, offset, q, documentNode, selected, toggled_1, nodes_2, err_1;
@@ -362,6 +367,10 @@ function useTree(startingPoint, selectedPath) {
                             setTreeState(immer_1.produce(treeState, function (draft) {
                                 var e_6, _a;
                                 draft.filteredNodesByContextPath = {};
+                                if (treeState.rootNodeContextPath) {
+                                    draft.filteredNodesByContextPath[treeState.rootNodeContextPath] =
+                                        treeState.nodesByContextPath[treeState.rootNodeContextPath];
+                                }
                                 try {
                                     for (var _b = __values(filterNodes(nodes_3)), _c = _b.next(); !_c.done; _c = _b.next()) {
                                         var node = _c.value;
@@ -397,13 +406,15 @@ function useTree(startingPoint, selectedPath) {
         treeState: __assign(__assign({}, treeState), { nodesByContextPath: (_j = treeState.filteredNodesByContextPath) !== null && _j !== void 0 ? _j : treeState.nodesByContextPath }),
         toggle: toggle,
         search: search,
+        filter: filter,
+        isFiltered: Boolean(treeState.filteredNodesByContextPath),
         loading: initialization.loading,
         error: initialization.error
     };
 }
 var NodeTreeAdapter = function (props) {
     var _a, _b, _c;
-    var _d = useTree(undefined, (_a = props.selected) === null || _a === void 0 ? void 0 : _a.contextPath), loading = _d.loading, error = _d.error, treeState = _d.treeState, toggle = _d.toggle, search = _d.search;
+    var _d = useTree(undefined, (_a = props.selected) === null || _a === void 0 ? void 0 : _a.contextPath), loading = _d.loading, error = _d.error, treeState = _d.treeState, toggle = _d.toggle, search = _d.search, filter = _d.filter, isFiltered = _d.isFiltered;
     var handleToggle = function (node) { return toggle(node.contextPath); };
     var handleClick = function (node) { return props.onSelect(node); };
     var treeView;
@@ -419,7 +430,7 @@ var NodeTreeAdapter = function (props) {
         var rootNode = treeState.nodesByContextPath[(_b = treeState.rootNodeContextPath) !== null && _b !== void 0 ? _b : ''];
         if (rootNode) {
             treeView = (React.createElement(react_ui_components_1.Tree, null,
-                React.createElement(NodeAdapter, { selected: props.selected, node: rootNode, tree: treeState, level: 1, onToggle: handleToggle, onClick: handleClick })));
+                React.createElement(NodeAdapter, { selected: props.selected, node: rootNode, tree: treeState, level: 1, isFiltered: isFiltered, onToggle: handleToggle, onClick: handleClick })));
         }
         else {
             treeView = null;
@@ -427,6 +438,7 @@ var NodeTreeAdapter = function (props) {
     }
     return (React.createElement(React.Fragment, null,
         React.createElement("input", { type: "text", onChange: function (ev) { return search(ev.target.value || null); }, value: (_c = treeState.searchTerm) !== null && _c !== void 0 ? _c : '' }),
+        React.createElement(NodeTypeFilter, { value: treeState.nodeTypeFilter, onSelect: function (nodeType) { var _a; return filter((_a = nodeType === null || nodeType === void 0 ? void 0 : nodeType.name) !== null && _a !== void 0 ? _a : null); } }),
         treeView));
 };
 exports.NodeTreeAdapter = NodeTreeAdapter;
@@ -436,12 +448,18 @@ function useNodeType(nodeTypeName) {
     var nodeTypesRegistry = neos === null || neos === void 0 ? void 0 : neos.globalRegistry.get('@neos-project/neos-ui-contentrepository');
     return (_a = nodeTypesRegistry === null || nodeTypesRegistry === void 0 ? void 0 : nodeTypesRegistry.get(nodeTypeName)) !== null && _a !== void 0 ? _a : null;
 }
+function useNodeTypes(baseNodeTypeName) {
+    var _a;
+    var neos = acl_1.useNeos();
+    var nodeTypesRegistry = neos === null || neos === void 0 ? void 0 : neos.globalRegistry.get('@neos-project/neos-ui-contentrepository');
+    return (_a = nodeTypesRegistry === null || nodeTypesRegistry === void 0 ? void 0 : nodeTypesRegistry.getSubTypesOf(baseNodeTypeName).map(function (nodeTypeName) { return nodeTypesRegistry === null || nodeTypesRegistry === void 0 ? void 0 : nodeTypesRegistry.get(nodeTypeName); }).filter(function (n) { return n; })) !== null && _a !== void 0 ? _a : [];
+}
 var NodeAdapter = function (props) {
     var _a, _b, _c;
     var nodeType = useNodeType(props.node.nodeType);
     var handleNodeToggle = function () { return props.onToggle(props.node); };
     var handleNodeClick = function () { return props.onClick(props.node); };
-    var isCollapsed = !props.tree.open.includes(props.node.contextPath);
+    var isCollapsed = !props.tree.open.includes(props.node.contextPath) && !props.isFiltered;
     console.log('node', props.node);
     return (React.createElement(react_ui_components_1.Tree.Node, null,
         React.createElement(react_ui_components_1.Tree.Node.Header, { labelIdentifier: 'labelIdentifier', id: props.node.contextPath, hasChildren: props.node.children.length > 0, nodeDndType: undefined, isLastChild: true, isCollapsed: isCollapsed, isActive: ((_a = props.selected) === null || _a === void 0 ? void 0 : _a.contextPath) === props.node.contextPath, isFocused: ((_b = props.selected) === null || _b === void 0 ? void 0 : _b.contextPath) === props.node.contextPath, isLoading: props.tree.loading.includes(props.node.contextPath), isDirty: false, isHidden: props.node.properties._hidden, isHiddenInIndex: props.node.properties._hiddenInIndex, isDragging: false, hasError: false, label: props.node.label, icon: (_c = nodeType === null || nodeType === void 0 ? void 0 : nodeType.ui) === null || _c === void 0 ? void 0 : _c.icon, customIconComponent: undefined, iconLabel: 'this.getNodeTypeLabel()', level: props.level, onToggle: handleNodeToggle, onClick: handleNodeClick, dragAndDropContext: undefined, dragForbidden: true, title: props.node.label }),
@@ -449,5 +467,18 @@ var NodeAdapter = function (props) {
             .map(function (child) { return props.tree.nodesByContextPath[child.contextPath]; })
             .filter(function (n) { return n; })
             .map(function (node) { return (React.createElement(NodeAdapter, __assign({}, props, { node: node, level: props.level + 1 }))); })));
+};
+var NodeTypeFilter = function (props) {
+    var _a, _b, _c, _d, _e, _f;
+    var neos = acl_1.useNeos();
+    var nodeTypes = useNodeTypes((_e = (_d = (_c = (_b = (_a = neos === null || neos === void 0 ? void 0 : neos.configuration) === null || _a === void 0 ? void 0 : _a.nodeTree) === null || _b === void 0 ? void 0 : _b.presets) === null || _c === void 0 ? void 0 : _c["default"]) === null || _d === void 0 ? void 0 : _d.baseNodeType) !== null && _e !== void 0 ? _e : 'Neos.Neos:Document');
+    var handleChange = React.useCallback(function (ev) {
+        var nodeTypesRegistry = neos === null || neos === void 0 ? void 0 : neos.globalRegistry.get('@neos-project/neos-ui-contentrepository');
+        var nodeType = nodeTypesRegistry === null || nodeTypesRegistry === void 0 ? void 0 : nodeTypesRegistry.get(ev.target.value);
+        props.onSelect(nodeType !== null && nodeType !== void 0 ? nodeType : null);
+    }, [neos, props.onSelect]);
+    return (React.createElement("select", { value: (_f = props.value) !== null && _f !== void 0 ? _f : '', onChange: handleChange },
+        React.createElement("option", { value: "" }, "- None -"),
+        nodeTypes.map(function (nodeType) { return (React.createElement("option", { value: nodeType.name }, nodeType.label)); })));
 };
 //# sourceMappingURL=NodeTreeAdapter.js.map

@@ -4,7 +4,7 @@ import {useDebounce} from 'react-use';
 
 import {Tree} from '@neos-project/react-ui-components';
 import backend from '@neos-project/neos-ui-backend-connector';
-import {useNeos} from '../../../acl';
+import {INodeType, useNeos} from '../../../acl';
 
 interface ITreeState {
     nodesByContextPath: {
@@ -186,6 +186,11 @@ function useTree(startingPoint?: string, selectedPath?: string) {
             draft.searchTerm = searchTerm;
         }));
     };
+    const filter = (nodeTypeName: null | string) => {
+        setTreeState(treeState => produce(treeState, draft => {
+            draft.nodeTypeFilter = nodeTypeName;
+        }));
+    };
 
     React.useEffect(() => {
         (async () => {
@@ -244,6 +249,12 @@ function useTree(startingPoint?: string, selectedPath?: string) {
 
                     setTreeState(produce(treeState, draft => {
                         draft.filteredNodesByContextPath = {};
+
+                        if (treeState.rootNodeContextPath) {
+                            draft.filteredNodesByContextPath[treeState.rootNodeContextPath] =
+                                treeState.nodesByContextPath[treeState.rootNodeContextPath];
+                        }
+
                         for (const node of filterNodes(nodes)) {
                             draft.filteredNodesByContextPath[node.contextPath] = node;
                         }
@@ -269,6 +280,8 @@ function useTree(startingPoint?: string, selectedPath?: string) {
         },
         toggle,
         search,
+        filter,
+        isFiltered: Boolean(treeState.filteredNodesByContextPath),
         loading: initialization.loading,
         error: initialization.error
     };
@@ -280,7 +293,7 @@ interface Props {
 }
 
 export const NodeTreeAdapter: React.FC<Props> = props => {
-    const {loading, error, treeState, toggle, search} = useTree(undefined, props.selected?.contextPath);
+    const {loading, error, treeState, toggle, search, filter, isFiltered} = useTree(undefined, props.selected?.contextPath);
     const handleToggle = (node: INode) => toggle(node.contextPath);
     const handleClick = (node: INode) => props.onSelect(node);
 
@@ -305,6 +318,7 @@ export const NodeTreeAdapter: React.FC<Props> = props => {
                         node={rootNode}
                         tree={treeState}
                         level={1}
+                        isFiltered={isFiltered}
                         onToggle={handleToggle}
                         onClick={handleClick}
                         />
@@ -322,6 +336,10 @@ export const NodeTreeAdapter: React.FC<Props> = props => {
                 onChange={ev => search(ev.target.value || null)}
                 value={treeState.searchTerm ?? ''}
                 />
+            <NodeTypeFilter
+                value={treeState.nodeTypeFilter}
+                onSelect={nodeType => filter(nodeType?.name ?? null)}
+                />
             {treeView}
         </>
     )
@@ -330,7 +348,17 @@ export const NodeTreeAdapter: React.FC<Props> = props => {
 function useNodeType(nodeTypeName: string) {
     const neos = useNeos();
     const nodeTypesRegistry = neos?.globalRegistry.get('@neos-project/neos-ui-contentrepository');
-        return nodeTypesRegistry?.get(nodeTypeName) ?? null;
+
+    return nodeTypesRegistry?.get(nodeTypeName) ?? null;
+}
+
+function useNodeTypes(baseNodeTypeName: string) {
+    const neos = useNeos();
+    const nodeTypesRegistry = neos?.globalRegistry.get('@neos-project/neos-ui-contentrepository');
+
+    return nodeTypesRegistry?.getSubTypesOf(baseNodeTypeName).map(
+        nodeTypeName => nodeTypesRegistry?.get(nodeTypeName) as INodeType
+    ).filter(n => n) ?? [];
 }
 
 interface NodeAdapterProps {
@@ -338,6 +366,7 @@ interface NodeAdapterProps {
     node: INode
     tree: ITreeState
     level: number
+    isFiltered: boolean
     onToggle: (node: INode) => any
     onClick: (node: INode) => any
 }
@@ -346,7 +375,7 @@ const NodeAdapter: React.FC<NodeAdapterProps> = props => {
     const nodeType = useNodeType(props.node.nodeType);
     const handleNodeToggle = () => props.onToggle(props.node);
     const handleNodeClick = () => props.onClick(props.node);
-    const isCollapsed = !props.tree.open.includes(props.node.contextPath);
+    const isCollapsed = !props.tree.open.includes(props.node.contextPath) && !props.isFiltered;
 
     console.log('node', props.node);
 
@@ -392,3 +421,30 @@ const NodeAdapter: React.FC<NodeAdapterProps> = props => {
         </Tree.Node>
     );
 };
+
+interface NodeTypeFilterProps {
+    value: null | string
+    onSelect: (nodeType: null | INodeType) => void
+}
+
+const NodeTypeFilter: React.FC<NodeTypeFilterProps> = props => {
+    const neos = useNeos();
+    const nodeTypes = useNodeTypes(neos?.configuration?.nodeTree?.presets?.default?.baseNodeType ?? 'Neos.Neos:Document');
+    const handleChange = React.useCallback((ev: React.SyntheticEvent) => {
+        const nodeTypesRegistry = neos?.globalRegistry.get('@neos-project/neos-ui-contentrepository');
+        const nodeType = nodeTypesRegistry?.get((ev.target as HTMLSelectElement).value);
+
+        props.onSelect(nodeType ?? null);
+    }, [neos, props.onSelect]);
+
+    return (
+        <select value={props.value ?? ''} onChange={handleChange}>
+            <option value="">- None -</option>
+            {nodeTypes.map(nodeType => (
+                <option value={nodeType.name}>
+                    {nodeType.label}
+                </option>
+            ))}
+        </select>
+    );
+}

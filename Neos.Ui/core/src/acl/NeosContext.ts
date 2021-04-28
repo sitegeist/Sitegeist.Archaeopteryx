@@ -10,6 +10,7 @@ interface NeosContextProperties {
             get: (key: string) => undefined | INodeType
             getAllAsList: () => INodeType[]
             isOfType: (name: string, reference: string) => boolean
+            getSubTypesOf: (name: string) => string[]
         }
     }
     store: {
@@ -34,7 +35,9 @@ interface NeosContextProperties {
     }
 }
 
-interface INodeType {
+export interface INodeType {
+    name: string
+    label: string
     ui?: {
         icon?: string
     }
