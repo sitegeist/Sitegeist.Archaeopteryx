@@ -45,6 +45,12 @@ var Modal = function () {
     var linkTypes = domain_1.useLinkTypes();
     var _c = __read(React.useState(linkTypes[0]), 2), activeLinkType = _c[0], setActiveLinkType = _c[1];
     var Editor = activeLinkType.getEditor;
+    React.useEffect(function () {
+        var _a;
+        setActiveLinkType((_a = linkTypes.find(function (linkType) { return value.persistent && linkType.isSuitableFor({
+            link: { uri: value.persistent }
+        }); })) !== null && _a !== void 0 ? _a : linkTypes[0]);
+    }, [value.persistent]);
     return (React.createElement(react_ui_components_1.Dialog, { title: "Sitegeist.Archaeopteryx", isOpen: isOpen, onRequestClose: dismiss },
         linkTypes.map(function (linkType) {
             var Icon = linkType.getIcon, id = linkType.id;

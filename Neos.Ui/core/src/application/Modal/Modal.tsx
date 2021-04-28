@@ -9,6 +9,16 @@ export const Modal: React.FC = () => {
     const [activeLinkType, setActiveLinkType] = React.useState(linkTypes[0]);
     const {getEditor: Editor} = activeLinkType;
 
+    React.useEffect(() => {
+        setActiveLinkType(
+            linkTypes.find(
+                linkType => value.persistent && linkType.isSuitableFor({
+                    link: {uri: value.persistent}
+                })
+            ) ?? linkTypes[0]
+        );
+    }, [value.persistent]);
+
     return (
         <Dialog
             title="Sitegeist.Archaeopteryx"
