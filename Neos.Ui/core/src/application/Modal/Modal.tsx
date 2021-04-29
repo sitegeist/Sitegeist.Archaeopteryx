@@ -24,6 +24,7 @@ export const Modal: React.FC = () => {
             title="Sitegeist.Archaeopteryx"
             isOpen={isOpen}
             onRequestClose={dismiss}
+            style="jumbo"
         >
             {linkTypes.map(linkType => {
                 const {getIcon: Icon, id} = linkType;

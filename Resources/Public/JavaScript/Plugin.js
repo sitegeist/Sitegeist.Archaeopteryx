@@ -21358,6 +21358,154 @@ __createBinding(exports, NeosContext_1, "useNeos");
 
 /***/ }),
 
+/***/ "../core/lib/application/LinkTypes/Asset/Asset.js":
+/*!********************************************************!*\
+  !*** ../core/lib/application/LinkTypes/Asset/Asset.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __extends = undefined && undefined.__extends || function () {
+    var _extendStatics = function extendStatics(d, b) {
+        _extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function (d, b) {
+            d.__proto__ = b;
+        } || function (d, b) {
+            for (var p in b) {
+                if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
+            }
+        };
+        return _extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null) throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        _extendStatics(d, b);
+        function __() {
+            this.constructor = d;
+        }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+}();
+var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function get() {
+            return m[k];
+        } });
+} : function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+var __setModuleDefault = undefined && undefined.__setModuleDefault || (Object.create ? function (o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+} : function (o, v) {
+    o["default"] = v;
+});
+var __importStar = undefined && undefined.__importStar || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) {
+        if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    }__setModuleDefault(result, mod);
+    return result;
+};
+exports.__esModule = true;
+exports.Asset = void 0;
+var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
+var acl_1 = __webpack_require__(/*! ../../../acl */ "../core/lib/acl/index.js");
+var domain_1 = __webpack_require__(/*! ../../../domain */ "../core/lib/domain/index.js");
+function useResolvedValue() {
+    var value = domain_1.useEditorValue().value;
+    if (value) {
+        var match = /asset:\/\/(.*)/.exec(value);
+        if (match) {
+            return match[1];
+        }
+    }
+    return null;
+}
+exports.Asset = new (function (_super) {
+    __extends(class_1, _super);
+    function class_1() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.id = 'Sitegeist.Archaeopteryx:Asset';
+        _this.isSuitableFor = function (props) {
+            var _a;
+            return Boolean((_a = props.link) === null || _a === void 0 ? void 0 : _a.uri.startsWith('asset://'));
+        };
+        _this.getIcon = function () {
+            return React.createElement("div", null, "ASSET");
+        };
+        _this.getTitle = function () {
+            return 'ASSET';
+        };
+        _this.getPreview = function (props) {
+            return React.createElement("div", null, "ASSET PREVIEW");
+        };
+        _this.getEditor = function () {
+            var _a, _b, _c;
+            var neos = acl_1.useNeos();
+            var update = domain_1.useEditorTransactions().update;
+            var resolvedValue = useResolvedValue();
+            var mediaBrowserUri = (_c = (_b = (_a = neos === null || neos === void 0 ? void 0 : neos.routes) === null || _a === void 0 ? void 0 : _a.core) === null || _b === void 0 ? void 0 : _b.modules) === null || _c === void 0 ? void 0 : _c.mediaBrowser;
+            React.useEffect(function () {
+                window.NeosMediaBrowserCallbacks = {
+                    assetChosen: function assetChosen(assetIdentifier) {
+                        update("asset://" + assetIdentifier);
+                    }
+                };
+                (function () {
+                    window.NeosMediaBrowserCallbacks = {};
+                });
+            }, [update]);
+            if (mediaBrowserUri) {
+                if (resolvedValue) {
+                    return React.createElement("iframe", { name: "neos-media-selection-screen", src: mediaBrowserUri + "/images/edit.html?asset[__identity]=" + resolvedValue, style: { width: '100%', minHeight: '300px' }, frameBorder: "0", onLoad: function onLoad(ev) {
+                            var _a, _b;return (_b = (_a = ev.target.contentDocument) === null || _a === void 0 ? void 0 : _a.querySelector('form > .neos-footer')) === null || _b === void 0 ? void 0 : _b.remove();
+                        } });
+                } else {
+                    return React.createElement("iframe", { name: "neos-media-selection-screen", src: mediaBrowserUri + "/assets/index.html", style: { width: '100%', minHeight: '300px' }, frameBorder: "0" });
+                }
+            } else {
+                return React.createElement("div", null, "Media Browser not found.");
+            }
+        };
+        return _this;
+    }
+    return class_1;
+}(domain_1.LinkType))();
+//# sourceMappingURL=Asset.js.map
+
+/***/ }),
+
+/***/ "../core/lib/application/LinkTypes/Asset/index.js":
+/*!********************************************************!*\
+  !*** ../core/lib/application/LinkTypes/Asset/index.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function get() {
+            return m[k];
+        } });
+} : function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+exports.__esModule = true;
+exports.Asset = void 0;
+var Asset_1 = __webpack_require__(/*! ./Asset */ "../core/lib/application/LinkTypes/Asset/Asset.js");
+__createBinding(exports, Asset_1, "Asset");
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
 /***/ "../core/lib/application/LinkTypes/NodeTree/NodeTree.js":
 /*!**************************************************************!*\
   !*** ../core/lib/application/LinkTypes/NodeTree/NodeTree.js ***!
@@ -22449,11 +22597,13 @@ var __createBinding = undefined && undefined.__createBinding || (Object.create ?
     o[k2] = m[k];
 });
 exports.__esModule = true;
-exports.NodeTree = exports.WebLink = void 0;
+exports.Asset = exports.NodeTree = exports.WebLink = void 0;
 var WebLink_1 = __webpack_require__(/*! ./WebLink */ "../core/lib/application/LinkTypes/WebLink/index.js");
 __createBinding(exports, WebLink_1, "WebLink");
 var NodeTree_1 = __webpack_require__(/*! ./NodeTree */ "../core/lib/application/LinkTypes/NodeTree/index.js");
 __createBinding(exports, NodeTree_1, "NodeTree");
+var Asset_1 = __webpack_require__(/*! ./Asset */ "../core/lib/application/LinkTypes/Asset/index.js");
+__createBinding(exports, Asset_1, "Asset");
 //# sourceMappingURL=index.js.map
 
 /***/ }),
@@ -22537,7 +22687,7 @@ var Modal = function Modal() {
             });
         })) !== null && _a !== void 0 ? _a : linkTypes[0]);
     }, [value.persistent]);
-    return React.createElement(react_ui_components_1.Dialog, { title: "Sitegeist.Archaeopteryx", isOpen: isOpen, onRequestClose: dismiss }, linkTypes.map(function (linkType) {
+    return React.createElement(react_ui_components_1.Dialog, { title: "Sitegeist.Archaeopteryx", isOpen: isOpen, onRequestClose: dismiss, style: "jumbo" }, linkTypes.map(function (linkType) {
         var Icon = linkType.getIcon,
             id = linkType.id;
         return React.createElement(react_ui_components_1.Button, { isActive: linkType.id === activeLinkType.id, key: id, onClick: function onClick() {
@@ -23456,11 +23606,12 @@ function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in ob
 (0, _neosUiExtensibility2.default)('@sitegeist/archaeopteryx-plugin', {}, function (globalRegistry, _ref) {
     var store = _ref.store,
         configuration = _ref.configuration,
-        deps = _objectWithoutProperties(_ref, ['store', 'configuration']);
+        routes = _ref.routes,
+        deps = _objectWithoutProperties(_ref, ['store', 'configuration', 'routes']);
 
     console.log(deps);
     var editor = (0, _archaeopteryxCore.createEditor)();
-    var neosContext = { globalRegistry: globalRegistry, store: store, configuration: configuration };
+    var neosContext = { globalRegistry: globalRegistry, store: store, configuration: configuration, routes: routes };
 
     registerLinkTypes(neosContext);
     registerContainers(neosContext, editor);
@@ -23478,6 +23629,8 @@ function registerLinkTypes(_ref2) {
     linkTypeRegistry.set('Sitegeist.Archaeopteryx:WebLink', _archaeopteryxCore.LinkTypes.WebLink);
 
     linkTypeRegistry.set('Sitegeist.Archaeopteryx:NodeTree', _archaeopteryxCore.LinkTypes.NodeTree);
+
+    linkTypeRegistry.set('Sitegeist.Archaeopteryx:Asset', _archaeopteryxCore.LinkTypes.Asset);
 }
 
 function registerInspectorEditors(neosContext, editor) {

@@ -5,10 +5,10 @@ import {NeosContext, LinkTypes, Modal, createEditor, EditorContext} from '@siteg
 import {InspectorEditor} from '@sitegeist/archaeopteryx-inspector-editor';
 import {LinkButton} from '@sitegeist/archaeopteryx-rte-formatter';
 
-manifest('@sitegeist/archaeopteryx-plugin', {}, (globalRegistry, {store, configuration, ...deps}) => {
+manifest('@sitegeist/archaeopteryx-plugin', {}, (globalRegistry, {store, configuration, routes, ...deps}) => {
     console.log(deps);
     const editor = createEditor();
-    const neosContext = {globalRegistry, store, configuration};
+    const neosContext = {globalRegistry, store, configuration, routes};
 
     registerLinkTypes(neosContext);
     registerContainers(neosContext, editor);
@@ -34,6 +34,11 @@ function registerLinkTypes({globalRegistry}) {
     linkTypeRegistry.set(
         'Sitegeist.Archaeopteryx:NodeTree',
         LinkTypes.NodeTree
+    );
+
+    linkTypeRegistry.set(
+        'Sitegeist.Archaeopteryx:Asset',
+        LinkTypes.Asset
     );
 }
 

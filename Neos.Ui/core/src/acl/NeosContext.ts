@@ -33,6 +33,13 @@ interface NeosContextProperties {
             }
         }
     }
+    routes?: {
+        core?: {
+            modules?: {
+                mediaBrowser?: string
+            }
+        }
+    }
 }
 
 export interface INodeType {

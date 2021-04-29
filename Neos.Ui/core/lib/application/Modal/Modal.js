@@ -51,7 +51,7 @@ var Modal = function () {
             link: { uri: value.persistent }
         }); })) !== null && _a !== void 0 ? _a : linkTypes[0]);
     }, [value.persistent]);
-    return (React.createElement(react_ui_components_1.Dialog, { title: "Sitegeist.Archaeopteryx", isOpen: isOpen, onRequestClose: dismiss },
+    return (React.createElement(react_ui_components_1.Dialog, { title: "Sitegeist.Archaeopteryx", isOpen: isOpen, onRequestClose: dismiss, style: "jumbo" },
         linkTypes.map(function (linkType) {
             var Icon = linkType.getIcon, id = linkType.id;
             return (React.createElement(react_ui_components_1.Button, { isActive: linkType.id === activeLinkType.id, key: id, onClick: function () { return setActiveLinkType(linkType); } },
