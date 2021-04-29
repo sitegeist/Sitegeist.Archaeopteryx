@@ -1,6 +1,7 @@
 "use strict";
 exports.__esModule = true;
-jest.mock('@neos-project/neos-ui-backend-connector', undefined, { virtual: true });
+jest.mock('@neos-project/neos-ui-backend-connector', function () { return ({}); }, { virtual: true });
+jest.mock('@neos-project/react-ui-components', function () { return ({}); });
 require("@testing-library/jest-dom/extend-expect");
 var NodeTree_1 = require("./NodeTree");
 describe('NodeTree Editor', function () {

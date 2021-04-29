@@ -1,4 +1,5 @@
-jest.mock('@neos-project/neos-ui-backend-connector', undefined, { virtual: true });
+jest.mock('@neos-project/neos-ui-backend-connector', () => ({}), { virtual: true });
+jest.mock('@neos-project/react-ui-components', () => ({}));
 
 import '@testing-library/jest-dom/extend-expect';
 
