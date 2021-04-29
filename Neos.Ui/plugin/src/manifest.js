@@ -27,18 +27,23 @@ function registerLinkTypes({globalRegistry}) {
     );
 
     linkTypeRegistry.set(
-        'Sitegeist.Archaeopteryx:WebLink',
+        LinkTypes.WebLink.id,
         LinkTypes.WebLink
     );
 
     linkTypeRegistry.set(
-        'Sitegeist.Archaeopteryx:NodeTree',
+        LinkTypes.NodeTree.id,
         LinkTypes.NodeTree
     );
 
     linkTypeRegistry.set(
-        'Sitegeist.Archaeopteryx:Asset',
+        LinkTypes.Asset.id,
         LinkTypes.Asset
+    );
+
+    linkTypeRegistry.set(
+        LinkTypes.MailTo.id,
+        LinkTypes.MailTo
     );
 }
 

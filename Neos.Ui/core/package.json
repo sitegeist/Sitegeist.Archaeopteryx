@@ -10,9 +10,11 @@
     },
     "dependencies": {
         "@neos-project/react-ui-components": "^7.0.2",
+        "final-form": "^4.20.2",
         "immer": "^9.0.2",
         "react": "^17.0.2",
         "react-dom": "^17.0.2",
+        "react-final-form": "^6.5.3",
         "react-use": "^17.2.4",
         "rxjs": "^6.6.7",
         "typesafe-actions": "^5.1.0",
