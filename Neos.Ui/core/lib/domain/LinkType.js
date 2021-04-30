@@ -30,7 +30,7 @@ var __values = (this && this.__values) || function(o) {
     throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
 };
 exports.__esModule = true;
-exports.useLinkTypeForUri = exports.useLinkTypes = exports.LinkType = void 0;
+exports.useLinkTypeForHref = exports.useLinkTypes = exports.LinkType = void 0;
 var React = __importStar(require("react"));
 var acl_1 = require("../acl");
 var LinkType = (function () {
@@ -51,14 +51,14 @@ function useLinkTypes() {
     return [];
 }
 exports.useLinkTypes = useLinkTypes;
-function useLinkTypeForUri(uri) {
+function useLinkTypeForHref(href) {
     var linkTypes = useLinkTypes();
     var result = React.useMemo(function () {
         var e_1, _a;
         try {
             for (var linkTypes_1 = __values(linkTypes), linkTypes_1_1 = linkTypes_1.next(); !linkTypes_1_1.done; linkTypes_1_1 = linkTypes_1.next()) {
                 var linkType = linkTypes_1_1.value;
-                if (linkType.isSuitableFor({ link: { uri: uri } })) {
+                if (linkType.isSuitableFor({ link: { href: href } })) {
                     return linkType;
                 }
             }
@@ -71,8 +71,8 @@ function useLinkTypeForUri(uri) {
             finally { if (e_1) throw e_1.error; }
         }
         return null;
-    }, [linkTypes, uri]);
+    }, [linkTypes, href]);
     return result;
 }
-exports.useLinkTypeForUri = useLinkTypeForUri;
+exports.useLinkTypeForHref = useLinkTypeForHref;
 //# sourceMappingURL=LinkType.js.map

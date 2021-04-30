@@ -11,6 +11,9 @@ interface Props {
     };
     formattingUnderCursor: {
         link?: string;
+        linkTitle?: string;
+        linkTargetBlank?: boolean;
+        linkRelNofollow?: boolean;
     };
     executeCommand: (command: string, argument?: any, reFocusEditor?: boolean) => void;
 }

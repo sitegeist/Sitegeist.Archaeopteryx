@@ -7,7 +7,7 @@ function useResolvedValue() {
     const {value} = useEditorValue();
 
     if (value) {
-        const match = /asset:\/\/(.*)/.exec(value);
+        const match = /asset:\/\/(.*)/.exec(value.href);
         if (match) {
             return match[1];
         }
@@ -20,7 +20,7 @@ export const Asset = new class extends LinkType {
     public readonly id = 'Sitegeist.Archaeopteryx:Asset';
 
     public readonly isSuitableFor = (props: ILinkTypeProps) => {
-        return Boolean(props.link?.uri.startsWith('asset://'));
+        return Boolean(props.link?.href.startsWith('asset://'));
     }
 
     public readonly getIcon = () => (
@@ -29,7 +29,7 @@ export const Asset = new class extends LinkType {
 
     public readonly getTitle = () => 'ASSET'
 
-    public readonly getPreview = (props: ILinkTypeProps) => (
+    public readonly getPreview = () => (
         <div>ASSET PREVIEW</div>
     );
 
@@ -42,7 +42,7 @@ export const Asset = new class extends LinkType {
         React.useEffect(() => {
             (window as any).NeosMediaBrowserCallbacks = {
                 assetChosen: (assetIdentifier: string) => {
-                    update(`asset://${assetIdentifier}`);
+                    update({href: `asset://${assetIdentifier}`});
                 }
             };
 

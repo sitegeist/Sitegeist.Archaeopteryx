@@ -1,9 +1,6 @@
 import * as React from 'react';
 import {useNeos} from '../acl';
-
-export interface ILink {
-    uri: string
-}
+import {ILink} from './Link';
 
 export interface ILinkTypeProps {
     link?: ILink
@@ -31,17 +28,17 @@ export function useLinkTypes(): LinkType[] {
     return [];
 }
 
-export function useLinkTypeForUri(uri: string): null | LinkType {
+export function useLinkTypeForHref(href: string): null | LinkType {
     const linkTypes = useLinkTypes();
     const result = React.useMemo(() => {
         for (const linkType of linkTypes) {
-            if (linkType.isSuitableFor({link: {uri}})) {
+            if (linkType.isSuitableFor({link: {href}})) {
                 return linkType;
             }
         }
 
         return null;
-    }, [linkTypes, uri]);
+    }, [linkTypes, href]);
 
     return result;
 }

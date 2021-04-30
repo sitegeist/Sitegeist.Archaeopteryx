@@ -5,6 +5,6 @@ export declare const Asset: {
     readonly isSuitableFor: (props: ILinkTypeProps) => boolean;
     readonly getIcon: () => JSX.Element;
     readonly getTitle: () => string;
-    readonly getPreview: (props: ILinkTypeProps) => JSX.Element;
+    readonly getPreview: () => JSX.Element;
     readonly getEditor: () => JSX.Element;
 };

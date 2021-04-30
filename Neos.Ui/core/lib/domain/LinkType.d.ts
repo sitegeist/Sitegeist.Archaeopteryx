@@ -1,7 +1,5 @@
 import * as React from 'react';
-export interface ILink {
-    uri: string;
-}
+import { ILink } from './Link';
 export interface ILinkTypeProps {
     link?: ILink;
 }
@@ -14,4 +12,4 @@ export declare abstract class LinkType {
     abstract getEditor: React.FC<ILinkTypeProps>;
 }
 export declare function useLinkTypes(): LinkType[];
-export declare function useLinkTypeForUri(uri: string): null | LinkType;
+export declare function useLinkTypeForHref(href: string): null | LinkType;

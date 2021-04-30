@@ -1,5 +1,6 @@
-export declare const EditorWasOpened: (uri: string | null) => import("typesafe-actions").PayloadAction<"http://sitegeist.de/Sitegeist.Archaeopteryx/EditorWasOpened", string | null>;
+import { ILink } from '../Link';
+export declare const EditorWasOpened: (value: ILink | null) => import("typesafe-actions").PayloadAction<"http://sitegeist.de/Sitegeist.Archaeopteryx/EditorWasOpened", ILink | null>;
 export declare const EditorWasDismissed: import("typesafe-actions").EmptyActionCreator<"http://sitegeist.de/Sitegeist.Archaeopteryx/EditorWasDismissed">;
-export declare const UriWasUpdated: (updatedUri: string) => import("typesafe-actions").PayloadAction<"http://sitegeist.de/Sitegeist.Archaeopteryx/UriWasUpdated", string>;
-export declare const UriWasCleared: import("typesafe-actions").EmptyActionCreator<"http://sitegeist.de/Sitegeist.Archaeopteryx/UriWasCleared">;
-export declare const UpdatedUriWasApplied: (updatedUri: string | null) => import("typesafe-actions").PayloadAction<"http://sitegeist.de/Sitegeist.Archaeopteryx/UpdatedUriWasApplied", string | null>;
+export declare const ValueWasUpdated: (value: Partial<ILink>) => import("typesafe-actions").PayloadAction<"http://sitegeist.de/Sitegeist.Archaeopteryx/ValueWasUpdated", Partial<ILink>>;
+export declare const ValueWasCleared: import("typesafe-actions").EmptyActionCreator<"http://sitegeist.de/Sitegeist.Archaeopteryx/ValueWasCleared">;
+export declare const ValueWasApplied: (value: ILink | null) => import("typesafe-actions").PayloadAction<"http://sitegeist.de/Sitegeist.Archaeopteryx/ValueWasApplied", ILink | null>;

@@ -54,6 +54,22 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
 exports.__esModule = true;
 exports.LinkButton = void 0;
 var React = __importStar(require("react"));
@@ -62,22 +78,45 @@ var archaeopteryx_core_1 = require("@sitegeist/archaeopteryx-core");
 var LinkButton = function (props) {
     var tx = archaeopteryx_core_1.useEditorTransactions();
     var handleLinkButtonClick = React.useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
-        var result;
-        var _a;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0: return [4, tx.editLink((_a = props.formattingUnderCursor.link) !== null && _a !== void 0 ? _a : null)];
+        var _a, href, anchor, result;
+        var _b, _c, _d, _e, _f, _g, _h;
+        return __generator(this, function (_j) {
+            switch (_j.label) {
+                case 0:
+                    if (!props.formattingUnderCursor.link) return [3, 2];
+                    _a = __read(props.formattingUnderCursor.link.split('#'), 2), href = _a[0], anchor = _a[1];
+                    return [4, tx.editLink({
+                            href: href,
+                            options: {
+                                anchor: anchor,
+                                title: props.formattingUnderCursor.linkTitle,
+                                targetBlank: props.formattingUnderCursor.linkTargetBlank,
+                                relNoFollow: props.formattingUnderCursor.linkRelNofollow
+                            }
+                        })];
                 case 1:
-                    result = _b.sent();
+                    result = _j.sent();
                     if (result.change) {
                         if (result.value === null) {
+                            props.executeCommand('linkTitle', false, false);
+                            props.executeCommand('linkRelNofollow', false, false);
+                            props.executeCommand('linkTargetBlank', false, false);
                             props.executeCommand('unlink');
                         }
                         else {
-                            props.executeCommand('link', result.value, false);
+                            props.executeCommand('linkTitle', ((_b = result.value.options) === null || _b === void 0 ? void 0 : _b.title) || false, false);
+                            props.executeCommand('linkTargetBlank', (_d = (_c = result.value.options) === null || _c === void 0 ? void 0 : _c.targetBlank) !== null && _d !== void 0 ? _d : false, false);
+                            props.executeCommand('linkRelNofollow', (_f = (_e = result.value.options) === null || _e === void 0 ? void 0 : _e.relNoFollow) !== null && _f !== void 0 ? _f : false, false);
+                            if ((_g = result.value.options) === null || _g === void 0 ? void 0 : _g.anchor) {
+                                props.executeCommand('link', result.value.href + "#" + ((_h = result.value.options) === null || _h === void 0 ? void 0 : _h.anchor), false);
+                            }
+                            else {
+                                props.executeCommand('link', result.value.href, false);
+                            }
                         }
                     }
-                    return [2];
+                    _j.label = 2;
+                case 2: return [2];
             }
         });
     }); }, [props.executeCommand, props.formattingUnderCursor.link, tx]);

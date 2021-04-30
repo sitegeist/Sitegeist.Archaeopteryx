@@ -60,6 +60,7 @@ var initialState = {
     }
 };
 function editorReducer(state, action) {
+    var _a, _b;
     if (state === void 0) { state = initialState; }
     switch (action.type) {
         case typesafe_actions_1.getType(actions.EditorWasOpened):
@@ -78,17 +79,25 @@ function editorReducer(state, action) {
                     persistent: null
                 }
             };
-        case typesafe_actions_1.getType(actions.UriWasUpdated):
-            return {
-                isOpen: true,
-                value: __assign(__assign({}, state.value), { transient: action.payload })
-            };
-        case typesafe_actions_1.getType(actions.UriWasCleared):
+        case typesafe_actions_1.getType(actions.ValueWasUpdated): {
+            var href = (_a = action.payload.href) !== null && _a !== void 0 ? _a : (_b = state.value.transient) === null || _b === void 0 ? void 0 : _b.href;
+            if (href) {
+                return {
+                    isOpen: true,
+                    value: __assign(__assign({}, state.value), { transient: __assign(__assign({ href: href }, state.value.transient), action.payload) })
+                };
+            }
+            else {
+                console.warn('[Sitegeist.Archaeopteryx]: Attempted value update without href');
+                return state;
+            }
+        }
+        case typesafe_actions_1.getType(actions.ValueWasCleared):
             return {
                 isOpen: true,
                 value: __assign(__assign({}, state.value), { transient: null })
             };
-        case typesafe_actions_1.getType(actions.UpdatedUriWasApplied):
+        case typesafe_actions_1.getType(actions.ValueWasApplied):
             return {
                 isOpen: false,
                 value: {
@@ -105,22 +114,18 @@ function createEditor() {
     var actions$ = new rxjs_1.Subject();
     var dispatch = function (action) { return actions$.next(action); };
     var state$ = actions$.pipe(operators_1.scan(editorReducer, initialState), operators_1.shareReplay(1));
-    var open = function (uri) { return dispatch(actions.EditorWasOpened(uri)); };
+    var open = function (value) { return dispatch(actions.EditorWasOpened(value)); };
     var dismiss = function () { return dispatch(actions.EditorWasDismissed()); };
-    var update = function (updatedUri) {
-        return dispatch(actions.UriWasUpdated(updatedUri));
-    };
-    var clear = function () { return dispatch(actions.UriWasCleared()); };
-    var apply = function (updatedUri) {
-        return dispatch(actions.UpdatedUriWasApplied(updatedUri));
-    };
-    var editLink = function (uri) { return new Promise(function (resolve) {
-        open(uri);
+    var update = function (value) { return dispatch(actions.ValueWasUpdated(value)); };
+    var clear = function () { return dispatch(actions.ValueWasCleared()); };
+    var apply = function (value) { return dispatch(actions.ValueWasApplied(value)); };
+    var editLink = function (link) { return new Promise(function (resolve) {
+        open(link);
         actions$.subscribe(function (action) {
             switch (action.type) {
                 case typesafe_actions_1.getType(actions.EditorWasDismissed):
                     return resolve({ change: false });
-                case typesafe_actions_1.getType(actions.UpdatedUriWasApplied):
+                case typesafe_actions_1.getType(actions.ValueWasApplied):
                     return resolve({ change: true, value: action.payload });
                 default:
                     return;

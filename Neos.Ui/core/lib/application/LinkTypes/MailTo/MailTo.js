@@ -63,8 +63,8 @@ var domain_1 = require("../../../domain");
 function useResolvedValue() {
     var _a, _b, _c, _d;
     var value = domain_1.useEditorValue().value;
-    if (value && value.startsWith('mailto:')) {
-        var url = new URL(value);
+    if (value && value.href && value.href.startsWith('mailto:')) {
+        var url = new URL(value.href);
         return {
             recipient: url.pathname,
             subject: (_a = url.searchParams.get('subject')) !== null && _a !== void 0 ? _a : undefined,
@@ -98,7 +98,7 @@ exports.MailTo = new (function (_super) {
         _this.id = 'Sitegeist.Archaeopteryx:MailTo';
         _this.isSuitableFor = function (props) {
             var _a;
-            return Boolean((_a = props.link) === null || _a === void 0 ? void 0 : _a.uri.startsWith('mailto:'));
+            return Boolean((_a = props.link) === null || _a === void 0 ? void 0 : _a.href.startsWith('mailto:'));
         };
         _this.getIcon = function () { return (React.createElement("div", null, "MAILTO")); };
         _this.getTitle = function () { return 'MAILTO'; };
@@ -107,7 +107,7 @@ exports.MailTo = new (function (_super) {
             var resolvedValue = useResolvedValue();
             var update = domain_1.useEditorTransactions().update;
             var handleSubmit = React.useCallback(function (values) {
-                update(convert(values));
+                update({ href: convert(values) });
             }, []);
             return (React.createElement(react_final_form_1.Form, { initialValues: resolvedValue, onSubmit: handleSubmit }, function (_a) {
                 var handleSubmit = _a.handleSubmit, rest = __rest(_a, ["handleSubmit"]);

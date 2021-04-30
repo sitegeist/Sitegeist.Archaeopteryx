@@ -23701,7 +23701,7 @@ var domain_1 = __webpack_require__(/*! ../../../domain */ "../core/lib/domain/in
 function useResolvedValue() {
     var value = domain_1.useEditorValue().value;
     if (value) {
-        var match = /asset:\/\/(.*)/.exec(value);
+        var match = /asset:\/\/(.*)/.exec(value.href);
         if (match) {
             return match[1];
         }
@@ -23715,7 +23715,7 @@ exports.Asset = new (function (_super) {
         _this.id = 'Sitegeist.Archaeopteryx:Asset';
         _this.isSuitableFor = function (props) {
             var _a;
-            return Boolean((_a = props.link) === null || _a === void 0 ? void 0 : _a.uri.startsWith('asset://'));
+            return Boolean((_a = props.link) === null || _a === void 0 ? void 0 : _a.href.startsWith('asset://'));
         };
         _this.getIcon = function () {
             return React.createElement("div", null, "ASSET");
@@ -23723,7 +23723,7 @@ exports.Asset = new (function (_super) {
         _this.getTitle = function () {
             return 'ASSET';
         };
-        _this.getPreview = function (props) {
+        _this.getPreview = function () {
             return React.createElement("div", null, "ASSET PREVIEW");
         };
         _this.getEditor = function () {
@@ -23735,7 +23735,7 @@ exports.Asset = new (function (_super) {
             React.useEffect(function () {
                 window.NeosMediaBrowserCallbacks = {
                     assetChosen: function assetChosen(assetIdentifier) {
-                        update("asset://" + assetIdentifier);
+                        update({ href: "asset://" + assetIdentifier });
                     }
                 };
                 (function () {
@@ -23870,8 +23870,8 @@ var domain_1 = __webpack_require__(/*! ../../../domain */ "../core/lib/domain/in
 function useResolvedValue() {
     var _a, _b, _c, _d;
     var value = domain_1.useEditorValue().value;
-    if (value && value.startsWith('mailto:')) {
-        var url = new URL(value);
+    if (value && value.href && value.href.startsWith('mailto:')) {
+        var url = new URL(value.href);
         return {
             recipient: url.pathname,
             subject: (_a = url.searchParams.get('subject')) !== null && _a !== void 0 ? _a : undefined,
@@ -23905,7 +23905,7 @@ exports.MailTo = new (function (_super) {
         _this.id = 'Sitegeist.Archaeopteryx:MailTo';
         _this.isSuitableFor = function (props) {
             var _a;
-            return Boolean((_a = props.link) === null || _a === void 0 ? void 0 : _a.uri.startsWith('mailto:'));
+            return Boolean((_a = props.link) === null || _a === void 0 ? void 0 : _a.href.startsWith('mailto:'));
         };
         _this.getIcon = function () {
             return React.createElement("div", null, "MAILTO");
@@ -23920,7 +23920,7 @@ exports.MailTo = new (function (_super) {
             var resolvedValue = useResolvedValue();
             var update = domain_1.useEditorTransactions().update;
             var handleSubmit = React.useCallback(function (values) {
-                update(convert(values));
+                update({ href: convert(values) });
             }, []);
             return React.createElement(react_final_form_1.Form, { initialValues: resolvedValue, onSubmit: handleSubmit }, function (_a) {
                 var handleSubmit = _a.handleSubmit,
@@ -24178,8 +24178,8 @@ function useResolvedValue() {
         setResolvedValue = _c[1];
     React.useEffect(function () {
         var _a, _b, _c;
-        if (value) {
-            var match = /node:\/\/(.*)/.exec(value);
+        if (value === null || value === void 0 ? void 0 : value.href) {
+            var match = /node:\/\/(.*)/.exec(value.href);
             if (match) {
                 var siteNode_1 = (_c = (_b = (_a = neos === null || neos === void 0 ? void 0 : neos.store.getState()) === null || _a === void 0 ? void 0 : _a.cr) === null || _b === void 0 ? void 0 : _b.nodes) === null || _c === void 0 ? void 0 : _c.siteNode;
                 var q_1 = neos_ui_backend_connector_1["default"].get().q;
@@ -24242,7 +24242,7 @@ exports.NodeTree = new (function (_super) {
         _this.id = 'Sitegeist.Archaeopteryx:NodeTree';
         _this.isSuitableFor = function (props) {
             var _a;
-            return Boolean((_a = props.link) === null || _a === void 0 ? void 0 : _a.uri.startsWith('node://'));
+            return Boolean((_a = props.link) === null || _a === void 0 ? void 0 : _a.href.startsWith('node://'));
         };
         _this.getIcon = function () {
             return React.createElement("div", null, "NODE TREE");
@@ -24267,7 +24267,7 @@ exports.NodeTree = new (function (_super) {
                 return React.createElement("div", null, "An error occurred :(");
             } else {
                 return React.createElement(NodeTreeAdapter_1.NodeTreeAdapter, { selected: resolvedValue, onSelect: function onSelect(node) {
-                        return update("node://" + node.identifier);
+                        return update({ href: "node://" + node.identifier });
                     } });
             }
         };
@@ -24990,8 +24990,8 @@ exports.WebLink = new (function (_super) {
         _this.id = 'Sitegeist.Archaeopteryx:WebLink';
         _this.isSuitableFor = function (props) {
             var _a, _b;
-            var isHttp = (_a = props.link) === null || _a === void 0 ? void 0 : _a.uri.startsWith('http://');
-            var isHttps = (_b = props.link) === null || _b === void 0 ? void 0 : _b.uri.startsWith('https://');
+            var isHttp = (_a = props.link) === null || _a === void 0 ? void 0 : _a.href.startsWith('http://');
+            var isHttps = (_b = props.link) === null || _b === void 0 ? void 0 : _b.href.startsWith('https://');
             return Boolean(isHttp || isHttps);
         };
         _this.getIcon = function () {
@@ -24999,7 +24999,7 @@ exports.WebLink = new (function (_super) {
         };
         _this.getTitle = function (props) {
             var _a;
-            var isSecure = (_a = props.link) === null || _a === void 0 ? void 0 : _a.uri.startsWith('https://');
+            var isSecure = (_a = props.link) === null || _a === void 0 ? void 0 : _a.href.startsWith('https://');
             if (isSecure === true) {
                 return 'Web Link (secure)';
             } else if (isSecure === false) {
@@ -25012,12 +25012,13 @@ exports.WebLink = new (function (_super) {
             return React.createElement("div", null, _this.getTitle(props));
         };
         _this.getEditor = function () {
+            var _a;
             var value = domain_1.useEditorValue().value;
             var update = domain_1.useEditorTransactions().update;
             var onChange = React.useCallback(function (ev) {
-                return update(ev.target.value);
+                return update({ href: ev.target.value });
             }, [update]);
-            return React.createElement("input", { type: "text", value: value !== null && value !== void 0 ? value : '', onChange: onChange });
+            return React.createElement("input", { type: "text", value: (_a = value === null || value === void 0 ? void 0 : value.href) !== null && _a !== void 0 ? _a : '', onChange: onChange });
         };
         return _this;
     }
@@ -25097,6 +25098,18 @@ __createBinding(exports, MailTo_1, "MailTo");
 "use strict";
 
 
+var __assign = undefined && undefined.__assign || function () {
+    __assign = Object.assign || function (t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) {
+                if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+            }
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     Object.defineProperty(o, k2, { enumerable: true, get: function get() {
@@ -25145,6 +25158,7 @@ exports.__esModule = true;
 exports.Modal = void 0;
 var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
 var react_ui_components_1 = __webpack_require__(/*! @neos-project/react-ui-components */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/react-ui-components/index.js");
+var react_final_form_1 = __webpack_require__(/*! react-final-form */ "../../node_modules/react-final-form/dist/react-final-form.es.js");
 var domain_1 = __webpack_require__(/*! ../../domain */ "../core/lib/domain/index.js");
 var Modal = function Modal() {
     var _a = domain_1.useEditorState(),
@@ -25152,27 +25166,59 @@ var Modal = function Modal() {
         value = _a.value;
     var _b = domain_1.useEditorTransactions(),
         dismiss = _b.dismiss,
+        update = _b.update,
         apply = _b.apply;
     var linkTypes = domain_1.useLinkTypes();
-    var _c = __read(React.useState(linkTypes[0]), 2),
-        activeLinkType = _c[0],
-        setActiveLinkType = _c[1];
-    var Editor = activeLinkType.getEditor;
+    var _c = __read(React.useState(false), 2),
+        showSettings = _c[0],
+        setShowSettings = _c[1];
+    var _d = __read(React.useState(linkTypes[0]), 2),
+        activeLinkType = _d[0],
+        setActiveLinkType = _d[1];
+    var Editor = (activeLinkType !== null && activeLinkType !== void 0 ? activeLinkType : {}).getEditor;
     React.useEffect(function () {
         var _a;
         setActiveLinkType((_a = linkTypes.find(function (linkType) {
             return value.persistent && linkType.isSuitableFor({
-                link: { uri: value.persistent }
+                link: value.persistent
             });
         })) !== null && _a !== void 0 ? _a : linkTypes[0]);
     }, [value.persistent]);
     return React.createElement(react_ui_components_1.Dialog, { title: "Sitegeist.Archaeopteryx", isOpen: isOpen, onRequestClose: dismiss, style: "jumbo" }, linkTypes.map(function (linkType) {
         var Icon = linkType.getIcon,
             id = linkType.id;
-        return React.createElement(react_ui_components_1.Button, { isActive: linkType.id === activeLinkType.id, key: id, onClick: function onClick() {
-                return setActiveLinkType(linkType);
+        return React.createElement(react_ui_components_1.Button, { isActive: linkType.id === (activeLinkType === null || activeLinkType === void 0 ? void 0 : activeLinkType.id), key: id, onClick: function onClick() {
+                setActiveLinkType(linkType);
+                setShowSettings(false);
             } }, React.createElement(Icon, null));
-    }), React.createElement("div", null, React.createElement(Editor, null)), React.createElement(react_ui_components_1.Button, { onClick: dismiss }, "Click here!"), React.createElement(react_ui_components_1.Button, { onClick: function onClick() {
+    }), React.createElement(react_ui_components_1.Button, { isActive: showSettings, onClick: function onClick() {
+            setActiveLinkType(null);
+            setShowSettings(true);
+        } }, "SETTINGS"), React.createElement("div", null, Editor ? React.createElement(Editor, null) : null, showSettings ? React.createElement(react_final_form_1.Form, { onSubmit: function onSubmit(values) {
+            return update({ options: values });
+        } }, function (_a) {
+        var _b, _c, _d, _e, _f, _g, _h, _j;
+        var handleSubmit = _a.handleSubmit;
+        return React.createElement("form", { onSubmit: handleSubmit }, React.createElement(react_final_form_1.Field, { name: "anchor", initialValue: (_c = (_b = value.transient) === null || _b === void 0 ? void 0 : _b.options) === null || _c === void 0 ? void 0 : _c.anchor }, function (_a) {
+            var input = _a.input;
+            return React.createElement("label", null, "Anchor:", React.createElement("input", __assign({ type: "text" }, input)));
+        }), React.createElement(react_final_form_1.Field, { name: "title", initialValue: (_e = (_d = value.transient) === null || _d === void 0 ? void 0 : _d.options) === null || _e === void 0 ? void 0 : _e.title }, function (_a) {
+            var input = _a.input;
+            return React.createElement("label", null, "Title:", React.createElement("input", __assign({ type: "text" }, input)));
+        }), React.createElement(react_final_form_1.Field, { type: "checkbox", name: "targetBlank", initialValue: ((_g = (_f = value.transient) === null || _f === void 0 ? void 0 : _f.options) === null || _g === void 0 ? void 0 : _g.targetBlank) ? 'true' : '' }, function (_a) {
+            var input = _a.input;
+            return React.createElement("label", null, "Open in new Window:", React.createElement("input", __assign({ style: {
+                    appearance: 'checkbox',
+                    backgroundColor: 'white'
+                }, type: "checkbox" }, input)));
+        }), React.createElement(react_final_form_1.Field, { type: "checkbox", name: "relNoFollow", initialValue: ((_j = (_h = value.transient) === null || _h === void 0 ? void 0 : _h.options) === null || _j === void 0 ? void 0 : _j.relNoFollow) ? 'true' : '' }, function (_a) {
+            var input = _a.input;
+            return React.createElement("label", null, "No Follow:", React.createElement("input", __assign({ style: {
+                    appearance: 'checkbox',
+                    backgroundColor: 'white'
+                }, type: "checkbox" }, input)));
+        }), React.createElement("button", { type: "submit" }, "Apply"));
+    }) : null), React.createElement(react_ui_components_1.Button, { onClick: dismiss }, "Click here!"), React.createElement(react_ui_components_1.Button, { onClick: function onClick() {
             return apply(value.transient);
         } }, "Apply"));
 };
@@ -25330,6 +25376,7 @@ var initialState = {
     }
 };
 function editorReducer(state, action) {
+    var _a, _b;
     if (state === void 0) {
         state = initialState;
     }
@@ -25350,17 +25397,25 @@ function editorReducer(state, action) {
                     persistent: null
                 }
             };
-        case typesafe_actions_1.getType(actions.UriWasUpdated):
-            return {
-                isOpen: true,
-                value: __assign(__assign({}, state.value), { transient: action.payload })
-            };
-        case typesafe_actions_1.getType(actions.UriWasCleared):
+        case typesafe_actions_1.getType(actions.ValueWasUpdated):
+            {
+                var href = (_a = action.payload.href) !== null && _a !== void 0 ? _a : (_b = state.value.transient) === null || _b === void 0 ? void 0 : _b.href;
+                if (href) {
+                    return {
+                        isOpen: true,
+                        value: __assign(__assign({}, state.value), { transient: __assign(__assign({ href: href }, state.value.transient), action.payload) })
+                    };
+                } else {
+                    console.warn('[Sitegeist.Archaeopteryx]: Attempted value update without href');
+                    return state;
+                }
+            }
+        case typesafe_actions_1.getType(actions.ValueWasCleared):
             return {
                 isOpen: true,
                 value: __assign(__assign({}, state.value), { transient: null })
             };
-        case typesafe_actions_1.getType(actions.UpdatedUriWasApplied):
+        case typesafe_actions_1.getType(actions.ValueWasApplied):
             return {
                 isOpen: false,
                 value: {
@@ -25379,29 +25434,29 @@ function createEditor() {
         return actions$.next(action);
     };
     var state$ = actions$.pipe(operators_1.scan(editorReducer, initialState), operators_1.shareReplay(1));
-    var open = function open(uri) {
-        return dispatch(actions.EditorWasOpened(uri));
+    var open = function open(value) {
+        return dispatch(actions.EditorWasOpened(value));
     };
     var dismiss = function dismiss() {
         return dispatch(actions.EditorWasDismissed());
     };
-    var update = function update(updatedUri) {
-        return dispatch(actions.UriWasUpdated(updatedUri));
+    var update = function update(value) {
+        return dispatch(actions.ValueWasUpdated(value));
     };
     var clear = function clear() {
-        return dispatch(actions.UriWasCleared());
+        return dispatch(actions.ValueWasCleared());
     };
-    var apply = function apply(updatedUri) {
-        return dispatch(actions.UpdatedUriWasApplied(updatedUri));
+    var apply = function apply(value) {
+        return dispatch(actions.ValueWasApplied(value));
     };
-    var editLink = function editLink(uri) {
+    var editLink = function editLink(link) {
         return new Promise(function (resolve) {
-            open(uri);
+            open(link);
             actions$.subscribe(function (action) {
                 switch (action.type) {
                     case typesafe_actions_1.getType(actions.EditorWasDismissed):
                         return resolve({ change: false });
-                    case typesafe_actions_1.getType(actions.UpdatedUriWasApplied):
+                    case typesafe_actions_1.getType(actions.ValueWasApplied):
                         return resolve({ change: true, value: action.payload });
                     default:
                         return;
@@ -25461,18 +25516,18 @@ exports.useEditorTransactions = useEditorTransactions;
 
 
 exports.__esModule = true;
-exports.UpdatedUriWasApplied = exports.UriWasCleared = exports.UriWasUpdated = exports.EditorWasDismissed = exports.EditorWasOpened = void 0;
+exports.ValueWasApplied = exports.ValueWasCleared = exports.ValueWasUpdated = exports.EditorWasDismissed = exports.EditorWasOpened = void 0;
 var typesafe_actions_1 = __webpack_require__(/*! typesafe-actions */ "../../node_modules/typesafe-actions/dist/typesafe-actions.umd.production.js");
-exports.EditorWasOpened = typesafe_actions_1.createAction('http://sitegeist.de/Sitegeist.Archaeopteryx/EditorWasOpened', function (uri) {
-  return uri;
+exports.EditorWasOpened = typesafe_actions_1.createAction('http://sitegeist.de/Sitegeist.Archaeopteryx/EditorWasOpened', function (value) {
+  return value;
 })();
 exports.EditorWasDismissed = typesafe_actions_1.createAction('http://sitegeist.de/Sitegeist.Archaeopteryx/EditorWasDismissed')();
-exports.UriWasUpdated = typesafe_actions_1.createAction('http://sitegeist.de/Sitegeist.Archaeopteryx/UriWasUpdated', function (updatedUri) {
-  return updatedUri;
+exports.ValueWasUpdated = typesafe_actions_1.createAction('http://sitegeist.de/Sitegeist.Archaeopteryx/ValueWasUpdated', function (value) {
+  return value;
 })();
-exports.UriWasCleared = typesafe_actions_1.createAction('http://sitegeist.de/Sitegeist.Archaeopteryx/UriWasCleared')();
-exports.UpdatedUriWasApplied = typesafe_actions_1.createAction('http://sitegeist.de/Sitegeist.Archaeopteryx/UpdatedUriWasApplied', function (updatedUri) {
-  return updatedUri;
+exports.ValueWasCleared = typesafe_actions_1.createAction('http://sitegeist.de/Sitegeist.Archaeopteryx/ValueWasCleared')();
+exports.ValueWasApplied = typesafe_actions_1.createAction('http://sitegeist.de/Sitegeist.Archaeopteryx/ValueWasApplied', function (value) {
+  return value;
 })();
 //# sourceMappingURL=EditorAction.js.map
 
@@ -25555,7 +25610,7 @@ var __values = undefined && undefined.__values || function (o) {
     throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
 };
 exports.__esModule = true;
-exports.useLinkTypeForUri = exports.useLinkTypes = exports.LinkType = void 0;
+exports.useLinkTypeForHref = exports.useLinkTypes = exports.LinkType = void 0;
 var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
 var acl_1 = __webpack_require__(/*! ../acl */ "../core/lib/acl/index.js");
 var LinkType = function () {
@@ -25575,14 +25630,14 @@ function useLinkTypes() {
     return [];
 }
 exports.useLinkTypes = useLinkTypes;
-function useLinkTypeForUri(uri) {
+function useLinkTypeForHref(href) {
     var linkTypes = useLinkTypes();
     var result = React.useMemo(function () {
         var e_1, _a;
         try {
             for (var linkTypes_1 = __values(linkTypes), linkTypes_1_1 = linkTypes_1.next(); !linkTypes_1_1.done; linkTypes_1_1 = linkTypes_1.next()) {
                 var linkType = linkTypes_1_1.value;
-                if (linkType.isSuitableFor({ link: { uri: uri } })) {
+                if (linkType.isSuitableFor({ link: { href: href } })) {
                     return linkType;
                 }
             }
@@ -25596,10 +25651,10 @@ function useLinkTypeForUri(uri) {
             }
         }
         return null;
-    }, [linkTypes, uri]);
+    }, [linkTypes, href]);
     return result;
 }
-exports.useLinkTypeForUri = useLinkTypeForUri;
+exports.useLinkTypeForHref = useLinkTypeForHref;
 //# sourceMappingURL=LinkType.js.map
 
 /***/ }),
@@ -25624,11 +25679,11 @@ var __createBinding = undefined && undefined.__createBinding || (Object.create ?
     o[k2] = m[k];
 });
 exports.__esModule = true;
-exports.useEditorTransactions = exports.useEditorValue = exports.useEditorState = exports.EditorContext = exports.createEditor = exports.useLinkTypeForUri = exports.useLinkTypes = exports.LinkType = void 0;
+exports.useEditorTransactions = exports.useEditorValue = exports.useEditorState = exports.EditorContext = exports.createEditor = exports.useLinkTypeForHref = exports.useLinkTypes = exports.LinkType = void 0;
 var LinkType_1 = __webpack_require__(/*! ./LinkType */ "../core/lib/domain/LinkType.js");
 __createBinding(exports, LinkType_1, "LinkType");
 __createBinding(exports, LinkType_1, "useLinkTypes");
-__createBinding(exports, LinkType_1, "useLinkTypeForUri");
+__createBinding(exports, LinkType_1, "useLinkTypeForHref");
 var Editor_1 = __webpack_require__(/*! ./Editor */ "../core/lib/domain/Editor/index.js");
 __createBinding(exports, Editor_1, "createEditor");
 __createBinding(exports, Editor_1, "EditorContext");
@@ -25659,11 +25714,11 @@ var __createBinding = undefined && undefined.__createBinding || (Object.create ?
     o[k2] = m[k];
 });
 exports.__esModule = true;
-exports.Modal = exports.LinkTypes = exports.useEditorTransactions = exports.useEditorValue = exports.useEditorState = exports.EditorContext = exports.createEditor = exports.useLinkTypeForUri = exports.NeosContext = void 0;
+exports.Modal = exports.LinkTypes = exports.useEditorTransactions = exports.useEditorValue = exports.useEditorState = exports.EditorContext = exports.createEditor = exports.useLinkTypeForHref = exports.NeosContext = void 0;
 var acl_1 = __webpack_require__(/*! ./acl */ "../core/lib/acl/index.js");
 __createBinding(exports, acl_1, "NeosContext");
 var domain_1 = __webpack_require__(/*! ./domain */ "../core/lib/domain/index.js");
-__createBinding(exports, domain_1, "useLinkTypeForUri");
+__createBinding(exports, domain_1, "useLinkTypeForHref");
 __createBinding(exports, domain_1, "createEditor");
 __createBinding(exports, domain_1, "EditorContext");
 __createBinding(exports, domain_1, "useEditorState");
@@ -25799,15 +25854,14 @@ var archaeopteryx_core_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-core
 var InspectorEditor = function InspectorEditor(props) {
     var tx = archaeopteryx_core_1.useEditorTransactions();
     var value = typeof props.value === 'string' ? props.value : '';
-    var linkType = archaeopteryx_core_1.useLinkTypeForUri(value);
+    var linkType = archaeopteryx_core_1.useLinkTypeForHref(value);
     var editLink = React.useCallback(function () {
         return __awaiter(void 0, void 0, void 0, function () {
             var result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        console.log({ value: value });
-                        return [4, tx.editLink(value)];
+                        return [4, tx.editLink({ href: value })];
                     case 1:
                         result = _a.sent();
                         if (result.change) {
@@ -25820,7 +25874,7 @@ var InspectorEditor = function InspectorEditor(props) {
     }, [value, tx.editLink]);
     if (linkType) {
         var Preview = linkType.getPreview;
-        var link = { uri: value };
+        var link = { href: value };
         return React.createElement("div", null, React.createElement(Preview, { link: link }), React.createElement(react_ui_components_1.Button, { onClick: editLink }, "Edit Link"));
     } else if (Boolean(value) === false) {
         return React.createElement(react_ui_components_1.Button, { onClick: editLink }, "Create Link");
@@ -25975,6 +26029,28 @@ var __generator = undefined && undefined.__generator || function (thisArg, body)
         }if (op[0] & 5) throw op[1];return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __read = undefined && undefined.__read || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o),
+        r,
+        ar = [],
+        e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) {
+            ar.push(r.value);
+        }
+    } catch (error) {
+        e = { error: error };
+    } finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        } finally {
+            if (e) throw e.error;
+        }
+    }
+    return ar;
+};
 exports.__esModule = true;
 exports.LinkButton = void 0;
 var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
@@ -25984,21 +26060,43 @@ var LinkButton = function LinkButton(props) {
     var tx = archaeopteryx_core_1.useEditorTransactions();
     var handleLinkButtonClick = React.useCallback(function () {
         return __awaiter(void 0, void 0, void 0, function () {
-            var result;
-            var _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var _a, href, anchor, result;
+            var _b, _c, _d, _e, _f, _g, _h;
+            return __generator(this, function (_j) {
+                switch (_j.label) {
                     case 0:
-                        return [4, tx.editLink((_a = props.formattingUnderCursor.link) !== null && _a !== void 0 ? _a : null)];
+                        if (!props.formattingUnderCursor.link) return [3, 2];
+                        _a = __read(props.formattingUnderCursor.link.split('#'), 2), href = _a[0], anchor = _a[1];
+                        return [4, tx.editLink({
+                            href: href,
+                            options: {
+                                anchor: anchor,
+                                title: props.formattingUnderCursor.linkTitle,
+                                targetBlank: props.formattingUnderCursor.linkTargetBlank,
+                                relNoFollow: props.formattingUnderCursor.linkRelNofollow
+                            }
+                        })];
                     case 1:
-                        result = _b.sent();
+                        result = _j.sent();
                         if (result.change) {
                             if (result.value === null) {
+                                props.executeCommand('linkTitle', false, false);
+                                props.executeCommand('linkRelNofollow', false, false);
+                                props.executeCommand('linkTargetBlank', false, false);
                                 props.executeCommand('unlink');
                             } else {
-                                props.executeCommand('link', result.value, false);
+                                props.executeCommand('linkTitle', ((_b = result.value.options) === null || _b === void 0 ? void 0 : _b.title) || false, false);
+                                props.executeCommand('linkTargetBlank', (_d = (_c = result.value.options) === null || _c === void 0 ? void 0 : _c.targetBlank) !== null && _d !== void 0 ? _d : false, false);
+                                props.executeCommand('linkRelNofollow', (_f = (_e = result.value.options) === null || _e === void 0 ? void 0 : _e.relNoFollow) !== null && _f !== void 0 ? _f : false, false);
+                                if ((_g = result.value.options) === null || _g === void 0 ? void 0 : _g.anchor) {
+                                    props.executeCommand('link', result.value.href + "#" + ((_h = result.value.options) === null || _h === void 0 ? void 0 : _h.anchor), false);
+                                } else {
+                                    props.executeCommand('link', result.value.href, false);
+                                }
                             }
                         }
+                        _j.label = 2;
+                    case 2:
                         return [2];
                 }
             });

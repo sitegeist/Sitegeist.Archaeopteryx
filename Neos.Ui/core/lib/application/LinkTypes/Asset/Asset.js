@@ -41,7 +41,7 @@ var domain_1 = require("../../../domain");
 function useResolvedValue() {
     var value = domain_1.useEditorValue().value;
     if (value) {
-        var match = /asset:\/\/(.*)/.exec(value);
+        var match = /asset:\/\/(.*)/.exec(value.href);
         if (match) {
             return match[1];
         }
@@ -55,11 +55,11 @@ exports.Asset = new (function (_super) {
         _this.id = 'Sitegeist.Archaeopteryx:Asset';
         _this.isSuitableFor = function (props) {
             var _a;
-            return Boolean((_a = props.link) === null || _a === void 0 ? void 0 : _a.uri.startsWith('asset://'));
+            return Boolean((_a = props.link) === null || _a === void 0 ? void 0 : _a.href.startsWith('asset://'));
         };
         _this.getIcon = function () { return (React.createElement("div", null, "ASSET")); };
         _this.getTitle = function () { return 'ASSET'; };
-        _this.getPreview = function (props) { return (React.createElement("div", null, "ASSET PREVIEW")); };
+        _this.getPreview = function () { return (React.createElement("div", null, "ASSET PREVIEW")); };
         _this.getEditor = function () {
             var _a, _b, _c;
             var neos = acl_1.useNeos();
@@ -69,7 +69,7 @@ exports.Asset = new (function (_super) {
             React.useEffect(function () {
                 window.NeosMediaBrowserCallbacks = {
                     assetChosen: function (assetIdentifier) {
-                        update("asset://" + assetIdentifier);
+                        update({ href: "asset://" + assetIdentifier });
                     }
                 };
                 (function () {

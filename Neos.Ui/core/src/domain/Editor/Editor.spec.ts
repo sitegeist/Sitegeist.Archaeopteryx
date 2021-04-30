@@ -17,21 +17,21 @@ describe('Editor', () => {
     });
 
     it('updates links', done => {
-        editLink('http://example.com').then(result => {
+        editLink({href: 'http://example.com'}).then(result => {
             expect(state.isOpen).toBe(false);
             expect(result.change).toBe(true);
-            expect((result as any).value).toBe('http://example.com/new-link');
+            expect((result as any).value?.href).toBe('http://example.com/new-link');
             process.nextTick(done);
         });
 
         process.nextTick(() => {
             expect(state.isOpen).toBe(true);
-            expect(state.value.transient).toBe('http://example.com');
-            expect(state.value.persistent).toBe('http://example.com');
+            expect(state.value.transient?.href).toBe('http://example.com');
+            expect(state.value.persistent?.href).toBe('http://example.com');
 
-            update('http://example.com/new-link');
+            update({href: 'http://example.com/new-link'});
 
-            expect(state.value.transient).toBe('http://example.com/new-link');
+            expect(state.value.transient?.href).toBe('http://example.com/new-link');
 
             apply(state.value.transient);
 
@@ -41,7 +41,7 @@ describe('Editor', () => {
     });
 
     it('clears links', done => {
-        editLink('http://example.com/').then(result => {
+        editLink({href: 'http://example.com/'}).then(result => {
             expect(state.isOpen).toBe(false);
             expect(result.change).toBe(true);
             expect((result as any).value).toBe(null);
@@ -50,8 +50,8 @@ describe('Editor', () => {
 
         process.nextTick(() => {
             expect(state.isOpen).toBe(true);
-            expect(state.value.transient).toBe('http://example.com/');
-            expect(state.value.persistent).toBe('http://example.com/');
+            expect(state.value.transient?.href).toBe('http://example.com/');
+            expect(state.value.persistent?.href).toBe('http://example.com/');
 
             clear();
 
@@ -65,7 +65,7 @@ describe('Editor', () => {
     });
 
     it('can be dismissed', done => {
-        editLink('http://example.com').then(result => {
+        editLink({href: 'http://example.com'}).then(result => {
             expect(state.isOpen).toBe(false);
             expect(result.change).toBe(false);
             process.nextTick(done);
@@ -73,12 +73,12 @@ describe('Editor', () => {
 
         process.nextTick(() => {
             expect(state.isOpen).toBe(true);
-            expect(state.value.transient).toBe('http://example.com');
-            expect(state.value.persistent).toBe('http://example.com');
+            expect(state.value.transient?.href).toBe('http://example.com');
+            expect(state.value.persistent?.href).toBe('http://example.com');
 
-            update('http://example.com/new-link');
+            update({href: 'http://example.com/new-link'});
 
-            expect(state.value.transient).toBe('http://example.com/new-link');
+            expect(state.value.transient?.href).toBe('http://example.com/new-link');
 
             dismiss();
 

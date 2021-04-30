@@ -62,14 +62,12 @@ var archaeopteryx_core_1 = require("@sitegeist/archaeopteryx-core");
 var InspectorEditor = function (props) {
     var tx = archaeopteryx_core_1.useEditorTransactions();
     var value = typeof props.value === 'string' ? props.value : '';
-    var linkType = archaeopteryx_core_1.useLinkTypeForUri(value);
+    var linkType = archaeopteryx_core_1.useLinkTypeForHref(value);
     var editLink = React.useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
         var result;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0:
-                    console.log({ value: value });
-                    return [4, tx.editLink(value)];
+                case 0: return [4, tx.editLink({ href: value })];
                 case 1:
                     result = _a.sent();
                     if (result.change) {
@@ -81,7 +79,7 @@ var InspectorEditor = function (props) {
     }); }, [value, tx.editLink]);
     if (linkType) {
         var Preview = linkType.getPreview;
-        var link = { uri: value };
+        var link = { href: value };
         return (React.createElement("div", null,
             React.createElement(Preview, { link: link }),
             React.createElement(react_ui_components_1.Button, { onClick: editLink }, "Edit Link")));

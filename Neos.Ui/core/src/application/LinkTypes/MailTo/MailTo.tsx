@@ -13,8 +13,8 @@ interface IMailToLink {
 
 function useResolvedValue(): null | IMailToLink {
     const {value} = useEditorValue();
-    if (value && value.startsWith('mailto:')) {
-        const url = new URL(value);
+    if (value && value.href && value.href.startsWith('mailto:')) {
+        const url = new URL(value.href);
 
         return {
             recipient: url.pathname,
@@ -54,7 +54,7 @@ export const MailTo = new class extends LinkType {
     public readonly id = 'Sitegeist.Archaeopteryx:MailTo';
 
     public readonly isSuitableFor = (props: ILinkTypeProps) => {
-        return Boolean(props.link?.uri.startsWith('mailto:'));
+        return Boolean(props.link?.href.startsWith('mailto:'));
     }
 
     public readonly getIcon = () => (
@@ -71,7 +71,7 @@ export const MailTo = new class extends LinkType {
         const resolvedValue = useResolvedValue();
         const {update} = useEditorTransactions();
         const handleSubmit = React.useCallback((values: IMailToLink) => {
-            update(convert(values));
+            update({href: convert(values)});
         }, []);
 
         return (

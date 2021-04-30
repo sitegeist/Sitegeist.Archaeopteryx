@@ -3,18 +3,19 @@ import {ActionType, getType} from 'typesafe-actions';
 import {Subject} from 'rxjs';
 import {scan, shareReplay} from 'rxjs/operators';
 
+import {ILink} from '../Link';
 import * as actions from './EditorAction';
 
 export interface IEditorState {
     isOpen: boolean
     value: {
-        persistent: null | string
-        transient: null | string
+        persistent: null | ILink
+        transient: null | ILink
     }
 }
 
 type IEditorResult =
-    | {change: true, value: null | string}
+    | {change: true, value: null | ILink}
     | {change: false}
 ;
 
@@ -47,15 +48,26 @@ export function editorReducer(
                     persistent: null
                 }
             };
-        case getType(actions.UriWasUpdated):
-            return {
-                isOpen: true,
-                value: {
-                    ...state.value,
-                    transient: action.payload
-                }
-            };
-        case getType(actions.UriWasCleared):
+        case getType(actions.ValueWasUpdated): {
+            const href = action.payload.href ?? state.value.transient?.href;
+            if (href) {
+                return {
+                    isOpen: true,
+                    value: {
+                        ...state.value,
+                        transient: {
+                            href,
+                            ...state.value.transient,
+                            ...action.payload
+                        }
+                    }
+                };
+            } else {
+                console.warn('[Sitegeist.Archaeopteryx]: Attempted value update without href');
+                return state;
+            }
+        }
+        case getType(actions.ValueWasCleared):
             return {
                 isOpen: true,
                 value: {
@@ -63,7 +75,7 @@ export function editorReducer(
                     transient: null
                 }
             };
-        case getType(actions.UpdatedUriWasApplied):
+        case getType(actions.ValueWasApplied):
             return {
                 isOpen: false,
                 value: {
@@ -84,22 +96,20 @@ export function createEditor() {
         shareReplay(1)
     );
 
-    const open = (uri: null | string) => dispatch(actions.EditorWasOpened(uri));
+    const open = (value: null | ILink) => dispatch(actions.EditorWasOpened(value));
     const dismiss = () => dispatch(actions.EditorWasDismissed());
-    const update = (updatedUri: string) =>
-        dispatch(actions.UriWasUpdated(updatedUri));
-    const clear = () => dispatch(actions.UriWasCleared());
-    const apply = (updatedUri: null | string) =>
-        dispatch(actions.UpdatedUriWasApplied(updatedUri));
-    const editLink = (uri: null | string) => new Promise<IEditorResult>(
+    const update = (value: Partial<ILink>) => dispatch(actions.ValueWasUpdated(value));
+    const clear = () => dispatch(actions.ValueWasCleared());
+    const apply = (value: null | ILink) => dispatch(actions.ValueWasApplied(value));
+    const editLink = (link: null | ILink) => new Promise<IEditorResult>(
         resolve => {
-            open(uri);
+            open(link);
 
             actions$.subscribe(action => {
                 switch (action.type) {
                     case getType(actions.EditorWasDismissed):
                         return resolve({change: false});
-                    case getType(actions.UpdatedUriWasApplied):
+                    case getType(actions.ValueWasApplied):
                         return resolve({change: true, value: action.payload});
                     default:
                         return;

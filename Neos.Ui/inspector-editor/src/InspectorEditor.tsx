@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import {Button} from '@neos-project/react-ui-components';
 
-import {useLinkTypeForUri, useEditorTransactions} from '@sitegeist/archaeopteryx-core';
+import {useLinkTypeForHref, useEditorTransactions} from '@sitegeist/archaeopteryx-core';
 
 interface Props {
     neos: unknown
@@ -28,11 +28,10 @@ interface Props {
 export const InspectorEditor: React.FC<Props> = props => {
     const tx = useEditorTransactions();
     const value = typeof props.value === 'string' ? props.value : '';
-    const linkType = useLinkTypeForUri(value);
+    const linkType = useLinkTypeForHref(value);
 
     const editLink = React.useCallback(async () => {
-        console.log({ value });
-        const result = await tx.editLink(value);
+        const result = await tx.editLink({href: value});
         if (result.change) {
             props.commit(result.value);
         }
@@ -40,7 +39,7 @@ export const InspectorEditor: React.FC<Props> = props => {
 
     if (linkType) {
         const {getPreview: Preview} = linkType;
-        const link = {uri: value};
+        const link = {href: value};
 
         return (
             <div>

@@ -1,7 +1,7 @@
 export {NeosContext} from './acl';
 
 export {
-    useLinkTypeForUri,
+    useLinkTypeForHref,
     createEditor,
     EditorContext,
     useEditorState,

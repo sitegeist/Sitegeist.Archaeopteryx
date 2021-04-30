@@ -9,7 +9,7 @@ describe('WebLinkEditor', () => {
     it('is satisfied by http:// links', () => {
         const props = {
             link: {
-                uri: 'http://www.example.com'
+                href: 'http://www.example.com'
             }
         };
 
@@ -20,7 +20,7 @@ describe('WebLinkEditor', () => {
     it('is satisfied by https:// links', () => {
         const props = {
             link: {
-                uri: 'https://www.example.com'
+                href: 'https://www.example.com'
             }
         };
 
@@ -31,7 +31,7 @@ describe('WebLinkEditor', () => {
     it('is not satisfied by node:// links', () => {
         const props = {
             link: {
-                uri: 'node://97c9a6e3-4b50-4559-9f60-b5ad68f25758'
+                href: 'node://97c9a6e3-4b50-4559-9f60-b5ad68f25758'
             }
         };
 
@@ -42,7 +42,7 @@ describe('WebLinkEditor', () => {
     it('is not satisfied by asset:// links', () => {
         const props = {
             link: {
-                uri: 'asset://97c9a6e3-4b50-4559-9f60-b5ad68f25758'
+                href: 'asset://97c9a6e3-4b50-4559-9f60-b5ad68f25758'
             }
         };
 
@@ -53,7 +53,7 @@ describe('WebLinkEditor', () => {
     it('is not satisfied by mailto: links', () => {
         const props = {
             link: {
-                uri: 'mailto:foo@example.com'
+                href: 'mailto:foo@example.com'
             }
         };
 
@@ -64,7 +64,7 @@ describe('WebLinkEditor', () => {
     it('is not satisfied by invalid links', () => {
         const props = {
             link: {
-                uri: 'Think of Beethoven\'s 5th: foo foo foo bar'
+                href: 'Think of Beethoven\'s 5th: foo foo foo bar'
             }
         };
 
@@ -78,19 +78,19 @@ describe('WebLinkEditor', () => {
     });
 
     it('returns title for insecure links', () => {
-        expect(WebLink.getTitle({link: {uri: 'http://www.example.com'}}))
+        expect(WebLink.getTitle({link: {href: 'http://www.example.com'}}))
             .toBe('Web Link (not secure)');
     });
 
     it('returns title for secure links', () => {
-        expect(WebLink.getTitle({link: {uri: 'https://www.example.com'}}))
+        expect(WebLink.getTitle({link: {href: 'https://www.example.com'}}))
             .toBe('Web Link (secure)');
     });
 
     it('renders preview for insecure links', async () => {
         const {getPreview: Preview} = WebLink;
 
-        render(<Preview link={{uri: 'http://www.example.com'}}/>);
+        render(<Preview link={{href: 'http://www.example.com'}}/>);
 
         const els = await screen.findAllByText('Web Link (not secure)');
 
@@ -101,7 +101,7 @@ describe('WebLinkEditor', () => {
     it('renders preview for secure links', async () => {
         const {getPreview: Preview} = WebLink;
 
-        render(<Preview link={{uri: 'https://www.example.com'}}/>);
+        render(<Preview link={{href: 'https://www.example.com'}}/>);
 
         const els = await screen.findAllByText('Web Link (secure)');
 

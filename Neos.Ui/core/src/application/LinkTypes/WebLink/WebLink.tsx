@@ -6,8 +6,8 @@ export const WebLink = new class extends LinkType {
     public readonly id = 'Sitegeist.Archaeopteryx:WebLink';
 
     public readonly isSuitableFor = (props: ILinkTypeProps) => {
-        const isHttp = props.link?.uri.startsWith('http://');
-        const isHttps = props.link?.uri.startsWith('https://');
+        const isHttp = props.link?.href.startsWith('http://');
+        const isHttps = props.link?.href.startsWith('https://');
 
         return Boolean(isHttp || isHttps);
     }
@@ -17,7 +17,7 @@ export const WebLink = new class extends LinkType {
     );
 
     public readonly getTitle = (props: ILinkTypeProps) => {
-        const isSecure = props.link?.uri.startsWith('https://');
+        const isSecure = props.link?.href.startsWith('https://');
 
         if (isSecure === true) {
             return 'Web Link (secure)';
@@ -37,12 +37,12 @@ export const WebLink = new class extends LinkType {
         const {update} = useEditorTransactions();
         const onChange = React.useCallback(
             (ev: React.SyntheticEvent) =>
-                update((ev.target as HTMLInputElement).value),
+                update({href: (ev.target as HTMLInputElement).value}),
             [update]
         );
 
         return (
-            <input type="text" value={value ?? ''} onChange={onChange}/>
+            <input type="text" value={value?.href ?? ''} onChange={onChange}/>
         );
     };
 }

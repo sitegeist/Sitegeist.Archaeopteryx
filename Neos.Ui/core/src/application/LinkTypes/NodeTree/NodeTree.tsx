@@ -14,8 +14,8 @@ function useResolvedValue() {
     const [resolvedValue, setResolvedValue] = React.useState<null | INode>(null);
 
     React.useEffect(() => {
-        if (value) {
-            const match = /node:\/\/(.*)/.exec(value);
+        if (value?.href) {
+            const match = /node:\/\/(.*)/.exec(value.href);
             if (match) {
                 const siteNode = neos?.store.getState()?.cr?.nodes?.siteNode;
                 const {q} = backend.get();
@@ -50,7 +50,7 @@ export const NodeTree = new class extends LinkType {
     public readonly id = 'Sitegeist.Archaeopteryx:NodeTree';
 
     public readonly isSuitableFor = (props: ILinkTypeProps) => {
-        return Boolean(props.link?.uri.startsWith('node://'));
+        return Boolean(props.link?.href.startsWith('node://'));
     }
 
     public readonly getIcon = () => (
@@ -81,7 +81,7 @@ export const NodeTree = new class extends LinkType {
             return (
                 <NodeTreeAdapter
                     selected={resolvedValue}
-                    onSelect={node => update(`node://${node.identifier}`)}
+                    onSelect={node => update({href: `node://${node.identifier}`})}
                     />
             );
         }

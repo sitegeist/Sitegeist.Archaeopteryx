@@ -1,16 +1,17 @@
 import * as React from 'react';
 import { ActionType } from 'typesafe-actions';
+import { ILink } from '../Link';
 import * as actions from './EditorAction';
 export interface IEditorState {
     isOpen: boolean;
     value: {
-        persistent: null | string;
-        transient: null | string;
+        persistent: null | ILink;
+        transient: null | ILink;
     };
 }
 declare type IEditorResult = {
     change: true;
-    value: null | string;
+    value: null | ILink;
 } | {
     change: false;
 };
@@ -19,10 +20,10 @@ export declare function createEditor(): {
     state$: import("rxjs").Observable<IEditorState>;
     tx: {
         dismiss: () => void;
-        update: (updatedUri: string) => void;
+        update: (value: Partial<ILink>) => void;
         clear: () => void;
-        apply: (updatedUri: null | string) => void;
-        editLink: (uri: null | string) => Promise<IEditorResult>;
+        apply: (value: null | ILink) => void;
+        editLink: (link: null | ILink) => Promise<IEditorResult>;
     };
     initialState: IEditorState;
 };
@@ -30,23 +31,23 @@ export declare const EditorContext: React.Context<{
     state$: import("rxjs").Observable<IEditorState>;
     tx: {
         dismiss: () => void;
-        update: (updatedUri: string) => void;
+        update: (value: Partial<ILink>) => void;
         clear: () => void;
-        apply: (updatedUri: null | string) => void;
-        editLink: (uri: null | string) => Promise<IEditorResult>;
+        apply: (value: null | ILink) => void;
+        editLink: (link: null | ILink) => Promise<IEditorResult>;
     };
     initialState: IEditorState;
 }>;
 export declare function useEditorState(): IEditorState;
 export declare function useEditorValue(): {
-    value: string | null;
+    value: ILink | null;
     isDirty: boolean;
 };
 export declare function useEditorTransactions(): {
     dismiss: () => void;
-    update: (updatedUri: string) => void;
+    update: (value: Partial<ILink>) => void;
     clear: () => void;
-    apply: (updatedUri: string | null) => void;
-    editLink: (uri: string | null) => Promise<IEditorResult>;
+    apply: (value: ILink | null) => void;
+    editLink: (link: ILink | null) => Promise<IEditorResult>;
 };
 export {};

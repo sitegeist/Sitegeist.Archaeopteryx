@@ -115,8 +115,8 @@ function useResolvedValue() {
     var _c = __read(React.useState(null), 2), resolvedValue = _c[0], setResolvedValue = _c[1];
     React.useEffect(function () {
         var _a, _b, _c;
-        if (value) {
-            var match = /node:\/\/(.*)/.exec(value);
+        if (value === null || value === void 0 ? void 0 : value.href) {
+            var match = /node:\/\/(.*)/.exec(value.href);
             if (match) {
                 var siteNode_1 = (_c = (_b = (_a = neos === null || neos === void 0 ? void 0 : neos.store.getState()) === null || _a === void 0 ? void 0 : _a.cr) === null || _b === void 0 ? void 0 : _b.nodes) === null || _c === void 0 ? void 0 : _c.siteNode;
                 var q_1 = neos_ui_backend_connector_1["default"].get().q;
@@ -175,7 +175,7 @@ exports.NodeTree = new (function (_super) {
         _this.id = 'Sitegeist.Archaeopteryx:NodeTree';
         _this.isSuitableFor = function (props) {
             var _a;
-            return Boolean((_a = props.link) === null || _a === void 0 ? void 0 : _a.uri.startsWith('node://'));
+            return Boolean((_a = props.link) === null || _a === void 0 ? void 0 : _a.href.startsWith('node://'));
         };
         _this.getIcon = function () { return (React.createElement("div", null, "NODE TREE")); };
         _this.getTitle = function () { return 'Node Tree'; };
@@ -192,7 +192,7 @@ exports.NodeTree = new (function (_super) {
                 return (React.createElement("div", null, "An error occurred :("));
             }
             else {
-                return (React.createElement(NodeTreeAdapter_1.NodeTreeAdapter, { selected: resolvedValue, onSelect: function (node) { return update("node://" + node.identifier); } }));
+                return (React.createElement(NodeTreeAdapter_1.NodeTreeAdapter, { selected: resolvedValue, onSelect: function (node) { return update({ href: "node://" + node.identifier }); } }));
             }
         };
         return _this;

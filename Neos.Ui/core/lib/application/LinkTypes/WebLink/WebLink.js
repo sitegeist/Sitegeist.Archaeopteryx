@@ -44,14 +44,14 @@ exports.WebLink = new (function (_super) {
         _this.id = 'Sitegeist.Archaeopteryx:WebLink';
         _this.isSuitableFor = function (props) {
             var _a, _b;
-            var isHttp = (_a = props.link) === null || _a === void 0 ? void 0 : _a.uri.startsWith('http://');
-            var isHttps = (_b = props.link) === null || _b === void 0 ? void 0 : _b.uri.startsWith('https://');
+            var isHttp = (_a = props.link) === null || _a === void 0 ? void 0 : _a.href.startsWith('http://');
+            var isHttps = (_b = props.link) === null || _b === void 0 ? void 0 : _b.href.startsWith('https://');
             return Boolean(isHttp || isHttps);
         };
         _this.getIcon = function () { return (React.createElement("div", null, "ICON")); };
         _this.getTitle = function (props) {
             var _a;
-            var isSecure = (_a = props.link) === null || _a === void 0 ? void 0 : _a.uri.startsWith('https://');
+            var isSecure = (_a = props.link) === null || _a === void 0 ? void 0 : _a.href.startsWith('https://');
             if (isSecure === true) {
                 return 'Web Link (secure)';
             }
@@ -64,12 +64,13 @@ exports.WebLink = new (function (_super) {
         };
         _this.getPreview = function (props) { return (React.createElement("div", null, _this.getTitle(props))); };
         _this.getEditor = function () {
+            var _a;
             var value = domain_1.useEditorValue().value;
             var update = domain_1.useEditorTransactions().update;
             var onChange = React.useCallback(function (ev) {
-                return update(ev.target.value);
+                return update({ href: ev.target.value });
             }, [update]);
-            return (React.createElement("input", { type: "text", value: value !== null && value !== void 0 ? value : '', onChange: onChange }));
+            return (React.createElement("input", { type: "text", value: (_a = value === null || value === void 0 ? void 0 : value.href) !== null && _a !== void 0 ? _a : '', onChange: onChange }));
         };
         return _this;
     }
