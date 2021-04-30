@@ -36,51 +36,6 @@ export interface INode {
     }
 }
 
-function adoptContextPath(startingPoint?: string, referenceNode?: string): null | string {
-    const [startingPointPath] = (startingPoint ?? '').split('@');
-    const [referenceNodePath, referenceNodeContext] = (referenceNode ?? '').split('@');
-
-    if (startingPointPath && referenceNodePath && referenceNodeContext) {
-        return `${startingPointPath}@${referenceNodeContext}`;
-    } else if (referenceNodePath && referenceNodeContext) {
-        return `${referenceNodePath}@${referenceNodeContext}`;
-    } else {
-        return null;
-    }
-}
-
-function resolveRootLine(rootContextPath?: string, leafContextPath?: string): string[] {
-    const [rootPath, rootContext] = (rootContextPath ?? '').split('@');
-    const [leafPath, leafContext] = (leafContextPath ?? '').split('@');
-
-    console.log({
-        rootPath, rootContext,
-        leafPath, leafContext
-    });
-
-    if (rootPath && rootContext && leafPath && leafContext && leafPath.startsWith(rootPath)) {
-        const segments = leafPath.split('/');
-        const result = [];
-
-        for (const [index] of segments.entries()) {
-            const path = segments.slice(0, -index).join('/');
-            if (path) {
-                console.log({path});
-                result.push(`${path}@${rootContext}`);
-            }
-
-
-            if (path === rootPath) {
-                break;
-            }
-        }
-
-        return result;
-    } else {
-        return [];
-    }
-}
-
 function useOperation() {
     const [loading, setLoading] = React.useState(false);
     const [error, setError] = React.useState<null | Error>(null);
