@@ -33,10 +33,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.Asset = void 0;
 var React = __importStar(require("react"));
-var acl_1 = require("../../../acl");
+var archaeopteryx_neos_bridge_1 = require("@sitegeist/archaeopteryx-neos-bridge");
 var domain_1 = require("../../../domain");
 function useResolvedValue() {
     var value = domain_1.useEditorValue().value;
@@ -61,11 +61,9 @@ exports.Asset = new (function (_super) {
         _this.getTitle = function () { return 'ASSET'; };
         _this.getPreview = function () { return (React.createElement("div", null, "ASSET PREVIEW")); };
         _this.getEditor = function () {
-            var _a, _b, _c;
-            var neos = acl_1.useNeos();
             var update = domain_1.useEditorTransactions().update;
             var resolvedValue = useResolvedValue();
-            var mediaBrowserUri = (_c = (_b = (_a = neos === null || neos === void 0 ? void 0 : neos.routes) === null || _a === void 0 ? void 0 : _a.core) === null || _b === void 0 ? void 0 : _b.modules) === null || _c === void 0 ? void 0 : _c.mediaBrowser;
+            var mediaBrowserUri = archaeopteryx_neos_bridge_1.useRoutes(function (r) { var _a, _b; return (_b = (_a = r.core) === null || _a === void 0 ? void 0 : _a.modules) === null || _b === void 0 ? void 0 : _b.mediaBrowser; });
             React.useEffect(function () {
                 window.NeosMediaBrowserCallbacks = {
                     assetChosen: function (assetIdentifier) {

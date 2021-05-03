@@ -45,7 +45,7 @@ var __read = (this && this.__read) || function (o, n) {
     }
     return ar;
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.Modal = void 0;
 var React = __importStar(require("react"));
 var react_ui_components_1 = require("@neos-project/react-ui-components");
@@ -101,7 +101,7 @@ var Modal = function () {
                             "Open in new Window:",
                             React.createElement("input", __assign({ style: {
                                     appearance: 'checkbox',
-                                    backgroundColor: 'white'
+                                    backgroundColor: 'white',
                                 }, type: "checkbox" }, input))));
                     }),
                     React.createElement(react_final_form_1.Field, { type: "checkbox", name: "relNoFollow", initialValue: ((_j = (_h = value.transient) === null || _h === void 0 ? void 0 : _h.options) === null || _j === void 0 ? void 0 : _j.relNoFollow) ? 'true' : '' }, function (_a) {
@@ -110,7 +110,7 @@ var Modal = function () {
                             "No Follow:",
                             React.createElement("input", __assign({ style: {
                                     appearance: 'checkbox',
-                                    backgroundColor: 'white'
+                                    backgroundColor: 'white',
                                 }, type: "checkbox" }, input))));
                     }),
                     React.createElement("button", { type: "submit" }, "Apply")));

@@ -1,5 +1,7 @@
 import * as React from 'react';
-import {useNeos} from '../acl';
+
+import {useGlobalRegistry} from '@sitegeist/archaeopteryx-neos-bridge';
+
 import {ILink} from './Link';
 
 export interface ILinkTypeProps {
@@ -16,16 +18,8 @@ export abstract class LinkType {
 }
 
 export function useLinkTypes(): LinkType[] {
-    const neosContext = useNeos();
-    if (neosContext) {
-        const {globalRegistry} = neosContext;
-        const linkTypesRegistry = globalRegistry.get('@sitegeist/archaeopteryx/link-types');
-        if (linkTypesRegistry) {
-            return linkTypesRegistry.getAllAsList();
-        }
-    }
-
-    return [];
+    const globalRegistry = useGlobalRegistry();
+    return globalRegistry?.get('@sitegeist/archaeopteryx/link-types')?.getAllAsList() ?? [];
 }
 
 export function useLinkTypeForHref(href: string): null | LinkType {

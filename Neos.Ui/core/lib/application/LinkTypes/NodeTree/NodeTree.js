@@ -96,30 +96,28 @@ var __values = (this && this.__values) || function(o) {
     };
     throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.NodeTree = void 0;
 var React = __importStar(require("react"));
-var neos_ui_backend_connector_1 = __importDefault(require("@neos-project/neos-ui-backend-connector"));
-var acl_1 = require("../../../acl");
+var archaeopteryx_neos_bridge_1 = require("@sitegeist/archaeopteryx-neos-bridge");
 var domain_1 = require("../../../domain");
 var NodeTreeAdapter_1 = require("./NodeTreeAdapter");
+var cache = new Map();
 function useResolvedValue() {
     var _this = this;
-    var neos = acl_1.useNeos();
     var value = domain_1.useEditorValue().value;
     var _a = __read(React.useState(false), 2), loading = _a[0], setLoading = _a[1];
     var _b = __read(React.useState(null), 2), error = _b[0], setError = _b[1];
     var _c = __read(React.useState(null), 2), resolvedValue = _c[0], setResolvedValue = _c[1];
+    var siteNodeContextPath = archaeopteryx_neos_bridge_1.useSiteNodeContextPath();
     React.useEffect(function () {
-        var _a, _b, _c;
         if (value === null || value === void 0 ? void 0 : value.href) {
+            if (cache.has(value.href)) {
+                setResolvedValue(cache.get(value.href));
+                return;
+            }
             var match = /node:\/\/(.*)/.exec(value.href);
             if (match) {
-                var siteNode_1 = (_c = (_b = (_a = neos === null || neos === void 0 ? void 0 : neos.store.getState()) === null || _a === void 0 ? void 0 : _a.cr) === null || _b === void 0 ? void 0 : _b.nodes) === null || _c === void 0 ? void 0 : _c.siteNode;
-                var q_1 = neos_ui_backend_connector_1["default"].get().q;
                 var identifier_1 = match[1];
                 (function () { return __awaiter(_this, void 0, void 0, function () {
                     var result, result_1, result_1_1, node, err_1;
@@ -127,16 +125,19 @@ function useResolvedValue() {
                     return __generator(this, function (_b) {
                         switch (_b.label) {
                             case 0:
+                                if (!siteNodeContextPath) return [3, 4];
                                 setLoading(true);
                                 _b.label = 1;
                             case 1:
                                 _b.trys.push([1, 3, , 4]);
-                                return [4, q_1(siteNode_1).find("#" + identifier_1).getForTree()];
+                                return [4, archaeopteryx_neos_bridge_1.q(siteNodeContextPath).find("#" + identifier_1)
+                                        .getForTree()];
                             case 2:
                                 result = _b.sent();
                                 try {
                                     for (result_1 = __values(result), result_1_1 = result_1.next(); !result_1_1.done; result_1_1 = result_1.next()) {
                                         node = result_1_1.value;
+                                        cache.set(value.href, node);
                                         setResolvedValue(node);
                                         setLoading(false);
                                         break;
@@ -145,7 +146,7 @@ function useResolvedValue() {
                                 catch (e_1_1) { e_1 = { error: e_1_1 }; }
                                 finally {
                                     try {
-                                        if (result_1_1 && !result_1_1.done && (_a = result_1["return"])) _a.call(result_1);
+                                        if (result_1_1 && !result_1_1.done && (_a = result_1.return)) _a.call(result_1);
                                     }
                                     finally { if (e_1) throw e_1.error; }
                                 }
@@ -161,7 +162,7 @@ function useResolvedValue() {
                 }); })();
             }
         }
-    }, [value]);
+    }, [value, siteNodeContextPath]);
     return {
         loading: loading,
         error: error,
@@ -192,7 +193,10 @@ exports.NodeTree = new (function (_super) {
                 return (React.createElement("div", null, "An error occurred :("));
             }
             else {
-                return (React.createElement(NodeTreeAdapter_1.NodeTreeAdapter, { selected: resolvedValue, onSelect: function (node) { return update({ href: "node://" + node.identifier }); } }));
+                return (React.createElement(NodeTreeAdapter_1.NodeTreeAdapter, { selected: resolvedValue, onSelect: function (node) {
+                        cache.set("node://" + node.identifier, node);
+                        update({ href: "node://" + node.identifier });
+                    } }));
             }
         };
         return _this;

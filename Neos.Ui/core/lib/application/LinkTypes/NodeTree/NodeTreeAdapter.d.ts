@@ -1,22 +1,8 @@
 import * as React from 'react';
-export interface INode {
-    identifier: string;
-    contextPath: string;
-    nodeType: string;
-    label: string;
-    depth: number;
-    children: {
-        contextPath: string;
-        nodeType: string;
-    }[];
-    properties: {
-        _hidden: boolean;
-        _hiddenInIndex: boolean;
-    };
-}
+import { INodePartialForTree } from '@sitegeist/archaeopteryx-neos-bridge';
 interface Props {
-    selected: null | INode;
-    onSelect: (node: INode) => void;
+    selected: null | INodePartialForTree;
+    onSelect: (node: INodePartialForTree) => void;
 }
 export declare const NodeTreeAdapter: React.FC<Props>;
 export {};

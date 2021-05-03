@@ -1,39 +1,35 @@
 import * as React from 'react';
 import {produce} from 'immer';
 import {useDebounce} from 'react-use';
+import {useWhatChanged} from '@simbathesailor/use-what-changed';
 
 import {Tree} from '@neos-project/react-ui-components';
-import backend from '@neos-project/neos-ui-backend-connector';
-import {INodeType, useNeos} from '../../../acl';
+import {
+    q,
+    ContextPath,
+    NodeTypeName,
+    useSiteNodeContextPath,
+    useDocumentNodeContextPath,
+    useNodeType,
+    useNodeTypes,
+    useNodeTypesRegistry,
+    useConfiguration,
+    INodePartialForTree,
+    INodeType
+} from '@sitegeist/archaeopteryx-neos-bridge';
 
 interface ITreeState {
     nodesByContextPath: {
-        [contextPath: string]: INode
+        [contextPath: string]: INodePartialForTree
     }
     filteredNodesByContextPath: null | {
-        [contextPath: string]: INode
+        [contextPath: string]: INodePartialForTree
     }
     searchTerm: null | string
-    nodeTypeFilter: null | string
-    rootNodeContextPath: null | string
+    nodeTypeFilter: null | NodeTypeName
+    rootNodeContextPath: null | ContextPath
     open: string[]
     loading: string[]
-}
-
-export interface INode {
-    identifier: string
-    contextPath: string
-    nodeType: string
-    label: string
-    depth: number
-    children: {
-        contextPath: string
-        nodeType: string
-    }[]
-    properties: {
-        _hidden: boolean
-        _hiddenInIndex: boolean
-    }
 }
 
 function useOperation() {
@@ -56,8 +52,12 @@ function useOperation() {
     return {loading, error, start, fail, succeed};
 }
 
+function useBaseNodeTypeName(): NodeTypeName {
+    const baseNodeTypeName = useConfiguration(c => c.nodeTree?.presets?.default?.baseNodeType);
+    return baseNodeTypeName ?? NodeTypeName('Neos.Neos:Document');
+}
+
 function useTree(startingPoint?: string, selectedPath?: string) {
-    const neos = useNeos();
     const initialization = useOperation();
     const [treeState, setTreeState] = React.useState<ITreeState>({
         nodesByContextPath: {},
@@ -68,27 +68,29 @@ function useTree(startingPoint?: string, selectedPath?: string) {
         open: [],
         loading: []
     });
-    const baseNodeType = neos?.configuration?.nodeTree?.presets?.default?.baseNodeType ?? 'Neos.Neos:Document';
-    const loadingDepth = neos?.configuration?.nodeTree?.loadingDepth ?? 4;
+    const siteNodeContextPath = useSiteNodeContextPath();
+    const documentNodeContextPath = useDocumentNodeContextPath();
+    const baseNodeTypeName = useBaseNodeTypeName();
+    const loadingDepth = useConfiguration(c => c.nodeTree?.loadingDepth) ?? 4;
+    const nodeTypesRegistry = useNodeTypesRegistry();
 
-    const filterNodes = (nodes: INode[]) => nodes.map((node: INode) => ({
+    const filterNodes = (nodes: INodePartialForTree[]) => nodes.map((node: INodePartialForTree) => ({
         ...node,
         children: node.children.filter(({nodeType: nodeTypeName}) => {
-            const nodeTypesRegistry = neos?.globalRegistry.get('@neos-project/neos-ui-contentrepository');
-            return Boolean(nodeTypesRegistry?.isOfType(nodeTypeName, baseNodeType));
+            return Boolean(nodeTypesRegistry?.isOfType(nodeTypeName, baseNodeTypeName));
         })
     }));
 
-    const markAsLoading = (contextPath: string) => {
+    const markAsLoading = (node: INodePartialForTree) => {
         setTreeState(treeState => produce(treeState, draft => {
-            draft.loading.push(contextPath);
+            draft.loading.push(node.contextPath.toString());
         }));
     };
 
-    const unmarkAsLoading = (contextPath: string) => {
+    const unmarkAsLoading = (node: INodePartialForTree) => {
         setTreeState(treeState => produce(treeState, draft => {
             for (const [index, c] of treeState.loading.entries()) {
-                if (c === contextPath) {
+                if (c === node.contextPath.toString()) {
                     draft.loading.splice(index, 1);
                     break;
                 }
@@ -96,42 +98,38 @@ function useTree(startingPoint?: string, selectedPath?: string) {
         }));
     };
 
-    const toggle = async (contextPath: string) => {
-        if (treeState.open.includes(contextPath)) {
+    const toggle = async (node: INodePartialForTree) => {
+        if (treeState.open.includes(node.contextPath.toString())) {
             setTreeState(treeState => produce(treeState, draft => {
                 for (const [index, c] of treeState.open.entries()) {
-                    if (c === contextPath) {
+                    if (c === node.contextPath.toString()) {
                         draft.open.splice(index, 1);
                         break;
                     }
                 }
             }));
         } else {
-            const node = treeState.nodesByContextPath[contextPath];
-            if (node) {
-                if (node.children.every(c => Boolean(treeState.nodesByContextPath[c.contextPath]))) {
-                    setTreeState(treeState => produce(treeState, draft => {
-                        draft.open.push(contextPath);
-                    }));
-                } else {
-                    const {q} = backend.get();
-                    const children = node.children
-                        .filter(c => !Boolean(treeState.nodesByContextPath[c.contextPath]))
-                        .map(c => c.contextPath);
+            if (node.children.every(c => Boolean(treeState.nodesByContextPath[c.contextPath.toString()]))) {
+                setTreeState(treeState => produce(treeState, draft => {
+                    draft.open.push(node.contextPath.toString());
+                }));
+            } else {
+                const children = node.children
+                    .filter(c => !Boolean(treeState.nodesByContextPath[c.contextPath.toString()]))
+                    .map(c => c.contextPath);
 
-                    markAsLoading(node.contextPath);
+                markAsLoading(node);
 
-                    const nodes = await q(children).getForTree();
+                const nodes = await q(children).getForTree();
 
-                    setTreeState(treeState => produce(treeState, draft => {
-                        for (const node of filterNodes(nodes)) {
-                            draft.nodesByContextPath[node.contextPath] = node;
-                        }
-                        draft.open.push(contextPath);
-                    }));
+                setTreeState(treeState => produce(treeState, draft => {
+                    for (const node of filterNodes(nodes)) {
+                        draft.nodesByContextPath[node.contextPath.toString()] = node;
+                    }
+                    draft.open.push(node.contextPath.toString());
+                }));
 
-                    unmarkAsLoading(node.contextPath);
-                }
+                unmarkAsLoading(node);
             }
         }
     };
@@ -141,7 +139,8 @@ function useTree(startingPoint?: string, selectedPath?: string) {
             draft.searchTerm = searchTerm;
         }));
     };
-    const filter = (nodeTypeName: null | string) => {
+
+    const filter = (nodeTypeName: null | NodeTypeName) => {
         setTreeState(treeState => produce(treeState, draft => {
             draft.nodeTypeFilter = nodeTypeName;
         }));
@@ -149,21 +148,17 @@ function useTree(startingPoint?: string, selectedPath?: string) {
 
     React.useEffect(() => {
         (async () => {
-            const siteNode = neos?.store.getState()?.cr?.nodes?.siteNode;
-            const root = adoptContextPath(startingPoint, siteNode);
-            const offset = root?.match(/\//g)?.length ?? 0;
+            const root = siteNodeContextPath?.adopt(startingPoint) ?? siteNodeContextPath;
 
-            if (root) {
-                const {q} = backend.get();
-                const documentNode = neos?.store.getState()?.cr?.nodes?.documentNode;
-                const selected = adoptContextPath(selectedPath, documentNode);
-                const toggled = resolveRootLine(root, selectedPath);
+            if (root && documentNodeContextPath) {
+                const selected = documentNodeContextPath?.adopt(selectedPath);
+                const toggled = root.getIntermediateContextPaths(selected ?? documentNodeContextPath);
 
                 initialization.start();
 
                 try {
-                    const nodes = await q([root, selected]).neosUiDefaultNodes(
-                        baseNodeType,
+                    const nodes = await q([root, selected ?? documentNodeContextPath]).neosUiDefaultNodes(
+                        baseNodeTypeName,
                         loadingDepth,
                         toggled,
                         []
@@ -171,10 +166,10 @@ function useTree(startingPoint?: string, selectedPath?: string) {
 
                     setTreeState(produce(treeState, draft => {
                         for (const node of filterNodes(nodes)) {
-                            draft.nodesByContextPath[node.contextPath] = node;
+                            draft.nodesByContextPath[node.contextPath.toString()] = node;
 
-                            if (toggled.includes(node.contextPath) || node.depth - offset <= loadingDepth) {
-                                draft.open.push(node.contextPath);
+                            if (toggled.includes(node.contextPath) || node.depth - root.depth < loadingDepth) {
+                                draft.open.push(node.contextPath.toString());
                             }
                         }
                         draft.rootNodeContextPath = root;
@@ -186,32 +181,29 @@ function useTree(startingPoint?: string, selectedPath?: string) {
                 }
             }
         })();
-    }, [neos, startingPoint, selectedPath]);
+    }, [siteNodeContextPath, documentNodeContextPath, startingPoint]);
 
     useDebounce(() => {
-        const siteNode = neos?.store.getState()?.cr?.nodes?.siteNode;
-        const root = adoptContextPath(startingPoint, siteNode);
+        const root = siteNodeContextPath?.adopt(startingPoint);
 
-        if (root && (treeState.searchTerm || treeState.nodeTypeFilter)) {
-            (async () => {
-                console.log('search', treeState.searchTerm);
-                const {q} = backend.get();
-
+        (async () => {
+            if (root && (treeState.searchTerm || treeState.nodeTypeFilter)) {
                 initialization.start();
                 try {
-                    const nodes = await q(root).search(treeState.searchTerm, treeState.nodeTypeFilter)
+                    const nodes = await q(root)
+                        .search(treeState.searchTerm ?? undefined, treeState.nodeTypeFilter ?? undefined)
                         .getForTreeWithParents();
 
                     setTreeState(produce(treeState, draft => {
                         draft.filteredNodesByContextPath = {};
 
                         if (treeState.rootNodeContextPath) {
-                            draft.filteredNodesByContextPath[treeState.rootNodeContextPath] =
-                                treeState.nodesByContextPath[treeState.rootNodeContextPath];
+                            draft.filteredNodesByContextPath[treeState.rootNodeContextPath.toString()] =
+                                treeState.nodesByContextPath[treeState.rootNodeContextPath.toString()];
                         }
 
                         for (const node of filterNodes(nodes)) {
-                            draft.filteredNodesByContextPath[node.contextPath] = node;
+                            draft.filteredNodesByContextPath[node.contextPath.toString()] = node;
                         }
                     }));
 
@@ -219,13 +211,13 @@ function useTree(startingPoint?: string, selectedPath?: string) {
                 } catch (err) {
                     initialization.fail(err);
                 }
-            })();
-        } else {
-            setTreeState(produce(treeState, draft => {
-                draft.filteredNodesByContextPath = null;
-            }));
-        }
-    }, 500, [neos, startingPoint, selectedPath, treeState.searchTerm, treeState.nodeTypeFilter]);
+            } else {
+                setTreeState(produce(treeState, draft => {
+                    draft.filteredNodesByContextPath = null;
+                }));
+            }
+        })();
+    }, 500, [siteNodeContextPath, startingPoint, treeState.searchTerm, treeState.nodeTypeFilter]);
 
     return {
         treeState: {
@@ -243,14 +235,14 @@ function useTree(startingPoint?: string, selectedPath?: string) {
 }
 
 interface Props {
-    selected: null | INode
-    onSelect: (node: INode) => void
+    selected: null | INodePartialForTree
+    onSelect: (node: INodePartialForTree) => void
 }
 
 export const NodeTreeAdapter: React.FC<Props> = props => {
-    const {loading, error, treeState, toggle, search, filter, isFiltered} = useTree(undefined, props.selected?.contextPath);
-    const handleToggle = (node: INode) => toggle(node.contextPath);
-    const handleClick = (node: INode) => props.onSelect(node);
+    const {loading, error, treeState, toggle, search, filter, isFiltered} = useTree(undefined, props.selected?.contextPath.toString());
+    const handleToggle = (node: INodePartialForTree) => toggle(node);
+    const handleClick = (node: INodePartialForTree) => props.onSelect(node);
 
     let treeView;
     if (loading) {
@@ -264,7 +256,7 @@ export const NodeTreeAdapter: React.FC<Props> = props => {
             <div>An error occurred :(</div>
         );
     } else {
-        const rootNode = treeState.nodesByContextPath[treeState.rootNodeContextPath ?? ''];
+        const rootNode = treeState.nodesByContextPath[treeState.rootNodeContextPath?.toString() ?? ''];
         if (rootNode) {
             treeView = (
                 <Tree>
@@ -300,39 +292,22 @@ export const NodeTreeAdapter: React.FC<Props> = props => {
     )
 };
 
-function useNodeType(nodeTypeName: string) {
-    const neos = useNeos();
-    const nodeTypesRegistry = neos?.globalRegistry.get('@neos-project/neos-ui-contentrepository');
-
-    return nodeTypesRegistry?.get(nodeTypeName) ?? null;
-}
-
-function useNodeTypes(baseNodeTypeName: string) {
-    const neos = useNeos();
-    const nodeTypesRegistry = neos?.globalRegistry.get('@neos-project/neos-ui-contentrepository');
-
-    return nodeTypesRegistry?.getSubTypesOf(baseNodeTypeName).map(
-        nodeTypeName => nodeTypesRegistry?.get(nodeTypeName) as INodeType
-    ).filter(n => n) ?? [];
-}
-
 interface NodeAdapterProps {
-    selected: null | INode
-    node: INode
+    selected: null | INodePartialForTree
+    node: INodePartialForTree
     tree: ITreeState
     level: number
     isFiltered: boolean
-    onToggle: (node: INode) => any
-    onClick: (node: INode) => any
+    onToggle: (node: INodePartialForTree) => any
+    onClick: (node: INodePartialForTree) => any
 }
 
 const NodeAdapter: React.FC<NodeAdapterProps> = props => {
     const nodeType = useNodeType(props.node.nodeType);
     const handleNodeToggle = () => props.onToggle(props.node);
     const handleNodeClick = () => props.onClick(props.node);
-    const isCollapsed = !props.tree.open.includes(props.node.contextPath) && !props.isFiltered;
-
-    console.log('node', props.node);
+    const isCollapsed = !props.tree.open.includes(props.node.contextPath.toString()) && !props.isFiltered;
+    const isLoading = props.tree.loading.includes(props.node.contextPath.toString());
 
     return (
         <Tree.Node>
@@ -343,9 +318,9 @@ const NodeAdapter: React.FC<NodeAdapterProps> = props => {
                 nodeDndType={undefined}
                 isLastChild={true}
                 isCollapsed={isCollapsed}
-                isActive={props.selected?.contextPath === props.node.contextPath}
-                isFocused={props.selected?.contextPath === props.node.contextPath}
-                isLoading={props.tree.loading.includes(props.node.contextPath)}
+                isActive={props.selected?.contextPath.toString() === props.node.contextPath.toString()}
+                isFocused={props.selected?.contextPath.toString() === props.node.contextPath.toString()}
+                isLoading={isLoading}
                 isDirty={false}
                 isHidden={props.node.properties._hidden}
                 isHiddenInIndex={props.node.properties._hiddenInIndex}
@@ -354,7 +329,7 @@ const NodeAdapter: React.FC<NodeAdapterProps> = props => {
                 label={props.node.label}
                 icon={nodeType?.ui?.icon}
                 customIconComponent={undefined}
-                iconLabel={'this.getNodeTypeLabel()'}
+                iconLabel={nodeType?.label}
                 level={props.level}
                 onToggle={handleNodeToggle}
                 onClick={handleNodeClick}
@@ -363,7 +338,7 @@ const NodeAdapter: React.FC<NodeAdapterProps> = props => {
                 title={props.node.label}
             />
             {isCollapsed ? null : props.node.children
-                .map(child => props.tree.nodesByContextPath[child.contextPath])
+                .map(child => props.tree.nodesByContextPath[child.contextPath.toString()])
                 .filter(n => n)
                 .map(node => (
                     <NodeAdapter
@@ -383,19 +358,18 @@ interface NodeTypeFilterProps {
 }
 
 const NodeTypeFilter: React.FC<NodeTypeFilterProps> = props => {
-    const neos = useNeos();
-    const nodeTypes = useNodeTypes(neos?.configuration?.nodeTree?.presets?.default?.baseNodeType ?? 'Neos.Neos:Document');
+    const baseNodeTypeName = useBaseNodeTypeName();
+    const selectableNodeTypes = useNodeTypes(baseNodeTypeName);
     const handleChange = React.useCallback((ev: React.SyntheticEvent) => {
-        const nodeTypesRegistry = neos?.globalRegistry.get('@neos-project/neos-ui-contentrepository');
-        const nodeType = nodeTypesRegistry?.get((ev.target as HTMLSelectElement).value);
+        const nodeType = selectableNodeTypes?.find(nodeType => nodeType.name === (ev.target as HTMLSelectElement).value);
 
         props.onSelect(nodeType ?? null);
-    }, [neos, props.onSelect]);
+    }, [selectableNodeTypes, props.onSelect]);
 
     return (
         <select value={props.value ?? ''} onChange={handleChange}>
             <option value="">- None -</option>
-            {nodeTypes.map(nodeType => (
+            {selectableNodeTypes.map(nodeType => (
                 <option value={nodeType.name}>
                     {nodeType.label}
                 </option>

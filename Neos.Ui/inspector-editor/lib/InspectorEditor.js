@@ -54,7 +54,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.InspectorEditor = void 0;
 var React = __importStar(require("react"));
 var react_ui_components_1 = require("@neos-project/react-ui-components");

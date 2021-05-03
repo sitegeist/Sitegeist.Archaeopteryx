@@ -1,3 +1,6 @@
+import * as React from 'react';
+
+import {useGlobalRegistry} from '../Extensibility';
 import {INodeType} from './NodeType';
 
 export interface INodeTypesRegistry {
@@ -5,4 +8,17 @@ export interface INodeTypesRegistry {
     getAllAsList: () => INodeType[]
     isOfType: (name: string, reference: string) => boolean
     getSubTypesOf: (name: string) => string[]
+}
+
+export function useNodeTypesRegistry(): null | INodeTypesRegistry {
+    const globalRegistry = useGlobalRegistry();
+    const [result, setResult] = React.useState<null | INodeTypesRegistry>(null);
+
+    React.useEffect(() => {
+        if (globalRegistry) {
+            setResult(globalRegistry.get('@neos-project/neos-ui-contentrepository'));
+        }
+    }, [globalRegistry]);
+
+    return result;
 }

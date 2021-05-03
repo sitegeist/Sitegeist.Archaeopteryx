@@ -30,7 +30,7 @@ export class FlowQuery {
         return this;
     }
 
-    public search(searchTerm?: string, nodeTypeFilter?: NodeTypeName[]): this {
+    public search(searchTerm?: string, nodeTypeFilter?: NodeTypeName): this {
         this.q = this.q.search(searchTerm, nodeTypeFilter);
         return this;
     }
@@ -46,6 +46,15 @@ export class FlowQuery {
 
     public async getForTree(): Promise<INodePartialForTree[]> {
         return this.q.getForTree().then((nodes: any[]) => {
+            return nodes.map(node => ({
+                ...node,
+                contextPath: ContextPath.fromString(node.contextPath)
+            })).filter(node => node.contextPath);
+        });
+    }
+
+    public async getForTreeWithParents(): Promise<INodePartialForTree[]> {
+        return this.q.getForTreeWithParents().then((nodes: any[]) => {
             return nodes.map(node => ({
                 ...node,
                 contextPath: ContextPath.fromString(node.contextPath)

@@ -1,43 +1,51 @@
 import * as React from 'react';
 
-import backend from '@neos-project/neos-ui-backend-connector';
+import {q, INodePartialForTree, useSiteNodeContextPath} from '@sitegeist/archaeopteryx-neos-bridge';
 
-import {useNeos} from '../../../acl';
 import {LinkType, ILinkTypeProps, useEditorTransactions, useEditorValue} from '../../../domain';
-import {INode, NodeTreeAdapter} from './NodeTreeAdapter';
+import {NodeTreeAdapter} from './NodeTreeAdapter';
+
+const cache = new Map<string, INodePartialForTree>();
 
 function useResolvedValue() {
-    const neos = useNeos();
     const {value} = useEditorValue();
     const [loading, setLoading] = React.useState(false);
     const [error, setError] = React.useState<null | Error>(null);
-    const [resolvedValue, setResolvedValue] = React.useState<null | INode>(null);
+    const [resolvedValue, setResolvedValue] = React.useState<null | INodePartialForTree>(null);
+    const siteNodeContextPath = useSiteNodeContextPath();
 
     React.useEffect(() => {
         if (value?.href) {
+            if (cache.has(value.href)) {
+                setResolvedValue(cache.get(value.href)!);
+                return;
+            }
+
             const match = /node:\/\/(.*)/.exec(value.href);
             if (match) {
-                const siteNode = neos?.store.getState()?.cr?.nodes?.siteNode;
-                const {q} = backend.get();
                 const identifier = match[1];
 
                 (async () => {
-                    setLoading(true);
-                    try {
-                        const result = await q(siteNode).find(`#${identifier}`).getForTree();
-                        for (const node of result) {
-                            setResolvedValue(node);
+                    if (siteNodeContextPath) {
+                        setLoading(true);
+                        try {
+                            const result = await q(siteNodeContextPath).find(`#${identifier}`)
+                                .getForTree();
+                            for (const node of result) {
+                                cache.set(value.href, node);
+                                setResolvedValue(node);
+                                setLoading(false);
+                                break;
+                            }
+                        } catch (err) {
+                            setError(err);
                             setLoading(false);
-                            break;
                         }
-                    } catch (err) {
-                        setError(err);
-                        setLoading(false);
                     }
                 })();
             }
         }
-    }, [value]);
+    }, [value, siteNodeContextPath]);
 
     return {
         loading,
@@ -81,7 +89,10 @@ export const NodeTree = new class extends LinkType {
             return (
                 <NodeTreeAdapter
                     selected={resolvedValue}
-                    onSelect={node => update({href: `node://${node.identifier}`})}
+                    onSelect={node =>{
+                        cache.set(`node://${node.identifier}`, node);
+                        update({href: `node://${node.identifier}`});
+                    }}
                     />
             );
         }

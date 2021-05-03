@@ -1,13 +1,6 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.Asset = void 0;
 var Asset_1 = require("./Asset");
-__createBinding(exports, Asset_1, "Asset");
+Object.defineProperty(exports, "Asset", { enumerable: true, get: function () { return Asset_1.Asset; } });
 //# sourceMappingURL=index.js.map

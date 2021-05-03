@@ -18,9 +18,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.Modal = exports.LinkTypes = void 0;
 exports.LinkTypes = __importStar(require("./LinkTypes"));
 var Modal_1 = require("./Modal");
-__createBinding(exports, Modal_1, "Modal");
+Object.defineProperty(exports, "Modal", { enumerable: true, get: function () { return Modal_1.Modal; } });
 //# sourceMappingURL=index.js.map

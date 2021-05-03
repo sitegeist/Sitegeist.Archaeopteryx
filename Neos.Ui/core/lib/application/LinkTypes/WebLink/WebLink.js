@@ -33,7 +33,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.WebLink = void 0;
 var React = __importStar(require("react"));
 var domain_1 = require("../../../domain");

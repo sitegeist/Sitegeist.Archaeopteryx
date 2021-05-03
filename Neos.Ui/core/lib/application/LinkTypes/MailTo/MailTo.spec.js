@@ -1,5 +1,7 @@
 "use strict";
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
+jest.mock('@neos-project/neos-ui-backend-connector', function () { return ({}); }, { virtual: true });
+jest.mock('@neos-project/react-ui-components', function () { return ({}); });
 require("@testing-library/jest-dom/extend-expect");
 var MailTo_1 = require("./MailTo");
 describe('MailToEditor', function () {

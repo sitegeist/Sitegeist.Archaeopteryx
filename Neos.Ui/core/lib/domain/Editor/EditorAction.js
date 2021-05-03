@@ -1,5 +1,5 @@
 "use strict";
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.ValueWasApplied = exports.ValueWasCleared = exports.ValueWasUpdated = exports.EditorWasDismissed = exports.EditorWasOpened = void 0;
 var typesafe_actions_1 = require("typesafe-actions");
 exports.EditorWasOpened = typesafe_actions_1.createAction('http://sitegeist.de/Sitegeist.Archaeopteryx/EditorWasOpened', function (value) { return value; })();

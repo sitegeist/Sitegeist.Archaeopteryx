@@ -1,4 +1,7 @@
+import * as React from 'react';
 import {Any} from 'ts-toolbelt';
+
+import {useSelector} from '../Extensibility/Store';
 
 export type Path = Any.Type<string, 'NodePath'>;
 export type Context = Any.Type<string, 'ContentContext'>;
@@ -19,7 +22,7 @@ export class ContextPath {
         return null;
     }
 
-    public adopt(pathLike: string): null | ContextPath {
+    public adopt(pathLike: undefined | null | string): null | ContextPath {
         const [path] = (pathLike ?? '').split('@');
 
         if (path) {
@@ -54,4 +57,34 @@ export class ContextPath {
     public toString(): string {
         return `${this.path}@${this.context}`;
     }
+
+    get depth(): number {
+        return this.path.match(/\//g)?.length ?? 0;
+    }
+}
+
+export function useSiteNodeContextPath(): null | ContextPath {
+    const siteNodeContextPath = useSelector(state => state.cr?.nodes?.siteNode);
+    const result = React.useMemo(() => {
+        if (siteNodeContextPath) {
+            return ContextPath.fromString(siteNodeContextPath);
+        }
+
+        return null;
+    }, [siteNodeContextPath]);
+
+    return result;
+}
+
+export function useDocumentNodeContextPath(): null | ContextPath {
+    const documentNodeContextPath = useSelector(state => state.cr?.nodes?.documentNode);
+    const result = React.useMemo(() => {
+        if (documentNodeContextPath) {
+            return ContextPath.fromString(documentNodeContextPath);
+        }
+
+        return null;
+    }, [documentNodeContextPath]);
+
+    return result;
 }

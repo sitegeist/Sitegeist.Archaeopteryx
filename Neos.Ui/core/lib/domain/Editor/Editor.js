@@ -45,7 +45,7 @@ var __read = (this && this.__read) || function (o, n) {
     }
     return ar;
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.useEditorTransactions = exports.useEditorValue = exports.useEditorState = exports.EditorContext = exports.createEditor = exports.editorReducer = void 0;
 var React = __importStar(require("react"));
 var typesafe_actions_1 = require("typesafe-actions");

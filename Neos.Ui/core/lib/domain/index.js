@@ -1,21 +1,14 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.useEditorTransactions = exports.useEditorValue = exports.useEditorState = exports.EditorContext = exports.createEditor = exports.useLinkTypeForHref = exports.useLinkTypes = exports.LinkType = void 0;
 var LinkType_1 = require("./LinkType");
-__createBinding(exports, LinkType_1, "LinkType");
-__createBinding(exports, LinkType_1, "useLinkTypes");
-__createBinding(exports, LinkType_1, "useLinkTypeForHref");
+Object.defineProperty(exports, "LinkType", { enumerable: true, get: function () { return LinkType_1.LinkType; } });
+Object.defineProperty(exports, "useLinkTypes", { enumerable: true, get: function () { return LinkType_1.useLinkTypes; } });
+Object.defineProperty(exports, "useLinkTypeForHref", { enumerable: true, get: function () { return LinkType_1.useLinkTypeForHref; } });
 var Editor_1 = require("./Editor");
-__createBinding(exports, Editor_1, "createEditor");
-__createBinding(exports, Editor_1, "EditorContext");
-__createBinding(exports, Editor_1, "useEditorState");
-__createBinding(exports, Editor_1, "useEditorValue");
-__createBinding(exports, Editor_1, "useEditorTransactions");
+Object.defineProperty(exports, "createEditor", { enumerable: true, get: function () { return Editor_1.createEditor; } });
+Object.defineProperty(exports, "EditorContext", { enumerable: true, get: function () { return Editor_1.EditorContext; } });
+Object.defineProperty(exports, "useEditorState", { enumerable: true, get: function () { return Editor_1.useEditorState; } });
+Object.defineProperty(exports, "useEditorValue", { enumerable: true, get: function () { return Editor_1.useEditorValue; } });
+Object.defineProperty(exports, "useEditorTransactions", { enumerable: true, get: function () { return Editor_1.useEditorTransactions; } });
 //# sourceMappingURL=index.js.map

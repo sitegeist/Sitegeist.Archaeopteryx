@@ -29,10 +29,10 @@ var __values = (this && this.__values) || function(o) {
     };
     throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.useLinkTypeForHref = exports.useLinkTypes = exports.LinkType = void 0;
 var React = __importStar(require("react"));
-var acl_1 = require("../acl");
+var archaeopteryx_neos_bridge_1 = require("@sitegeist/archaeopteryx-neos-bridge");
 var LinkType = (function () {
     function LinkType() {
     }
@@ -40,15 +40,9 @@ var LinkType = (function () {
 }());
 exports.LinkType = LinkType;
 function useLinkTypes() {
-    var neosContext = acl_1.useNeos();
-    if (neosContext) {
-        var globalRegistry = neosContext.globalRegistry;
-        var linkTypesRegistry = globalRegistry.get('@sitegeist/archaeopteryx/link-types');
-        if (linkTypesRegistry) {
-            return linkTypesRegistry.getAllAsList();
-        }
-    }
-    return [];
+    var _a, _b;
+    var globalRegistry = archaeopteryx_neos_bridge_1.useGlobalRegistry();
+    return (_b = (_a = globalRegistry === null || globalRegistry === void 0 ? void 0 : globalRegistry.get('@sitegeist/archaeopteryx/link-types')) === null || _a === void 0 ? void 0 : _a.getAllAsList()) !== null && _b !== void 0 ? _b : [];
 }
 exports.useLinkTypes = useLinkTypes;
 function useLinkTypeForHref(href) {
@@ -66,7 +60,7 @@ function useLinkTypeForHref(href) {
         catch (e_1_1) { e_1 = { error: e_1_1 }; }
         finally {
             try {
-                if (linkTypes_1_1 && !linkTypes_1_1.done && (_a = linkTypes_1["return"])) _a.call(linkTypes_1);
+                if (linkTypes_1_1 && !linkTypes_1_1.done && (_a = linkTypes_1.return)) _a.call(linkTypes_1);
             }
             finally { if (e_1) throw e_1.error; }
         }

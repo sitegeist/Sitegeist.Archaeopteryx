@@ -1,7 +1,10 @@
+jest.mock('@neos-project/neos-ui-backend-connector', () => ({}), { virtual: true });
+jest.mock('@neos-project/react-ui-components', () => ({}));
+
 import '@testing-library/jest-dom/extend-expect';
 
 import * as React from 'react';
-import {render, fireEvent, waitFor, screen} from '@testing-library/react';
+import {render, screen} from '@testing-library/react';
 
 import {WebLink} from './WebLink';
 

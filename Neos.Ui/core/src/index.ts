@@ -1,5 +1,3 @@
-export {NeosContext} from './acl';
-
 export {
     useLinkTypeForHref,
     createEditor,

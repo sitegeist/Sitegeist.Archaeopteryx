@@ -1,12 +1,12 @@
 import * as React from 'react';
 import manifest, {SynchronousRegistry} from '@neos-project/neos-ui-extensibility';
 
-import {NeosContext, LinkTypes, Modal, createEditor, EditorContext} from '@sitegeist/archaeopteryx-core';
+import {NeosContext} from '@sitegeist/archaeopteryx-neos-bridge';
+import {LinkTypes, Modal, createEditor, EditorContext} from '@sitegeist/archaeopteryx-core';
 import {InspectorEditor} from '@sitegeist/archaeopteryx-inspector-editor';
 import {LinkButton} from '@sitegeist/archaeopteryx-rte-formatter';
 
 manifest('@sitegeist/archaeopteryx-plugin', {}, (globalRegistry, {store, configuration, routes, ...deps}) => {
-    console.log(deps);
     const editor = createEditor();
     const neosContext = {globalRegistry, store, configuration, routes};
 

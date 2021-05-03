@@ -70,7 +70,7 @@ var __read = (this && this.__read) || function (o, n) {
     }
     return ar;
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.LinkButton = void 0;
 var React = __importStar(require("react"));
 var react_ui_components_1 = require("@neos-project/react-ui-components");
@@ -78,24 +78,29 @@ var archaeopteryx_core_1 = require("@sitegeist/archaeopteryx-core");
 var LinkButton = function (props) {
     var tx = archaeopteryx_core_1.useEditorTransactions();
     var handleLinkButtonClick = React.useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
-        var _a, href, anchor, result;
-        var _b, _c, _d, _e, _f, _g, _h;
-        return __generator(this, function (_j) {
-            switch (_j.label) {
+        var link, result;
+        var _a, _b, _c, _d, _e, _f, _g;
+        return __generator(this, function (_h) {
+            switch (_h.label) {
                 case 0:
-                    if (!props.formattingUnderCursor.link) return [3, 2];
-                    _a = __read(props.formattingUnderCursor.link.split('#'), 2), href = _a[0], anchor = _a[1];
-                    return [4, tx.editLink({
-                            href: href,
-                            options: {
-                                anchor: anchor,
-                                title: props.formattingUnderCursor.linkTitle,
-                                targetBlank: props.formattingUnderCursor.linkTargetBlank,
-                                relNoFollow: props.formattingUnderCursor.linkRelNofollow
-                            }
-                        })];
+                    link = (function () {
+                        if (props.formattingUnderCursor.link) {
+                            var _a = __read(props.formattingUnderCursor.link.split('#'), 2), href = _a[0], anchor = _a[1];
+                            return {
+                                href: href,
+                                options: {
+                                    anchor: anchor,
+                                    title: props.formattingUnderCursor.linkTitle,
+                                    targetBlank: props.formattingUnderCursor.linkTargetBlank,
+                                    relNoFollow: props.formattingUnderCursor.linkRelNofollow
+                                }
+                            };
+                        }
+                        return null;
+                    })();
+                    return [4, tx.editLink(link)];
                 case 1:
-                    result = _j.sent();
+                    result = _h.sent();
                     if (result.change) {
                         if (result.value === null) {
                             props.executeCommand('linkTitle', false, false);
@@ -104,19 +109,18 @@ var LinkButton = function (props) {
                             props.executeCommand('unlink');
                         }
                         else {
-                            props.executeCommand('linkTitle', ((_b = result.value.options) === null || _b === void 0 ? void 0 : _b.title) || false, false);
-                            props.executeCommand('linkTargetBlank', (_d = (_c = result.value.options) === null || _c === void 0 ? void 0 : _c.targetBlank) !== null && _d !== void 0 ? _d : false, false);
-                            props.executeCommand('linkRelNofollow', (_f = (_e = result.value.options) === null || _e === void 0 ? void 0 : _e.relNoFollow) !== null && _f !== void 0 ? _f : false, false);
-                            if ((_g = result.value.options) === null || _g === void 0 ? void 0 : _g.anchor) {
-                                props.executeCommand('link', result.value.href + "#" + ((_h = result.value.options) === null || _h === void 0 ? void 0 : _h.anchor), false);
+                            props.executeCommand('linkTitle', ((_a = result.value.options) === null || _a === void 0 ? void 0 : _a.title) || false, false);
+                            props.executeCommand('linkTargetBlank', (_c = (_b = result.value.options) === null || _b === void 0 ? void 0 : _b.targetBlank) !== null && _c !== void 0 ? _c : false, false);
+                            props.executeCommand('linkRelNofollow', (_e = (_d = result.value.options) === null || _d === void 0 ? void 0 : _d.relNoFollow) !== null && _e !== void 0 ? _e : false, false);
+                            if ((_f = result.value.options) === null || _f === void 0 ? void 0 : _f.anchor) {
+                                props.executeCommand('link', result.value.href + "#" + ((_g = result.value.options) === null || _g === void 0 ? void 0 : _g.anchor), false);
                             }
                             else {
                                 props.executeCommand('link', result.value.href, false);
                             }
                         }
                     }
-                    _j.label = 2;
-                case 2: return [2];
+                    return [2];
             }
         });
     }); }, [props.executeCommand, props.formattingUnderCursor.link, tx]);

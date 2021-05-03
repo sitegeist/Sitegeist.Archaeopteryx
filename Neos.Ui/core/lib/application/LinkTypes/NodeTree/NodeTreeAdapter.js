@@ -92,67 +92,13 @@ var __values = (this && this.__values) || function(o) {
     };
     throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.NodeTreeAdapter = void 0;
 var React = __importStar(require("react"));
 var immer_1 = require("immer");
 var react_use_1 = require("react-use");
 var react_ui_components_1 = require("@neos-project/react-ui-components");
-var neos_ui_backend_connector_1 = __importDefault(require("@neos-project/neos-ui-backend-connector"));
-var acl_1 = require("../../../acl");
-function adoptContextPath(startingPoint, referenceNode) {
-    var _a = __read((startingPoint !== null && startingPoint !== void 0 ? startingPoint : '').split('@'), 1), startingPointPath = _a[0];
-    var _b = __read((referenceNode !== null && referenceNode !== void 0 ? referenceNode : '').split('@'), 2), referenceNodePath = _b[0], referenceNodeContext = _b[1];
-    if (startingPointPath && referenceNodePath && referenceNodeContext) {
-        return startingPointPath + "@" + referenceNodeContext;
-    }
-    else if (referenceNodePath && referenceNodeContext) {
-        return referenceNodePath + "@" + referenceNodeContext;
-    }
-    else {
-        return null;
-    }
-}
-function resolveRootLine(rootContextPath, leafContextPath) {
-    var e_1, _a;
-    var _b = __read((rootContextPath !== null && rootContextPath !== void 0 ? rootContextPath : '').split('@'), 2), rootPath = _b[0], rootContext = _b[1];
-    var _c = __read((leafContextPath !== null && leafContextPath !== void 0 ? leafContextPath : '').split('@'), 2), leafPath = _c[0], leafContext = _c[1];
-    console.log({
-        rootPath: rootPath, rootContext: rootContext,
-        leafPath: leafPath, leafContext: leafContext
-    });
-    if (rootPath && rootContext && leafPath && leafContext && leafPath.startsWith(rootPath)) {
-        var segments = leafPath.split('/');
-        var result = [];
-        try {
-            for (var _d = __values(segments.entries()), _e = _d.next(); !_e.done; _e = _d.next()) {
-                var _f = __read(_e.value, 1), index = _f[0];
-                var path = segments.slice(0, -index).join('/');
-                if (path) {
-                    console.log({ path: path });
-                    result.push(path + "@" + rootContext);
-                }
-                if (path === rootPath) {
-                    break;
-                }
-            }
-        }
-        catch (e_1_1) { e_1 = { error: e_1_1 }; }
-        finally {
-            try {
-                if (_e && !_e.done && (_a = _d["return"])) _a.call(_d);
-            }
-            finally { if (e_1) throw e_1.error; }
-        }
-        return result;
-    }
-    else {
-        return [];
-    }
-}
+var archaeopteryx_neos_bridge_1 = require("@sitegeist/archaeopteryx-neos-bridge");
 function useOperation() {
     var _a = __read(React.useState(false), 2), loading = _a[0], setLoading = _a[1];
     var _b = __read(React.useState(null), 2), error = _b[0], setError = _b[1];
@@ -168,12 +114,15 @@ function useOperation() {
     }
     return { loading: loading, error: error, start: start, fail: fail, succeed: succeed };
 }
+function useBaseNodeTypeName() {
+    var baseNodeTypeName = archaeopteryx_neos_bridge_1.useConfiguration(function (c) { var _a, _b, _c; return (_c = (_b = (_a = c.nodeTree) === null || _a === void 0 ? void 0 : _a.presets) === null || _b === void 0 ? void 0 : _b.default) === null || _c === void 0 ? void 0 : _c.baseNodeType; });
+    return baseNodeTypeName !== null && baseNodeTypeName !== void 0 ? baseNodeTypeName : archaeopteryx_neos_bridge_1.NodeTypeName('Neos.Neos:Document');
+}
 function useTree(startingPoint, selectedPath) {
     var _this = this;
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
-    var neos = acl_1.useNeos();
+    var _a, _b;
     var initialization = useOperation();
-    var _k = __read(React.useState({
+    var _c = __read(React.useState({
         nodesByContextPath: {},
         filteredNodesByContextPath: null,
         searchTerm: null,
@@ -181,101 +130,100 @@ function useTree(startingPoint, selectedPath) {
         rootNodeContextPath: null,
         open: [],
         loading: []
-    }), 2), treeState = _k[0], setTreeState = _k[1];
-    var baseNodeType = (_e = (_d = (_c = (_b = (_a = neos === null || neos === void 0 ? void 0 : neos.configuration) === null || _a === void 0 ? void 0 : _a.nodeTree) === null || _b === void 0 ? void 0 : _b.presets) === null || _c === void 0 ? void 0 : _c["default"]) === null || _d === void 0 ? void 0 : _d.baseNodeType) !== null && _e !== void 0 ? _e : 'Neos.Neos:Document';
-    var loadingDepth = (_h = (_g = (_f = neos === null || neos === void 0 ? void 0 : neos.configuration) === null || _f === void 0 ? void 0 : _f.nodeTree) === null || _g === void 0 ? void 0 : _g.loadingDepth) !== null && _h !== void 0 ? _h : 4;
+    }), 2), treeState = _c[0], setTreeState = _c[1];
+    var siteNodeContextPath = archaeopteryx_neos_bridge_1.useSiteNodeContextPath();
+    var documentNodeContextPath = archaeopteryx_neos_bridge_1.useDocumentNodeContextPath();
+    var baseNodeTypeName = useBaseNodeTypeName();
+    var loadingDepth = (_a = archaeopteryx_neos_bridge_1.useConfiguration(function (c) { var _a; return (_a = c.nodeTree) === null || _a === void 0 ? void 0 : _a.loadingDepth; })) !== null && _a !== void 0 ? _a : 4;
+    var nodeTypesRegistry = archaeopteryx_neos_bridge_1.useNodeTypesRegistry();
     var filterNodes = function (nodes) { return nodes.map(function (node) { return (__assign(__assign({}, node), { children: node.children.filter(function (_a) {
             var nodeTypeName = _a.nodeType;
-            var nodeTypesRegistry = neos === null || neos === void 0 ? void 0 : neos.globalRegistry.get('@neos-project/neos-ui-contentrepository');
-            return Boolean(nodeTypesRegistry === null || nodeTypesRegistry === void 0 ? void 0 : nodeTypesRegistry.isOfType(nodeTypeName, baseNodeType));
+            return Boolean(nodeTypesRegistry === null || nodeTypesRegistry === void 0 ? void 0 : nodeTypesRegistry.isOfType(nodeTypeName, baseNodeTypeName));
         }) })); }); };
-    var markAsLoading = function (contextPath) {
+    var markAsLoading = function (node) {
         setTreeState(function (treeState) { return immer_1.produce(treeState, function (draft) {
-            draft.loading.push(contextPath);
+            draft.loading.push(node.contextPath.toString());
         }); });
     };
-    var unmarkAsLoading = function (contextPath) {
+    var unmarkAsLoading = function (node) {
         setTreeState(function (treeState) { return immer_1.produce(treeState, function (draft) {
-            var e_2, _a;
+            var e_1, _a;
             try {
                 for (var _b = __values(treeState.loading.entries()), _c = _b.next(); !_c.done; _c = _b.next()) {
                     var _d = __read(_c.value, 2), index = _d[0], c = _d[1];
-                    if (c === contextPath) {
+                    if (c === node.contextPath.toString()) {
                         draft.loading.splice(index, 1);
                         break;
                     }
                 }
             }
-            catch (e_2_1) { e_2 = { error: e_2_1 }; }
+            catch (e_1_1) { e_1 = { error: e_1_1 }; }
             finally {
                 try {
-                    if (_c && !_c.done && (_a = _b["return"])) _a.call(_b);
+                    if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
-                finally { if (e_2) throw e_2.error; }
+                finally { if (e_1) throw e_1.error; }
             }
         }); });
     };
-    var toggle = function (contextPath) { return __awaiter(_this, void 0, void 0, function () {
-        var node, q, children, nodes_1;
+    var toggle = function (node) { return __awaiter(_this, void 0, void 0, function () {
+        var children, nodes_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    if (!treeState.open.includes(contextPath)) return [3, 1];
+                    if (!treeState.open.includes(node.contextPath.toString())) return [3, 1];
                     setTreeState(function (treeState) { return immer_1.produce(treeState, function (draft) {
-                        var e_3, _a;
+                        var e_2, _a;
                         try {
                             for (var _b = __values(treeState.open.entries()), _c = _b.next(); !_c.done; _c = _b.next()) {
                                 var _d = __read(_c.value, 2), index = _d[0], c = _d[1];
-                                if (c === contextPath) {
+                                if (c === node.contextPath.toString()) {
                                     draft.open.splice(index, 1);
                                     break;
                                 }
                             }
                         }
-                        catch (e_3_1) { e_3 = { error: e_3_1 }; }
+                        catch (e_2_1) { e_2 = { error: e_2_1 }; }
                         finally {
                             try {
-                                if (_c && !_c.done && (_a = _b["return"])) _a.call(_b);
+                                if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                             }
-                            finally { if (e_3) throw e_3.error; }
+                            finally { if (e_2) throw e_2.error; }
                         }
                     }); });
                     return [3, 4];
                 case 1:
-                    node = treeState.nodesByContextPath[contextPath];
-                    if (!node) return [3, 4];
-                    if (!node.children.every(function (c) { return Boolean(treeState.nodesByContextPath[c.contextPath]); })) return [3, 2];
+                    if (!node.children.every(function (c) { return Boolean(treeState.nodesByContextPath[c.contextPath.toString()]); })) return [3, 2];
                     setTreeState(function (treeState) { return immer_1.produce(treeState, function (draft) {
-                        draft.open.push(contextPath);
+                        draft.open.push(node.contextPath.toString());
                     }); });
                     return [3, 4];
                 case 2:
-                    q = neos_ui_backend_connector_1["default"].get().q;
                     children = node.children
-                        .filter(function (c) { return !Boolean(treeState.nodesByContextPath[c.contextPath]); })
+                        .filter(function (c) { return !Boolean(treeState.nodesByContextPath[c.contextPath.toString()]); })
                         .map(function (c) { return c.contextPath; });
-                    markAsLoading(node.contextPath);
-                    return [4, q(children).getForTree()];
+                    markAsLoading(node);
+                    return [4, archaeopteryx_neos_bridge_1.q(children).getForTree()];
                 case 3:
                     nodes_1 = _a.sent();
                     setTreeState(function (treeState) { return immer_1.produce(treeState, function (draft) {
-                        var e_4, _a;
+                        var e_3, _a;
                         try {
                             for (var _b = __values(filterNodes(nodes_1)), _c = _b.next(); !_c.done; _c = _b.next()) {
                                 var node_1 = _c.value;
-                                draft.nodesByContextPath[node_1.contextPath] = node_1;
+                                draft.nodesByContextPath[node_1.contextPath.toString()] = node_1;
                             }
                         }
-                        catch (e_4_1) { e_4 = { error: e_4_1 }; }
+                        catch (e_3_1) { e_3 = { error: e_3_1 }; }
                         finally {
                             try {
-                                if (_c && !_c.done && (_a = _b["return"])) _a.call(_b);
+                                if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                             }
-                            finally { if (e_4) throw e_4.error; }
+                            finally { if (e_3) throw e_3.error; }
                         }
-                        draft.open.push(contextPath);
+                        draft.open.push(node.contextPath.toString());
                     }); });
-                    unmarkAsLoading(node.contextPath);
+                    unmarkAsLoading(node);
                     _a.label = 4;
                 case 4: return [2];
             }
@@ -293,117 +241,111 @@ function useTree(startingPoint, selectedPath) {
     };
     React.useEffect(function () {
         (function () { return __awaiter(_this, void 0, void 0, function () {
-            var siteNode, root, offset, q, documentNode, selected, toggled_1, nodes_2, err_1;
-            var _a, _b, _c, _d, _e, _f, _g, _h;
-            return __generator(this, function (_j) {
-                switch (_j.label) {
+            var root, selected, toggled_1, nodes_2, err_1;
+            var _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
-                        siteNode = (_c = (_b = (_a = neos === null || neos === void 0 ? void 0 : neos.store.getState()) === null || _a === void 0 ? void 0 : _a.cr) === null || _b === void 0 ? void 0 : _b.nodes) === null || _c === void 0 ? void 0 : _c.siteNode;
-                        root = adoptContextPath(startingPoint, siteNode);
-                        offset = (_e = (_d = root === null || root === void 0 ? void 0 : root.match(/\//g)) === null || _d === void 0 ? void 0 : _d.length) !== null && _e !== void 0 ? _e : 0;
-                        if (!root) return [3, 4];
-                        q = neos_ui_backend_connector_1["default"].get().q;
-                        documentNode = (_h = (_g = (_f = neos === null || neos === void 0 ? void 0 : neos.store.getState()) === null || _f === void 0 ? void 0 : _f.cr) === null || _g === void 0 ? void 0 : _g.nodes) === null || _h === void 0 ? void 0 : _h.documentNode;
-                        selected = adoptContextPath(selectedPath, documentNode);
-                        toggled_1 = resolveRootLine(root, selectedPath);
+                        root = (_a = siteNodeContextPath === null || siteNodeContextPath === void 0 ? void 0 : siteNodeContextPath.adopt(startingPoint)) !== null && _a !== void 0 ? _a : siteNodeContextPath;
+                        if (!(root && documentNodeContextPath)) return [3, 4];
+                        selected = documentNodeContextPath === null || documentNodeContextPath === void 0 ? void 0 : documentNodeContextPath.adopt(selectedPath);
+                        toggled_1 = root.getIntermediateContextPaths(selected !== null && selected !== void 0 ? selected : documentNodeContextPath);
                         initialization.start();
-                        _j.label = 1;
+                        _b.label = 1;
                     case 1:
-                        _j.trys.push([1, 3, , 4]);
-                        return [4, q([root, selected]).neosUiDefaultNodes(baseNodeType, loadingDepth, toggled_1, []).getForTree()];
+                        _b.trys.push([1, 3, , 4]);
+                        return [4, archaeopteryx_neos_bridge_1.q([root, selected !== null && selected !== void 0 ? selected : documentNodeContextPath]).neosUiDefaultNodes(baseNodeTypeName, loadingDepth, toggled_1, []).getForTree()];
                     case 2:
-                        nodes_2 = _j.sent();
+                        nodes_2 = _b.sent();
                         setTreeState(immer_1.produce(treeState, function (draft) {
-                            var e_5, _a;
+                            var e_4, _a;
                             try {
                                 for (var _b = __values(filterNodes(nodes_2)), _c = _b.next(); !_c.done; _c = _b.next()) {
                                     var node = _c.value;
-                                    draft.nodesByContextPath[node.contextPath] = node;
-                                    if (toggled_1.includes(node.contextPath) || node.depth - offset <= loadingDepth) {
-                                        draft.open.push(node.contextPath);
+                                    draft.nodesByContextPath[node.contextPath.toString()] = node;
+                                    if (toggled_1.includes(node.contextPath) || node.depth - root.depth < loadingDepth) {
+                                        draft.open.push(node.contextPath.toString());
                                     }
                                 }
                             }
-                            catch (e_5_1) { e_5 = { error: e_5_1 }; }
+                            catch (e_4_1) { e_4 = { error: e_4_1 }; }
                             finally {
                                 try {
-                                    if (_c && !_c.done && (_a = _b["return"])) _a.call(_b);
+                                    if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                                 }
-                                finally { if (e_5) throw e_5.error; }
+                                finally { if (e_4) throw e_4.error; }
                             }
                             draft.rootNodeContextPath = root;
                         }));
                         initialization.succeed();
                         return [3, 4];
                     case 3:
-                        err_1 = _j.sent();
+                        err_1 = _b.sent();
                         initialization.fail(err_1);
                         return [3, 4];
                     case 4: return [2];
                 }
             });
         }); })();
-    }, [neos, startingPoint, selectedPath]);
+    }, [siteNodeContextPath, documentNodeContextPath, startingPoint]);
     react_use_1.useDebounce(function () {
-        var _a, _b, _c;
-        var siteNode = (_c = (_b = (_a = neos === null || neos === void 0 ? void 0 : neos.store.getState()) === null || _a === void 0 ? void 0 : _a.cr) === null || _b === void 0 ? void 0 : _b.nodes) === null || _c === void 0 ? void 0 : _c.siteNode;
-        var root = adoptContextPath(startingPoint, siteNode);
-        if (root && (treeState.searchTerm || treeState.nodeTypeFilter)) {
-            (function () { return __awaiter(_this, void 0, void 0, function () {
-                var q, nodes_3, err_2;
-                return __generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0:
-                            console.log('search', treeState.searchTerm);
-                            q = neos_ui_backend_connector_1["default"].get().q;
-                            initialization.start();
-                            _a.label = 1;
-                        case 1:
-                            _a.trys.push([1, 3, , 4]);
-                            return [4, q(root).search(treeState.searchTerm, treeState.nodeTypeFilter)
-                                    .getForTreeWithParents()];
-                        case 2:
-                            nodes_3 = _a.sent();
-                            setTreeState(immer_1.produce(treeState, function (draft) {
-                                var e_6, _a;
-                                draft.filteredNodesByContextPath = {};
-                                if (treeState.rootNodeContextPath) {
-                                    draft.filteredNodesByContextPath[treeState.rootNodeContextPath] =
-                                        treeState.nodesByContextPath[treeState.rootNodeContextPath];
+        var root = siteNodeContextPath === null || siteNodeContextPath === void 0 ? void 0 : siteNodeContextPath.adopt(startingPoint);
+        (function () { return __awaiter(_this, void 0, void 0, function () {
+            var nodes_3, err_2;
+            var _a, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        if (!(root && (treeState.searchTerm || treeState.nodeTypeFilter))) return [3, 5];
+                        initialization.start();
+                        _c.label = 1;
+                    case 1:
+                        _c.trys.push([1, 3, , 4]);
+                        return [4, archaeopteryx_neos_bridge_1.q(root)
+                                .search((_a = treeState.searchTerm) !== null && _a !== void 0 ? _a : undefined, (_b = treeState.nodeTypeFilter) !== null && _b !== void 0 ? _b : undefined)
+                                .getForTreeWithParents()];
+                    case 2:
+                        nodes_3 = _c.sent();
+                        setTreeState(immer_1.produce(treeState, function (draft) {
+                            var e_5, _a;
+                            draft.filteredNodesByContextPath = {};
+                            if (treeState.rootNodeContextPath) {
+                                draft.filteredNodesByContextPath[treeState.rootNodeContextPath.toString()] =
+                                    treeState.nodesByContextPath[treeState.rootNodeContextPath.toString()];
+                            }
+                            try {
+                                for (var _b = __values(filterNodes(nodes_3)), _c = _b.next(); !_c.done; _c = _b.next()) {
+                                    var node = _c.value;
+                                    draft.filteredNodesByContextPath[node.contextPath.toString()] = node;
                                 }
+                            }
+                            catch (e_5_1) { e_5 = { error: e_5_1 }; }
+                            finally {
                                 try {
-                                    for (var _b = __values(filterNodes(nodes_3)), _c = _b.next(); !_c.done; _c = _b.next()) {
-                                        var node = _c.value;
-                                        draft.filteredNodesByContextPath[node.contextPath] = node;
-                                    }
+                                    if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                                 }
-                                catch (e_6_1) { e_6 = { error: e_6_1 }; }
-                                finally {
-                                    try {
-                                        if (_c && !_c.done && (_a = _b["return"])) _a.call(_b);
-                                    }
-                                    finally { if (e_6) throw e_6.error; }
-                                }
-                            }));
-                            initialization.succeed();
-                            return [3, 4];
-                        case 3:
-                            err_2 = _a.sent();
-                            initialization.fail(err_2);
-                            return [3, 4];
-                        case 4: return [2];
-                    }
-                });
-            }); })();
-        }
-        else {
-            setTreeState(immer_1.produce(treeState, function (draft) {
-                draft.filteredNodesByContextPath = null;
-            }));
-        }
-    }, 500, [neos, startingPoint, selectedPath, treeState.searchTerm, treeState.nodeTypeFilter]);
+                                finally { if (e_5) throw e_5.error; }
+                            }
+                        }));
+                        initialization.succeed();
+                        return [3, 4];
+                    case 3:
+                        err_2 = _c.sent();
+                        initialization.fail(err_2);
+                        return [3, 4];
+                    case 4: return [3, 6];
+                    case 5:
+                        setTreeState(immer_1.produce(treeState, function (draft) {
+                            draft.filteredNodesByContextPath = null;
+                        }));
+                        _c.label = 6;
+                    case 6: return [2];
+                }
+            });
+        }); })();
+    }, 500, [siteNodeContextPath, startingPoint, treeState.searchTerm, treeState.nodeTypeFilter]);
     return {
-        treeState: __assign(__assign({}, treeState), { nodesByContextPath: (_j = treeState.filteredNodesByContextPath) !== null && _j !== void 0 ? _j : treeState.nodesByContextPath }),
+        treeState: __assign(__assign({}, treeState), { nodesByContextPath: (_b = treeState.filteredNodesByContextPath) !== null && _b !== void 0 ? _b : treeState.nodesByContextPath }),
         toggle: toggle,
         search: search,
         filter: filter,
@@ -413,9 +355,9 @@ function useTree(startingPoint, selectedPath) {
     };
 }
 var NodeTreeAdapter = function (props) {
-    var _a, _b, _c;
-    var _d = useTree(undefined, (_a = props.selected) === null || _a === void 0 ? void 0 : _a.contextPath), loading = _d.loading, error = _d.error, treeState = _d.treeState, toggle = _d.toggle, search = _d.search, filter = _d.filter, isFiltered = _d.isFiltered;
-    var handleToggle = function (node) { return toggle(node.contextPath); };
+    var _a, _b, _c, _d;
+    var _e = useTree(undefined, (_a = props.selected) === null || _a === void 0 ? void 0 : _a.contextPath.toString()), loading = _e.loading, error = _e.error, treeState = _e.treeState, toggle = _e.toggle, search = _e.search, filter = _e.filter, isFiltered = _e.isFiltered;
+    var handleToggle = function (node) { return toggle(node); };
     var handleClick = function (node) { return props.onSelect(node); };
     var treeView;
     if (loading) {
@@ -427,7 +369,7 @@ var NodeTreeAdapter = function (props) {
         treeView = (React.createElement("div", null, "An error occurred :("));
     }
     else {
-        var rootNode = treeState.nodesByContextPath[(_b = treeState.rootNodeContextPath) !== null && _b !== void 0 ? _b : ''];
+        var rootNode = treeState.nodesByContextPath[(_c = (_b = treeState.rootNodeContextPath) === null || _b === void 0 ? void 0 : _b.toString()) !== null && _c !== void 0 ? _c : ''];
         if (rootNode) {
             treeView = (React.createElement(react_ui_components_1.Tree, null,
                 React.createElement(NodeAdapter, { selected: props.selected, node: rootNode, tree: treeState, level: 1, isFiltered: isFiltered, onToggle: handleToggle, onClick: handleClick })));
@@ -437,48 +379,35 @@ var NodeTreeAdapter = function (props) {
         }
     }
     return (React.createElement(React.Fragment, null,
-        React.createElement("input", { type: "text", onChange: function (ev) { return search(ev.target.value || null); }, value: (_c = treeState.searchTerm) !== null && _c !== void 0 ? _c : '' }),
+        React.createElement("input", { type: "text", onChange: function (ev) { return search(ev.target.value || null); }, value: (_d = treeState.searchTerm) !== null && _d !== void 0 ? _d : '' }),
         React.createElement(NodeTypeFilter, { value: treeState.nodeTypeFilter, onSelect: function (nodeType) { var _a; return filter((_a = nodeType === null || nodeType === void 0 ? void 0 : nodeType.name) !== null && _a !== void 0 ? _a : null); } }),
         treeView));
 };
 exports.NodeTreeAdapter = NodeTreeAdapter;
-function useNodeType(nodeTypeName) {
-    var _a;
-    var neos = acl_1.useNeos();
-    var nodeTypesRegistry = neos === null || neos === void 0 ? void 0 : neos.globalRegistry.get('@neos-project/neos-ui-contentrepository');
-    return (_a = nodeTypesRegistry === null || nodeTypesRegistry === void 0 ? void 0 : nodeTypesRegistry.get(nodeTypeName)) !== null && _a !== void 0 ? _a : null;
-}
-function useNodeTypes(baseNodeTypeName) {
-    var _a;
-    var neos = acl_1.useNeos();
-    var nodeTypesRegistry = neos === null || neos === void 0 ? void 0 : neos.globalRegistry.get('@neos-project/neos-ui-contentrepository');
-    return (_a = nodeTypesRegistry === null || nodeTypesRegistry === void 0 ? void 0 : nodeTypesRegistry.getSubTypesOf(baseNodeTypeName).map(function (nodeTypeName) { return nodeTypesRegistry === null || nodeTypesRegistry === void 0 ? void 0 : nodeTypesRegistry.get(nodeTypeName); }).filter(function (n) { return n; })) !== null && _a !== void 0 ? _a : [];
-}
 var NodeAdapter = function (props) {
     var _a, _b, _c;
-    var nodeType = useNodeType(props.node.nodeType);
+    var nodeType = archaeopteryx_neos_bridge_1.useNodeType(props.node.nodeType);
     var handleNodeToggle = function () { return props.onToggle(props.node); };
     var handleNodeClick = function () { return props.onClick(props.node); };
-    var isCollapsed = !props.tree.open.includes(props.node.contextPath) && !props.isFiltered;
-    console.log('node', props.node);
+    var isCollapsed = !props.tree.open.includes(props.node.contextPath.toString()) && !props.isFiltered;
+    var isLoading = props.tree.loading.includes(props.node.contextPath.toString());
     return (React.createElement(react_ui_components_1.Tree.Node, null,
-        React.createElement(react_ui_components_1.Tree.Node.Header, { labelIdentifier: 'labelIdentifier', id: props.node.contextPath, hasChildren: props.node.children.length > 0, nodeDndType: undefined, isLastChild: true, isCollapsed: isCollapsed, isActive: ((_a = props.selected) === null || _a === void 0 ? void 0 : _a.contextPath) === props.node.contextPath, isFocused: ((_b = props.selected) === null || _b === void 0 ? void 0 : _b.contextPath) === props.node.contextPath, isLoading: props.tree.loading.includes(props.node.contextPath), isDirty: false, isHidden: props.node.properties._hidden, isHiddenInIndex: props.node.properties._hiddenInIndex, isDragging: false, hasError: false, label: props.node.label, icon: (_c = nodeType === null || nodeType === void 0 ? void 0 : nodeType.ui) === null || _c === void 0 ? void 0 : _c.icon, customIconComponent: undefined, iconLabel: 'this.getNodeTypeLabel()', level: props.level, onToggle: handleNodeToggle, onClick: handleNodeClick, dragAndDropContext: undefined, dragForbidden: true, title: props.node.label }),
+        React.createElement(react_ui_components_1.Tree.Node.Header, { labelIdentifier: 'labelIdentifier', id: props.node.contextPath, hasChildren: props.node.children.length > 0, nodeDndType: undefined, isLastChild: true, isCollapsed: isCollapsed, isActive: ((_a = props.selected) === null || _a === void 0 ? void 0 : _a.contextPath.toString()) === props.node.contextPath.toString(), isFocused: ((_b = props.selected) === null || _b === void 0 ? void 0 : _b.contextPath.toString()) === props.node.contextPath.toString(), isLoading: isLoading, isDirty: false, isHidden: props.node.properties._hidden, isHiddenInIndex: props.node.properties._hiddenInIndex, isDragging: false, hasError: false, label: props.node.label, icon: (_c = nodeType === null || nodeType === void 0 ? void 0 : nodeType.ui) === null || _c === void 0 ? void 0 : _c.icon, customIconComponent: undefined, iconLabel: nodeType === null || nodeType === void 0 ? void 0 : nodeType.label, level: props.level, onToggle: handleNodeToggle, onClick: handleNodeClick, dragAndDropContext: undefined, dragForbidden: true, title: props.node.label }),
         isCollapsed ? null : props.node.children
-            .map(function (child) { return props.tree.nodesByContextPath[child.contextPath]; })
+            .map(function (child) { return props.tree.nodesByContextPath[child.contextPath.toString()]; })
             .filter(function (n) { return n; })
             .map(function (node) { return (React.createElement(NodeAdapter, __assign({}, props, { node: node, level: props.level + 1 }))); })));
 };
 var NodeTypeFilter = function (props) {
-    var _a, _b, _c, _d, _e, _f;
-    var neos = acl_1.useNeos();
-    var nodeTypes = useNodeTypes((_e = (_d = (_c = (_b = (_a = neos === null || neos === void 0 ? void 0 : neos.configuration) === null || _a === void 0 ? void 0 : _a.nodeTree) === null || _b === void 0 ? void 0 : _b.presets) === null || _c === void 0 ? void 0 : _c["default"]) === null || _d === void 0 ? void 0 : _d.baseNodeType) !== null && _e !== void 0 ? _e : 'Neos.Neos:Document');
+    var _a;
+    var baseNodeTypeName = useBaseNodeTypeName();
+    var selectableNodeTypes = archaeopteryx_neos_bridge_1.useNodeTypes(baseNodeTypeName);
     var handleChange = React.useCallback(function (ev) {
-        var nodeTypesRegistry = neos === null || neos === void 0 ? void 0 : neos.globalRegistry.get('@neos-project/neos-ui-contentrepository');
-        var nodeType = nodeTypesRegistry === null || nodeTypesRegistry === void 0 ? void 0 : nodeTypesRegistry.get(ev.target.value);
+        var nodeType = selectableNodeTypes === null || selectableNodeTypes === void 0 ? void 0 : selectableNodeTypes.find(function (nodeType) { return nodeType.name === ev.target.value; });
         props.onSelect(nodeType !== null && nodeType !== void 0 ? nodeType : null);
-    }, [neos, props.onSelect]);
-    return (React.createElement("select", { value: (_f = props.value) !== null && _f !== void 0 ? _f : '', onChange: handleChange },
+    }, [selectableNodeTypes, props.onSelect]);
+    return (React.createElement("select", { value: (_a = props.value) !== null && _a !== void 0 ? _a : '', onChange: handleChange },
         React.createElement("option", { value: "" }, "- None -"),
-        nodeTypes.map(function (nodeType) { return (React.createElement("option", { value: nodeType.name }, nodeType.label)); })));
+        selectableNodeTypes.map(function (nodeType) { return (React.createElement("option", { value: nodeType.name }, nodeType.label)); })));
 };
 //# sourceMappingURL=NodeTreeAdapter.js.map

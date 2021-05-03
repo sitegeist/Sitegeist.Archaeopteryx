@@ -55,7 +55,7 @@ var __rest = (this && this.__rest) || function (s, e) {
         }
     return t;
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.MailTo = void 0;
 var React = __importStar(require("react"));
 var react_final_form_1 = require("react-final-form");

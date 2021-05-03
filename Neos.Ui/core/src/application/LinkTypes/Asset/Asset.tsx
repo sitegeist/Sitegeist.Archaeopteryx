@@ -1,6 +1,7 @@
 import * as React from 'react';
 
-import {useNeos} from '../../../acl';
+import {useRoutes} from '@sitegeist/archaeopteryx-neos-bridge';
+
 import {LinkType, ILinkTypeProps, useEditorTransactions, useEditorValue} from '../../../domain';
 
 function useResolvedValue() {
@@ -34,10 +35,9 @@ export const Asset = new class extends LinkType {
     );
 
     public readonly getEditor = () => {
-        const neos = useNeos();
         const {update} = useEditorTransactions();
         const resolvedValue = useResolvedValue();
-        const mediaBrowserUri = neos?.routes?.core?.modules?.mediaBrowser;
+        const mediaBrowserUri = useRoutes(r => r.core?.modules?.mediaBrowser);
 
         React.useEffect(() => {
             (window as any).NeosMediaBrowserCallbacks = {

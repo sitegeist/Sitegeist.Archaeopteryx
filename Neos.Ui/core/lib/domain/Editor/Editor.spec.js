@@ -1,5 +1,5 @@
 "use strict";
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var Editor_1 = require("./Editor");
 describe('Editor', function () {
     var _a = Editor_1.createEditor(), state$ = _a.state$, _b = _a.tx, editLink = _b.editLink, dismiss = _b.dismiss, update = _b.update, clear = _b.clear, apply = _b.apply;

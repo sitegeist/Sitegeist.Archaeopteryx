@@ -5,5 +5,9 @@ import backend from '@neos-project/neos-ui-backend-connector';
 
 export function q(context: ContextPath | ContextPath[]): FlowQuery {
     const {q} = backend.get();
-    return new FlowQuery(q(context));
+    return new FlowQuery(q(
+        Array.isArray(context)
+            ? context.map(cp => cp.toString())
+            : context.toString()
+    ));
 }
