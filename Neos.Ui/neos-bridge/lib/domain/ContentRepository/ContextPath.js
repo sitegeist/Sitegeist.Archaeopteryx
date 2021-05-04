@@ -96,6 +96,9 @@ var ContextPath = (function () {
         }
         return [];
     };
+    ContextPath.prototype.equals = function (other) {
+        return this.path === other.path && this.context === other.context;
+    };
     ContextPath.prototype.toString = function () {
         return this.path + "@" + this.context;
     };

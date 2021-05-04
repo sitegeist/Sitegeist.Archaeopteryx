@@ -24071,8 +24071,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.NodeTree = void 0;
 var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
 var archaeopteryx_neos_bridge_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-neos-bridge */ "../neos-bridge/lib/index.js");
+var archaeopteryx_custom_node_tree_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-custom-node-tree */ "../custom-node-tree/lib/index.js");
 var domain_1 = __webpack_require__(/*! ../../../domain */ "../core/lib/domain/index.js");
-var NodeTreeAdapter_1 = __webpack_require__(/*! ./NodeTreeAdapter */ "../core/lib/application/LinkTypes/NodeTree/NodeTreeAdapter.js");
+function useBaseNodeTypeName() {
+    var baseNodeTypeName = archaeopteryx_neos_bridge_1.useConfiguration(function (c) {
+        var _a, _b, _c;return (_c = (_b = (_a = c.nodeTree) === null || _a === void 0 ? void 0 : _a.presets) === null || _b === void 0 ? void 0 : _b.default) === null || _c === void 0 ? void 0 : _c.baseNodeType;
+    });
+    return baseNodeTypeName !== null && baseNodeTypeName !== void 0 ? baseNodeTypeName : archaeopteryx_neos_bridge_1.NodeTypeName('Neos.Neos:Document');
+}
 var cache = new Map();
 function useResolvedValue() {
     var _this = this;
@@ -24168,19 +24174,35 @@ exports.NodeTree = new (function (_super) {
             return React.createElement("div", null, "NODE TREE PREVIEW");
         };
         _this.getEditor = function () {
-            var _a = useResolvedValue(),
-                loading = _a.loading,
-                error = _a.error,
-                resolvedValue = _a.resolvedValue;
+            var _a;
+            var _b = useResolvedValue(),
+                loading = _b.loading,
+                error = _b.error,
+                resolvedValue = _b.resolvedValue;
             var update = domain_1.useEditorTransactions().update;
-            if (loading) {
+            var siteNodeContextPath = archaeopteryx_neos_bridge_1.useSiteNodeContextPath();
+            var documentNodeContextPath = archaeopteryx_neos_bridge_1.useDocumentNodeContextPath();
+            var baseNodeTypeName = useBaseNodeTypeName();
+            var loadingDepth = (_a = archaeopteryx_neos_bridge_1.useConfiguration(function (c) {
+                var _a;return (_a = c.nodeTree) === null || _a === void 0 ? void 0 : _a.loadingDepth;
+            })) !== null && _a !== void 0 ? _a : 4;
+            if (loading || !siteNodeContextPath || !documentNodeContextPath) {
                 return React.createElement("div", null, "Loading...");
             } else if (error) {
                 console.warn('[Sitegeist.Archaeopteryx]: Could not load node tree, because:');
                 console.error(error);
                 return React.createElement("div", null, "An error occurred :(");
             } else {
-                return React.createElement(NodeTreeAdapter_1.NodeTreeAdapter, { selected: resolvedValue, onSelect: function onSelect(node) {
+                return React.createElement(archaeopteryx_custom_node_tree_1.NodeTree, { configuration: {
+                        baseNodeTypeName: baseNodeTypeName,
+                        rootNodeContextPath: siteNodeContextPath,
+                        documentNodeContextPath: documentNodeContextPath,
+                        selectedNodeContextPath: resolvedValue === null || resolvedValue === void 0 ? void 0 : resolvedValue.contextPath,
+                        loadingDepth: loadingDepth
+                    }, options: {
+                        enableSearch: true,
+                        enableNodeTypeFilter: true
+                    }, onSelect: function onSelect(node) {
                         cache.set("node://" + node.identifier, node);
                         update({ href: "node://" + node.identifier });
                     } });
@@ -24191,553 +24213,6 @@ exports.NodeTree = new (function (_super) {
     return class_1;
 }(domain_1.LinkType))();
 //# sourceMappingURL=NodeTree.js.map
-
-/***/ }),
-
-/***/ "../core/lib/application/LinkTypes/NodeTree/NodeTreeAdapter.js":
-/*!*********************************************************************!*\
-  !*** ../core/lib/application/LinkTypes/NodeTree/NodeTreeAdapter.js ***!
-  \*********************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var __assign = undefined && undefined.__assign || function () {
-    __assign = Object.assign || function (t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) {
-                if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
-            }
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function get() {
-            return m[k];
-        } });
-} : function (o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-});
-var __setModuleDefault = undefined && undefined.__setModuleDefault || (Object.create ? function (o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-} : function (o, v) {
-    o["default"] = v;
-});
-var __importStar = undefined && undefined.__importStar || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) {
-        if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    }__setModuleDefault(result, mod);
-    return result;
-};
-var __awaiter = undefined && undefined.__awaiter || function (thisArg, _arguments, P, generator) {
-    function adopt(value) {
-        return value instanceof P ? value : new P(function (resolve) {
-            resolve(value);
-        });
-    }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) {
-            try {
-                step(generator.next(value));
-            } catch (e) {
-                reject(e);
-            }
-        }
-        function rejected(value) {
-            try {
-                step(generator["throw"](value));
-            } catch (e) {
-                reject(e);
-            }
-        }
-        function step(result) {
-            result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
-        }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __generator = undefined && undefined.__generator || function (thisArg, body) {
-    var _ = { label: 0, sent: function sent() {
-            if (t[0] & 1) throw t[1];return t[1];
-        }, trys: [], ops: [] },
-        f,
-        y,
-        t,
-        g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function () {
-        return this;
-    }), g;
-    function verb(n) {
-        return function (v) {
-            return step([n, v]);
-        };
-    }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (_) {
-            try {
-                if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-                if (y = 0, t) op = [op[0] & 2, t.value];
-                switch (op[0]) {
-                    case 0:case 1:
-                        t = op;break;
-                    case 4:
-                        _.label++;return { value: op[1], done: false };
-                    case 5:
-                        _.label++;y = op[1];op = [0];continue;
-                    case 7:
-                        op = _.ops.pop();_.trys.pop();continue;
-                    default:
-                        if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
-                            _ = 0;continue;
-                        }
-                        if (op[0] === 3 && (!t || op[1] > t[0] && op[1] < t[3])) {
-                            _.label = op[1];break;
-                        }
-                        if (op[0] === 6 && _.label < t[1]) {
-                            _.label = t[1];t = op;break;
-                        }
-                        if (t && _.label < t[2]) {
-                            _.label = t[2];_.ops.push(op);break;
-                        }
-                        if (t[2]) _.ops.pop();
-                        _.trys.pop();continue;
-                }
-                op = body.call(thisArg, _);
-            } catch (e) {
-                op = [6, e];y = 0;
-            } finally {
-                f = t = 0;
-            }
-        }if (op[0] & 5) throw op[1];return { value: op[0] ? op[1] : void 0, done: true };
-    }
-};
-var __read = undefined && undefined.__read || function (o, n) {
-    var m = typeof Symbol === "function" && o[Symbol.iterator];
-    if (!m) return o;
-    var i = m.call(o),
-        r,
-        ar = [],
-        e;
-    try {
-        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) {
-            ar.push(r.value);
-        }
-    } catch (error) {
-        e = { error: error };
-    } finally {
-        try {
-            if (r && !r.done && (m = i["return"])) m.call(i);
-        } finally {
-            if (e) throw e.error;
-        }
-    }
-    return ar;
-};
-var __values = undefined && undefined.__values || function (o) {
-    var s = typeof Symbol === "function" && Symbol.iterator,
-        m = s && o[s],
-        i = 0;
-    if (m) return m.call(o);
-    if (o && typeof o.length === "number") return {
-        next: function next() {
-            if (o && i >= o.length) o = void 0;
-            return { value: o && o[i++], done: !o };
-        }
-    };
-    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.NodeTreeAdapter = void 0;
-var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
-var immer_1 = __webpack_require__(/*! immer */ "../../node_modules/immer/dist/immer.esm.js");
-var react_use_1 = __webpack_require__(/*! react-use */ "../../node_modules/react-use/esm/index.js");
-var react_ui_components_1 = __webpack_require__(/*! @neos-project/react-ui-components */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/react-ui-components/index.js");
-var archaeopteryx_neos_bridge_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-neos-bridge */ "../neos-bridge/lib/index.js");
-function useOperation() {
-    var _a = __read(React.useState(false), 2),
-        loading = _a[0],
-        setLoading = _a[1];
-    var _b = __read(React.useState(null), 2),
-        error = _b[0],
-        setError = _b[1];
-    function start() {
-        setLoading(true);
-    }
-    function fail(reason) {
-        setError(reason);
-        setLoading(false);
-    }
-    function succeed() {
-        setLoading(false);
-    }
-    return { loading: loading, error: error, start: start, fail: fail, succeed: succeed };
-}
-function useBaseNodeTypeName() {
-    var baseNodeTypeName = archaeopteryx_neos_bridge_1.useConfiguration(function (c) {
-        var _a, _b, _c;return (_c = (_b = (_a = c.nodeTree) === null || _a === void 0 ? void 0 : _a.presets) === null || _b === void 0 ? void 0 : _b.default) === null || _c === void 0 ? void 0 : _c.baseNodeType;
-    });
-    return baseNodeTypeName !== null && baseNodeTypeName !== void 0 ? baseNodeTypeName : archaeopteryx_neos_bridge_1.NodeTypeName('Neos.Neos:Document');
-}
-function useTree(startingPoint, selectedPath) {
-    var _this = this;
-    var _a, _b;
-    var initialization = useOperation();
-    var _c = __read(React.useState({
-        nodesByContextPath: {},
-        filteredNodesByContextPath: null,
-        searchTerm: null,
-        nodeTypeFilter: null,
-        rootNodeContextPath: null,
-        open: [],
-        loading: []
-    }), 2),
-        treeState = _c[0],
-        setTreeState = _c[1];
-    var siteNodeContextPath = archaeopteryx_neos_bridge_1.useSiteNodeContextPath();
-    var documentNodeContextPath = archaeopteryx_neos_bridge_1.useDocumentNodeContextPath();
-    var baseNodeTypeName = useBaseNodeTypeName();
-    var loadingDepth = (_a = archaeopteryx_neos_bridge_1.useConfiguration(function (c) {
-        var _a;return (_a = c.nodeTree) === null || _a === void 0 ? void 0 : _a.loadingDepth;
-    })) !== null && _a !== void 0 ? _a : 4;
-    var nodeTypesRegistry = archaeopteryx_neos_bridge_1.useNodeTypesRegistry();
-    var filterNodes = function filterNodes(nodes) {
-        return nodes.map(function (node) {
-            return __assign(__assign({}, node), { children: node.children.filter(function (_a) {
-                    var nodeTypeName = _a.nodeType;
-                    return Boolean(nodeTypesRegistry === null || nodeTypesRegistry === void 0 ? void 0 : nodeTypesRegistry.isOfType(nodeTypeName, baseNodeTypeName));
-                }) });
-        });
-    };
-    var markAsLoading = function markAsLoading(node) {
-        setTreeState(function (treeState) {
-            return immer_1.produce(treeState, function (draft) {
-                draft.loading.push(node.contextPath.toString());
-            });
-        });
-    };
-    var unmarkAsLoading = function unmarkAsLoading(node) {
-        setTreeState(function (treeState) {
-            return immer_1.produce(treeState, function (draft) {
-                var e_1, _a;
-                try {
-                    for (var _b = __values(treeState.loading.entries()), _c = _b.next(); !_c.done; _c = _b.next()) {
-                        var _d = __read(_c.value, 2),
-                            index = _d[0],
-                            c = _d[1];
-                        if (c === node.contextPath.toString()) {
-                            draft.loading.splice(index, 1);
-                            break;
-                        }
-                    }
-                } catch (e_1_1) {
-                    e_1 = { error: e_1_1 };
-                } finally {
-                    try {
-                        if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
-                    } finally {
-                        if (e_1) throw e_1.error;
-                    }
-                }
-            });
-        });
-    };
-    var toggle = function toggle(node) {
-        return __awaiter(_this, void 0, void 0, function () {
-            var children, nodes_1;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (!treeState.open.includes(node.contextPath.toString())) return [3, 1];
-                        setTreeState(function (treeState) {
-                            return immer_1.produce(treeState, function (draft) {
-                                var e_2, _a;
-                                try {
-                                    for (var _b = __values(treeState.open.entries()), _c = _b.next(); !_c.done; _c = _b.next()) {
-                                        var _d = __read(_c.value, 2),
-                                            index = _d[0],
-                                            c = _d[1];
-                                        if (c === node.contextPath.toString()) {
-                                            draft.open.splice(index, 1);
-                                            break;
-                                        }
-                                    }
-                                } catch (e_2_1) {
-                                    e_2 = { error: e_2_1 };
-                                } finally {
-                                    try {
-                                        if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
-                                    } finally {
-                                        if (e_2) throw e_2.error;
-                                    }
-                                }
-                            });
-                        });
-                        return [3, 4];
-                    case 1:
-                        if (!node.children.every(function (c) {
-                            return Boolean(treeState.nodesByContextPath[c.contextPath.toString()]);
-                        })) return [3, 2];
-                        setTreeState(function (treeState) {
-                            return immer_1.produce(treeState, function (draft) {
-                                draft.open.push(node.contextPath.toString());
-                            });
-                        });
-                        return [3, 4];
-                    case 2:
-                        children = node.children.filter(function (c) {
-                            return !Boolean(treeState.nodesByContextPath[c.contextPath.toString()]);
-                        }).map(function (c) {
-                            return c.contextPath;
-                        });
-                        markAsLoading(node);
-                        return [4, archaeopteryx_neos_bridge_1.q(children).getForTree()];
-                    case 3:
-                        nodes_1 = _a.sent();
-                        setTreeState(function (treeState) {
-                            return immer_1.produce(treeState, function (draft) {
-                                var e_3, _a;
-                                try {
-                                    for (var _b = __values(filterNodes(nodes_1)), _c = _b.next(); !_c.done; _c = _b.next()) {
-                                        var node_1 = _c.value;
-                                        draft.nodesByContextPath[node_1.contextPath.toString()] = node_1;
-                                    }
-                                } catch (e_3_1) {
-                                    e_3 = { error: e_3_1 };
-                                } finally {
-                                    try {
-                                        if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
-                                    } finally {
-                                        if (e_3) throw e_3.error;
-                                    }
-                                }
-                                draft.open.push(node.contextPath.toString());
-                            });
-                        });
-                        unmarkAsLoading(node);
-                        _a.label = 4;
-                    case 4:
-                        return [2];
-                }
-            });
-        });
-    };
-    var search = function search(searchTerm) {
-        setTreeState(function (treeState) {
-            return immer_1.produce(treeState, function (draft) {
-                draft.searchTerm = searchTerm;
-            });
-        });
-    };
-    var filter = function filter(nodeTypeName) {
-        setTreeState(function (treeState) {
-            return immer_1.produce(treeState, function (draft) {
-                draft.nodeTypeFilter = nodeTypeName;
-            });
-        });
-    };
-    React.useEffect(function () {
-        (function () {
-            return __awaiter(_this, void 0, void 0, function () {
-                var root, selected, toggled_1, nodes_2, err_1;
-                var _a;
-                return __generator(this, function (_b) {
-                    switch (_b.label) {
-                        case 0:
-                            root = (_a = siteNodeContextPath === null || siteNodeContextPath === void 0 ? void 0 : siteNodeContextPath.adopt(startingPoint)) !== null && _a !== void 0 ? _a : siteNodeContextPath;
-                            if (!(root && documentNodeContextPath)) return [3, 4];
-                            selected = documentNodeContextPath === null || documentNodeContextPath === void 0 ? void 0 : documentNodeContextPath.adopt(selectedPath);
-                            toggled_1 = root.getIntermediateContextPaths(selected !== null && selected !== void 0 ? selected : documentNodeContextPath);
-                            initialization.start();
-                            _b.label = 1;
-                        case 1:
-                            _b.trys.push([1, 3,, 4]);
-                            return [4, archaeopteryx_neos_bridge_1.q([root, selected !== null && selected !== void 0 ? selected : documentNodeContextPath]).neosUiDefaultNodes(baseNodeTypeName, loadingDepth, toggled_1, []).getForTree()];
-                        case 2:
-                            nodes_2 = _b.sent();
-                            setTreeState(immer_1.produce(treeState, function (draft) {
-                                var e_4, _a;
-                                try {
-                                    for (var _b = __values(filterNodes(nodes_2)), _c = _b.next(); !_c.done; _c = _b.next()) {
-                                        var node = _c.value;
-                                        draft.nodesByContextPath[node.contextPath.toString()] = node;
-                                        if (toggled_1.includes(node.contextPath) || node.depth - root.depth < loadingDepth) {
-                                            draft.open.push(node.contextPath.toString());
-                                        }
-                                    }
-                                } catch (e_4_1) {
-                                    e_4 = { error: e_4_1 };
-                                } finally {
-                                    try {
-                                        if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
-                                    } finally {
-                                        if (e_4) throw e_4.error;
-                                    }
-                                }
-                                draft.rootNodeContextPath = root;
-                            }));
-                            initialization.succeed();
-                            return [3, 4];
-                        case 3:
-                            err_1 = _b.sent();
-                            initialization.fail(err_1);
-                            return [3, 4];
-                        case 4:
-                            return [2];
-                    }
-                });
-            });
-        })();
-    }, [siteNodeContextPath, documentNodeContextPath, startingPoint]);
-    react_use_1.useDebounce(function () {
-        var root = siteNodeContextPath === null || siteNodeContextPath === void 0 ? void 0 : siteNodeContextPath.adopt(startingPoint);
-        (function () {
-            return __awaiter(_this, void 0, void 0, function () {
-                var nodes_3, err_2;
-                var _a, _b;
-                return __generator(this, function (_c) {
-                    switch (_c.label) {
-                        case 0:
-                            if (!(root && (treeState.searchTerm || treeState.nodeTypeFilter))) return [3, 5];
-                            initialization.start();
-                            _c.label = 1;
-                        case 1:
-                            _c.trys.push([1, 3,, 4]);
-                            return [4, archaeopteryx_neos_bridge_1.q(root).search((_a = treeState.searchTerm) !== null && _a !== void 0 ? _a : undefined, (_b = treeState.nodeTypeFilter) !== null && _b !== void 0 ? _b : undefined).getForTreeWithParents()];
-                        case 2:
-                            nodes_3 = _c.sent();
-                            setTreeState(immer_1.produce(treeState, function (draft) {
-                                var e_5, _a;
-                                draft.filteredNodesByContextPath = {};
-                                if (treeState.rootNodeContextPath) {
-                                    draft.filteredNodesByContextPath[treeState.rootNodeContextPath.toString()] = treeState.nodesByContextPath[treeState.rootNodeContextPath.toString()];
-                                }
-                                try {
-                                    for (var _b = __values(filterNodes(nodes_3)), _c = _b.next(); !_c.done; _c = _b.next()) {
-                                        var node = _c.value;
-                                        draft.filteredNodesByContextPath[node.contextPath.toString()] = node;
-                                    }
-                                } catch (e_5_1) {
-                                    e_5 = { error: e_5_1 };
-                                } finally {
-                                    try {
-                                        if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
-                                    } finally {
-                                        if (e_5) throw e_5.error;
-                                    }
-                                }
-                            }));
-                            initialization.succeed();
-                            return [3, 4];
-                        case 3:
-                            err_2 = _c.sent();
-                            initialization.fail(err_2);
-                            return [3, 4];
-                        case 4:
-                            return [3, 6];
-                        case 5:
-                            setTreeState(immer_1.produce(treeState, function (draft) {
-                                draft.filteredNodesByContextPath = null;
-                            }));
-                            _c.label = 6;
-                        case 6:
-                            return [2];
-                    }
-                });
-            });
-        })();
-    }, 500, [siteNodeContextPath, startingPoint, treeState.searchTerm, treeState.nodeTypeFilter]);
-    return {
-        treeState: __assign(__assign({}, treeState), { nodesByContextPath: (_b = treeState.filteredNodesByContextPath) !== null && _b !== void 0 ? _b : treeState.nodesByContextPath }),
-        toggle: toggle,
-        search: search,
-        filter: filter,
-        isFiltered: Boolean(treeState.filteredNodesByContextPath),
-        loading: initialization.loading,
-        error: initialization.error
-    };
-}
-var NodeTreeAdapter = function NodeTreeAdapter(props) {
-    var _a, _b, _c, _d;
-    var _e = useTree(undefined, (_a = props.selected) === null || _a === void 0 ? void 0 : _a.contextPath.toString()),
-        loading = _e.loading,
-        error = _e.error,
-        treeState = _e.treeState,
-        toggle = _e.toggle,
-        search = _e.search,
-        filter = _e.filter,
-        isFiltered = _e.isFiltered;
-    var handleToggle = function handleToggle(node) {
-        return toggle(node);
-    };
-    var handleClick = function handleClick(node) {
-        return props.onSelect(node);
-    };
-    var treeView;
-    if (loading) {
-        treeView = React.createElement("div", null, "Loading...");
-    } else if (error) {
-        console.warn('[Sitegeist.Archaeopteryx]: Could not load node tree, because:');
-        console.error(error);
-        treeView = React.createElement("div", null, "An error occurred :(");
-    } else {
-        var rootNode = treeState.nodesByContextPath[(_c = (_b = treeState.rootNodeContextPath) === null || _b === void 0 ? void 0 : _b.toString()) !== null && _c !== void 0 ? _c : ''];
-        if (rootNode) {
-            treeView = React.createElement(react_ui_components_1.Tree, null, React.createElement(NodeAdapter, { selected: props.selected, node: rootNode, tree: treeState, level: 1, isFiltered: isFiltered, onToggle: handleToggle, onClick: handleClick }));
-        } else {
-            treeView = null;
-        }
-    }
-    return React.createElement(React.Fragment, null, React.createElement("input", { type: "text", onChange: function onChange(ev) {
-            return search(ev.target.value || null);
-        }, value: (_d = treeState.searchTerm) !== null && _d !== void 0 ? _d : '' }), React.createElement(NodeTypeFilter, { value: treeState.nodeTypeFilter, onSelect: function onSelect(nodeType) {
-            var _a;return filter((_a = nodeType === null || nodeType === void 0 ? void 0 : nodeType.name) !== null && _a !== void 0 ? _a : null);
-        } }), treeView);
-};
-exports.NodeTreeAdapter = NodeTreeAdapter;
-var NodeAdapter = function NodeAdapter(props) {
-    var _a, _b, _c;
-    var nodeType = archaeopteryx_neos_bridge_1.useNodeType(props.node.nodeType);
-    var handleNodeToggle = function handleNodeToggle() {
-        return props.onToggle(props.node);
-    };
-    var handleNodeClick = function handleNodeClick() {
-        return props.onClick(props.node);
-    };
-    var isCollapsed = !props.tree.open.includes(props.node.contextPath.toString()) && !props.isFiltered;
-    var isLoading = props.tree.loading.includes(props.node.contextPath.toString());
-    return React.createElement(react_ui_components_1.Tree.Node, null, React.createElement(react_ui_components_1.Tree.Node.Header, { labelIdentifier: 'labelIdentifier', id: props.node.contextPath, hasChildren: props.node.children.length > 0, nodeDndType: undefined, isLastChild: true, isCollapsed: isCollapsed, isActive: ((_a = props.selected) === null || _a === void 0 ? void 0 : _a.contextPath.toString()) === props.node.contextPath.toString(), isFocused: ((_b = props.selected) === null || _b === void 0 ? void 0 : _b.contextPath.toString()) === props.node.contextPath.toString(), isLoading: isLoading, isDirty: false, isHidden: props.node.properties._hidden, isHiddenInIndex: props.node.properties._hiddenInIndex, isDragging: false, hasError: false, label: props.node.label, icon: (_c = nodeType === null || nodeType === void 0 ? void 0 : nodeType.ui) === null || _c === void 0 ? void 0 : _c.icon, customIconComponent: undefined, iconLabel: nodeType === null || nodeType === void 0 ? void 0 : nodeType.label, level: props.level, onToggle: handleNodeToggle, onClick: handleNodeClick, dragAndDropContext: undefined, dragForbidden: true, title: props.node.label }), isCollapsed ? null : props.node.children.map(function (child) {
-        return props.tree.nodesByContextPath[child.contextPath.toString()];
-    }).filter(function (n) {
-        return n;
-    }).map(function (node) {
-        return React.createElement(NodeAdapter, __assign({}, props, { node: node, level: props.level + 1 }));
-    }));
-};
-var NodeTypeFilter = function NodeTypeFilter(props) {
-    var _a;
-    var baseNodeTypeName = useBaseNodeTypeName();
-    var selectableNodeTypes = archaeopteryx_neos_bridge_1.useNodeTypes(baseNodeTypeName);
-    var handleChange = React.useCallback(function (ev) {
-        var nodeType = selectableNodeTypes === null || selectableNodeTypes === void 0 ? void 0 : selectableNodeTypes.find(function (nodeType) {
-            return nodeType.name === ev.target.value;
-        });
-        props.onSelect(nodeType !== null && nodeType !== void 0 ? nodeType : null);
-    }, [selectableNodeTypes, props.onSelect]);
-    return React.createElement("select", { value: (_a = props.value) !== null && _a !== void 0 ? _a : '', onChange: handleChange }, React.createElement("option", { value: "" }, "- None -"), selectableNodeTypes.map(function (nodeType) {
-        return React.createElement("option", { value: nodeType.name }, nodeType.label);
-    }));
-};
-//# sourceMappingURL=NodeTreeAdapter.js.map
 
 /***/ }),
 
@@ -25563,6 +25038,905 @@ Object.defineProperty(exports, "useEditorValue", { enumerable: true, get: functi
   } });
 Object.defineProperty(exports, "useEditorTransactions", { enumerable: true, get: function get() {
     return domain_1.useEditorTransactions;
+  } });
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "../custom-node-tree/lib/application/NodeTree.js":
+/*!*******************************************************!*\
+  !*** ../custom-node-tree/lib/application/NodeTree.js ***!
+  \*******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function get() {
+            return m[k];
+        } });
+} : function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+var __setModuleDefault = undefined && undefined.__setModuleDefault || (Object.create ? function (o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+} : function (o, v) {
+    o["default"] = v;
+});
+var __importStar = undefined && undefined.__importStar || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) {
+        if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    }__setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = undefined && undefined.__awaiter || function (thisArg, _arguments, P, generator) {
+    function adopt(value) {
+        return value instanceof P ? value : new P(function (resolve) {
+            resolve(value);
+        });
+    }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) {
+            try {
+                step(generator.next(value));
+            } catch (e) {
+                reject(e);
+            }
+        }
+        function rejected(value) {
+            try {
+                step(generator["throw"](value));
+            } catch (e) {
+                reject(e);
+            }
+        }
+        function step(result) {
+            result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+        }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = undefined && undefined.__generator || function (thisArg, body) {
+    var _ = { label: 0, sent: function sent() {
+            if (t[0] & 1) throw t[1];return t[1];
+        }, trys: [], ops: [] },
+        f,
+        y,
+        t,
+        g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function () {
+        return this;
+    }), g;
+    function verb(n) {
+        return function (v) {
+            return step([n, v]);
+        };
+    }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) {
+            try {
+                if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+                if (y = 0, t) op = [op[0] & 2, t.value];
+                switch (op[0]) {
+                    case 0:case 1:
+                        t = op;break;
+                    case 4:
+                        _.label++;return { value: op[1], done: false };
+                    case 5:
+                        _.label++;y = op[1];op = [0];continue;
+                    case 7:
+                        op = _.ops.pop();_.trys.pop();continue;
+                    default:
+                        if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
+                            _ = 0;continue;
+                        }
+                        if (op[0] === 3 && (!t || op[1] > t[0] && op[1] < t[3])) {
+                            _.label = op[1];break;
+                        }
+                        if (op[0] === 6 && _.label < t[1]) {
+                            _.label = t[1];t = op;break;
+                        }
+                        if (t && _.label < t[2]) {
+                            _.label = t[2];_.ops.push(op);break;
+                        }
+                        if (t[2]) _.ops.pop();
+                        _.trys.pop();continue;
+                }
+                op = body.call(thisArg, _);
+            } catch (e) {
+                op = [6, e];y = 0;
+            } finally {
+                f = t = 0;
+            }
+        }if (op[0] & 5) throw op[1];return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+var __read = undefined && undefined.__read || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o),
+        r,
+        ar = [],
+        e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) {
+            ar.push(r.value);
+        }
+    } catch (error) {
+        e = { error: error };
+    } finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        } finally {
+            if (e) throw e.error;
+        }
+    }
+    return ar;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.NodeTree = void 0;
+var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
+var react_use_1 = __webpack_require__(/*! react-use */ "../../node_modules/react-use/esm/index.js");
+var react_ui_components_1 = __webpack_require__(/*! @neos-project/react-ui-components */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/react-ui-components/index.js");
+var archaeopteryx_neos_bridge_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-neos-bridge */ "../neos-bridge/lib/index.js");
+var domain_1 = __webpack_require__(/*! ../domain */ "../custom-node-tree/lib/domain/index.js");
+var NodeTreeNode_1 = __webpack_require__(/*! ./NodeTreeNode */ "../custom-node-tree/lib/application/NodeTreeNode.js");
+var NodeTree = function NodeTree(props) {
+    var _a, _b;
+    var nodeTypesRegistry = archaeopteryx_neos_bridge_1.useNodeTypesRegistry();
+    var _c = __read(React.useReducer(domain_1.nodeTreeReducer, domain_1.initialNodeTreeState), 2),
+        state = _c[0],
+        dispatch = _c[1];
+    var initialize = react_use_1.useAsync(function () {
+        return __awaiter(void 0, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!nodeTypesRegistry) return [3, 2];
+                        return [4, domain_1.loadNodeTree({ state: state, dispatch: dispatch }, nodeTypesRegistry, props.configuration)];
+                    case 1:
+                        _a.sent();
+                        _a.label = 2;
+                    case 2:
+                        return [2];
+                }
+            });
+        });
+    }, [props.configuration, nodeTypesRegistry]);
+    var selectedNode = React.useMemo(function () {
+        return props.configuration.selectedNodeContextPath ? domain_1.findNodeByContextPath(state, props.configuration.selectedNodeContextPath) : null;
+    }, [props.configuration, state.nodesByContextPath]);
+    var handleToggle = React.useCallback(function (node) {
+        if (nodeTypesRegistry) {
+            domain_1.toggleNodeInNodeTree({ state: state, dispatch: dispatch }, nodeTypesRegistry, node);
+        }
+    }, [state.nodesByContextPath, state.nodesByState.uncollapsed, nodeTypesRegistry, dispatch]);
+    var handleClick = function handleClick(node) {
+        return props.onSelect(node);
+    };
+    var main;
+    if (initialize.error) {
+        console.warn('[Sitegeist.Archaeopteryx]: Could not load node tree, because:');
+        console.error(initialize.error);
+        main = React.createElement("div", null, "An error occurred :(");
+    } else if (initialize.loading || !state.rootNode) {
+        main = React.createElement("div", null, "Loading...");
+    } else {
+        main = React.createElement(react_ui_components_1.Tree, null, React.createElement(NodeTreeNode_1.NodeTreeNode, { state: state, dispatch: dispatch, node: state.rootNode, selectedNode: selectedNode, level: 1, onToggle: handleToggle, onClick: handleClick }));
+    }
+    var search = null;
+    if ((_a = props.options) === null || _a === void 0 ? void 0 : _a.enableSearch) {
+        search = React.createElement(React.Fragment, null, "SEARCH");
+    }
+    var nodeTypeFilter = null;
+    if ((_b = props.options) === null || _b === void 0 ? void 0 : _b.enableNodeTypeFilter) {
+        nodeTypeFilter = React.createElement(React.Fragment, null, "NODE TYPE FILTER");
+    }
+    return React.createElement("div", { style: {
+            display: 'grid',
+            gridTemplateColumns: 'repeat(2, 1fr)',
+            gap: '4px'
+        } }, search ? React.createElement("div", { style: {
+            gridColumn: nodeTypeFilter ? '1 / span 1' : '1 / span 2'
+        } }, search) : null, nodeTypeFilter ? React.createElement("div", { style: {
+            gridColumn: search ? '2 / span 1' : '1 / span 2'
+        } }, nodeTypeFilter) : null, main ? React.createElement("div", { style: {
+            gridColumn: '1 / span 2'
+        } }, main) : null);
+};
+exports.NodeTree = NodeTree;
+//# sourceMappingURL=NodeTree.js.map
+
+/***/ }),
+
+/***/ "../custom-node-tree/lib/application/NodeTreeNode.js":
+/*!***********************************************************!*\
+  !*** ../custom-node-tree/lib/application/NodeTreeNode.js ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __assign = undefined && undefined.__assign || function () {
+    __assign = Object.assign || function (t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) {
+                if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+            }
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function get() {
+            return m[k];
+        } });
+} : function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+var __setModuleDefault = undefined && undefined.__setModuleDefault || (Object.create ? function (o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+} : function (o, v) {
+    o["default"] = v;
+});
+var __importStar = undefined && undefined.__importStar || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) {
+        if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    }__setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.NodeTreeNode = void 0;
+var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
+var react_ui_components_1 = __webpack_require__(/*! @neos-project/react-ui-components */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/react-ui-components/index.js");
+var archaeopteryx_neos_bridge_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-neos-bridge */ "../neos-bridge/lib/index.js");
+var domain_1 = __webpack_require__(/*! ../domain */ "../custom-node-tree/lib/domain/index.js");
+var NodeTreeNode = function NodeTreeNode(props) {
+    var _a;
+    var nodeType = archaeopteryx_neos_bridge_1.useNodeType(props.node.nodeType);
+    var handleNodeToggle = React.useMemo(function () {
+        return function () {
+            return props.onToggle(props.node);
+        };
+    }, [props.onToggle, props.node]);
+    var handleNodeClick = React.useMemo(function () {
+        return function () {
+            return props.onClick(props.node);
+        };
+    }, [props.onToggle, props.node]);
+    var isCollapsed = React.useMemo(function () {
+        return domain_1.isNodeCollapsed(props.state, props.node);
+    }, [props.state.nodesByState.uncollapsed, props.node]);
+    var isLoading = React.useMemo(function () {
+        return domain_1.isNodeLoading(props.state, props.node);
+    }, [props.state.nodesByState.loading, props.node]);
+    var isSelected = React.useMemo(function () {
+        return !props.selectedNode || props.node.contextPath.equals(props.selectedNode.contextPath);
+    }, [props.node, props.selectedNode]);
+    return React.createElement(react_ui_components_1.Tree.Node, null, React.createElement(react_ui_components_1.Tree.Node.Header, { labelIdentifier: 'labelIdentifier', id: props.node.contextPath, hasChildren: props.node.children.length > 0, isLastChild: true, isCollapsed: isCollapsed, isActive: isSelected, isFocused: isSelected, isLoading: isLoading, isDirty: false, isHidden: props.node.properties._hidden, isHiddenInIndex: props.node.properties._hiddenInIndex, isDragging: false, hasError: false, label: props.node.label, icon: (_a = nodeType === null || nodeType === void 0 ? void 0 : nodeType.ui) === null || _a === void 0 ? void 0 : _a.icon, iconLabel: nodeType === null || nodeType === void 0 ? void 0 : nodeType.label, level: props.level, onToggle: handleNodeToggle, onClick: handleNodeClick, dragForbidden: true, title: props.node.label }), isCollapsed ? null : domain_1.findChildNodesForNode(props.state, props.node).map(function (childNode) {
+        return React.createElement(exports.NodeTreeNode, __assign({}, props, { node: childNode, level: props.level + 1 }));
+    }));
+};
+exports.NodeTreeNode = NodeTreeNode;
+//# sourceMappingURL=NodeTreeNode.js.map
+
+/***/ }),
+
+/***/ "../custom-node-tree/lib/application/index.js":
+/*!****************************************************!*\
+  !*** ../custom-node-tree/lib/application/index.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.NodeTree = void 0;
+var NodeTree_1 = __webpack_require__(/*! ./NodeTree */ "../custom-node-tree/lib/application/NodeTree.js");
+Object.defineProperty(exports, "NodeTree", { enumerable: true, get: function get() {
+    return NodeTree_1.NodeTree;
+  } });
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "../custom-node-tree/lib/domain/NodeTreeAction.js":
+/*!********************************************************!*\
+  !*** ../custom-node-tree/lib/domain/NodeTreeAction.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.FilteredNodesWereReset = exports.FilteredNodesWereLoaded = exports.FilteredNodesWereRequested = exports.NodeWasToggled = exports.ChildNodesWereLoaded = exports.ChildNodesWereRequested = exports.NodesWereLoaded = exports.NodesWereRequested = void 0;
+var typesafe_actions_1 = __webpack_require__(/*! typesafe-actions */ "../../node_modules/typesafe-actions/dist/typesafe-actions.umd.production.js");
+exports.NodesWereRequested = typesafe_actions_1.createAction('http://sitegeist.de/Sitegeist.Archaeopteryx/CustomNodeTree/NodesWereRequested')();
+exports.NodesWereLoaded = typesafe_actions_1.createAction('http://sitegeist.de/Sitegeist.Archaeopteryx/CustomNodeTree/NodesWereLoaded', function (rootNode, baseNodeTypeName, nodes, uncollapsedNodes) {
+    return { rootNode: rootNode, baseNodeTypeName: baseNodeTypeName, nodes: nodes, uncollapsedNodes: uncollapsedNodes };
+})();
+exports.ChildNodesWereRequested = typesafe_actions_1.createAction('http://sitegeist.de/Sitegeist.Archaeopteryx/CustomNodeTree/ChildNodesWereRequested', function (parentNode) {
+    return parentNode;
+})();
+exports.ChildNodesWereLoaded = typesafe_actions_1.createAction('http://sitegeist.de/Sitegeist.Archaeopteryx/CustomNodeTree/ChildNodesWereLoaded', function (parentNode, childNodes) {
+    return { parentNode: parentNode, childNodes: childNodes };
+})();
+exports.NodeWasToggled = typesafe_actions_1.createAction('http://sitegeist.de/Sitegeist.Archaeopteryx/CustomNodeTree/NodeWasToggled', function (node, forceToggleState) {
+    return { node: node, forceToggleState: forceToggleState };
+})();
+exports.FilteredNodesWereRequested = typesafe_actions_1.createAction('http://sitegeist.de/Sitegeist.Archaeopteryx/CustomNodeTree/FilteredNodesWereRequested')();
+exports.FilteredNodesWereLoaded = typesafe_actions_1.createAction('http://sitegeist.de/Sitegeist.Archaeopteryx/CustomNodeTree/FilteredNodesWereLoaded', function (filteredNodes) {
+    return filteredNodes;
+})();
+exports.FilteredNodesWereReset = typesafe_actions_1.createAction('http://sitegeist.de/Sitegeist.Archaeopteryx/CustomNodeTree/FilteredNodesWereReset')();
+//# sourceMappingURL=NodeTreeAction.js.map
+
+/***/ }),
+
+/***/ "../custom-node-tree/lib/domain/NodeTreeOperation.js":
+/*!***********************************************************!*\
+  !*** ../custom-node-tree/lib/domain/NodeTreeOperation.js ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __assign = undefined && undefined.__assign || function () {
+    __assign = Object.assign || function (t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) {
+                if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+            }
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function get() {
+            return m[k];
+        } });
+} : function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+var __setModuleDefault = undefined && undefined.__setModuleDefault || (Object.create ? function (o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+} : function (o, v) {
+    o["default"] = v;
+});
+var __importStar = undefined && undefined.__importStar || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) {
+        if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    }__setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = undefined && undefined.__awaiter || function (thisArg, _arguments, P, generator) {
+    function adopt(value) {
+        return value instanceof P ? value : new P(function (resolve) {
+            resolve(value);
+        });
+    }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) {
+            try {
+                step(generator.next(value));
+            } catch (e) {
+                reject(e);
+            }
+        }
+        function rejected(value) {
+            try {
+                step(generator["throw"](value));
+            } catch (e) {
+                reject(e);
+            }
+        }
+        function step(result) {
+            result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+        }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = undefined && undefined.__generator || function (thisArg, body) {
+    var _ = { label: 0, sent: function sent() {
+            if (t[0] & 1) throw t[1];return t[1];
+        }, trys: [], ops: [] },
+        f,
+        y,
+        t,
+        g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function () {
+        return this;
+    }), g;
+    function verb(n) {
+        return function (v) {
+            return step([n, v]);
+        };
+    }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) {
+            try {
+                if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+                if (y = 0, t) op = [op[0] & 2, t.value];
+                switch (op[0]) {
+                    case 0:case 1:
+                        t = op;break;
+                    case 4:
+                        _.label++;return { value: op[1], done: false };
+                    case 5:
+                        _.label++;y = op[1];op = [0];continue;
+                    case 7:
+                        op = _.ops.pop();_.trys.pop();continue;
+                    default:
+                        if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
+                            _ = 0;continue;
+                        }
+                        if (op[0] === 3 && (!t || op[1] > t[0] && op[1] < t[3])) {
+                            _.label = op[1];break;
+                        }
+                        if (op[0] === 6 && _.label < t[1]) {
+                            _.label = t[1];t = op;break;
+                        }
+                        if (t && _.label < t[2]) {
+                            _.label = t[2];_.ops.push(op);break;
+                        }
+                        if (t[2]) _.ops.pop();
+                        _.trys.pop();continue;
+                }
+                op = body.call(thisArg, _);
+            } catch (e) {
+                op = [6, e];y = 0;
+            } finally {
+                f = t = 0;
+            }
+        }if (op[0] & 5) throw op[1];return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.filterNodeTree = exports.toggleNodeInNodeTree = exports.loadNodeTree = void 0;
+var archaeopteryx_neos_bridge_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-neos-bridge */ "../neos-bridge/lib/index.js");
+var actions = __importStar(__webpack_require__(/*! ./NodeTreeAction */ "../custom-node-tree/lib/domain/NodeTreeAction.js"));
+var NodeTreeQuery_1 = __webpack_require__(/*! ./NodeTreeQuery */ "../custom-node-tree/lib/domain/NodeTreeQuery.js");
+function loadNodeTree(_a, nodeTypesRegistry, nodeTreeConfiguration) {
+    var _b;
+    var dispatch = _a.dispatch;
+    return __awaiter(this, void 0, void 0, function () {
+        var leafNodeContextPath, toggledNodeContextPaths, nodes, rootNode;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
+                case 0:
+                    leafNodeContextPath = (_b = nodeTreeConfiguration.selectedNodeContextPath) !== null && _b !== void 0 ? _b : nodeTreeConfiguration.documentNodeContextPath;
+                    toggledNodeContextPaths = nodeTreeConfiguration.rootNodeContextPath.getIntermediateContextPaths(leafNodeContextPath);
+                    dispatch(actions.NodesWereRequested());
+                    return [4, archaeopteryx_neos_bridge_1.q([nodeTreeConfiguration.rootNodeContextPath, leafNodeContextPath]).neosUiDefaultNodes(nodeTreeConfiguration.baseNodeTypeName, nodeTreeConfiguration.loadingDepth, toggledNodeContextPaths, []).getForTree()];
+                case 1:
+                    nodes = _c.sent().map(function (node) {
+                        return __assign(__assign({}, node), { children: node.children.filter(function (_a) {
+                                var nodeTypeName = _a.nodeType;
+                                return Boolean(nodeTypesRegistry === null || nodeTypesRegistry === void 0 ? void 0 : nodeTypesRegistry.isOfType(nodeTypeName, nodeTreeConfiguration.baseNodeTypeName));
+                            }) });
+                    });
+                    rootNode = nodes.find(function (n) {
+                        return n.contextPath.equals(nodeTreeConfiguration.rootNodeContextPath);
+                    });
+                    if (!rootNode) {
+                        throw new Error("Could not find root node: " + nodeTreeConfiguration.rootNodeContextPath);
+                    }
+                    dispatch(actions.NodesWereLoaded(rootNode, nodeTreeConfiguration.baseNodeTypeName, nodes, nodes.filter(function (node) {
+                        return  false || toggledNodeContextPaths.some(function (cp) {
+                            return node.contextPath.equals(cp);
+                        }) || node.depth - rootNode.depth < nodeTreeConfiguration.loadingDepth;
+                    })));
+                    return [2];
+            }
+        });
+    });
+}
+exports.loadNodeTree = loadNodeTree;
+function toggleNodeInNodeTree(_a, nodeTypesRegistry, node) {
+    var state = _a.state,
+        dispatch = _a.dispatch;
+    return __awaiter(this, void 0, void 0, function () {
+        var childNodeContextPaths, childNodes;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    if (!state.nodesByState.uncollapsed.includes(node)) return [3, 1];
+                    dispatch(actions.NodeWasToggled(node, false));
+                    return [3, 4];
+                case 1:
+                    if (!NodeTreeQuery_1.isNodeFullyLoaded(state, node)) return [3, 2];
+                    dispatch(actions.NodeWasToggled(node, true));
+                    return [3, 4];
+                case 2:
+                    childNodeContextPaths = node.children.filter(function (c) {
+                        return !state.nodesByContextPath.all[c.contextPath.toString()];
+                    }).map(function (c) {
+                        return c.contextPath;
+                    });
+                    dispatch(actions.ChildNodesWereRequested(node));
+                    return [4, archaeopteryx_neos_bridge_1.q(childNodeContextPaths).getForTree()];
+                case 3:
+                    childNodes = _b.sent().map(function (node) {
+                        return __assign(__assign({}, node), { children: node.children.filter(function (_a) {
+                                var nodeTypeName = _a.nodeType;
+                                return Boolean(nodeTypesRegistry === null || nodeTypesRegistry === void 0 ? void 0 : nodeTypesRegistry.isOfType(nodeTypeName, state.baseNodeTypeName));
+                            }) });
+                    });
+                    dispatch(actions.ChildNodesWereLoaded(node, childNodes));
+                    _b.label = 4;
+                case 4:
+                    return [2];
+            }
+        });
+    });
+}
+exports.toggleNodeInNodeTree = toggleNodeInNodeTree;
+function filterNodeTree(_a, nodeTypesRegistry, nodeTreeFilterParams) {
+    var _b, _c;
+    var state = _a.state,
+        dispatch = _a.dispatch;
+    return __awaiter(this, void 0, void 0, function () {
+        var filteredNodes;
+        return __generator(this, function (_d) {
+            switch (_d.label) {
+                case 0:
+                    if (!(state.rootNode && (nodeTreeFilterParams.searchTerm || nodeTreeFilterParams.nodeTypeFilter))) return [3, 2];
+                    dispatch(actions.FilteredNodesWereRequested());
+                    return [4, archaeopteryx_neos_bridge_1.q(state.rootNode.contextPath).search((_b = nodeTreeFilterParams.searchTerm) !== null && _b !== void 0 ? _b : undefined, (_c = nodeTreeFilterParams.nodeTypeFilter) !== null && _c !== void 0 ? _c : undefined).getForTreeWithParents()];
+                case 1:
+                    filteredNodes = _d.sent().map(function (node) {
+                        return __assign(__assign({}, node), { children: node.children.filter(function (_a) {
+                                var nodeTypeName = _a.nodeType;
+                                return Boolean(nodeTypesRegistry === null || nodeTypesRegistry === void 0 ? void 0 : nodeTypesRegistry.isOfType(nodeTypeName, state.baseNodeTypeName));
+                            }) });
+                    });
+                    ;
+                    dispatch(actions.FilteredNodesWereLoaded(filteredNodes));
+                    return [3, 3];
+                case 2:
+                    dispatch(actions.FilteredNodesWereReset());
+                    _d.label = 3;
+                case 3:
+                    return [2];
+            }
+        });
+    });
+}
+exports.filterNodeTree = filterNodeTree;
+//# sourceMappingURL=NodeTreeOperation.js.map
+
+/***/ }),
+
+/***/ "../custom-node-tree/lib/domain/NodeTreeQuery.js":
+/*!*******************************************************!*\
+  !*** ../custom-node-tree/lib/domain/NodeTreeQuery.js ***!
+  \*******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.findChildNodesForNode = exports.findNodeByContextPath = exports.isNodeFullyLoaded = exports.isNodeLoading = exports.isNodeCollapsed = void 0;
+function isNodeCollapsed(state, node) {
+    if (state.nodesByContextPath.filtered) {
+        return false;
+    }
+    return !state.nodesByState.uncollapsed.some(function (n) {
+        return n.contextPath.equals(node.contextPath);
+    });
+}
+exports.isNodeCollapsed = isNodeCollapsed;
+function isNodeLoading(state, node) {
+    if (state.nodesByContextPath.filtered) {
+        return false;
+    }
+    return state.nodesByState.loading.some(function (n) {
+        return n.contextPath.equals(node.contextPath);
+    });
+}
+exports.isNodeLoading = isNodeLoading;
+function isNodeFullyLoaded(state, node) {
+    if (state.nodesByContextPath.filtered) {
+        return true;
+    }
+    return node.children.every(function (child) {
+        return state.nodesByContextPath.all[child.contextPath.toString()];
+    });
+}
+exports.isNodeFullyLoaded = isNodeFullyLoaded;
+function findNodeByContextPath(state, contextPath) {
+    var _a, _b;
+    var repository = (_a = state.nodesByContextPath.filtered) !== null && _a !== void 0 ? _a : state.nodesByContextPath.all;
+    return (_b = repository[contextPath.toString()]) !== null && _b !== void 0 ? _b : null;
+}
+exports.findNodeByContextPath = findNodeByContextPath;
+function findChildNodesForNode(state, node) {
+    if (!isNodeFullyLoaded(state, node)) {
+        return [];
+    }
+    return node.children.map(function (child) {
+        return findNodeByContextPath(state, child.contextPath);
+    }).filter(function (result) {
+        return result !== null;
+    });
+}
+exports.findChildNodesForNode = findChildNodesForNode;
+//# sourceMappingURL=NodeTreeQuery.js.map
+
+/***/ }),
+
+/***/ "../custom-node-tree/lib/domain/NodeTreeState.js":
+/*!*******************************************************!*\
+  !*** ../custom-node-tree/lib/domain/NodeTreeState.js ***!
+  \*******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function get() {
+            return m[k];
+        } });
+} : function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+var __setModuleDefault = undefined && undefined.__setModuleDefault || (Object.create ? function (o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+} : function (o, v) {
+    o["default"] = v;
+});
+var __importStar = undefined && undefined.__importStar || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) {
+        if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    }__setModuleDefault(result, mod);
+    return result;
+};
+var __values = undefined && undefined.__values || function (o) {
+    var s = typeof Symbol === "function" && Symbol.iterator,
+        m = s && o[s],
+        i = 0;
+    if (m) return m.call(o);
+    if (o && typeof o.length === "number") return {
+        next: function next() {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+};
+var __importDefault = undefined && undefined.__importDefault || function (mod) {
+    return mod && mod.__esModule ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.nodeTreeReducer = exports.initialNodeTreeState = void 0;
+var immer_1 = __importDefault(__webpack_require__(/*! immer */ "../../node_modules/immer/dist/immer.esm.js"));
+var typesafe_actions_1 = __webpack_require__(/*! typesafe-actions */ "../../node_modules/typesafe-actions/dist/typesafe-actions.umd.production.js");
+var archaeopteryx_neos_bridge_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-neos-bridge */ "../neos-bridge/lib/index.js");
+var actions = __importStar(__webpack_require__(/*! ./NodeTreeAction */ "../custom-node-tree/lib/domain/NodeTreeAction.js"));
+exports.initialNodeTreeState = {
+    rootNode: null,
+    baseNodeTypeName: archaeopteryx_neos_bridge_1.NodeTypeName('Neos.Neos:Document'),
+    nodesByContextPath: {
+        all: {},
+        filtered: null
+    },
+    nodesByState: {
+        uncollapsed: [],
+        loading: []
+    }
+};
+function nodeTreeReducer(state, action) {
+    if (state === void 0) {
+        state = exports.initialNodeTreeState;
+    }
+    switch (action.type) {
+        case typesafe_actions_1.getType(actions.NodesWereLoaded):
+            return immer_1.default(state, function (draft) {
+                var e_1, _a;
+                draft.rootNode = action.payload.rootNode;
+                draft.baseNodeTypeName = action.payload.baseNodeTypeName;
+                draft.nodesByContextPath.filtered = null;
+                draft.nodesByState.loading = state.nodesByState.loading.filter(function (node) {
+                    return node !== state.rootNode;
+                });
+                draft.nodesByState.uncollapsed = action.payload.uncollapsedNodes;
+                try {
+                    for (var _b = __values(action.payload.nodes), _c = _b.next(); !_c.done; _c = _b.next()) {
+                        var node = _c.value;
+                        draft.nodesByContextPath.all[node.contextPath.toString()] = node;
+                    }
+                } catch (e_1_1) {
+                    e_1 = { error: e_1_1 };
+                } finally {
+                    try {
+                        if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
+                    } finally {
+                        if (e_1) throw e_1.error;
+                    }
+                }
+            });
+        case typesafe_actions_1.getType(actions.ChildNodesWereRequested):
+            return immer_1.default(state, function (draft) {
+                draft.nodesByState.loading.push(action.payload);
+            });
+        case typesafe_actions_1.getType(actions.ChildNodesWereLoaded):
+            return immer_1.default(state, function (draft) {
+                var e_2, _a;
+                draft.nodesByState.loading = state.nodesByState.loading.filter(function (node) {
+                    return node !== action.payload.parentNode;
+                });
+                try {
+                    for (var _b = __values(action.payload.childNodes), _c = _b.next(); !_c.done; _c = _b.next()) {
+                        var node = _c.value;
+                        draft.nodesByContextPath.all[node.contextPath.toString()] = node;
+                    }
+                } catch (e_2_1) {
+                    e_2 = { error: e_2_1 };
+                } finally {
+                    try {
+                        if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
+                    } finally {
+                        if (e_2) throw e_2.error;
+                    }
+                }
+            });
+        case typesafe_actions_1.getType(actions.NodeWasToggled):
+            return immer_1.default(state, function (draft) {
+                var _a;
+                var isUncollapsed = (_a = action.payload.forceToggleState) !== null && _a !== void 0 ? _a : state.nodesByState.uncollapsed.includes(action.payload.node);
+                if (isUncollapsed) {
+                    draft.nodesByState.uncollapsed = state.nodesByState.uncollapsed.filter(function (node) {
+                        return node !== action.payload.node;
+                    });
+                } else {
+                    draft.nodesByState.uncollapsed.push(action.payload.node);
+                }
+            });
+        case typesafe_actions_1.getType(actions.FilteredNodesWereRequested):
+            return immer_1.default(state, function (draft) {
+                if (state.rootNode && !state.nodesByState.loading.includes(state.rootNode)) {
+                    draft.nodesByState.loading.push(state.rootNode);
+                }
+                draft.nodesByContextPath.filtered = {};
+            });
+        case typesafe_actions_1.getType(actions.FilteredNodesWereLoaded):
+            return immer_1.default(state, function (draft) {
+                var e_3, _a;
+                draft.nodesByState.loading = state.nodesByState.loading.filter(function (node) {
+                    return node !== state.rootNode;
+                });
+                draft.nodesByContextPath.filtered = {};
+                try {
+                    for (var _b = __values(action.payload), _c = _b.next(); !_c.done; _c = _b.next()) {
+                        var node = _c.value;
+                        draft.nodesByContextPath.filtered[node.contextPath.toString()] = node;
+                    }
+                } catch (e_3_1) {
+                    e_3 = { error: e_3_1 };
+                } finally {
+                    try {
+                        if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
+                    } finally {
+                        if (e_3) throw e_3.error;
+                    }
+                }
+            });
+        case typesafe_actions_1.getType(actions.FilteredNodesWereReset):
+            return immer_1.default(state, function (draft) {
+                draft.nodesByState.loading = state.nodesByState.loading.filter(function (node) {
+                    return node !== state.rootNode;
+                });
+                draft.nodesByContextPath.filtered = null;
+            });
+        default:
+            return state;
+    }
+}
+exports.nodeTreeReducer = nodeTreeReducer;
+//# sourceMappingURL=NodeTreeState.js.map
+
+/***/ }),
+
+/***/ "../custom-node-tree/lib/domain/index.js":
+/*!***********************************************!*\
+  !*** ../custom-node-tree/lib/domain/index.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.findChildNodesForNode = exports.findNodeByContextPath = exports.isNodeFullyLoaded = exports.isNodeLoading = exports.isNodeCollapsed = exports.filterNodeTree = exports.toggleNodeInNodeTree = exports.loadNodeTree = exports.initialNodeTreeState = exports.nodeTreeReducer = void 0;
+var NodeTreeState_1 = __webpack_require__(/*! ./NodeTreeState */ "../custom-node-tree/lib/domain/NodeTreeState.js");
+Object.defineProperty(exports, "nodeTreeReducer", { enumerable: true, get: function get() {
+    return NodeTreeState_1.nodeTreeReducer;
+  } });
+Object.defineProperty(exports, "initialNodeTreeState", { enumerable: true, get: function get() {
+    return NodeTreeState_1.initialNodeTreeState;
+  } });
+var NodeTreeOperation_1 = __webpack_require__(/*! ./NodeTreeOperation */ "../custom-node-tree/lib/domain/NodeTreeOperation.js");
+Object.defineProperty(exports, "loadNodeTree", { enumerable: true, get: function get() {
+    return NodeTreeOperation_1.loadNodeTree;
+  } });
+Object.defineProperty(exports, "toggleNodeInNodeTree", { enumerable: true, get: function get() {
+    return NodeTreeOperation_1.toggleNodeInNodeTree;
+  } });
+Object.defineProperty(exports, "filterNodeTree", { enumerable: true, get: function get() {
+    return NodeTreeOperation_1.filterNodeTree;
+  } });
+var NodeTreeQuery_1 = __webpack_require__(/*! ./NodeTreeQuery */ "../custom-node-tree/lib/domain/NodeTreeQuery.js");
+Object.defineProperty(exports, "isNodeCollapsed", { enumerable: true, get: function get() {
+    return NodeTreeQuery_1.isNodeCollapsed;
+  } });
+Object.defineProperty(exports, "isNodeLoading", { enumerable: true, get: function get() {
+    return NodeTreeQuery_1.isNodeLoading;
+  } });
+Object.defineProperty(exports, "isNodeFullyLoaded", { enumerable: true, get: function get() {
+    return NodeTreeQuery_1.isNodeFullyLoaded;
+  } });
+Object.defineProperty(exports, "findNodeByContextPath", { enumerable: true, get: function get() {
+    return NodeTreeQuery_1.findNodeByContextPath;
+  } });
+Object.defineProperty(exports, "findChildNodesForNode", { enumerable: true, get: function get() {
+    return NodeTreeQuery_1.findChildNodesForNode;
+  } });
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "../custom-node-tree/lib/index.js":
+/*!****************************************!*\
+  !*** ../custom-node-tree/lib/index.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.NodeTree = void 0;
+var application_1 = __webpack_require__(/*! ./application */ "../custom-node-tree/lib/application/index.js");
+Object.defineProperty(exports, "NodeTree", { enumerable: true, get: function get() {
+    return application_1.NodeTree;
   } });
 //# sourceMappingURL=index.js.map
 
@@ -26422,6 +26796,9 @@ var ContextPath = function () {
             return result;
         }
         return [];
+    };
+    ContextPath.prototype.equals = function (other) {
+        return this.path === other.path && this.context === other.context;
     };
     ContextPath.prototype.toString = function () {
         return this.path + "@" + this.context;

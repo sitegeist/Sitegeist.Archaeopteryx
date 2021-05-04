@@ -8,6 +8,7 @@ export declare class ContextPath {
     static fromString(string: string): null | ContextPath;
     adopt(pathLike: undefined | null | string): null | ContextPath;
     getIntermediateContextPaths(other: ContextPath): ContextPath[];
+    equals(other: ContextPath): boolean;
     toString(): string;
     get depth(): number;
 }

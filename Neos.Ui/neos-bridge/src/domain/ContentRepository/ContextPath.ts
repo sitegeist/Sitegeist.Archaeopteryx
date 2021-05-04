@@ -54,6 +54,10 @@ export class ContextPath {
         return [];
     }
 
+    public equals(other: ContextPath): boolean {
+        return this.path === other.path && this.context === other.context;
+    }
+
     public toString(): string {
         return `${this.path}@${this.context}`;
     }

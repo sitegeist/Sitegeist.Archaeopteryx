@@ -4,7 +4,8 @@ export type {
     INeosContextProperties,
     IGlobalRegistry,
     INodePartialForTree,
-    INodeType
+    INodeType,
+    INodeTypesRegistry
 } from './domain';
 export {
     NeosContext,

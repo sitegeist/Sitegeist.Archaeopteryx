@@ -1,9 +1,14 @@
 import * as React from 'react';
 
-import {q, INodePartialForTree, useSiteNodeContextPath} from '@sitegeist/archaeopteryx-neos-bridge';
+import {q, INodePartialForTree, NodeTypeName, useSiteNodeContextPath, useDocumentNodeContextPath, useConfiguration} from '@sitegeist/archaeopteryx-neos-bridge';
+import {NodeTree as NodeTreeAdapter} from '@sitegeist/archaeopteryx-custom-node-tree';
 
 import {LinkType, ILinkTypeProps, useEditorTransactions, useEditorValue} from '../../../domain';
-import {NodeTreeAdapter} from './NodeTreeAdapter';
+
+function useBaseNodeTypeName(): NodeTypeName {
+    const baseNodeTypeName = useConfiguration(c => c.nodeTree?.presets?.default?.baseNodeType);
+    return baseNodeTypeName ?? NodeTypeName('Neos.Neos:Document');
+}
 
 const cache = new Map<string, INodePartialForTree>();
 
@@ -74,8 +79,12 @@ export const NodeTree = new class extends LinkType {
     public readonly getEditor = () => {
         const {loading, error, resolvedValue} = useResolvedValue();
         const {update} = useEditorTransactions();
+        const siteNodeContextPath = useSiteNodeContextPath();
+        const documentNodeContextPath = useDocumentNodeContextPath();
+        const baseNodeTypeName = useBaseNodeTypeName();
+        const loadingDepth = useConfiguration(c => c.nodeTree?.loadingDepth) ?? 4;
 
-        if (loading) {
+        if (loading || !siteNodeContextPath || !documentNodeContextPath) {
             return (
                 <div>Loading...</div>
             );
@@ -88,12 +97,22 @@ export const NodeTree = new class extends LinkType {
         } else {
             return (
                 <NodeTreeAdapter
-                    selected={resolvedValue}
+                    configuration={{
+                        baseNodeTypeName,
+                        rootNodeContextPath: siteNodeContextPath,
+                        documentNodeContextPath,
+                        selectedNodeContextPath: resolvedValue?.contextPath,
+                        loadingDepth
+                    }}
+                    options={{
+                        enableSearch: true,
+                        enableNodeTypeFilter: true
+                    }}
                     onSelect={node =>{
                         cache.set(`node://${node.identifier}`, node);
                         update({href: `node://${node.identifier}`});
                     }}
-                    />
+                />
             );
         }
     };

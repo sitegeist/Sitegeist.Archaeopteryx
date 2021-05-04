@@ -100,8 +100,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.NodeTree = void 0;
 var React = __importStar(require("react"));
 var archaeopteryx_neos_bridge_1 = require("@sitegeist/archaeopteryx-neos-bridge");
+var archaeopteryx_custom_node_tree_1 = require("@sitegeist/archaeopteryx-custom-node-tree");
 var domain_1 = require("../../../domain");
-var NodeTreeAdapter_1 = require("./NodeTreeAdapter");
+function useBaseNodeTypeName() {
+    var baseNodeTypeName = archaeopteryx_neos_bridge_1.useConfiguration(function (c) { var _a, _b, _c; return (_c = (_b = (_a = c.nodeTree) === null || _a === void 0 ? void 0 : _a.presets) === null || _b === void 0 ? void 0 : _b.default) === null || _c === void 0 ? void 0 : _c.baseNodeType; });
+    return baseNodeTypeName !== null && baseNodeTypeName !== void 0 ? baseNodeTypeName : archaeopteryx_neos_bridge_1.NodeTypeName('Neos.Neos:Document');
+}
 var cache = new Map();
 function useResolvedValue() {
     var _this = this;
@@ -182,9 +186,14 @@ exports.NodeTree = new (function (_super) {
         _this.getTitle = function () { return 'Node Tree'; };
         _this.getPreview = function () { return (React.createElement("div", null, "NODE TREE PREVIEW")); };
         _this.getEditor = function () {
-            var _a = useResolvedValue(), loading = _a.loading, error = _a.error, resolvedValue = _a.resolvedValue;
+            var _a;
+            var _b = useResolvedValue(), loading = _b.loading, error = _b.error, resolvedValue = _b.resolvedValue;
             var update = domain_1.useEditorTransactions().update;
-            if (loading) {
+            var siteNodeContextPath = archaeopteryx_neos_bridge_1.useSiteNodeContextPath();
+            var documentNodeContextPath = archaeopteryx_neos_bridge_1.useDocumentNodeContextPath();
+            var baseNodeTypeName = useBaseNodeTypeName();
+            var loadingDepth = (_a = archaeopteryx_neos_bridge_1.useConfiguration(function (c) { var _a; return (_a = c.nodeTree) === null || _a === void 0 ? void 0 : _a.loadingDepth; })) !== null && _a !== void 0 ? _a : 4;
+            if (loading || !siteNodeContextPath || !documentNodeContextPath) {
                 return (React.createElement("div", null, "Loading..."));
             }
             else if (error) {
@@ -193,7 +202,16 @@ exports.NodeTree = new (function (_super) {
                 return (React.createElement("div", null, "An error occurred :("));
             }
             else {
-                return (React.createElement(NodeTreeAdapter_1.NodeTreeAdapter, { selected: resolvedValue, onSelect: function (node) {
+                return (React.createElement(archaeopteryx_custom_node_tree_1.NodeTree, { configuration: {
+                        baseNodeTypeName: baseNodeTypeName,
+                        rootNodeContextPath: siteNodeContextPath,
+                        documentNodeContextPath: documentNodeContextPath,
+                        selectedNodeContextPath: resolvedValue === null || resolvedValue === void 0 ? void 0 : resolvedValue.contextPath,
+                        loadingDepth: loadingDepth
+                    }, options: {
+                        enableSearch: true,
+                        enableNodeTypeFilter: true
+                    }, onSelect: function (node) {
                         cache.set("node://" + node.identifier, node);
                         update({ href: "node://" + node.identifier });
                     } }));
