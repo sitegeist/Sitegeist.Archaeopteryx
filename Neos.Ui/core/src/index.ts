@@ -1,3 +1,6 @@
+export {registerLinkTypes, registerModal} from './application';
+
+export type {IEditor} from './domain';
 export {
     useLinkTypeForHref,
     createEditor,
@@ -6,5 +9,3 @@ export {
     useEditorValue,
     useEditorTransactions
 } from './domain';
-
-export {LinkTypes, Modal} from './application';

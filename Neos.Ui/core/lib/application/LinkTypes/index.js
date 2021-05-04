@@ -1,12 +1,18 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MailTo = exports.Asset = exports.NodeTree = exports.WebLink = void 0;
+exports.registerLinkTypes = void 0;
+var neos_ui_extensibility_1 = require("@neos-project/neos-ui-extensibility");
 var WebLink_1 = require("./WebLink");
-Object.defineProperty(exports, "WebLink", { enumerable: true, get: function () { return WebLink_1.WebLink; } });
 var NodeTree_1 = require("./NodeTree");
-Object.defineProperty(exports, "NodeTree", { enumerable: true, get: function () { return NodeTree_1.NodeTree; } });
 var Asset_1 = require("./Asset");
-Object.defineProperty(exports, "Asset", { enumerable: true, get: function () { return Asset_1.Asset; } });
 var MailTo_1 = require("./MailTo");
-Object.defineProperty(exports, "MailTo", { enumerable: true, get: function () { return MailTo_1.MailTo; } });
+function registerLinkTypes(globalRegistry) {
+    var linkTypeRegistry = new neos_ui_extensibility_1.SynchronousRegistry("\n        # Sitegeist.Archaeopteryx LinkType Registry\n    ");
+    linkTypeRegistry.set(WebLink_1.WebLink.id, WebLink_1.WebLink);
+    linkTypeRegistry.set(NodeTree_1.NodeTree.id, NodeTree_1.NodeTree);
+    linkTypeRegistry.set(Asset_1.Asset.id, Asset_1.Asset);
+    linkTypeRegistry.set(MailTo_1.MailTo.id, MailTo_1.MailTo);
+    globalRegistry.set('@sitegeist/archaeopteryx/link-types', linkTypeRegistry);
+}
+exports.registerLinkTypes = registerLinkTypes;
 //# sourceMappingURL=index.js.map

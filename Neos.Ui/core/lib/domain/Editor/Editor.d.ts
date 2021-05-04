@@ -27,6 +27,7 @@ export declare function createEditor(): {
     };
     initialState: IEditorState;
 };
+export declare type IEditor = ReturnType<typeof createEditor>;
 export declare const EditorContext: React.Context<{
     state$: import("rxjs").Observable<IEditorState>;
     tx: {

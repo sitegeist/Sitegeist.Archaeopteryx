@@ -5,14 +5,14 @@ import {IGlobalRegistry} from './GlobalRegistry';
 import {IRoutes} from './Routes';
 import {IStore} from './Store';
 
-interface NeosContextProperties {
+export interface INeosContextProperties {
     globalRegistry: IGlobalRegistry
     store: IStore
     configuration: IConfiguration
     routes?: IRoutes
 }
 
-export const NeosContext = React.createContext<null | NeosContextProperties>(null);
+export const NeosContext = React.createContext<null | INeosContextProperties>(null);
 
 export function useNeos() {
     return React.useContext(NeosContext);

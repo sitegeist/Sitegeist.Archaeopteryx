@@ -24893,23 +24893,21 @@ Object.defineProperty(exports, "WebLink", { enumerable: true, get: function get(
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MailTo = exports.Asset = exports.NodeTree = exports.WebLink = void 0;
+exports.registerLinkTypes = void 0;
+var neos_ui_extensibility_1 = __webpack_require__(/*! @neos-project/neos-ui-extensibility */ "../../node_modules/@neos-project/neos-ui-extensibility/dist/index.js");
 var WebLink_1 = __webpack_require__(/*! ./WebLink */ "../core/lib/application/LinkTypes/WebLink/index.js");
-Object.defineProperty(exports, "WebLink", { enumerable: true, get: function get() {
-    return WebLink_1.WebLink;
-  } });
 var NodeTree_1 = __webpack_require__(/*! ./NodeTree */ "../core/lib/application/LinkTypes/NodeTree/index.js");
-Object.defineProperty(exports, "NodeTree", { enumerable: true, get: function get() {
-    return NodeTree_1.NodeTree;
-  } });
 var Asset_1 = __webpack_require__(/*! ./Asset */ "../core/lib/application/LinkTypes/Asset/index.js");
-Object.defineProperty(exports, "Asset", { enumerable: true, get: function get() {
-    return Asset_1.Asset;
-  } });
 var MailTo_1 = __webpack_require__(/*! ./MailTo */ "../core/lib/application/LinkTypes/MailTo/index.js");
-Object.defineProperty(exports, "MailTo", { enumerable: true, get: function get() {
-    return MailTo_1.MailTo;
-  } });
+function registerLinkTypes(globalRegistry) {
+    var linkTypeRegistry = new neos_ui_extensibility_1.SynchronousRegistry("\n        # Sitegeist.Archaeopteryx LinkType Registry\n    ");
+    linkTypeRegistry.set(WebLink_1.WebLink.id, WebLink_1.WebLink);
+    linkTypeRegistry.set(NodeTree_1.NodeTree.id, NodeTree_1.NodeTree);
+    linkTypeRegistry.set(Asset_1.Asset.id, Asset_1.Asset);
+    linkTypeRegistry.set(MailTo_1.MailTo.id, MailTo_1.MailTo);
+    globalRegistry.set('@sitegeist/archaeopteryx/link-types', linkTypeRegistry);
+}
+exports.registerLinkTypes = registerLinkTypes;
 //# sourceMappingURL=index.js.map
 
 /***/ }),
@@ -25063,26 +25061,6 @@ exports.Modal = Modal;
 "use strict";
 
 
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Modal = void 0;
-var Modal_1 = __webpack_require__(/*! ./Modal */ "../core/lib/application/Modal/Modal.js");
-Object.defineProperty(exports, "Modal", { enumerable: true, get: function get() {
-    return Modal_1.Modal;
-  } });
-//# sourceMappingURL=index.js.map
-
-/***/ }),
-
-/***/ "../core/lib/application/index.js":
-/*!****************************************!*\
-  !*** ../core/lib/application/index.js ***!
-  \****************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
 var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     Object.defineProperty(o, k2, { enumerable: true, get: function get() {
@@ -25106,12 +25084,43 @@ var __importStar = undefined && undefined.__importStar || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Modal = exports.LinkTypes = void 0;
-exports.LinkTypes = __importStar(__webpack_require__(/*! ./LinkTypes */ "../core/lib/application/LinkTypes/index.js"));
+exports.registerModal = void 0;
+var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
+var archaeopteryx_neos_bridge_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-neos-bridge */ "../neos-bridge/lib/index.js");
+var domain_1 = __webpack_require__(/*! ../../domain */ "../core/lib/domain/index.js");
+var Modal_1 = __webpack_require__(/*! ./Modal */ "../core/lib/application/Modal/Modal.js");
+function registerModal(neosContextProperties, editor) {
+    var globalRegistry = neosContextProperties.globalRegistry;
+    var containersRegistry = globalRegistry.get('containers');
+    containersRegistry === null || containersRegistry === void 0 ? void 0 : containersRegistry.set('Modals/Sitegeist.Archaeopteryx', function (props) {
+        return React.createElement(archaeopteryx_neos_bridge_1.NeosContext.Provider, { value: neosContextProperties }, React.createElement(domain_1.EditorContext.Provider, { value: editor }, React.createElement(Modal_1.Modal, props)));
+    });
+}
+exports.registerModal = registerModal;
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "../core/lib/application/index.js":
+/*!****************************************!*\
+  !*** ../core/lib/application/index.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.registerModal = exports.registerLinkTypes = void 0;
+var LinkTypes_1 = __webpack_require__(/*! ./LinkTypes */ "../core/lib/application/LinkTypes/index.js");
+Object.defineProperty(exports, "registerLinkTypes", { enumerable: true, get: function get() {
+    return LinkTypes_1.registerLinkTypes;
+  } });
 var Modal_1 = __webpack_require__(/*! ./Modal */ "../core/lib/application/Modal/index.js");
-Object.defineProperty(exports, "Modal", { enumerable: true, get: function get() {
-        return Modal_1.Modal;
-    } });
+Object.defineProperty(exports, "registerModal", { enumerable: true, get: function get() {
+    return Modal_1.registerModal;
+  } });
 //# sourceMappingURL=index.js.map
 
 /***/ }),
@@ -25528,7 +25537,14 @@ Object.defineProperty(exports, "useEditorTransactions", { enumerable: true, get:
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Modal = exports.LinkTypes = exports.useEditorTransactions = exports.useEditorValue = exports.useEditorState = exports.EditorContext = exports.createEditor = exports.useLinkTypeForHref = void 0;
+exports.useEditorTransactions = exports.useEditorValue = exports.useEditorState = exports.EditorContext = exports.createEditor = exports.useLinkTypeForHref = exports.registerModal = exports.registerLinkTypes = void 0;
+var application_1 = __webpack_require__(/*! ./application */ "../core/lib/application/index.js");
+Object.defineProperty(exports, "registerLinkTypes", { enumerable: true, get: function get() {
+    return application_1.registerLinkTypes;
+  } });
+Object.defineProperty(exports, "registerModal", { enumerable: true, get: function get() {
+    return application_1.registerModal;
+  } });
 var domain_1 = __webpack_require__(/*! ./domain */ "../core/lib/domain/index.js");
 Object.defineProperty(exports, "useLinkTypeForHref", { enumerable: true, get: function get() {
     return domain_1.useLinkTypeForHref;
@@ -25547,13 +25563,6 @@ Object.defineProperty(exports, "useEditorValue", { enumerable: true, get: functi
   } });
 Object.defineProperty(exports, "useEditorTransactions", { enumerable: true, get: function get() {
     return domain_1.useEditorTransactions;
-  } });
-var application_1 = __webpack_require__(/*! ./application */ "../core/lib/application/index.js");
-Object.defineProperty(exports, "LinkTypes", { enumerable: true, get: function get() {
-    return application_1.LinkTypes;
-  } });
-Object.defineProperty(exports, "Modal", { enumerable: true, get: function get() {
-    return application_1.Modal;
   } });
 //# sourceMappingURL=index.js.map
 
@@ -25725,12 +25734,322 @@ exports.InspectorEditor = InspectorEditor;
 "use strict";
 
 
+var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function get() {
+            return m[k];
+        } });
+} : function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+var __setModuleDefault = undefined && undefined.__setModuleDefault || (Object.create ? function (o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+} : function (o, v) {
+    o["default"] = v;
+});
+var __importStar = undefined && undefined.__importStar || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) {
+        if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    }__setModuleDefault(result, mod);
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.InspectorEditor = void 0;
+exports.registerInspectorEditor = void 0;
+var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
+var archaeopteryx_neos_bridge_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-neos-bridge */ "../neos-bridge/lib/index.js");
+var archaeopteryx_core_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-core */ "../core/lib/index.js");
 var InspectorEditor_1 = __webpack_require__(/*! ./InspectorEditor */ "../inspector-editor/lib/InspectorEditor.js");
-Object.defineProperty(exports, "InspectorEditor", { enumerable: true, get: function get() {
-    return InspectorEditor_1.InspectorEditor;
-  } });
+function registerInspectorEditor(neosContextProperties, editor) {
+    var globalRegistry = neosContextProperties.globalRegistry;
+    var inspectorRegistry = globalRegistry.get('inspector');
+    if (!inspectorRegistry) {
+        console.warn('[Sitegeist.Archaeopteryx]: Could not find inspector registry.');
+        console.warn('[Sitegeist.Archaeopteryx]: Skipping registration of InspectorEditor...');
+        return;
+    }
+    var editorsRegistry = inspectorRegistry.get('editors');
+    if (!editorsRegistry) {
+        console.warn('[Sitegeist.Archaeopteryx]: Could not find inspector editors registry.');
+        console.warn('[Sitegeist.Archaeopteryx]: Skipping registration of InspectorEditor...');
+        return;
+    }
+    editorsRegistry.set('Sitegeist.Archaeopteryx/Inspector/Editors/LinkEditor', {
+        component: function component(props) {
+            return React.createElement(archaeopteryx_neos_bridge_1.NeosContext.Provider, { value: neosContextProperties }, React.createElement(archaeopteryx_core_1.EditorContext.Provider, { value: editor }, React.createElement(InspectorEditor_1.InspectorEditor, props)));
+        }
+    });
+}
+exports.registerInspectorEditor = registerInspectorEditor;
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "../link-button/lib/LinkButton.js":
+/*!****************************************!*\
+  !*** ../link-button/lib/LinkButton.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function get() {
+            return m[k];
+        } });
+} : function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+var __setModuleDefault = undefined && undefined.__setModuleDefault || (Object.create ? function (o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+} : function (o, v) {
+    o["default"] = v;
+});
+var __importStar = undefined && undefined.__importStar || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) {
+        if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    }__setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = undefined && undefined.__awaiter || function (thisArg, _arguments, P, generator) {
+    function adopt(value) {
+        return value instanceof P ? value : new P(function (resolve) {
+            resolve(value);
+        });
+    }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) {
+            try {
+                step(generator.next(value));
+            } catch (e) {
+                reject(e);
+            }
+        }
+        function rejected(value) {
+            try {
+                step(generator["throw"](value));
+            } catch (e) {
+                reject(e);
+            }
+        }
+        function step(result) {
+            result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+        }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = undefined && undefined.__generator || function (thisArg, body) {
+    var _ = { label: 0, sent: function sent() {
+            if (t[0] & 1) throw t[1];return t[1];
+        }, trys: [], ops: [] },
+        f,
+        y,
+        t,
+        g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function () {
+        return this;
+    }), g;
+    function verb(n) {
+        return function (v) {
+            return step([n, v]);
+        };
+    }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) {
+            try {
+                if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+                if (y = 0, t) op = [op[0] & 2, t.value];
+                switch (op[0]) {
+                    case 0:case 1:
+                        t = op;break;
+                    case 4:
+                        _.label++;return { value: op[1], done: false };
+                    case 5:
+                        _.label++;y = op[1];op = [0];continue;
+                    case 7:
+                        op = _.ops.pop();_.trys.pop();continue;
+                    default:
+                        if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
+                            _ = 0;continue;
+                        }
+                        if (op[0] === 3 && (!t || op[1] > t[0] && op[1] < t[3])) {
+                            _.label = op[1];break;
+                        }
+                        if (op[0] === 6 && _.label < t[1]) {
+                            _.label = t[1];t = op;break;
+                        }
+                        if (t && _.label < t[2]) {
+                            _.label = t[2];_.ops.push(op);break;
+                        }
+                        if (t[2]) _.ops.pop();
+                        _.trys.pop();continue;
+                }
+                op = body.call(thisArg, _);
+            } catch (e) {
+                op = [6, e];y = 0;
+            } finally {
+                f = t = 0;
+            }
+        }if (op[0] & 5) throw op[1];return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+var __read = undefined && undefined.__read || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o),
+        r,
+        ar = [],
+        e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) {
+            ar.push(r.value);
+        }
+    } catch (error) {
+        e = { error: error };
+    } finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        } finally {
+            if (e) throw e.error;
+        }
+    }
+    return ar;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.LinkButton = void 0;
+var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
+var react_ui_components_1 = __webpack_require__(/*! @neos-project/react-ui-components */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/react-ui-components/index.js");
+var archaeopteryx_core_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-core */ "../core/lib/index.js");
+var LinkButton = function LinkButton(props) {
+    var tx = archaeopteryx_core_1.useEditorTransactions();
+    var handleLinkButtonClick = React.useCallback(function () {
+        return __awaiter(void 0, void 0, void 0, function () {
+            var link, result;
+            var _a, _b, _c, _d, _e, _f, _g;
+            return __generator(this, function (_h) {
+                switch (_h.label) {
+                    case 0:
+                        link = function () {
+                            if (props.formattingUnderCursor.link) {
+                                var _a = __read(props.formattingUnderCursor.link.split('#'), 2),
+                                    href = _a[0],
+                                    anchor = _a[1];
+                                return {
+                                    href: href,
+                                    options: {
+                                        anchor: anchor,
+                                        title: props.formattingUnderCursor.linkTitle,
+                                        targetBlank: props.formattingUnderCursor.linkTargetBlank,
+                                        relNoFollow: props.formattingUnderCursor.linkRelNofollow
+                                    }
+                                };
+                            }
+                            return null;
+                        }();
+                        return [4, tx.editLink(link)];
+                    case 1:
+                        result = _h.sent();
+                        if (result.change) {
+                            if (result.value === null) {
+                                props.executeCommand('linkTitle', false, false);
+                                props.executeCommand('linkRelNofollow', false, false);
+                                props.executeCommand('linkTargetBlank', false, false);
+                                props.executeCommand('unlink');
+                            } else {
+                                props.executeCommand('linkTitle', ((_a = result.value.options) === null || _a === void 0 ? void 0 : _a.title) || false, false);
+                                props.executeCommand('linkTargetBlank', (_c = (_b = result.value.options) === null || _b === void 0 ? void 0 : _b.targetBlank) !== null && _c !== void 0 ? _c : false, false);
+                                props.executeCommand('linkRelNofollow', (_e = (_d = result.value.options) === null || _d === void 0 ? void 0 : _d.relNoFollow) !== null && _e !== void 0 ? _e : false, false);
+                                if ((_f = result.value.options) === null || _f === void 0 ? void 0 : _f.anchor) {
+                                    props.executeCommand('link', result.value.href + "#" + ((_g = result.value.options) === null || _g === void 0 ? void 0 : _g.anchor), false);
+                                } else {
+                                    props.executeCommand('link', result.value.href, false);
+                                }
+                            }
+                        }
+                        return [2];
+                }
+            });
+        });
+    }, [props.executeCommand, props.formattingUnderCursor.link, tx]);
+    return React.createElement(react_ui_components_1.IconButton, { title: 'Link', isActive: Boolean(props.formattingUnderCursor.link), icon: Boolean(props.formattingUnderCursor.link) ? 'unlink' : 'link', onClick: handleLinkButtonClick });
+};
+exports.LinkButton = LinkButton;
+//# sourceMappingURL=LinkButton.js.map
+
+/***/ }),
+
+/***/ "../link-button/lib/index.js":
+/*!***********************************!*\
+  !*** ../link-button/lib/index.js ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function get() {
+            return m[k];
+        } });
+} : function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+var __setModuleDefault = undefined && undefined.__setModuleDefault || (Object.create ? function (o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+} : function (o, v) {
+    o["default"] = v;
+});
+var __importStar = undefined && undefined.__importStar || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) {
+        if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    }__setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.registerLinkButton = void 0;
+var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
+var archaeopteryx_neos_bridge_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-neos-bridge */ "../neos-bridge/lib/index.js");
+var archaeopteryx_core_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-core */ "../core/lib/index.js");
+var LinkButton_1 = __webpack_require__(/*! ./LinkButton */ "../link-button/lib/LinkButton.js");
+function registerLinkButton(neosContextProperties, editor) {
+    var globalRegistry = neosContextProperties.globalRegistry;
+    var ckeditor5Registry = globalRegistry.get('ckEditor5');
+    if (!ckeditor5Registry) {
+        console.warn('[Sitegeist.Archaeopteryx]: Could not find ckeditor5 registry.');
+        console.warn('[Sitegeist.Archaeopteryx]: Skipping registration of RTE formatter...');
+        return;
+    }
+    var richtextToolbarRegistry = ckeditor5Registry.get('richtextToolbar');
+    if (!richtextToolbarRegistry) {
+        console.warn('[Sitegeist.Archaeopteryx]: Could not find ckeditor5 richtextToolbar registry.');
+        console.warn('[Sitegeist.Archaeopteryx]: Skipping registration of RTE formatter...');
+        return;
+    }
+    richtextToolbarRegistry.set('link', {
+        commandName: 'link',
+        component: function component(props) {
+            return React.createElement(archaeopteryx_neos_bridge_1.NeosContext.Provider, { value: neosContextProperties }, React.createElement(archaeopteryx_core_1.EditorContext.Provider, { value: editor }, React.createElement(LinkButton_1.LinkButton, props)));
+        },
+        isVisible: function isVisible(config) {
+            return Boolean(config && config.formatting && config.formatting.a);
+        }
+    });
+}
+exports.registerLinkButton = registerLinkButton;
 //# sourceMappingURL=index.js.map
 
 /***/ }),
@@ -26642,226 +26961,6 @@ Object.defineProperty(exports, "useRoutes", { enumerable: true, get: function ge
 
 /***/ }),
 
-/***/ "../rte-formatter/lib/LinkButton.js":
-/*!******************************************!*\
-  !*** ../rte-formatter/lib/LinkButton.js ***!
-  \******************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function get() {
-            return m[k];
-        } });
-} : function (o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-});
-var __setModuleDefault = undefined && undefined.__setModuleDefault || (Object.create ? function (o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-} : function (o, v) {
-    o["default"] = v;
-});
-var __importStar = undefined && undefined.__importStar || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) {
-        if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    }__setModuleDefault(result, mod);
-    return result;
-};
-var __awaiter = undefined && undefined.__awaiter || function (thisArg, _arguments, P, generator) {
-    function adopt(value) {
-        return value instanceof P ? value : new P(function (resolve) {
-            resolve(value);
-        });
-    }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) {
-            try {
-                step(generator.next(value));
-            } catch (e) {
-                reject(e);
-            }
-        }
-        function rejected(value) {
-            try {
-                step(generator["throw"](value));
-            } catch (e) {
-                reject(e);
-            }
-        }
-        function step(result) {
-            result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
-        }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __generator = undefined && undefined.__generator || function (thisArg, body) {
-    var _ = { label: 0, sent: function sent() {
-            if (t[0] & 1) throw t[1];return t[1];
-        }, trys: [], ops: [] },
-        f,
-        y,
-        t,
-        g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function () {
-        return this;
-    }), g;
-    function verb(n) {
-        return function (v) {
-            return step([n, v]);
-        };
-    }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (_) {
-            try {
-                if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-                if (y = 0, t) op = [op[0] & 2, t.value];
-                switch (op[0]) {
-                    case 0:case 1:
-                        t = op;break;
-                    case 4:
-                        _.label++;return { value: op[1], done: false };
-                    case 5:
-                        _.label++;y = op[1];op = [0];continue;
-                    case 7:
-                        op = _.ops.pop();_.trys.pop();continue;
-                    default:
-                        if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
-                            _ = 0;continue;
-                        }
-                        if (op[0] === 3 && (!t || op[1] > t[0] && op[1] < t[3])) {
-                            _.label = op[1];break;
-                        }
-                        if (op[0] === 6 && _.label < t[1]) {
-                            _.label = t[1];t = op;break;
-                        }
-                        if (t && _.label < t[2]) {
-                            _.label = t[2];_.ops.push(op);break;
-                        }
-                        if (t[2]) _.ops.pop();
-                        _.trys.pop();continue;
-                }
-                op = body.call(thisArg, _);
-            } catch (e) {
-                op = [6, e];y = 0;
-            } finally {
-                f = t = 0;
-            }
-        }if (op[0] & 5) throw op[1];return { value: op[0] ? op[1] : void 0, done: true };
-    }
-};
-var __read = undefined && undefined.__read || function (o, n) {
-    var m = typeof Symbol === "function" && o[Symbol.iterator];
-    if (!m) return o;
-    var i = m.call(o),
-        r,
-        ar = [],
-        e;
-    try {
-        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) {
-            ar.push(r.value);
-        }
-    } catch (error) {
-        e = { error: error };
-    } finally {
-        try {
-            if (r && !r.done && (m = i["return"])) m.call(i);
-        } finally {
-            if (e) throw e.error;
-        }
-    }
-    return ar;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.LinkButton = void 0;
-var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
-var react_ui_components_1 = __webpack_require__(/*! @neos-project/react-ui-components */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/react-ui-components/index.js");
-var archaeopteryx_core_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-core */ "../core/lib/index.js");
-var LinkButton = function LinkButton(props) {
-    var tx = archaeopteryx_core_1.useEditorTransactions();
-    var handleLinkButtonClick = React.useCallback(function () {
-        return __awaiter(void 0, void 0, void 0, function () {
-            var link, result;
-            var _a, _b, _c, _d, _e, _f, _g;
-            return __generator(this, function (_h) {
-                switch (_h.label) {
-                    case 0:
-                        link = function () {
-                            if (props.formattingUnderCursor.link) {
-                                var _a = __read(props.formattingUnderCursor.link.split('#'), 2),
-                                    href = _a[0],
-                                    anchor = _a[1];
-                                return {
-                                    href: href,
-                                    options: {
-                                        anchor: anchor,
-                                        title: props.formattingUnderCursor.linkTitle,
-                                        targetBlank: props.formattingUnderCursor.linkTargetBlank,
-                                        relNoFollow: props.formattingUnderCursor.linkRelNofollow
-                                    }
-                                };
-                            }
-                            return null;
-                        }();
-                        return [4, tx.editLink(link)];
-                    case 1:
-                        result = _h.sent();
-                        if (result.change) {
-                            if (result.value === null) {
-                                props.executeCommand('linkTitle', false, false);
-                                props.executeCommand('linkRelNofollow', false, false);
-                                props.executeCommand('linkTargetBlank', false, false);
-                                props.executeCommand('unlink');
-                            } else {
-                                props.executeCommand('linkTitle', ((_a = result.value.options) === null || _a === void 0 ? void 0 : _a.title) || false, false);
-                                props.executeCommand('linkTargetBlank', (_c = (_b = result.value.options) === null || _b === void 0 ? void 0 : _b.targetBlank) !== null && _c !== void 0 ? _c : false, false);
-                                props.executeCommand('linkRelNofollow', (_e = (_d = result.value.options) === null || _d === void 0 ? void 0 : _d.relNoFollow) !== null && _e !== void 0 ? _e : false, false);
-                                if ((_f = result.value.options) === null || _f === void 0 ? void 0 : _f.anchor) {
-                                    props.executeCommand('link', result.value.href + "#" + ((_g = result.value.options) === null || _g === void 0 ? void 0 : _g.anchor), false);
-                                } else {
-                                    props.executeCommand('link', result.value.href, false);
-                                }
-                            }
-                        }
-                        return [2];
-                }
-            });
-        });
-    }, [props.executeCommand, props.formattingUnderCursor.link, tx]);
-    return React.createElement(react_ui_components_1.IconButton, { title: 'Link', isActive: Boolean(props.formattingUnderCursor.link), icon: Boolean(props.formattingUnderCursor.link) ? 'unlink' : 'link', onClick: handleLinkButtonClick });
-};
-exports.LinkButton = LinkButton;
-//# sourceMappingURL=LinkButton.js.map
-
-/***/ }),
-
-/***/ "../rte-formatter/lib/index.js":
-/*!*************************************!*\
-  !*** ../rte-formatter/lib/index.js ***!
-  \*************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.LinkButton = void 0;
-var LinkButton_1 = __webpack_require__(/*! ./LinkButton */ "../rte-formatter/lib/LinkButton.js");
-Object.defineProperty(exports, "LinkButton", { enumerable: true, get: function get() {
-    return LinkButton_1.LinkButton;
-  } });
-//# sourceMappingURL=index.js.map
-
-/***/ }),
-
 /***/ "./src/index.js":
 /*!**********************!*\
   !*** ./src/index.js ***!
@@ -26886,132 +26985,31 @@ __webpack_require__(/*! ./manifest */ "./src/manifest.js");
 "use strict";
 
 
-var _react = __webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js");
-
-var React = _interopRequireWildcard(_react);
-
 var _neosUiExtensibility = __webpack_require__(/*! @neos-project/neos-ui-extensibility */ "../../node_modules/@neos-project/neos-ui-extensibility/dist/index.js");
 
 var _neosUiExtensibility2 = _interopRequireDefault(_neosUiExtensibility);
-
-var _archaeopteryxNeosBridge = __webpack_require__(/*! @sitegeist/archaeopteryx-neos-bridge */ "../neos-bridge/lib/index.js");
 
 var _archaeopteryxCore = __webpack_require__(/*! @sitegeist/archaeopteryx-core */ "../core/lib/index.js");
 
 var _archaeopteryxInspectorEditor = __webpack_require__(/*! @sitegeist/archaeopteryx-inspector-editor */ "../inspector-editor/lib/index.js");
 
-var _archaeopteryxRteFormatter = __webpack_require__(/*! @sitegeist/archaeopteryx-rte-formatter */ "../rte-formatter/lib/index.js");
+var _archaeopteryxLinkButton = __webpack_require__(/*! @sitegeist/archaeopteryx-link-button */ "../link-button/lib/index.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
 (0, _neosUiExtensibility2.default)('@sitegeist/archaeopteryx-plugin', {}, function (globalRegistry, _ref) {
     var store = _ref.store,
         configuration = _ref.configuration,
-        routes = _ref.routes,
-        deps = _objectWithoutProperties(_ref, ['store', 'configuration', 'routes']);
+        routes = _ref.routes;
 
     var editor = (0, _archaeopteryxCore.createEditor)();
-    var neosContext = { globalRegistry: globalRegistry, store: store, configuration: configuration, routes: routes };
+    var neosContextProperties = { globalRegistry: globalRegistry, store: store, configuration: configuration, routes: routes };
 
-    registerLinkTypes(neosContext);
-    registerContainers(neosContext, editor);
-    registerInspectorEditors(neosContext, editor);
-    registerRteFormatter(neosContext, editor);
+    (0, _archaeopteryxCore.registerLinkTypes)(globalRegistry);
+    (0, _archaeopteryxCore.registerModal)(neosContextProperties, editor);
+    (0, _archaeopteryxInspectorEditor.registerInspectorEditor)(neosContextProperties, editor);
+    (0, _archaeopteryxLinkButton.registerLinkButton)(neosContextProperties, editor);
 });
-
-function registerLinkTypes(_ref2) {
-    var globalRegistry = _ref2.globalRegistry;
-
-    var linkTypeRegistry = new _neosUiExtensibility.SynchronousRegistry('\n        # Sitegeist.Archaeopteryx LinkType Registry\n    ');
-
-    globalRegistry.set('@sitegeist/archaeopteryx/link-types', linkTypeRegistry);
-
-    linkTypeRegistry.set(_archaeopteryxCore.LinkTypes.WebLink.id, _archaeopteryxCore.LinkTypes.WebLink);
-
-    linkTypeRegistry.set(_archaeopteryxCore.LinkTypes.NodeTree.id, _archaeopteryxCore.LinkTypes.NodeTree);
-
-    linkTypeRegistry.set(_archaeopteryxCore.LinkTypes.Asset.id, _archaeopteryxCore.LinkTypes.Asset);
-
-    linkTypeRegistry.set(_archaeopteryxCore.LinkTypes.MailTo.id, _archaeopteryxCore.LinkTypes.MailTo);
-}
-
-function registerInspectorEditors(neosContext, editor) {
-    var globalRegistry = neosContext.globalRegistry;
-
-    var editorsRegistry = globalRegistry.get('inspector').get('editors');
-
-    editorsRegistry.set('Sitegeist.Archaeopteryx/Inspector/Editors/LinkEditor', {
-        component: function component(props) {
-            return React.createElement(
-                _archaeopteryxNeosBridge.NeosContext.Provider,
-                { value: neosContext },
-                React.createElement(
-                    _archaeopteryxCore.EditorContext.Provider,
-                    { value: editor },
-                    React.createElement(_archaeopteryxInspectorEditor.InspectorEditor, props)
-                )
-            );
-        }
-    });
-}
-
-function registerContainers(neosContext, editor) {
-    var globalRegistry = neosContext.globalRegistry;
-
-    var containersRegistry = globalRegistry.get('containers');
-
-    containersRegistry.set('Modals/Sitegeist.Archaeopteryx', function (props) {
-        return React.createElement(
-            _archaeopteryxNeosBridge.NeosContext.Provider,
-            { value: neosContext },
-            React.createElement(
-                _archaeopteryxCore.EditorContext.Provider,
-                { value: editor },
-                React.createElement(_archaeopteryxCore.Modal, props)
-            )
-        );
-    });
-}
-
-function registerRteFormatter(neosContext, editor) {
-    var globalRegistry = neosContext.globalRegistry;
-
-    var ckeditor5Registry = globalRegistry.get('ckEditor5');
-    if (!ckeditor5Registry) {
-        console.warn('[Sitegeist.Archaeopteryx]: Could not find ckeditor5 registry.');
-        console.warn('[Sitegeist.Archaeopteryx]: Skipping registration of RTE formatter...');
-        return;
-    }
-
-    var richtextToolbarRegistry = ckeditor5Registry.get('richtextToolbar');
-    if (!richtextToolbarRegistry) {
-        console.warn('[Sitegeist.Archaeopteryx]: Could not find ckeditor5 richtextToolbar registry.');
-        console.warn('[Sitegeist.Archaeopteryx]: Skipping registration of RTE formatter...');
-        return;
-    }
-
-    richtextToolbarRegistry.set('link', {
-        commandName: 'link',
-        component: function component(props) {
-            return React.createElement(
-                _archaeopteryxNeosBridge.NeosContext.Provider,
-                { value: neosContext },
-                React.createElement(
-                    _archaeopteryxCore.EditorContext.Provider,
-                    { value: editor },
-                    React.createElement(_archaeopteryxRteFormatter.LinkButton, props)
-                )
-            );
-        },
-        isVisible: function isVisible(config) {
-            return Boolean(config && config.formatting && config.formatting.a);
-        }
-    });
-}
 
 /***/ })
 

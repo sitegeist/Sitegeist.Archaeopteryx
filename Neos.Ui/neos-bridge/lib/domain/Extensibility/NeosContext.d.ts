@@ -3,12 +3,11 @@ import { IConfiguration } from './Configuration';
 import { IGlobalRegistry } from './GlobalRegistry';
 import { IRoutes } from './Routes';
 import { IStore } from './Store';
-interface NeosContextProperties {
+export interface INeosContextProperties {
     globalRegistry: IGlobalRegistry;
     store: IStore;
     configuration: IConfiguration;
     routes?: IRoutes;
 }
-export declare const NeosContext: React.Context<NeosContextProperties | null>;
-export declare function useNeos(): NeosContextProperties | null;
-export {};
+export declare const NeosContext: React.Context<INeosContextProperties | null>;
+export declare function useNeos(): INeosContextProperties | null;

@@ -1,4 +1,2 @@
-export { WebLink } from './WebLink';
-export { NodeTree } from './NodeTree';
-export { Asset } from './Asset';
-export { MailTo } from './MailTo';
+import { IGlobalRegistry } from '@sitegeist/archaeopteryx-neos-bridge';
+export declare function registerLinkTypes(globalRegistry: IGlobalRegistry): void;

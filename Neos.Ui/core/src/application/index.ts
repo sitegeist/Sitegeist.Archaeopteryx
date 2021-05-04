@@ -1,2 +1,2 @@
-export * as LinkTypes from './LinkTypes';
-export {Modal} from './Modal';
+export {registerLinkTypes} from './LinkTypes';
+export {registerModal} from './Modal';

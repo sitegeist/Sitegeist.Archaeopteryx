@@ -19,29 +19,31 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.registerInspectorEditor = void 0;
+exports.registerLinkButton = void 0;
 var React = __importStar(require("react"));
 var archaeopteryx_neos_bridge_1 = require("@sitegeist/archaeopteryx-neos-bridge");
 var archaeopteryx_core_1 = require("@sitegeist/archaeopteryx-core");
-var InspectorEditor_1 = require("./InspectorEditor");
-function registerInspectorEditor(neosContextProperties, editor) {
+var LinkButton_1 = require("./LinkButton");
+function registerLinkButton(neosContextProperties, editor) {
     var globalRegistry = neosContextProperties.globalRegistry;
-    var inspectorRegistry = globalRegistry.get('inspector');
-    if (!inspectorRegistry) {
-        console.warn('[Sitegeist.Archaeopteryx]: Could not find inspector registry.');
-        console.warn('[Sitegeist.Archaeopteryx]: Skipping registration of InspectorEditor...');
+    var ckeditor5Registry = globalRegistry.get('ckEditor5');
+    if (!ckeditor5Registry) {
+        console.warn('[Sitegeist.Archaeopteryx]: Could not find ckeditor5 registry.');
+        console.warn('[Sitegeist.Archaeopteryx]: Skipping registration of RTE formatter...');
         return;
     }
-    var editorsRegistry = inspectorRegistry.get('editors');
-    if (!editorsRegistry) {
-        console.warn('[Sitegeist.Archaeopteryx]: Could not find inspector editors registry.');
-        console.warn('[Sitegeist.Archaeopteryx]: Skipping registration of InspectorEditor...');
+    var richtextToolbarRegistry = ckeditor5Registry.get('richtextToolbar');
+    if (!richtextToolbarRegistry) {
+        console.warn('[Sitegeist.Archaeopteryx]: Could not find ckeditor5 richtextToolbar registry.');
+        console.warn('[Sitegeist.Archaeopteryx]: Skipping registration of RTE formatter...');
         return;
     }
-    editorsRegistry.set('Sitegeist.Archaeopteryx/Inspector/Editors/LinkEditor', {
+    richtextToolbarRegistry.set('link', {
+        commandName: 'link',
         component: function (props) { return (React.createElement(archaeopteryx_neos_bridge_1.NeosContext.Provider, { value: neosContextProperties },
-            React.createElement(archaeopteryx_core_1.EditorContext.Provider, { value: editor }, React.createElement(InspectorEditor_1.InspectorEditor, props)))); }
+            React.createElement(archaeopteryx_core_1.EditorContext.Provider, { value: editor }, React.createElement(LinkButton_1.LinkButton, props)))); },
+        isVisible: function (config) { return Boolean(config && config.formatting && config.formatting.a); }
     });
 }
-exports.registerInspectorEditor = registerInspectorEditor;
+exports.registerLinkButton = registerLinkButton;
 //# sourceMappingURL=index.js.map

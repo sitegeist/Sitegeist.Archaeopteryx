@@ -125,6 +125,8 @@ export function createEditor() {
     };
 }
 
+export type IEditor = ReturnType<typeof createEditor>;
+
 export const EditorContext = React.createContext(createEditor());
 
 export function useEditorState() {
