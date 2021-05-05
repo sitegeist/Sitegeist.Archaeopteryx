@@ -7,7 +7,9 @@ export {
 export {
     loadNodeTree,
     toggleNodeInNodeTree,
-    filterNodeTree
+    filterNodesInNodeTree,
+    searchForNodesInNodeTree,
+    filterNodesByNodeTypeInNodeTree
 } from './NodeTreeOperation';
 
 export {

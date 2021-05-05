@@ -41,6 +41,10 @@ var actions = __importStar(require("./NodeTreeAction"));
 exports.initialNodeTreeState = {
     rootNode: null,
     baseNodeTypeName: archaeopteryx_neos_bridge_1.NodeTypeName('Neos.Neos:Document'),
+    filterParams: {
+        searchTerm: null,
+        nodeTypeFilter: null
+    },
     nodesByContextPath: {
         all: {},
         filtered: null
@@ -95,8 +99,9 @@ function nodeTreeReducer(state, action) {
             }
         });
         case typesafe_actions_1.getType(actions.NodeWasToggled): return immer_1.default(state, function (draft) {
-            var _a;
-            var isUncollapsed = (_a = action.payload.forceToggleState) !== null && _a !== void 0 ? _a : state.nodesByState.uncollapsed.includes(action.payload.node);
+            var isUncollapsed = action.payload.forceToggleState === undefined
+                ? state.nodesByState.uncollapsed.includes(action.payload.node)
+                : !action.payload.forceToggleState;
             if (isUncollapsed) {
                 draft.nodesByState.uncollapsed = state.nodesByState.uncollapsed.filter(function (node) { return node !== action.payload.node; });
             }
@@ -108,6 +113,7 @@ function nodeTreeReducer(state, action) {
             if (state.rootNode && !state.nodesByState.loading.includes(state.rootNode)) {
                 draft.nodesByState.loading.push(state.rootNode);
             }
+            draft.filterParams = action.payload;
             draft.nodesByContextPath.filtered = {};
         });
         case typesafe_actions_1.getType(actions.FilteredNodesWereLoaded): return immer_1.default(state, function (draft) {

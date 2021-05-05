@@ -92,19 +92,23 @@ export async function toggleNodeInNodeTree(
         }));
 
         dispatch(actions.ChildNodesWereLoaded(node, childNodes));
+        dispatch(actions.NodeWasToggled(node, true));
     }
 }
 
-export async function filterNodeTree(
+export async function filterNodesInNodeTree(
     {state, dispatch}: Store,
     nodeTypesRegistry: INodeTypesRegistry,
     nodeTreeFilterParams: {
-        searchTerm: null | string,
+        searchTerm: null | string
         nodeTypeFilter: null | NodeTypeName
     }
 ) {
     if (state.rootNode && (nodeTreeFilterParams.searchTerm || nodeTreeFilterParams.nodeTypeFilter)) {
-        dispatch(actions.FilteredNodesWereRequested());
+        dispatch(actions.FilteredNodesWereRequested(
+            nodeTreeFilterParams.searchTerm,
+            nodeTreeFilterParams.nodeTypeFilter
+        ));
 
         const filteredNodes = (await q(state.rootNode.contextPath)
             .search(
@@ -125,4 +129,28 @@ export async function filterNodeTree(
     } else {
         dispatch(actions.FilteredNodesWereReset());
     }
+}
+
+export async function searchForNodesInNodeTree(
+    {state, dispatch}: Store,
+    nodeTypesRegistry: INodeTypesRegistry,
+    searchTerm: null | string
+) {
+    await filterNodesInNodeTree(
+        {state, dispatch},
+        nodeTypesRegistry,
+        {...state.filterParams, searchTerm}
+    );
+}
+
+export async function filterNodesByNodeTypeInNodeTree(
+    {state, dispatch}: Store,
+    nodeTypesRegistry: INodeTypesRegistry,
+    nodeTypeFilter: null | NodeTypeName
+) {
+    await filterNodesInNodeTree(
+        {state, dispatch},
+        nodeTypesRegistry,
+        {...state.filterParams, nodeTypeFilter}
+    );
 }

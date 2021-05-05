@@ -3,8 +3,12 @@ export interface IConfiguration {
     nodeTree?: {
         loadingDepth?: number;
         presets?: {
-            default?: {
+            [key: string]: {
                 baseNodeType?: NodeTypeName;
+                ui?: {
+                    label?: string;
+                    icon?: string;
+                };
             };
         };
     };

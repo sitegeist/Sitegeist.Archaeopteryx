@@ -15,7 +15,9 @@
         "react": "^17.0.2",
         "react-use": "^17.2.4",
         "rxjs": "^6.6.7",
-        "typesafe-actions": "^5.1.0"
+        "styled-components": "^5.3.0",
+        "typesafe-actions": "^5.1.0",
+        "use-debounce": "^6.0.1"
     },
     "devDependencies": {
         "jest": "^26.6.3"

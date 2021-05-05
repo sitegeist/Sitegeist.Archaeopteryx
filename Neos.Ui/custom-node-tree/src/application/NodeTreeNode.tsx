@@ -34,7 +34,7 @@ export const NodeTreeNode: React.FC<Props> = props => {
         [props.state.nodesByState.loading, props.node]
     );
     const isSelected = React.useMemo(
-        () => !props.selectedNode || props.node.contextPath.equals(props.selectedNode.contextPath),
+        () => props.selectedNode && props.node.contextPath.equals(props.selectedNode.contextPath),
         [props.node, props.selectedNode]
     );
 

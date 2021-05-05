@@ -78,6 +78,8 @@ var react_ui_components_1 = require("@neos-project/react-ui-components");
 var archaeopteryx_neos_bridge_1 = require("@sitegeist/archaeopteryx-neos-bridge");
 var domain_1 = require("../domain");
 var NodeTreeNode_1 = require("./NodeTreeNode");
+var Search_1 = require("./Search");
+var NodeTypeFilter_1 = require("./NodeTypeFilter");
 var NodeTree = function (props) {
     var _a, _b;
     var nodeTypesRegistry = archaeopteryx_neos_bridge_1.useNodeTypesRegistry();
@@ -94,7 +96,11 @@ var NodeTree = function (props) {
                 case 2: return [2];
             }
         });
-    }); }, [props.configuration, nodeTypesRegistry]);
+    }); }, [
+        props.configuration.baseNodeTypeName,
+        props.configuration.rootNodeContextPath,
+        nodeTypesRegistry
+    ]);
     var selectedNode = React.useMemo(function () { return props.configuration.selectedNodeContextPath
         ? domain_1.findNodeByContextPath(state, props.configuration.selectedNodeContextPath)
         : null; }, [props.configuration, state.nodesByContextPath]);
@@ -119,16 +125,15 @@ var NodeTree = function (props) {
     }
     var search = null;
     if ((_a = props.options) === null || _a === void 0 ? void 0 : _a.enableSearch) {
-        search = (React.createElement(React.Fragment, null, "SEARCH"));
+        search = (React.createElement(Search_1.Search, { state: state, dispatch: dispatch, initialValue: "" }));
     }
     var nodeTypeFilter = null;
     if ((_b = props.options) === null || _b === void 0 ? void 0 : _b.enableNodeTypeFilter) {
-        nodeTypeFilter = (React.createElement(React.Fragment, null, "NODE TYPE FILTER"));
+        nodeTypeFilter = (React.createElement(NodeTypeFilter_1.NodeTypeFilter, { state: state, dispatch: dispatch, initialValue: "" }));
     }
     return (React.createElement("div", { style: {
             display: 'grid',
-            gridTemplateColumns: 'repeat(2, 1fr)',
-            gap: '4px'
+            gridTemplateColumns: 'repeat(2, 1fr)'
         } },
         search ? (React.createElement("div", { style: {
                 gridColumn: nodeTypeFilter
@@ -141,7 +146,10 @@ var NodeTree = function (props) {
                     : '1 / span 2'
             } }, nodeTypeFilter)) : null,
         main ? (React.createElement("div", { style: {
-                gridColumn: '1 / span 2'
+                gridColumn: '1 / span 2',
+                height: '50vh',
+                maxHeight: '500px',
+                overflowY: 'auto'
             } }, main)) : null));
 };
 exports.NodeTree = NodeTree;

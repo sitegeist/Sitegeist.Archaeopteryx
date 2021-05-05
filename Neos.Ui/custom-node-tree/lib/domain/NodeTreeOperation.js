@@ -66,7 +66,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.filterNodeTree = exports.toggleNodeInNodeTree = exports.loadNodeTree = void 0;
+exports.filterNodesByNodeTypeInNodeTree = exports.searchForNodesInNodeTree = exports.filterNodesInNodeTree = exports.toggleNodeInNodeTree = exports.loadNodeTree = void 0;
 var archaeopteryx_neos_bridge_1 = require("@sitegeist/archaeopteryx-neos-bridge");
 var actions = __importStar(require("./NodeTreeAction"));
 var NodeTreeQuery_1 = require("./NodeTreeQuery");
@@ -130,6 +130,7 @@ function toggleNodeInNodeTree(_a, nodeTypesRegistry, node) {
                             return Boolean(nodeTypesRegistry === null || nodeTypesRegistry === void 0 ? void 0 : nodeTypesRegistry.isOfType(nodeTypeName, state.baseNodeTypeName));
                         }) })); });
                     dispatch(actions.ChildNodesWereLoaded(node, childNodes));
+                    dispatch(actions.NodeWasToggled(node, true));
                     _b.label = 4;
                 case 4: return [2];
             }
@@ -137,7 +138,7 @@ function toggleNodeInNodeTree(_a, nodeTypesRegistry, node) {
     });
 }
 exports.toggleNodeInNodeTree = toggleNodeInNodeTree;
-function filterNodeTree(_a, nodeTypesRegistry, nodeTreeFilterParams) {
+function filterNodesInNodeTree(_a, nodeTypesRegistry, nodeTreeFilterParams) {
     var _b, _c;
     var state = _a.state, dispatch = _a.dispatch;
     return __awaiter(this, void 0, void 0, function () {
@@ -146,7 +147,7 @@ function filterNodeTree(_a, nodeTypesRegistry, nodeTreeFilterParams) {
             switch (_d.label) {
                 case 0:
                     if (!(state.rootNode && (nodeTreeFilterParams.searchTerm || nodeTreeFilterParams.nodeTypeFilter))) return [3, 2];
-                    dispatch(actions.FilteredNodesWereRequested());
+                    dispatch(actions.FilteredNodesWereRequested(nodeTreeFilterParams.searchTerm, nodeTreeFilterParams.nodeTypeFilter));
                     return [4, archaeopteryx_neos_bridge_1.q(state.rootNode.contextPath)
                             .search((_b = nodeTreeFilterParams.searchTerm) !== null && _b !== void 0 ? _b : undefined, (_c = nodeTreeFilterParams.nodeTypeFilter) !== null && _c !== void 0 ? _c : undefined)
                             .getForTreeWithParents()];
@@ -166,5 +167,33 @@ function filterNodeTree(_a, nodeTypesRegistry, nodeTreeFilterParams) {
         });
     });
 }
-exports.filterNodeTree = filterNodeTree;
+exports.filterNodesInNodeTree = filterNodesInNodeTree;
+function searchForNodesInNodeTree(_a, nodeTypesRegistry, searchTerm) {
+    var state = _a.state, dispatch = _a.dispatch;
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0: return [4, filterNodesInNodeTree({ state: state, dispatch: dispatch }, nodeTypesRegistry, __assign(__assign({}, state.filterParams), { searchTerm: searchTerm }))];
+                case 1:
+                    _b.sent();
+                    return [2];
+            }
+        });
+    });
+}
+exports.searchForNodesInNodeTree = searchForNodesInNodeTree;
+function filterNodesByNodeTypeInNodeTree(_a, nodeTypesRegistry, nodeTypeFilter) {
+    var state = _a.state, dispatch = _a.dispatch;
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0: return [4, filterNodesInNodeTree({ state: state, dispatch: dispatch }, nodeTypesRegistry, __assign(__assign({}, state.filterParams), { nodeTypeFilter: nodeTypeFilter }))];
+                case 1:
+                    _b.sent();
+                    return [2];
+            }
+        });
+    });
+}
+exports.filterNodesByNodeTypeInNodeTree = filterNodesByNodeTypeInNodeTree;
 //# sourceMappingURL=NodeTreeOperation.js.map

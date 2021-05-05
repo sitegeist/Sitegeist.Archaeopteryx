@@ -4,6 +4,10 @@ import * as actions from './NodeTreeAction';
 export interface INodeTreeState {
     rootNode: null | INodePartialForTree;
     baseNodeTypeName: NodeTypeName;
+    filterParams: {
+        searchTerm: null | string;
+        nodeTypeFilter: null | NodeTypeName;
+    };
     nodesByContextPath: {
         all: {
             [contextPath: string]: INodePartialForTree;

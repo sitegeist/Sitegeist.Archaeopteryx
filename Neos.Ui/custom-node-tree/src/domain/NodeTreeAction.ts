@@ -30,7 +30,9 @@ export const NodeWasToggled = createAction(
 )();
 
 export const FilteredNodesWereRequested = createAction(
-    'http://sitegeist.de/Sitegeist.Archaeopteryx/CustomNodeTree/FilteredNodesWereRequested'
+    'http://sitegeist.de/Sitegeist.Archaeopteryx/CustomNodeTree/FilteredNodesWereRequested',
+    (searchTerm: null | string, nodeTypeFilter: null | NodeTypeName) =>
+        ({searchTerm, nodeTypeFilter})
 )();
 
 export const FilteredNodesWereLoaded = createAction(

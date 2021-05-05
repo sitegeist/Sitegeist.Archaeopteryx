@@ -8,6 +8,10 @@ import * as actions from './NodeTreeAction';
 export interface INodeTreeState {
     rootNode: null | INodePartialForTree
     baseNodeTypeName: NodeTypeName
+    filterParams: {
+        searchTerm: null | string
+        nodeTypeFilter: null | NodeTypeName
+    }
     nodesByContextPath: {
         all: {
             [contextPath: string]: INodePartialForTree
@@ -25,6 +29,10 @@ export interface INodeTreeState {
 export const initialNodeTreeState: INodeTreeState = {
     rootNode: null,
     baseNodeTypeName: NodeTypeName('Neos.Neos:Document'),
+    filterParams: {
+        searchTerm: null,
+        nodeTypeFilter: null
+    },
     nodesByContextPath: {
         all: {},
         filtered: null
@@ -69,8 +77,9 @@ export function nodeTreeReducer(
         });
 
         case getType(actions.NodeWasToggled): return produce(state, draft => {
-            const isUncollapsed = action.payload.forceToggleState
-                ?? state.nodesByState.uncollapsed.includes(action.payload.node);
+            const isUncollapsed = action.payload.forceToggleState === undefined
+                ? state.nodesByState.uncollapsed.includes(action.payload.node)
+                : !action.payload.forceToggleState;
 
             if (isUncollapsed) {
                 draft.nodesByState.uncollapsed = state.nodesByState.uncollapsed.filter(
@@ -85,6 +94,8 @@ export function nodeTreeReducer(
             if (state.rootNode && !state.nodesByState.loading.includes(state.rootNode)) {
                 draft.nodesByState.loading.push(state.rootNode);
             }
+
+            draft.filterParams = action.payload;
 
             draft.nodesByContextPath.filtered = {};
         });

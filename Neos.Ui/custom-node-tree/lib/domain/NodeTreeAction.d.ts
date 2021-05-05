@@ -15,6 +15,9 @@ export declare const NodeWasToggled: (node: INodePartialForTree, forceToggleStat
     node: INodePartialForTree;
     forceToggleState: boolean | undefined;
 }>;
-export declare const FilteredNodesWereRequested: import("typesafe-actions").EmptyActionCreator<"http://sitegeist.de/Sitegeist.Archaeopteryx/CustomNodeTree/FilteredNodesWereRequested">;
+export declare const FilteredNodesWereRequested: (searchTerm: string | null, nodeTypeFilter: NodeTypeName | null) => import("typesafe-actions").PayloadAction<"http://sitegeist.de/Sitegeist.Archaeopteryx/CustomNodeTree/FilteredNodesWereRequested", {
+    searchTerm: string | null;
+    nodeTypeFilter: NodeTypeName | null;
+}>;
 export declare const FilteredNodesWereLoaded: (filteredNodes: INodePartialForTree[]) => import("typesafe-actions").PayloadAction<"http://sitegeist.de/Sitegeist.Archaeopteryx/CustomNodeTree/FilteredNodesWereLoaded", INodePartialForTree[]>;
 export declare const FilteredNodesWereReset: import("typesafe-actions").EmptyActionCreator<"http://sitegeist.de/Sitegeist.Archaeopteryx/CustomNodeTree/FilteredNodesWereReset">;

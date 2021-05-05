@@ -7,6 +7,8 @@ import {INodePartialForTree, NodeTypeName, ContextPath, useNodeTypesRegistry} fr
 import {findNodeByContextPath, initialNodeTreeState, loadNodeTree, nodeTreeReducer, toggleNodeInNodeTree} from '../domain';
 
 import {NodeTreeNode} from './NodeTreeNode';
+import {Search} from './Search';
+import {NodeTypeFilter} from './NodeTypeFilter';
 
 interface Props {
     configuration: {
@@ -35,7 +37,11 @@ export const NodeTree: React.FC<Props> = props => {
                 await loadNodeTree({state, dispatch}, nodeTypesRegistry, props.configuration);
             }
         },
-        [props.configuration, nodeTypesRegistry]
+        [
+            props.configuration.baseNodeTypeName,
+            props.configuration.rootNodeContextPath,
+            nodeTypesRegistry
+        ]
     );
     const selectedNode = React.useMemo(
         () => props.configuration.selectedNodeContextPath
@@ -78,20 +84,31 @@ export const NodeTree: React.FC<Props> = props => {
 
     let search = null;
     if (props.options?.enableSearch) {
-        search = (<>SEARCH</>);
+        search = (
+            <Search
+                state={state}
+                dispatch={dispatch}
+                initialValue=""
+            />
+        );
     }
 
     let nodeTypeFilter = null;
     if (props.options?.enableNodeTypeFilter) {
-        nodeTypeFilter = (<>NODE TYPE FILTER</>);
+        nodeTypeFilter = (
+            <NodeTypeFilter
+                state={state}
+                dispatch={dispatch}
+                initialValue=""
+            />
+        );
     }
 
     return (
         <div
             style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(2, 1fr)',
-                gap: '4px'
+                gridTemplateColumns: 'repeat(2, 1fr)'
             }}
             >
             {search ? (
@@ -119,7 +136,10 @@ export const NodeTree: React.FC<Props> = props => {
             {main ? (
                 <div
                     style={{
-                        gridColumn: '1 / span 2'
+                        gridColumn: '1 / span 2',
+                        height: '50vh',
+                        maxHeight: '500px',
+                        overflowY: 'auto'
                     }}
                     >
                     {main}

@@ -42,7 +42,7 @@ var NodeTreeNode = function (props) {
     var handleNodeClick = React.useMemo(function () { return function () { return props.onClick(props.node); }; }, [props.onToggle, props.node]);
     var isCollapsed = React.useMemo(function () { return domain_1.isNodeCollapsed(props.state, props.node); }, [props.state.nodesByState.uncollapsed, props.node]);
     var isLoading = React.useMemo(function () { return domain_1.isNodeLoading(props.state, props.node); }, [props.state.nodesByState.loading, props.node]);
-    var isSelected = React.useMemo(function () { return !props.selectedNode || props.node.contextPath.equals(props.selectedNode.contextPath); }, [props.node, props.selectedNode]);
+    var isSelected = React.useMemo(function () { return props.selectedNode && props.node.contextPath.equals(props.selectedNode.contextPath); }, [props.node, props.selectedNode]);
     return (React.createElement(react_ui_components_1.Tree.Node, null,
         React.createElement(react_ui_components_1.Tree.Node.Header, { labelIdentifier: 'labelIdentifier', id: props.node.contextPath, hasChildren: props.node.children.length > 0, isLastChild: true, isCollapsed: isCollapsed, isActive: isSelected, isFocused: isSelected, isLoading: isLoading, isDirty: false, isHidden: props.node.properties._hidden, isHiddenInIndex: props.node.properties._hiddenInIndex, isDragging: false, hasError: false, label: props.node.label, icon: (_a = nodeType === null || nodeType === void 0 ? void 0 : nodeType.ui) === null || _a === void 0 ? void 0 : _a.icon, iconLabel: nodeType === null || nodeType === void 0 ? void 0 : nodeType.label, level: props.level, onToggle: handleNodeToggle, onClick: handleNodeClick, dragForbidden: true, title: props.node.label }),
         isCollapsed

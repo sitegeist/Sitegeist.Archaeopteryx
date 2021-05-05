@@ -14,8 +14,10 @@ export declare function loadNodeTree({ dispatch }: Store, nodeTypesRegistry: INo
     selectedNodeContextPath?: ContextPath;
 }): Promise<void>;
 export declare function toggleNodeInNodeTree({ state, dispatch }: Store, nodeTypesRegistry: INodeTypesRegistry, node: INodePartialForTree): Promise<void>;
-export declare function filterNodeTree({ state, dispatch }: Store, nodeTypesRegistry: INodeTypesRegistry, nodeTreeFilterParams: {
+export declare function filterNodesInNodeTree({ state, dispatch }: Store, nodeTypesRegistry: INodeTypesRegistry, nodeTreeFilterParams: {
     searchTerm: null | string;
     nodeTypeFilter: null | NodeTypeName;
 }): Promise<void>;
+export declare function searchForNodesInNodeTree({ state, dispatch }: Store, nodeTypesRegistry: INodeTypesRegistry, searchTerm: null | string): Promise<void>;
+export declare function filterNodesByNodeTypeInNodeTree({ state, dispatch }: Store, nodeTypesRegistry: INodeTypesRegistry, nodeTypeFilter: null | NodeTypeName): Promise<void>;
 export {};

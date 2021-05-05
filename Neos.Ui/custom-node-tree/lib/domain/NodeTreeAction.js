@@ -13,7 +13,9 @@ exports.ChildNodesWereLoaded = typesafe_actions_1.createAction('http://sitegeist
 exports.NodeWasToggled = typesafe_actions_1.createAction('http://sitegeist.de/Sitegeist.Archaeopteryx/CustomNodeTree/NodeWasToggled', function (node, forceToggleState) {
     return ({ node: node, forceToggleState: forceToggleState });
 })();
-exports.FilteredNodesWereRequested = typesafe_actions_1.createAction('http://sitegeist.de/Sitegeist.Archaeopteryx/CustomNodeTree/FilteredNodesWereRequested')();
+exports.FilteredNodesWereRequested = typesafe_actions_1.createAction('http://sitegeist.de/Sitegeist.Archaeopteryx/CustomNodeTree/FilteredNodesWereRequested', function (searchTerm, nodeTypeFilter) {
+    return ({ searchTerm: searchTerm, nodeTypeFilter: nodeTypeFilter });
+})();
 exports.FilteredNodesWereLoaded = typesafe_actions_1.createAction('http://sitegeist.de/Sitegeist.Archaeopteryx/CustomNodeTree/FilteredNodesWereLoaded', function (filteredNodes) { return filteredNodes; })();
 exports.FilteredNodesWereReset = typesafe_actions_1.createAction('http://sitegeist.de/Sitegeist.Archaeopteryx/CustomNodeTree/FilteredNodesWereReset')();
 //# sourceMappingURL=NodeTreeAction.js.map
