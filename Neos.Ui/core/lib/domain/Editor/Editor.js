@@ -92,10 +92,16 @@ function editorReducer(state, action) {
                 return state;
             }
         }
-        case typesafe_actions_1.getType(actions.ValueWasCleared):
+        case typesafe_actions_1.getType(actions.ValueWasUnset): {
             return {
                 isOpen: true,
                 value: __assign(__assign({}, state.value), { transient: null })
+            };
+        }
+        case typesafe_actions_1.getType(actions.ValueWasReset):
+            return {
+                isOpen: true,
+                value: __assign(__assign({}, state.value), { transient: state.value.persistent })
             };
         case typesafe_actions_1.getType(actions.ValueWasApplied):
             return {
@@ -117,7 +123,8 @@ function createEditor() {
     var open = function (value) { return dispatch(actions.EditorWasOpened(value)); };
     var dismiss = function () { return dispatch(actions.EditorWasDismissed()); };
     var update = function (value) { return dispatch(actions.ValueWasUpdated(value)); };
-    var clear = function () { return dispatch(actions.ValueWasCleared()); };
+    var reset = function () { return dispatch(actions.ValueWasReset()); };
+    var unset = function () { return dispatch(actions.ValueWasUnset()); };
     var apply = function (value) { return dispatch(actions.ValueWasApplied(value)); };
     var editLink = function (link) { return new Promise(function (resolve) {
         open(link);
@@ -134,7 +141,7 @@ function createEditor() {
     }); };
     return {
         state$: state$,
-        tx: { dismiss: dismiss, update: update, clear: clear, apply: apply, editLink: editLink },
+        tx: { dismiss: dismiss, update: update, unset: unset, reset: reset, apply: apply, editLink: editLink },
         initialState: initialState
     };
 }

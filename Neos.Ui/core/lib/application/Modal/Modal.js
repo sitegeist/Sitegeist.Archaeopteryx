@@ -52,15 +52,16 @@ var react_ui_components_1 = require("@neos-project/react-ui-components");
 var react_final_form_1 = require("react-final-form");
 var domain_1 = require("../../domain");
 var Modal = function () {
-    var _a;
-    var _b = domain_1.useEditorState(), isOpen = _b.isOpen, value = _b.value;
+    var _a = domain_1.useEditorState(), isOpen = _a.isOpen, value = _a.value;
+    var contents = null;
     if (isOpen) {
-        if (value.persistent) {
-            return (React.createElement(DialogWithValue, { value: (_a = value.transient) !== null && _a !== void 0 ? _a : value.persistent }));
+        if (value.transient) {
+            contents = (React.createElement(DialogWithValue, { value: value.transient }));
         }
         else {
-            return (React.createElement(DialogWithEmptyValue, null));
+            contents = (React.createElement(DialogWithEmptyValue, null));
         }
+        return (React.createElement(react_ui_components_1.Dialog, { title: "Sitegeist.Archaeopteryx", isOpen: isOpen, style: "jumbo", onRequestClose: function () { } }, contents));
     }
     return null;
 };
@@ -69,23 +70,23 @@ var DialogWithEmptyValue = function () {
     var dismiss = domain_1.useEditorTransactions().dismiss;
     var linkTypes = domain_1.useLinkTypes();
     var _a = __read(React.useState(linkTypes[0]), 2), activeLinkType = _a[0], setActiveLinkType = _a[1];
-    return (React.createElement(react_ui_components_1.Dialog, { title: "Sitegeist.Archaeopteryx", isOpen: true, style: "jumbo" },
+    return (React.createElement(React.Fragment, null,
         linkTypes.map(function (linkType) { return (React.createElement(react_ui_components_1.Button, { key: linkType.id, onClick: function () { return setActiveLinkType(linkType); } },
             React.createElement(linkType.getStaticIcon, null))); }),
-        React.createElement("div", null, activeLinkType ? (React.createElement(LinkEditor, { link: null, linkType: activeLinkType })) : null),
+        React.createElement("div", null, activeLinkType ? (React.createElement(LinkEditor, { key: activeLinkType.id, link: null, linkType: activeLinkType })) : null),
         React.createElement(react_ui_components_1.Button, { onClick: dismiss }, "Cancel"),
         React.createElement(react_ui_components_1.Button, { disabled: true }, "Apply")));
 };
 var DialogWithValue = function (props) {
-    var _a = domain_1.useEditorTransactions(), dismiss = _a.dismiss, update = _a.update, apply = _a.apply, clear = _a.clear;
+    var _a = domain_1.useEditorTransactions(), dismiss = _a.dismiss, update = _a.update, unset = _a.unset, apply = _a.apply;
     var linkType = domain_1.useLinkTypeForHref(props.value.href);
     var _b = __read(React.useState(false), 2), showSettings = _b[0], setShowSettings = _b[1];
-    return (React.createElement(react_ui_components_1.Dialog, { title: "Sitegeist.Archaeopteryx", isOpen: true, style: "jumbo" },
+    return (React.createElement(React.Fragment, null,
         React.createElement(react_ui_components_1.Button, { isActive: !showSettings, onClick: function () { return setShowSettings(false); } },
             React.createElement(linkType.getIcon, null)),
         React.createElement(react_ui_components_1.Button, { isActive: showSettings, onClick: function () { return setShowSettings(true); } }, "SETTINGS"),
         React.createElement("div", null,
-            React.createElement(react_ui_components_1.Button, { onClick: clear }, "Reset")),
+            React.createElement(react_ui_components_1.Button, { onClick: unset }, "Delete")),
         React.createElement("div", null, showSettings ? (React.createElement(react_final_form_1.Form, { onSubmit: function (values) { return update({ options: values }); } }, function (_a) {
             var _b, _c, _d, _e;
             var handleSubmit = _a.handleSubmit;
@@ -121,18 +122,26 @@ var DialogWithValue = function (props) {
                             }, type: "checkbox" }, input))));
                 }),
                 React.createElement("button", { type: "submit" }, "Apply")));
-        })) : (React.createElement(LinkEditor, { link: props.value, linkType: linkType }))),
+        })) : (React.createElement(LinkEditor, { key: linkType.id, link: props.value, linkType: linkType }))),
         React.createElement(react_ui_components_1.Button, { onClick: dismiss }, "Click here!"),
         React.createElement(react_ui_components_1.Button, { onClick: function () { return apply(props.value); } }, "Apply")));
 };
+function useLastNonNull(value) {
+    var valueRef = React.useRef(value);
+    if (value !== null) {
+        valueRef.current = value;
+    }
+    return valueRef.current;
+}
 var LinkEditor = function (props) {
     var _a, _b;
-    var _c = props.linkType.useResolvedProps((_a = props.link) !== null && _a !== void 0 ? _a : undefined), busy = _c.busy, error = _c.error, editorProps = _c.result;
+    var _c = props.linkType.useResolvedProps((_a = props.link) !== null && _a !== void 0 ? _a : undefined), busy = _c.busy, error = _c.error, result = _c.result;
+    var editorProps = useLastNonNull(result);
     var _d = props.linkType, Editor = _d.getEditor, LoadingEditor = _d.getLoadingEditor;
     if (error) {
         throw error;
     }
-    else if (busy) {
+    else if (busy && !editorProps) {
         return (React.createElement(LoadingEditor, { link: (_b = props.link) !== null && _b !== void 0 ? _b : undefined }));
     }
     else {

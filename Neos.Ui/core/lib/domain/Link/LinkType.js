@@ -67,7 +67,7 @@ exports.LinkType = LinkType;
 function useLinkTypes() {
     var _a, _b;
     var globalRegistry = archaeopteryx_neos_bridge_1.useGlobalRegistry();
-    return (_b = (_a = globalRegistry === null || globalRegistry === void 0 ? void 0 : globalRegistry.get('@sitegeist/archaeopteryx/link-types')) === null || _a === void 0 ? void 0 : _a.getAllAsList()) !== null && _b !== void 0 ? _b : [];
+    return (_b = (_a = globalRegistry.get('@sitegeist/archaeopteryx/link-types')) === null || _a === void 0 ? void 0 : _a.getAllAsList()) !== null && _b !== void 0 ? _b : [];
 }
 exports.useLinkTypes = useLinkTypes;
 function useLinkTypeForHref(href) {

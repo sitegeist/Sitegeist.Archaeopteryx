@@ -26,7 +26,7 @@ export abstract class LinkType<P = any> {
 
 export function useLinkTypes(): LinkType[] {
     const globalRegistry = useGlobalRegistry();
-    return globalRegistry?.get('@sitegeist/archaeopteryx/link-types')?.getAllAsList() ?? [];
+    return globalRegistry.get('@sitegeist/archaeopteryx/link-types')?.getAllAsList() ?? [];
 }
 
 export function useLinkTypeForHref(href: null | string): null | LinkType {

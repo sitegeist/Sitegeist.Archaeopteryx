@@ -67,12 +67,21 @@ export function editorReducer(
                 return state;
             }
         }
-        case getType(actions.ValueWasCleared):
+        case getType(actions.ValueWasUnset): {
             return {
                 isOpen: true,
                 value: {
                     ...state.value,
                     transient: null
+                }
+            };
+        }
+        case getType(actions.ValueWasReset):
+            return {
+                isOpen: true,
+                value: {
+                    ...state.value,
+                    transient: state.value.persistent
                 }
             };
         case getType(actions.ValueWasApplied):
@@ -99,7 +108,8 @@ export function createEditor() {
     const open = (value: null | ILink) => dispatch(actions.EditorWasOpened(value));
     const dismiss = () => dispatch(actions.EditorWasDismissed());
     const update = (value: Partial<ILink>) => dispatch(actions.ValueWasUpdated(value));
-    const clear = () => dispatch(actions.ValueWasCleared());
+    const reset = () => dispatch(actions.ValueWasReset());
+    const unset = () => dispatch(actions.ValueWasUnset());
     const apply = (value: null | ILink) => dispatch(actions.ValueWasApplied(value));
     const editLink = (link: null | ILink) => new Promise<IEditorResult>(
         resolve => {
@@ -120,7 +130,7 @@ export function createEditor() {
 
     return {
         state$,
-        tx: {dismiss, update, clear, apply, editLink},
+        tx: {dismiss, update, unset, reset, apply, editLink},
         initialState
     };
 }

@@ -6,4 +6,4 @@ export interface INodeTypesRegistry {
     getSubTypesOf: (name: string) => string[];
     getRole(roleName: string): NodeTypeName;
 }
-export declare function useNodeTypesRegistry(): null | INodeTypesRegistry;
+export declare function useNodeTypesRegistry(): INodeTypesRegistry;

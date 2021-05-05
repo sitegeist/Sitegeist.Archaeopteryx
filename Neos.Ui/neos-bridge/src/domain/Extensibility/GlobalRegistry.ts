@@ -11,7 +11,7 @@ export interface IGlobalRegistry {
     set(key: string, value: any): void
 }
 
-export function useGlobalRegistry(): null | IGlobalRegistry {
+export function useGlobalRegistry(): IGlobalRegistry {
     const neos = useNeos();
-    return neos?.globalRegistry ?? null;
+    return neos.globalRegistry;
 }

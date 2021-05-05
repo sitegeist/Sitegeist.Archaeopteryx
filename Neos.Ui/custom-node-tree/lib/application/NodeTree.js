@@ -87,19 +87,15 @@ var NodeTree = function (props) {
     var initialize = react_use_1.useAsync(function () { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0:
-                    if (!nodeTypesRegistry) return [3, 2];
-                    return [4, domain_1.loadNodeTree({ state: state, dispatch: dispatch }, nodeTypesRegistry, props.configuration)];
+                case 0: return [4, domain_1.loadNodeTree({ state: state, dispatch: dispatch }, nodeTypesRegistry, props.configuration)];
                 case 1:
                     _a.sent();
-                    _a.label = 2;
-                case 2: return [2];
+                    return [2];
             }
         });
     }); }, [
         props.configuration.baseNodeTypeName,
-        props.configuration.rootNodeContextPath,
-        nodeTypesRegistry
+        props.configuration.rootNodeContextPath
     ]);
     var selectedNode = React.useMemo(function () { return props.configuration.selectedNodeContextPath
         ? domain_1.findNodeByContextPath(state, props.configuration.selectedNodeContextPath)
@@ -148,7 +144,7 @@ var NodeTree = function (props) {
         main ? (React.createElement("div", { style: {
                 gridColumn: '1 / span 2',
                 height: '50vh',
-                maxHeight: '500px',
+                maxHeight: '300px',
                 overflowY: 'auto'
             } }, main)) : null));
 };

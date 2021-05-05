@@ -15,8 +15,12 @@ export const ValueWasUpdated = createAction(
     (value: Partial<ILink>) => value
 )();
 
-export const ValueWasCleared = createAction(
-    'http://sitegeist.de/Sitegeist.Archaeopteryx/ValueWasCleared'
+export const ValueWasUnset = createAction(
+    'http://sitegeist.de/Sitegeist.Archaeopteryx/ValueWasUnset'
+)();
+
+export const ValueWasReset = createAction(
+    'http://sitegeist.de/Sitegeist.Archaeopteryx/ValueWasReset'
 )();
 
 export const ValueWasApplied = createAction(

@@ -7,18 +7,30 @@ import {ILink, ILinkOptions, LinkType, useEditorState, useEditorTransactions, us
 export const Modal: React.FC = () => {
     const {isOpen, value} = useEditorState();
 
+    let contents = null;
     if (isOpen) {
-        if (value.persistent) {
-            return (
+        if (value.transient) {
+            contents = (
                 <DialogWithValue
-                    value={value.transient ?? value.persistent}
+                    value={value.transient}
                 />
             );
         } else {
-            return (
+            contents = (
                 <DialogWithEmptyValue/>
             );
         }
+
+        return (
+            <Dialog
+                title="Sitegeist.Archaeopteryx"
+                isOpen={isOpen}
+                style="jumbo"
+                onRequestClose={() => {}}
+            >
+                {contents}
+            </Dialog>
+        );
     }
 
     return null;
@@ -30,11 +42,7 @@ const DialogWithEmptyValue: React.FC = () => {
     const [activeLinkType, setActiveLinkType] = React.useState<null | LinkType>(linkTypes[0]);
 
     return (
-        <Dialog
-            title="Sitegeist.Archaeopteryx"
-            isOpen={true}
-            style="jumbo"
-        >
+        <>
             {linkTypes.map(linkType => (
                 <Button
                     key={linkType.id}
@@ -47,6 +55,7 @@ const DialogWithEmptyValue: React.FC = () => {
             <div>
                 {activeLinkType ? (
                     <LinkEditor
+                        key={activeLinkType.id}
                         link={null}
                         linkType={activeLinkType}
                     />
@@ -59,23 +68,19 @@ const DialogWithEmptyValue: React.FC = () => {
             <Button disabled>
                 Apply
             </Button>
-        </Dialog>
+        </>
     );
 }
 
 const DialogWithValue: React.FC<{
     value: ILink
 }> = props => {
-    const {dismiss, update, apply, clear} = useEditorTransactions();
+    const {dismiss, update, unset, apply} = useEditorTransactions();
     const linkType = useLinkTypeForHref(props.value.href)!;
     const [showSettings, setShowSettings] = React.useState(false);
 
     return (
-        <Dialog
-            title="Sitegeist.Archaeopteryx"
-            isOpen={true}
-            style="jumbo"
-        >
+        <>
             <Button
                 isActive={!showSettings}
                 onClick={() => setShowSettings(false)}
@@ -90,8 +95,8 @@ const DialogWithValue: React.FC<{
             </Button>
 
             <div>
-                <Button onClick={clear}>
-                    Reset
+                <Button onClick={unset}>
+                    Delete
                 </Button>
             </div>
 
@@ -165,8 +170,9 @@ const DialogWithValue: React.FC<{
                             </form>
                         )}
                     </Form>
-                ): (
+                ) : (
                     <LinkEditor
+                        key={linkType.id}
                         link={props.value}
                         linkType={linkType}
                     />
@@ -179,20 +185,33 @@ const DialogWithValue: React.FC<{
             <Button onClick={() => apply(props.value)}>
                 Apply
             </Button>
-        </Dialog>
+        </>
     );
+}
+
+function useLastNonNull<V>(value: null | V) {
+    const valueRef = React.useRef(value);
+
+    if (value !== null) {
+        valueRef.current = value;
+    }
+
+    return valueRef.current;
 }
 
 const LinkEditor: React.FC<{
     link: null | ILink
     linkType: LinkType
 }> = props => {
-    const {busy, error, result: editorProps} = props.linkType.useResolvedProps(props.link ?? undefined);
+    const {busy, error, result} = props.linkType.useResolvedProps(props.link ?? undefined);
+    const editorProps = useLastNonNull(result);
     const {getEditor: Editor, getLoadingEditor: LoadingEditor} = props.linkType;
+
+
 
     if (error) {
         throw error;
-    } else if (busy) {
+    } else if (busy && !editorProps) {
         return (<LoadingEditor link={props.link ?? undefined}/>);
     } else {
         return (<Editor {...editorProps}/>);

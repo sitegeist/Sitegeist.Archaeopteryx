@@ -21,7 +21,6 @@ export const Node = new class extends LinkType<Props> {
     public readonly useResolvedProps = (link?: ILink) => {
         const siteNodeContextPath = useSiteNodeContextPath();
         const asyncState = useAsync(async () => {
-            console.log('resolveNodeLink', link);
             if (link === undefined) {
                 return {node: null};
             }
@@ -53,7 +52,7 @@ export const Node = new class extends LinkType<Props> {
             }
 
             throw this.error(`Could not find node for identifier "${identifier}".`);
-        }, [siteNodeContextPath]);
+        }, [link?.href, siteNodeContextPath]);
 
         return Process.fromAsyncState(asyncState);
     }
@@ -94,7 +93,6 @@ export const Node = new class extends LinkType<Props> {
         } else if (!documentNodeContextPath) {
             throw this.error('Could not load node tree, because documentNodeContextPath could not be determined.');
         } else {
-            console.log('props.node?.contextPath', props.node?.contextPath);
             return (
                 <NodeTreeAdapter
                     configuration={{
@@ -111,8 +109,6 @@ export const Node = new class extends LinkType<Props> {
                     onSelect={node =>{
                         const cacheIdentifier = `${node.identifier}@${siteNodeContextPath.context}`;
                         propsCache.set(cacheIdentifier, {node});
-
-                        console.log(cacheIdentifier);
                         update({href: `node://${node.identifier}`});
                     }}
                 />

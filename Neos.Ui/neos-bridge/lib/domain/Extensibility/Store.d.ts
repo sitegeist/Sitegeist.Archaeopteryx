@@ -10,4 +10,4 @@ export interface IStore {
     getState(): IState;
     subscribe(listener: () => void): () => void;
 }
-export declare function useSelector<R>(selector: (state: IState) => R): null | R;
+export declare function useSelector<R>(selector: (state: IState) => R): R;

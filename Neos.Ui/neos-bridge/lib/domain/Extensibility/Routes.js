@@ -4,7 +4,7 @@ exports.useRoutes = void 0;
 var NeosContext_1 = require("./NeosContext");
 function useRoutes(selector) {
     var neos = NeosContext_1.useNeos();
-    if (neos && neos.routes) {
+    if (neos.routes) {
         if (selector) {
             return selector(neos.routes);
         }

@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var Editor_1 = require("./Editor");
 describe('Editor', function () {
-    var _a = Editor_1.createEditor(), state$ = _a.state$, _b = _a.tx, editLink = _b.editLink, dismiss = _b.dismiss, update = _b.update, clear = _b.clear, apply = _b.apply;
+    var _a = Editor_1.createEditor(), state$ = _a.state$, _b = _a.tx, editLink = _b.editLink, dismiss = _b.dismiss, update = _b.update, unset = _b.unset, reset = _b.reset, apply = _b.apply;
     var state;
     var subscription;
     beforeEach(function () {
@@ -15,25 +15,24 @@ describe('Editor', function () {
     });
     it('updates links', function (done) {
         editLink({ href: 'http://example.com' }).then(function (result) {
-            var _a;
             expect(state.isOpen).toBe(false);
             expect(result.change).toBe(true);
-            expect((_a = result.value) === null || _a === void 0 ? void 0 : _a.href).toBe('http://example.com/new-link');
+            expect(result.value).toStrictEqual({ href: 'http://example.com/new-link' });
             process.nextTick(done);
         });
         process.nextTick(function () {
-            var _a, _b, _c;
             expect(state.isOpen).toBe(true);
-            expect((_a = state.value.transient) === null || _a === void 0 ? void 0 : _a.href).toBe('http://example.com');
-            expect((_b = state.value.persistent) === null || _b === void 0 ? void 0 : _b.href).toBe('http://example.com');
+            expect(state.value.persistent).toStrictEqual({ href: 'http://example.com' });
+            expect(state.value.transient).toStrictEqual({ href: 'http://example.com' });
             update({ href: 'http://example.com/new-link' });
-            expect((_c = state.value.transient) === null || _c === void 0 ? void 0 : _c.href).toBe('http://example.com/new-link');
+            expect(state.value.persistent).toStrictEqual({ href: 'http://example.com' });
+            expect(state.value.transient).toStrictEqual({ href: 'http://example.com/new-link' });
             apply(state.value.transient);
-            expect(state.value.transient).toBe(null);
-            expect(state.value.persistent).toBe(null);
+            expect(state.value.transient).toStrictEqual(null);
+            expect(state.value.persistent).toStrictEqual(null);
         });
     });
-    it('clears links', function (done) {
+    it('unsets links', function (done) {
         editLink({ href: 'http://example.com/' }).then(function (result) {
             expect(state.isOpen).toBe(false);
             expect(result.change).toBe(true);
@@ -41,15 +40,37 @@ describe('Editor', function () {
             process.nextTick(done);
         });
         process.nextTick(function () {
-            var _a, _b;
             expect(state.isOpen).toBe(true);
-            expect((_a = state.value.transient) === null || _a === void 0 ? void 0 : _a.href).toBe('http://example.com/');
-            expect((_b = state.value.persistent) === null || _b === void 0 ? void 0 : _b.href).toBe('http://example.com/');
-            clear();
-            expect(state.value.transient).toBe(null);
+            expect(state.value.persistent).toStrictEqual({ href: 'http://example.com/' });
+            expect(state.value.transient).toStrictEqual({ href: 'http://example.com/' });
+            unset();
+            expect(state.value.persistent).toStrictEqual({ href: 'http://example.com/' });
+            expect(state.value.transient).toStrictEqual(null);
             apply(state.value.transient);
-            expect(state.value.transient).toBe(null);
-            expect(state.value.persistent).toBe(null);
+            expect(state.value.transient).toStrictEqual(null);
+            expect(state.value.persistent).toStrictEqual(null);
+        });
+    });
+    it('resets links', function (done) {
+        editLink({ href: 'http://example.com/' }).then(function (result) {
+            expect(state.isOpen).toBe(false);
+            expect(result.change).toBe(true);
+            expect(result.value).toStrictEqual({ href: 'http://example.com/' });
+            process.nextTick(done);
+        });
+        process.nextTick(function () {
+            expect(state.isOpen).toBe(true);
+            expect(state.value.persistent).toStrictEqual({ href: 'http://example.com/' });
+            expect(state.value.transient).toStrictEqual({ href: 'http://example.com/' });
+            update({ href: 'http://example.com/new-link' });
+            expect(state.value.persistent).toStrictEqual({ href: 'http://example.com/' });
+            expect(state.value.transient).toStrictEqual({ href: 'http://example.com/new-link' });
+            reset();
+            expect(state.value.persistent).toStrictEqual({ href: 'http://example.com/' });
+            expect(state.value.transient).toStrictEqual({ href: 'http://example.com/' });
+            apply(state.value.transient);
+            expect(state.value.persistent).toStrictEqual(null);
+            expect(state.value.transient).toStrictEqual(null);
         });
     });
     it('can be dismissed', function (done) {
@@ -59,15 +80,15 @@ describe('Editor', function () {
             process.nextTick(done);
         });
         process.nextTick(function () {
-            var _a, _b, _c;
             expect(state.isOpen).toBe(true);
-            expect((_a = state.value.transient) === null || _a === void 0 ? void 0 : _a.href).toBe('http://example.com');
-            expect((_b = state.value.persistent) === null || _b === void 0 ? void 0 : _b.href).toBe('http://example.com');
+            expect(state.value.persistent).toStrictEqual({ href: 'http://example.com' });
+            expect(state.value.transient).toStrictEqual({ href: 'http://example.com' });
             update({ href: 'http://example.com/new-link' });
-            expect((_c = state.value.transient) === null || _c === void 0 ? void 0 : _c.href).toBe('http://example.com/new-link');
+            expect(state.value.persistent).toStrictEqual({ href: 'http://example.com' });
+            expect(state.value.transient).toStrictEqual({ href: 'http://example.com/new-link' });
             dismiss();
-            expect(state.value.transient).toBe(null);
-            expect(state.value.persistent).toBe(null);
+            expect(state.value.persistent).toStrictEqual(null);
+            expect(state.value.transient).toStrictEqual(null);
         });
     });
 });

@@ -21,7 +21,8 @@ export declare function createEditor(): {
     tx: {
         dismiss: () => void;
         update: (value: Partial<ILink>) => void;
-        clear: () => void;
+        unset: () => void;
+        reset: () => void;
         apply: (value: null | ILink) => void;
         editLink: (link: null | ILink) => Promise<IEditorResult>;
     };
@@ -33,7 +34,8 @@ export declare const EditorContext: React.Context<{
     tx: {
         dismiss: () => void;
         update: (value: Partial<ILink>) => void;
-        clear: () => void;
+        unset: () => void;
+        reset: () => void;
         apply: (value: null | ILink) => void;
         editLink: (link: null | ILink) => Promise<IEditorResult>;
     };
@@ -47,7 +49,8 @@ export declare function useEditorValue(): {
 export declare function useEditorTransactions(): {
     dismiss: () => void;
     update: (value: Partial<ILink>) => void;
-    clear: () => void;
+    unset: () => void;
+    reset: () => void;
     apply: (value: ILink | null) => void;
     editLink: (link: ILink | null) => Promise<IEditorResult>;
 };

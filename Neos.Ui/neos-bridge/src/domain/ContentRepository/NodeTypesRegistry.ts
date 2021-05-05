@@ -11,15 +11,9 @@ export interface INodeTypesRegistry {
     getRole(roleName: string): NodeTypeName
 }
 
-export function useNodeTypesRegistry(): null | INodeTypesRegistry {
+export function useNodeTypesRegistry(): INodeTypesRegistry {
     const globalRegistry = useGlobalRegistry();
-    const [result, setResult] = React.useState<null | INodeTypesRegistry>(null);
+    const nodeTypesRegistry = globalRegistry.get('@neos-project/neos-ui-contentrepository');
 
-    React.useEffect(() => {
-        if (globalRegistry) {
-            setResult(globalRegistry.get('@neos-project/neos-ui-contentrepository'));
-        }
-    }, [globalRegistry]);
-
-    return result;
+    return nodeTypesRegistry;
 }

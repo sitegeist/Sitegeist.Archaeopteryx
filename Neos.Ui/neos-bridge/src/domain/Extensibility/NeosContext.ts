@@ -15,5 +15,11 @@ export interface INeosContextProperties {
 export const NeosContext = React.createContext<null | INeosContextProperties>(null);
 
 export function useNeos() {
-    return React.useContext(NeosContext);
+    const neos = React.useContext(NeosContext);
+
+    if (!neos) {
+        throw new Error('[Sitegeist.Archaeopteryx]: Could not determine Neos Context.');
+    }
+
+    return neos;
 }

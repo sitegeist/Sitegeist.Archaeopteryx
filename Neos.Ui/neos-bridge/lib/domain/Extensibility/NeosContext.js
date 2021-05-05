@@ -23,7 +23,11 @@ exports.useNeos = exports.NeosContext = void 0;
 var React = __importStar(require("react"));
 exports.NeosContext = React.createContext(null);
 function useNeos() {
-    return React.useContext(exports.NeosContext);
+    var neos = React.useContext(exports.NeosContext);
+    if (!neos) {
+        throw new Error('[Sitegeist.Archaeopteryx]: Could not determine Neos Context.');
+    }
+    return neos;
 }
 exports.useNeos = useNeos;
 //# sourceMappingURL=NeosContext.js.map

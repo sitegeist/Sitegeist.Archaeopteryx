@@ -10,4 +10,4 @@ export interface INeosContextProperties {
     routes?: IRoutes;
 }
 export declare const NeosContext: React.Context<INeosContextProperties | null>;
-export declare function useNeos(): INeosContextProperties | null;
+export declare function useNeos(): INeosContextProperties;

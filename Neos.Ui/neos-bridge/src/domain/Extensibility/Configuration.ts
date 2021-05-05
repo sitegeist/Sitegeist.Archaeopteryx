@@ -20,14 +20,12 @@ export function useConfiguration(): undefined | IConfiguration;
 export function useConfiguration<R>(
     selector: (configuration: IConfiguration) => R
 ): undefined | R;
-export function useConfiguration<R>(selector?: (configuration: IConfiguration) => R): undefined | R {
+export function useConfiguration<R>(selector?: (configuration: IConfiguration) => R): R {
     const neos = useNeos();
 
-    if (neos) {
-        if (selector) {
-            return selector(neos.configuration);
-        } else {
-            return neos.configuration as R;
-        }
+    if (selector) {
+        return selector(neos.configuration);
+    } else {
+        return neos.configuration as R;
     }
 }

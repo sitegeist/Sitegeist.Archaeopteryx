@@ -15,7 +15,7 @@ export function useRoutes<R>(
 export function useRoutes<R>(selector?: (configuration: IRoutes) => R): undefined | R {
     const neos = useNeos();
 
-    if (neos && neos.routes) {
+    if (neos.routes) {
         if (selector) {
             return selector(neos.routes);
         } else {

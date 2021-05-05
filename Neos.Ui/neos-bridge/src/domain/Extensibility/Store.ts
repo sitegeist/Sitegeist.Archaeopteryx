@@ -15,30 +15,16 @@ export interface IStore {
     subscribe(listener: () => void): () => void
 }
 
-export function useSelector<R>(selector: (state: IState) => R): null | R {
+export function useSelector<R>(selector: (state: IState) => R): R {
     const neos = useNeos();
-    const neosWasInitiallyLoadedRef = React.useRef(Boolean(neos));
-    const [result, setResult] = React.useState<null | R>(
-        neos ? selector(neos.store.getState()) : null
-    );
+    const [result, setResult] = React.useState<R>(selector(neos.store.getState()));
 
-    React.useEffect(() => {
-        if (neos) {
-            const state = neos.store.getState();
+    React.useEffect(() => neos.store.subscribe(() => {
+        const state = neos.store.getState();
+        const result = selector(state);
 
-            if (!neosWasInitiallyLoadedRef.current) {
-                const result = selector(state);
-                setResult(result);
-            }
-
-            return neos.store.subscribe(() => {
-                const state = neos.store.getState();
-                const result = selector(state);
-
-                setResult(result);
-            });
-        }
-    }, [neos]);
+        setResult(result);
+    }), []);
 
     return result;
 }

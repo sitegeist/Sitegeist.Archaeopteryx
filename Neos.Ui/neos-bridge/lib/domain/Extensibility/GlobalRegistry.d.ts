@@ -8,4 +8,4 @@ export interface IGlobalRegistry {
     get(key: '@neos-project/neos-ui-contentrepository'): INodeTypesRegistry;
     set(key: string, value: any): void;
 }
-export declare function useGlobalRegistry(): null | IGlobalRegistry;
+export declare function useGlobalRegistry(): IGlobalRegistry;

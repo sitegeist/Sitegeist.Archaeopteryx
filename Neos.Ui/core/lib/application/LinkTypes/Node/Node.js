@@ -104,7 +104,6 @@ exports.Node = new (function (_super) {
                 return __generator(this, function (_b) {
                     switch (_b.label) {
                         case 0:
-                            console.log('resolveNodeLink', link);
                             if (link === undefined) {
                                 return [2, { node: null }];
                             }
@@ -142,7 +141,7 @@ exports.Node = new (function (_super) {
                             throw this.error("Could not find node for identifier \"" + identifier + "\".");
                     }
                 });
-            }); }, [siteNodeContextPath]);
+            }); }, [link === null || link === void 0 ? void 0 : link.href, siteNodeContextPath]);
             return domain_1.Process.fromAsyncState(asyncState);
         };
         _this.getStaticIcon = function () { return (React.createElement("div", null, "NODE TREE")); };
@@ -153,7 +152,7 @@ exports.Node = new (function (_super) {
         _this.getPreview = function () { return (React.createElement("div", null, "NODE TREE PREVIEW")); };
         _this.getLoadingEditor = function () { return (React.createElement("div", null, "NODE TREE EDITOR")); };
         _this.getEditor = function (props) {
-            var _a, _b, _c, _d;
+            var _a, _b, _c;
             var update = domain_1.useEditorTransactions().update;
             var siteNodeContextPath = archaeopteryx_neos_bridge_1.useSiteNodeContextPath();
             var documentNodeContextPath = archaeopteryx_neos_bridge_1.useDocumentNodeContextPath();
@@ -166,12 +165,11 @@ exports.Node = new (function (_super) {
                 throw _this.error('Could not load node tree, because documentNodeContextPath could not be determined.');
             }
             else {
-                console.log('props.node?.contextPath', (_c = props.node) === null || _c === void 0 ? void 0 : _c.contextPath);
                 return (React.createElement(archaeopteryx_custom_node_tree_1.NodeTree, { configuration: {
                         baseNodeTypeName: baseNodeTypeName,
                         rootNodeContextPath: siteNodeContextPath,
                         documentNodeContextPath: documentNodeContextPath,
-                        selectedNodeContextPath: (_d = props.node) === null || _d === void 0 ? void 0 : _d.contextPath,
+                        selectedNodeContextPath: (_c = props.node) === null || _c === void 0 ? void 0 : _c.contextPath,
                         loadingDepth: loadingDepth
                     }, options: {
                         enableSearch: true,
@@ -179,7 +177,6 @@ exports.Node = new (function (_super) {
                     }, onSelect: function (node) {
                         var cacheIdentifier = node.identifier + "@" + siteNodeContextPath.context;
                         propsCache.set(cacheIdentifier, { node: node });
-                        console.log(cacheIdentifier);
                         update({ href: "node://" + node.identifier });
                     } }));
             }

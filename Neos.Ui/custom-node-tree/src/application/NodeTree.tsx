@@ -33,14 +33,11 @@ export const NodeTree: React.FC<Props> = props => {
     );
     const initialize = useAsync(
         async () => {
-            if (nodeTypesRegistry) {
-                await loadNodeTree({state, dispatch}, nodeTypesRegistry, props.configuration);
-            }
+            await loadNodeTree({state, dispatch}, nodeTypesRegistry, props.configuration);
         },
         [
             props.configuration.baseNodeTypeName,
-            props.configuration.rootNodeContextPath,
-            nodeTypesRegistry
+            props.configuration.rootNodeContextPath
         ]
     );
     const selectedNode = React.useMemo(
@@ -138,7 +135,7 @@ export const NodeTree: React.FC<Props> = props => {
                     style={{
                         gridColumn: '1 / span 2',
                         height: '50vh',
-                        maxHeight: '500px',
+                        maxHeight: '300px',
                         overflowY: 'auto'
                     }}
                     >
