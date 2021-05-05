@@ -7,57 +7,45 @@ require("@testing-library/jest-dom/extend-expect");
 var Node_1 = require("./Node");
 describe('LinkType: Node', function () {
     it('is not satisfied by http:// links', function () {
-        var props = {
-            link: {
-                href: 'http://www.example.com'
-            }
+        var link = {
+            href: 'http://www.example.com'
         };
-        expect(Node_1.Node.isSuitableFor(props))
+        expect(Node_1.Node.isSuitableFor(link))
             .toBe(false);
     });
     it('is not satisfied by https:// links', function () {
-        var props = {
-            link: {
-                href: 'https://www.example.com'
-            }
+        var link = {
+            href: 'https://www.example.com'
         };
-        expect(Node_1.Node.isSuitableFor(props))
+        expect(Node_1.Node.isSuitableFor(link))
             .toBe(false);
     });
     it('is satisfied by node:// links', function () {
-        var props = {
-            link: {
-                href: 'node://97c9a6e3-4b50-4559-9f60-b5ad68f25758'
-            }
+        var link = {
+            href: 'node://97c9a6e3-4b50-4559-9f60-b5ad68f25758'
         };
-        expect(Node_1.Node.isSuitableFor(props))
+        expect(Node_1.Node.isSuitableFor(link))
             .toBe(true);
     });
     it('is not satisfied by asset:// links', function () {
-        var props = {
-            link: {
-                href: 'asset://97c9a6e3-4b50-4559-9f60-b5ad68f25758'
-            }
+        var link = {
+            href: 'asset://97c9a6e3-4b50-4559-9f60-b5ad68f25758'
         };
-        expect(Node_1.Node.isSuitableFor(props))
+        expect(Node_1.Node.isSuitableFor(link))
             .toBe(false);
     });
     it('is not satisfied by mailto: links', function () {
-        var props = {
-            link: {
-                href: 'mailto:foo@example.com'
-            }
+        var link = {
+            href: 'mailto:foo@example.com'
         };
-        expect(Node_1.Node.isSuitableFor(props))
+        expect(Node_1.Node.isSuitableFor(link))
             .toBe(false);
     });
     it('is not satisfied by invalid links', function () {
-        var props = {
-            link: {
-                href: 'Think of Beethoven\'s 5th: foo foo foo bar'
-            }
+        var link = {
+            href: 'Think of Beethoven\'s 5th: foo foo foo bar'
         };
-        expect(Node_1.Node.isSuitableFor(props))
+        expect(Node_1.Node.isSuitableFor(link))
             .toBe(false);
     });
     it('returns title', function () {

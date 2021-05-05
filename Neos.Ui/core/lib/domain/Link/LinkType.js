@@ -18,6 +18,27 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
+var __spreadArray = (this && this.__spreadArray) || function (to, from) {
+    for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
+        to[j] = from[i];
+    return to;
+};
 var __values = (this && this.__values) || function(o) {
     var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
     if (m) return m.call(o);
@@ -35,6 +56,10 @@ var React = __importStar(require("react"));
 var archaeopteryx_neos_bridge_1 = require("@sitegeist/archaeopteryx-neos-bridge");
 var LinkType = (function () {
     function LinkType() {
+        var _this = this;
+        this.error = function (message) {
+            return new Error("[" + _this.id + "]: " + message);
+        };
     }
     return LinkType;
 }());
@@ -49,10 +74,13 @@ function useLinkTypeForHref(href) {
     var linkTypes = useLinkTypes();
     var result = React.useMemo(function () {
         var e_1, _a;
+        if (href === null) {
+            return null;
+        }
         try {
-            for (var linkTypes_1 = __values(linkTypes), linkTypes_1_1 = linkTypes_1.next(); !linkTypes_1_1.done; linkTypes_1_1 = linkTypes_1.next()) {
-                var linkType = linkTypes_1_1.value;
-                if (linkType.isSuitableFor({ link: { href: href } })) {
+            for (var _b = __values(__spreadArray([], __read(linkTypes)).reverse()), _c = _b.next(); !_c.done; _c = _b.next()) {
+                var linkType = _c.value;
+                if (linkType.isSuitableFor({ href: href })) {
                     return linkType;
                 }
             }
@@ -60,7 +88,7 @@ function useLinkTypeForHref(href) {
         catch (e_1_1) { e_1 = { error: e_1_1 }; }
         finally {
             try {
-                if (linkTypes_1_1 && !linkTypes_1_1.done && (_a = linkTypes_1.return)) _a.call(linkTypes_1);
+                if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
             }
             finally { if (e_1) throw e_1.error; }
         }

@@ -38,31 +38,33 @@ exports.Asset = void 0;
 var React = __importStar(require("react"));
 var archaeopteryx_neos_bridge_1 = require("@sitegeist/archaeopteryx-neos-bridge");
 var domain_1 = require("../../../domain");
-function useResolvedValue() {
-    var value = domain_1.useEditorValue().value;
-    if (value) {
-        var match = /asset:\/\/(.*)/.exec(value.href);
-        if (match) {
-            return match[1];
-        }
-    }
-    return null;
-}
 exports.Asset = new (function (_super) {
     __extends(class_1, _super);
     function class_1() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.id = 'Sitegeist.Archaeopteryx:Asset';
-        _this.isSuitableFor = function (props) {
-            var _a;
-            return Boolean((_a = props.link) === null || _a === void 0 ? void 0 : _a.href.startsWith('asset://'));
+        _this.isSuitableFor = function (link) {
+            return link.href.startsWith('asset://');
         };
+        _this.useResolvedProps = function (link) {
+            if (link === undefined) {
+                return domain_1.Process.success({ assetIdentifier: null });
+            }
+            var match = /asset:\/\/(.*)/.exec(link.href);
+            if (match) {
+                return domain_1.Process.success({ assetIdentifier: match[1] });
+            }
+            return domain_1.Process.error(_this.error("Cannot handle href \"" + link.href + "\"."));
+        };
+        _this.getStaticIcon = function () { return (React.createElement("div", null, "ASSET")); };
         _this.getIcon = function () { return (React.createElement("div", null, "ASSET")); };
+        _this.getStaticTitle = function () { return 'ASSET'; };
         _this.getTitle = function () { return 'ASSET'; };
+        _this.getLoadingPreview = function () { return (React.createElement("div", null, "ASSET PREVIEW")); };
         _this.getPreview = function () { return (React.createElement("div", null, "ASSET PREVIEW")); };
-        _this.getEditor = function () {
+        _this.getLoadingEditor = function () { return (React.createElement("div", null, "ASSET EDITOR")); };
+        _this.getEditor = function (props) {
             var update = domain_1.useEditorTransactions().update;
-            var resolvedValue = useResolvedValue();
             var mediaBrowserUri = archaeopteryx_neos_bridge_1.useRoutes(function (r) { var _a, _b; return (_b = (_a = r.core) === null || _a === void 0 ? void 0 : _a.modules) === null || _b === void 0 ? void 0 : _b.mediaBrowser; });
             React.useEffect(function () {
                 window.NeosMediaBrowserCallbacks = {
@@ -74,16 +76,14 @@ exports.Asset = new (function (_super) {
                     window.NeosMediaBrowserCallbacks = {};
                 });
             }, [update]);
-            if (mediaBrowserUri) {
-                if (resolvedValue) {
-                    return (React.createElement("iframe", { name: "neos-media-selection-screen", src: mediaBrowserUri + "/images/edit.html?asset[__identity]=" + resolvedValue, style: { width: '100%', minHeight: '300px' }, frameBorder: "0", onLoad: function (ev) { var _a, _b; return (_b = (_a = ev.target.contentDocument) === null || _a === void 0 ? void 0 : _a.querySelector('form > .neos-footer')) === null || _b === void 0 ? void 0 : _b.remove(); } }));
-                }
-                else {
-                    return (React.createElement("iframe", { name: "neos-media-selection-screen", src: mediaBrowserUri + "/assets/index.html", style: { width: '100%', minHeight: '300px' }, frameBorder: "0" }));
-                }
+            if (!mediaBrowserUri) {
+                throw _this.error('Could not resolve mediaBrowserUri.');
+            }
+            if (props.assetIdentifier) {
+                return (React.createElement("iframe", { name: "neos-media-selection-screen", src: mediaBrowserUri + "/images/edit.html?asset[__identity]=" + props.assetIdentifier, style: { width: '100%', minHeight: '300px' }, frameBorder: "0", onLoad: function (ev) { var _a, _b; return (_b = (_a = ev.target.contentDocument) === null || _a === void 0 ? void 0 : _a.querySelector('form > .neos-footer')) === null || _b === void 0 ? void 0 : _b.remove(); } }));
             }
             else {
-                return (React.createElement("div", null, "Media Browser not found."));
+                return (React.createElement("iframe", { name: "neos-media-selection-screen", src: mediaBrowserUri + "/assets/index.html", style: { width: '100%', minHeight: '300px' }, frameBorder: "0" }));
             }
         };
         return _this;

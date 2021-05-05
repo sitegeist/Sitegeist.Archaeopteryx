@@ -40,12 +40,15 @@ var React = __importStar(require("react"));
 var NeosContext_1 = require("./NeosContext");
 function useSelector(selector) {
     var neos = NeosContext_1.useNeos();
-    var _a = __read(React.useState(null), 2), result = _a[0], setResult = _a[1];
+    var neosWasInitiallyLoadedRef = React.useRef(Boolean(neos));
+    var _a = __read(React.useState(neos ? selector(neos.store.getState()) : null), 2), result = _a[0], setResult = _a[1];
     React.useEffect(function () {
         if (neos) {
             var state = neos.store.getState();
-            var result_1 = selector(state);
-            setResult(result_1);
+            if (!neosWasInitiallyLoadedRef.current) {
+                var result_1 = selector(state);
+                setResult(result_1);
+            }
             return neos.store.subscribe(function () {
                 var state = neos.store.getState();
                 var result = selector(state);

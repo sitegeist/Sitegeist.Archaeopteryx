@@ -25242,37 +25242,47 @@ exports.Asset = void 0;
 var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
 var archaeopteryx_neos_bridge_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-neos-bridge */ "../neos-bridge/lib/index.js");
 var domain_1 = __webpack_require__(/*! ../../../domain */ "../core/lib/domain/index.js");
-function useResolvedValue() {
-    var value = domain_1.useEditorValue().value;
-    if (value) {
-        var match = /asset:\/\/(.*)/.exec(value.href);
-        if (match) {
-            return match[1];
-        }
-    }
-    return null;
-}
 exports.Asset = new (function (_super) {
     __extends(class_1, _super);
     function class_1() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.id = 'Sitegeist.Archaeopteryx:Asset';
-        _this.isSuitableFor = function (props) {
-            var _a;
-            return Boolean((_a = props.link) === null || _a === void 0 ? void 0 : _a.href.startsWith('asset://'));
+        _this.isSuitableFor = function (link) {
+            return link.href.startsWith('asset://');
+        };
+        _this.useResolvedProps = function (link) {
+            if (link === undefined) {
+                return domain_1.Process.success({ assetIdentifier: null });
+            }
+            var match = /asset:\/\/(.*)/.exec(link.href);
+            if (match) {
+                return domain_1.Process.success({ assetIdentifier: match[1] });
+            }
+            return domain_1.Process.error(_this.error("Cannot handle href \"" + link.href + "\"."));
+        };
+        _this.getStaticIcon = function () {
+            return React.createElement("div", null, "ASSET");
         };
         _this.getIcon = function () {
             return React.createElement("div", null, "ASSET");
         };
+        _this.getStaticTitle = function () {
+            return 'ASSET';
+        };
         _this.getTitle = function () {
             return 'ASSET';
+        };
+        _this.getLoadingPreview = function () {
+            return React.createElement("div", null, "ASSET PREVIEW");
         };
         _this.getPreview = function () {
             return React.createElement("div", null, "ASSET PREVIEW");
         };
-        _this.getEditor = function () {
+        _this.getLoadingEditor = function () {
+            return React.createElement("div", null, "ASSET EDITOR");
+        };
+        _this.getEditor = function (props) {
             var update = domain_1.useEditorTransactions().update;
-            var resolvedValue = useResolvedValue();
             var mediaBrowserUri = archaeopteryx_neos_bridge_1.useRoutes(function (r) {
                 var _a, _b;return (_b = (_a = r.core) === null || _a === void 0 ? void 0 : _a.modules) === null || _b === void 0 ? void 0 : _b.mediaBrowser;
             });
@@ -25286,16 +25296,15 @@ exports.Asset = new (function (_super) {
                     window.NeosMediaBrowserCallbacks = {};
                 });
             }, [update]);
-            if (mediaBrowserUri) {
-                if (resolvedValue) {
-                    return React.createElement("iframe", { name: "neos-media-selection-screen", src: mediaBrowserUri + "/images/edit.html?asset[__identity]=" + resolvedValue, style: { width: '100%', minHeight: '300px' }, frameBorder: "0", onLoad: function onLoad(ev) {
-                            var _a, _b;return (_b = (_a = ev.target.contentDocument) === null || _a === void 0 ? void 0 : _a.querySelector('form > .neos-footer')) === null || _b === void 0 ? void 0 : _b.remove();
-                        } });
-                } else {
-                    return React.createElement("iframe", { name: "neos-media-selection-screen", src: mediaBrowserUri + "/assets/index.html", style: { width: '100%', minHeight: '300px' }, frameBorder: "0" });
-                }
+            if (!mediaBrowserUri) {
+                throw _this.error('Could not resolve mediaBrowserUri.');
+            }
+            if (props.assetIdentifier) {
+                return React.createElement("iframe", { name: "neos-media-selection-screen", src: mediaBrowserUri + "/images/edit.html?asset[__identity]=" + props.assetIdentifier, style: { width: '100%', minHeight: '300px' }, frameBorder: "0", onLoad: function onLoad(ev) {
+                        var _a, _b;return (_b = (_a = ev.target.contentDocument) === null || _a === void 0 ? void 0 : _a.querySelector('form > .neos-footer')) === null || _b === void 0 ? void 0 : _b.remove();
+                    } });
             } else {
-                return React.createElement("div", null, "Media Browser not found.");
+                return React.createElement("iframe", { name: "neos-media-selection-screen", src: mediaBrowserUri + "/assets/index.html", style: { width: '100%', minHeight: '300px' }, frameBorder: "0" });
             }
         };
         return _this;
@@ -25390,35 +25399,11 @@ var __importStar = undefined && undefined.__importStar || function (mod) {
     }__setModuleDefault(result, mod);
     return result;
 };
-var __rest = undefined && undefined.__rest || function (s, e) {
-    var t = {};
-    for (var p in s) {
-        if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0) t[p] = s[p];
-    }if (s != null && typeof Object.getOwnPropertySymbols === "function") for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-        if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i])) t[p[i]] = s[p[i]];
-    }
-    return t;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MailTo = void 0;
 var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
 var react_final_form_1 = __webpack_require__(/*! react-final-form */ "../../node_modules/react-final-form/dist/react-final-form.es.js");
 var domain_1 = __webpack_require__(/*! ../../../domain */ "../core/lib/domain/index.js");
-function useResolvedValue() {
-    var _a, _b, _c, _d;
-    var value = domain_1.useEditorValue().value;
-    if (value && value.href && value.href.startsWith('mailto:')) {
-        var url = new URL(value.href);
-        return {
-            recipient: url.pathname,
-            subject: (_a = url.searchParams.get('subject')) !== null && _a !== void 0 ? _a : undefined,
-            cc: (_b = url.searchParams.get('cc')) !== null && _b !== void 0 ? _b : undefined,
-            bcc: (_c = url.searchParams.get('bcc')) !== null && _c !== void 0 ? _c : undefined,
-            body: (_d = url.searchParams.get('body')) !== null && _d !== void 0 ? _d : undefined
-        };
-    }
-    return null;
-}
 function convert(mailToLink) {
     var url = new URL("mailto:" + mailToLink.recipient);
     if (mailToLink.subject) {
@@ -25440,28 +25425,53 @@ exports.MailTo = new (function (_super) {
     function class_1() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.id = 'Sitegeist.Archaeopteryx:MailTo';
-        _this.isSuitableFor = function (props) {
-            var _a;
-            return Boolean((_a = props.link) === null || _a === void 0 ? void 0 : _a.href.startsWith('mailto:'));
+        _this.isSuitableFor = function (link) {
+            return link.href.startsWith('mailto:');
+        };
+        _this.useResolvedProps = function (link) {
+            var _a, _b, _c, _d;
+            if (link === undefined) {
+                return domain_1.Process.success({ value: null });
+            }
+            var url = new URL(link.href);
+            return domain_1.Process.success({
+                value: {
+                    recipient: url.pathname,
+                    subject: (_a = url.searchParams.get('subject')) !== null && _a !== void 0 ? _a : undefined,
+                    cc: (_b = url.searchParams.get('cc')) !== null && _b !== void 0 ? _b : undefined,
+                    bcc: (_c = url.searchParams.get('bcc')) !== null && _c !== void 0 ? _c : undefined,
+                    body: (_d = url.searchParams.get('body')) !== null && _d !== void 0 ? _d : undefined
+                }
+            });
+        };
+        _this.getStaticIcon = function () {
+            return React.createElement("div", null, "MAILTO");
         };
         _this.getIcon = function () {
             return React.createElement("div", null, "MAILTO");
         };
+        _this.getStaticTitle = function () {
+            return 'MAILTO';
+        };
         _this.getTitle = function () {
             return 'MAILTO';
+        };
+        _this.getLoadingPreview = function () {
+            return React.createElement("div", null, "MAILTO PREVIEW");
         };
         _this.getPreview = function (props) {
             return React.createElement("div", null, "MAILTO PREVIEW");
         };
-        _this.getEditor = function () {
-            var resolvedValue = useResolvedValue();
+        _this.getLoadingEditor = function () {
+            return React.createElement("div", null, "MAILTO EDITOR");
+        };
+        _this.getEditor = function (props) {
             var update = domain_1.useEditorTransactions().update;
-            var handleSubmit = React.useCallback(function (values) {
-                update({ href: convert(values) });
+            var handleSubmit = React.useCallback(function (value) {
+                update({ href: convert(value) });
             }, []);
-            return React.createElement(react_final_form_1.Form, { initialValues: resolvedValue, onSubmit: handleSubmit }, function (_a) {
-                var handleSubmit = _a.handleSubmit,
-                    rest = __rest(_a, ["handleSubmit"]);
+            return React.createElement(react_final_form_1.Form, { initialValues: props.value, onSubmit: handleSubmit }, function (_a) {
+                var handleSubmit = _a.handleSubmit;
                 return React.createElement("form", { onSubmit: handleSubmit }, React.createElement(react_final_form_1.Field, { name: "recipient", validate: function validate(value) {
                         if (!value) {
                             return 'recipient is required';
@@ -25648,28 +25658,6 @@ var __generator = undefined && undefined.__generator || function (thisArg, body)
         }if (op[0] & 5) throw op[1];return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __read = undefined && undefined.__read || function (o, n) {
-    var m = typeof Symbol === "function" && o[Symbol.iterator];
-    if (!m) return o;
-    var i = m.call(o),
-        r,
-        ar = [],
-        e;
-    try {
-        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) {
-            ar.push(r.value);
-        }
-    } catch (error) {
-        e = { error: error };
-    } finally {
-        try {
-            if (r && !r.done && (m = i["return"])) m.call(i);
-        } finally {
-            if (e) throw e.error;
-        }
-    }
-    return ar;
-};
 var __values = undefined && undefined.__values || function (o) {
     var s = typeof Symbol === "function" && Symbol.iterator,
         m = s && o[s],
@@ -25686,140 +25674,121 @@ var __values = undefined && undefined.__values || function (o) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Node = void 0;
 var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
+var react_use_1 = __webpack_require__(/*! react-use */ "../../node_modules/react-use/esm/index.js");
 var archaeopteryx_neos_bridge_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-neos-bridge */ "../neos-bridge/lib/index.js");
 var archaeopteryx_custom_node_tree_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-custom-node-tree */ "../custom-node-tree/lib/index.js");
 var domain_1 = __webpack_require__(/*! ../../../domain */ "../core/lib/domain/index.js");
-function useBaseNodeTypeName() {
-    var baseNodeTypeName = archaeopteryx_neos_bridge_1.useConfiguration(function (c) {
-        var _a, _b, _c;return (_c = (_b = (_a = c.nodeTree) === null || _a === void 0 ? void 0 : _a.presets) === null || _b === void 0 ? void 0 : _b.default) === null || _c === void 0 ? void 0 : _c.baseNodeType;
-    });
-    return baseNodeTypeName !== null && baseNodeTypeName !== void 0 ? baseNodeTypeName : archaeopteryx_neos_bridge_1.NodeTypeName('Neos.Neos:Document');
-}
-var cache = new Map();
-function useResolvedValue() {
-    var _this = this;
-    var value = domain_1.useEditorValue().value;
-    var _a = __read(React.useState(false), 2),
-        loading = _a[0],
-        setLoading = _a[1];
-    var _b = __read(React.useState(null), 2),
-        error = _b[0],
-        setError = _b[1];
-    var _c = __read(React.useState(null), 2),
-        resolvedValue = _c[0],
-        setResolvedValue = _c[1];
-    var siteNodeContextPath = archaeopteryx_neos_bridge_1.useSiteNodeContextPath();
-    React.useEffect(function () {
-        if (value === null || value === void 0 ? void 0 : value.href) {
-            if (cache.has(value.href)) {
-                setResolvedValue(cache.get(value.href));
-                return;
-            }
-            var match = /node:\/\/(.*)/.exec(value.href);
-            if (match) {
-                var identifier_1 = match[1];
-                (function () {
-                    return __awaiter(_this, void 0, void 0, function () {
-                        var result, result_1, result_1_1, node, err_1;
-                        var e_1, _a;
-                        return __generator(this, function (_b) {
-                            switch (_b.label) {
-                                case 0:
-                                    if (!siteNodeContextPath) return [3, 4];
-                                    setLoading(true);
-                                    _b.label = 1;
-                                case 1:
-                                    _b.trys.push([1, 3,, 4]);
-                                    return [4, archaeopteryx_neos_bridge_1.q(siteNodeContextPath).find("#" + identifier_1).getForTree()];
-                                case 2:
-                                    result = _b.sent();
-                                    try {
-                                        for (result_1 = __values(result), result_1_1 = result_1.next(); !result_1_1.done; result_1_1 = result_1.next()) {
-                                            node = result_1_1.value;
-                                            cache.set(value.href, node);
-                                            setResolvedValue(node);
-                                            setLoading(false);
-                                            break;
-                                        }
-                                    } catch (e_1_1) {
-                                        e_1 = { error: e_1_1 };
-                                    } finally {
-                                        try {
-                                            if (result_1_1 && !result_1_1.done && (_a = result_1.return)) _a.call(result_1);
-                                        } finally {
-                                            if (e_1) throw e_1.error;
-                                        }
-                                    }
-                                    return [3, 4];
-                                case 3:
-                                    err_1 = _b.sent();
-                                    setError(err_1);
-                                    setLoading(false);
-                                    return [3, 4];
-                                case 4:
-                                    return [2];
-                            }
-                        });
-                    });
-                })();
-            }
-        }
-    }, [value, siteNodeContextPath]);
-    return {
-        loading: loading,
-        error: error,
-        resolvedValue: resolvedValue
-    };
-}
+var propsCache = new Map();
 exports.Node = new (function (_super) {
     __extends(class_1, _super);
     function class_1() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.id = 'Sitegeist.Archaeopteryx:NodeTree';
-        _this.isSuitableFor = function (props) {
-            var _a;
-            return Boolean((_a = props.link) === null || _a === void 0 ? void 0 : _a.href.startsWith('node://'));
+        _this.id = 'Sitegeist.Archaeopteryx:Node';
+        _this.isSuitableFor = function (link) {
+            return link.href.startsWith('node://');
+        };
+        _this.useResolvedProps = function (link) {
+            var siteNodeContextPath = archaeopteryx_neos_bridge_1.useSiteNodeContextPath();
+            var asyncState = react_use_1.useAsync(function () {
+                return __awaiter(_this, void 0, void 0, function () {
+                    var match, identifier, cacheIdentifier, result, result_1, result_1_1, node, props;
+                    var e_1, _a;
+                    return __generator(this, function (_b) {
+                        switch (_b.label) {
+                            case 0:
+                                console.log('resolveNodeLink', link);
+                                if (link === undefined) {
+                                    return [2, { node: null }];
+                                }
+                                if (!siteNodeContextPath) {
+                                    throw this.error('Could not find siteNodeContextPath.');
+                                }
+                                match = /node:\/\/(.*)/.exec(link.href);
+                                if (!match) {
+                                    throw this.error("Cannot handle href \"" + link.href + "\".");
+                                }
+                                identifier = match[1];
+                                cacheIdentifier = identifier + "@" + siteNodeContextPath.context;
+                                if (propsCache.has(cacheIdentifier)) {
+                                    return [2, propsCache.get(cacheIdentifier)];
+                                }
+                                return [4, archaeopteryx_neos_bridge_1.q(siteNodeContextPath).find("#" + identifier).getForTree()];
+                            case 1:
+                                result = _b.sent();
+                                try {
+                                    for (result_1 = __values(result), result_1_1 = result_1.next(); !result_1_1.done; result_1_1 = result_1.next()) {
+                                        node = result_1_1.value;
+                                        props = { node: node };
+                                        propsCache.set(cacheIdentifier, props);
+                                        return [2, props];
+                                    }
+                                } catch (e_1_1) {
+                                    e_1 = { error: e_1_1 };
+                                } finally {
+                                    try {
+                                        if (result_1_1 && !result_1_1.done && (_a = result_1.return)) _a.call(result_1);
+                                    } finally {
+                                        if (e_1) throw e_1.error;
+                                    }
+                                }
+                                throw this.error("Could not find node for identifier \"" + identifier + "\".");
+                        }
+                    });
+                });
+            }, [siteNodeContextPath]);
+            return domain_1.Process.fromAsyncState(asyncState);
+        };
+        _this.getStaticIcon = function () {
+            return React.createElement("div", null, "NODE TREE");
         };
         _this.getIcon = function () {
             return React.createElement("div", null, "NODE TREE");
         };
+        _this.getStaticTitle = function () {
+            return 'Node Tree';
+        };
         _this.getTitle = function () {
             return 'Node Tree';
+        };
+        _this.getLoadingPreview = function () {
+            return React.createElement("div", null, "NODE TREE PREVIEW");
         };
         _this.getPreview = function () {
             return React.createElement("div", null, "NODE TREE PREVIEW");
         };
-        _this.getEditor = function () {
-            var _a;
-            var _b = useResolvedValue(),
-                loading = _b.loading,
-                error = _b.error,
-                resolvedValue = _b.resolvedValue;
+        _this.getLoadingEditor = function () {
+            return React.createElement("div", null, "NODE TREE EDITOR");
+        };
+        _this.getEditor = function (props) {
+            var _a, _b, _c, _d;
             var update = domain_1.useEditorTransactions().update;
             var siteNodeContextPath = archaeopteryx_neos_bridge_1.useSiteNodeContextPath();
             var documentNodeContextPath = archaeopteryx_neos_bridge_1.useDocumentNodeContextPath();
-            var baseNodeTypeName = useBaseNodeTypeName();
-            var loadingDepth = (_a = archaeopteryx_neos_bridge_1.useConfiguration(function (c) {
+            var baseNodeTypeName = (_a = archaeopteryx_neos_bridge_1.useConfiguration(function (c) {
+                var _a, _b, _c;return (_c = (_b = (_a = c.nodeTree) === null || _a === void 0 ? void 0 : _a.presets) === null || _b === void 0 ? void 0 : _b.default) === null || _c === void 0 ? void 0 : _c.baseNodeType;
+            })) !== null && _a !== void 0 ? _a : archaeopteryx_neos_bridge_1.NodeTypeName('Neos.Neos:Document');
+            var loadingDepth = (_b = archaeopteryx_neos_bridge_1.useConfiguration(function (c) {
                 var _a;return (_a = c.nodeTree) === null || _a === void 0 ? void 0 : _a.loadingDepth;
-            })) !== null && _a !== void 0 ? _a : 4;
-            if (loading || !siteNodeContextPath || !documentNodeContextPath) {
-                return React.createElement("div", null, "Loading...");
-            } else if (error) {
-                console.warn('[Sitegeist.Archaeopteryx]: Could not load node tree, because:');
-                console.error(error);
-                return React.createElement("div", null, "An error occurred :(");
+            })) !== null && _b !== void 0 ? _b : 4;
+            if (!siteNodeContextPath) {
+                throw _this.error('Could not load node tree, because siteNodeContextPath could not be determined.');
+            } else if (!documentNodeContextPath) {
+                throw _this.error('Could not load node tree, because documentNodeContextPath could not be determined.');
             } else {
+                console.log('props.node?.contextPath', (_c = props.node) === null || _c === void 0 ? void 0 : _c.contextPath);
                 return React.createElement(archaeopteryx_custom_node_tree_1.NodeTree, { configuration: {
                         baseNodeTypeName: baseNodeTypeName,
                         rootNodeContextPath: siteNodeContextPath,
                         documentNodeContextPath: documentNodeContextPath,
-                        selectedNodeContextPath: resolvedValue === null || resolvedValue === void 0 ? void 0 : resolvedValue.contextPath,
+                        selectedNodeContextPath: (_d = props.node) === null || _d === void 0 ? void 0 : _d.contextPath,
                         loadingDepth: loadingDepth
                     }, options: {
                         enableSearch: true,
                         enableNodeTypeFilter: true
                     }, onSelect: function onSelect(node) {
-                        cache.set("node://" + node.identifier, node);
+                        var cacheIdentifier = node.identifier + "@" + siteNodeContextPath.context;
+                        propsCache.set(cacheIdentifier, { node: node });
+                        console.log(cacheIdentifier);
                         update({ href: "node://" + node.identifier });
                     } });
             }
@@ -25904,6 +25873,28 @@ var __importStar = undefined && undefined.__importStar || function (mod) {
     }__setModuleDefault(result, mod);
     return result;
 };
+var __read = undefined && undefined.__read || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o),
+        r,
+        ar = [],
+        e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) {
+            ar.push(r.value);
+        }
+    } catch (error) {
+        e = { error: error };
+    } finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        } finally {
+            if (e) throw e.error;
+        }
+    }
+    return ar;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Web = void 0;
 var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
@@ -25912,29 +25903,58 @@ exports.Web = new (function (_super) {
     __extends(class_1, _super);
     function class_1() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.id = 'Sitegeist.Archaeopteryx:WebLink';
-        _this.isSuitableFor = function (props) {
-            var _a, _b;
-            var isHttp = (_a = props.link) === null || _a === void 0 ? void 0 : _a.href.startsWith('http://');
-            var isHttps = (_b = props.link) === null || _b === void 0 ? void 0 : _b.href.startsWith('https://');
-            return Boolean(isHttp || isHttps);
+        _this.id = 'Sitegeist.Archaeopteryx:Web';
+        _this.isSuitableFor = function (link) {
+            var isHttp = link.href.startsWith('http://');
+            var isHttps = link.href.startsWith('https://');
+            return isHttp || isHttps;
+        };
+        _this.useResolvedProps = function (link) {
+            if (link === undefined) {
+                return domain_1.Process.success({ value: null });
+            }
+            var matches = link.href.match(/^(https?):\/\/(.*)$/);
+            if (matches) {
+                var _a = __read(matches, 3),
+                    protocol = _a[1],
+                    urlWithoutProtocol = _a[2];
+                return domain_1.Process.success({
+                    value: {
+                        protocol: protocol,
+                        urlWithoutProtocol: urlWithoutProtocol
+                    }
+                });
+            }
+            return domain_1.Process.error(_this.error("Cannot handle href \"" + link.href + "\"."));
+        };
+        _this.getStaticIcon = function () {
+            return React.createElement("div", null, "ICON");
         };
         _this.getIcon = function () {
             return React.createElement("div", null, "ICON");
         };
+        _this.getStaticTitle = function () {
+            return 'Web Link';
+        };
         _this.getTitle = function (props) {
-            var _a;
-            var isSecure = (_a = props.link) === null || _a === void 0 ? void 0 : _a.href.startsWith('https://');
-            if (isSecure === true) {
-                return 'Web Link (secure)';
-            } else if (isSecure === false) {
-                return 'Web Link (not secure)';
-            } else {
-                return 'Web Link';
+            if (props.value === null) {
+                return _this.getStaticTitle();
             }
+            var isSecure = props.value.protocol === 'https';
+            if (isSecure) {
+                return 'Web Link (secure)';
+            } else {
+                return 'Web Link (not secure)';
+            }
+        };
+        _this.getLoadingPreview = function () {
+            return React.createElement("div", null, _this.getStaticTitle());
         };
         _this.getPreview = function (props) {
             return React.createElement("div", null, _this.getTitle(props));
+        };
+        _this.getLoadingEditor = function () {
+            return React.createElement("div", null, _this.getStaticTitle());
         };
         _this.getEditor = function () {
             var _a;
@@ -26076,68 +26096,91 @@ var react_ui_components_1 = __webpack_require__(/*! @neos-project/react-ui-compo
 var react_final_form_1 = __webpack_require__(/*! react-final-form */ "../../node_modules/react-final-form/dist/react-final-form.es.js");
 var domain_1 = __webpack_require__(/*! ../../domain */ "../core/lib/domain/index.js");
 var Modal = function Modal() {
-    var _a = domain_1.useEditorState(),
-        isOpen = _a.isOpen,
-        value = _a.value;
-    var _b = domain_1.useEditorTransactions(),
-        dismiss = _b.dismiss,
-        update = _b.update,
-        apply = _b.apply;
+    var _a;
+    var _b = domain_1.useEditorState(),
+        isOpen = _b.isOpen,
+        value = _b.value;
+    if (isOpen) {
+        if (value.persistent) {
+            return React.createElement(DialogWithValue, { value: (_a = value.transient) !== null && _a !== void 0 ? _a : value.persistent });
+        } else {
+            return React.createElement(DialogWithEmptyValue, null);
+        }
+    }
+    return null;
+};
+exports.Modal = Modal;
+var DialogWithEmptyValue = function DialogWithEmptyValue() {
+    var dismiss = domain_1.useEditorTransactions().dismiss;
     var linkTypes = domain_1.useLinkTypes();
-    var _c = __read(React.useState(false), 2),
-        showSettings = _c[0],
-        setShowSettings = _c[1];
-    var _d = __read(React.useState(linkTypes[0]), 2),
-        activeLinkType = _d[0],
-        setActiveLinkType = _d[1];
-    var Editor = (activeLinkType !== null && activeLinkType !== void 0 ? activeLinkType : {}).getEditor;
-    React.useEffect(function () {
-        var _a;
-        setActiveLinkType((_a = linkTypes.find(function (linkType) {
-            return value.persistent && linkType.isSuitableFor({
-                link: value.persistent
-            });
-        })) !== null && _a !== void 0 ? _a : linkTypes[0]);
-    }, [value.persistent]);
-    return React.createElement(react_ui_components_1.Dialog, { title: "Sitegeist.Archaeopteryx", isOpen: isOpen, onRequestClose: dismiss, style: "jumbo" }, linkTypes.map(function (linkType) {
-        var Icon = linkType.getIcon,
-            id = linkType.id;
-        return React.createElement(react_ui_components_1.Button, { isActive: linkType.id === (activeLinkType === null || activeLinkType === void 0 ? void 0 : activeLinkType.id), key: id, onClick: function onClick() {
-                setActiveLinkType(linkType);
-                setShowSettings(false);
-            } }, React.createElement(Icon, null));
-    }), React.createElement(react_ui_components_1.Button, { isActive: showSettings, onClick: function onClick() {
-            setActiveLinkType(null);
-            setShowSettings(true);
-        } }, "SETTINGS"), React.createElement("div", null, Editor ? React.createElement(Editor, null) : null, showSettings ? React.createElement(react_final_form_1.Form, { onSubmit: function onSubmit(values) {
+    var _a = __read(React.useState(linkTypes[0]), 2),
+        activeLinkType = _a[0],
+        setActiveLinkType = _a[1];
+    return React.createElement(react_ui_components_1.Dialog, { title: "Sitegeist.Archaeopteryx", isOpen: true, style: "jumbo" }, linkTypes.map(function (linkType) {
+        return React.createElement(react_ui_components_1.Button, { key: linkType.id, onClick: function onClick() {
+                return setActiveLinkType(linkType);
+            } }, React.createElement(linkType.getStaticIcon, null));
+    }), React.createElement("div", null, activeLinkType ? React.createElement(LinkEditor, { link: null, linkType: activeLinkType }) : null), React.createElement(react_ui_components_1.Button, { onClick: dismiss }, "Cancel"), React.createElement(react_ui_components_1.Button, { disabled: true }, "Apply"));
+};
+var DialogWithValue = function DialogWithValue(props) {
+    var _a = domain_1.useEditorTransactions(),
+        dismiss = _a.dismiss,
+        update = _a.update,
+        apply = _a.apply,
+        clear = _a.clear;
+    var linkType = domain_1.useLinkTypeForHref(props.value.href);
+    var _b = __read(React.useState(false), 2),
+        showSettings = _b[0],
+        setShowSettings = _b[1];
+    return React.createElement(react_ui_components_1.Dialog, { title: "Sitegeist.Archaeopteryx", isOpen: true, style: "jumbo" }, React.createElement(react_ui_components_1.Button, { isActive: !showSettings, onClick: function onClick() {
+            return setShowSettings(false);
+        } }, React.createElement(linkType.getIcon, null)), React.createElement(react_ui_components_1.Button, { isActive: showSettings, onClick: function onClick() {
+            return setShowSettings(true);
+        } }, "SETTINGS"), React.createElement("div", null, React.createElement(react_ui_components_1.Button, { onClick: clear }, "Reset")), React.createElement("div", null, showSettings ? React.createElement(react_final_form_1.Form, { onSubmit: function onSubmit(values) {
             return update({ options: values });
         } }, function (_a) {
-        var _b, _c, _d, _e, _f, _g, _h, _j;
+        var _b, _c, _d, _e;
         var handleSubmit = _a.handleSubmit;
-        return React.createElement("form", { onSubmit: handleSubmit }, React.createElement(react_final_form_1.Field, { name: "anchor", initialValue: (_c = (_b = value.transient) === null || _b === void 0 ? void 0 : _b.options) === null || _c === void 0 ? void 0 : _c.anchor }, function (_a) {
+        return React.createElement("form", { onSubmit: handleSubmit }, React.createElement(react_final_form_1.Field, { name: "anchor", initialValue: (_b = props.value.options) === null || _b === void 0 ? void 0 : _b.anchor }, function (_a) {
             var input = _a.input;
             return React.createElement("label", null, "Anchor:", React.createElement("input", __assign({ type: "text" }, input)));
-        }), React.createElement(react_final_form_1.Field, { name: "title", initialValue: (_e = (_d = value.transient) === null || _d === void 0 ? void 0 : _d.options) === null || _e === void 0 ? void 0 : _e.title }, function (_a) {
+        }), React.createElement(react_final_form_1.Field, { name: "title", initialValue: (_c = props.value.options) === null || _c === void 0 ? void 0 : _c.title }, function (_a) {
             var input = _a.input;
             return React.createElement("label", null, "Title:", React.createElement("input", __assign({ type: "text" }, input)));
-        }), React.createElement(react_final_form_1.Field, { type: "checkbox", name: "targetBlank", initialValue: ((_g = (_f = value.transient) === null || _f === void 0 ? void 0 : _f.options) === null || _g === void 0 ? void 0 : _g.targetBlank) ? 'true' : '' }, function (_a) {
+        }), React.createElement(react_final_form_1.Field, { type: "checkbox", name: "targetBlank", initialValue: ((_d = props.value.options) === null || _d === void 0 ? void 0 : _d.targetBlank) ? 'true' : '' }, function (_a) {
             var input = _a.input;
             return React.createElement("label", null, "Open in new Window:", React.createElement("input", __assign({ style: {
                     appearance: 'checkbox',
                     backgroundColor: 'white'
                 }, type: "checkbox" }, input)));
-        }), React.createElement(react_final_form_1.Field, { type: "checkbox", name: "relNoFollow", initialValue: ((_j = (_h = value.transient) === null || _h === void 0 ? void 0 : _h.options) === null || _j === void 0 ? void 0 : _j.relNoFollow) ? 'true' : '' }, function (_a) {
+        }), React.createElement(react_final_form_1.Field, { type: "checkbox", name: "relNoFollow", initialValue: ((_e = props.value.options) === null || _e === void 0 ? void 0 : _e.relNoFollow) ? 'true' : '' }, function (_a) {
             var input = _a.input;
             return React.createElement("label", null, "No Follow:", React.createElement("input", __assign({ style: {
                     appearance: 'checkbox',
                     backgroundColor: 'white'
                 }, type: "checkbox" }, input)));
         }), React.createElement("button", { type: "submit" }, "Apply"));
-    }) : null), React.createElement(react_ui_components_1.Button, { onClick: dismiss }, "Click here!"), React.createElement(react_ui_components_1.Button, { onClick: function onClick() {
-            return apply(value.transient);
+    }) : React.createElement(LinkEditor, { link: props.value, linkType: linkType })), React.createElement(react_ui_components_1.Button, { onClick: dismiss }, "Click here!"), React.createElement(react_ui_components_1.Button, { onClick: function onClick() {
+            return apply(props.value);
         } }, "Apply"));
 };
-exports.Modal = Modal;
+var LinkEditor = function LinkEditor(props) {
+    var _a, _b;
+    var _c = props.linkType.useResolvedProps((_a = props.link) !== null && _a !== void 0 ? _a : undefined),
+        busy = _c.busy,
+        error = _c.error,
+        editorProps = _c.result;
+    var _d = props.linkType,
+        Editor = _d.getEditor,
+        LoadingEditor = _d.getLoadingEditor;
+    if (error) {
+        throw error;
+    } else if (busy) {
+        return React.createElement(LoadingEditor, { link: (_b = props.link) !== null && _b !== void 0 ? _b : undefined });
+    } else {
+        return React.createElement(Editor, __assign({}, editorProps));
+    }
+};
 //# sourceMappingURL=Modal.js.map
 
 /***/ }),
@@ -26486,10 +26529,10 @@ Object.defineProperty(exports, "useEditorTransactions", { enumerable: true, get:
 
 /***/ }),
 
-/***/ "../core/lib/domain/LinkType.js":
-/*!**************************************!*\
-  !*** ../core/lib/domain/LinkType.js ***!
-  \**************************************/
+/***/ "../core/lib/domain/Link/LinkType.js":
+/*!*******************************************!*\
+  !*** ../core/lib/domain/Link/LinkType.js ***!
+  \*******************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -26518,6 +26561,33 @@ var __importStar = undefined && undefined.__importStar || function (mod) {
     }__setModuleDefault(result, mod);
     return result;
 };
+var __read = undefined && undefined.__read || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o),
+        r,
+        ar = [],
+        e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) {
+            ar.push(r.value);
+        }
+    } catch (error) {
+        e = { error: error };
+    } finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        } finally {
+            if (e) throw e.error;
+        }
+    }
+    return ar;
+};
+var __spreadArray = undefined && undefined.__spreadArray || function (to, from) {
+    for (var i = 0, il = from.length, j = to.length; i < il; i++, j++) {
+        to[j] = from[i];
+    }return to;
+};
 var __values = undefined && undefined.__values || function (o) {
     var s = typeof Symbol === "function" && Symbol.iterator,
         m = s && o[s],
@@ -26536,7 +26606,12 @@ exports.useLinkTypeForHref = exports.useLinkTypes = exports.LinkType = void 0;
 var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
 var archaeopteryx_neos_bridge_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-neos-bridge */ "../neos-bridge/lib/index.js");
 var LinkType = function () {
-    function LinkType() {}
+    function LinkType() {
+        var _this = this;
+        this.error = function (message) {
+            return new Error("[" + _this.id + "]: " + message);
+        };
+    }
     return LinkType;
 }();
 exports.LinkType = LinkType;
@@ -26550,10 +26625,13 @@ function useLinkTypeForHref(href) {
     var linkTypes = useLinkTypes();
     var result = React.useMemo(function () {
         var e_1, _a;
+        if (href === null) {
+            return null;
+        }
         try {
-            for (var linkTypes_1 = __values(linkTypes), linkTypes_1_1 = linkTypes_1.next(); !linkTypes_1_1.done; linkTypes_1_1 = linkTypes_1.next()) {
-                var linkType = linkTypes_1_1.value;
-                if (linkType.isSuitableFor({ link: { href: href } })) {
+            for (var _b = __values(__spreadArray([], __read(linkTypes)).reverse()), _c = _b.next(); !_c.done; _c = _b.next()) {
+                var linkType = _c.value;
+                if (linkType.isSuitableFor({ href: href })) {
                     return linkType;
                 }
             }
@@ -26561,7 +26639,7 @@ function useLinkTypeForHref(href) {
             e_1 = { error: e_1_1 };
         } finally {
             try {
-                if (linkTypes_1_1 && !linkTypes_1_1.done && (_a = linkTypes_1.return)) _a.call(linkTypes_1);
+                if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
             } finally {
                 if (e_1) throw e_1.error;
             }
@@ -26572,6 +26650,109 @@ function useLinkTypeForHref(href) {
 }
 exports.useLinkTypeForHref = useLinkTypeForHref;
 //# sourceMappingURL=LinkType.js.map
+
+/***/ }),
+
+/***/ "../core/lib/domain/Link/index.js":
+/*!****************************************!*\
+  !*** ../core/lib/domain/Link/index.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.useLinkTypeForHref = exports.useLinkTypes = exports.LinkType = void 0;
+var LinkType_1 = __webpack_require__(/*! ./LinkType */ "../core/lib/domain/Link/LinkType.js");
+Object.defineProperty(exports, "LinkType", { enumerable: true, get: function get() {
+    return LinkType_1.LinkType;
+  } });
+Object.defineProperty(exports, "useLinkTypes", { enumerable: true, get: function get() {
+    return LinkType_1.useLinkTypes;
+  } });
+Object.defineProperty(exports, "useLinkTypeForHref", { enumerable: true, get: function get() {
+    return LinkType_1.useLinkTypeForHref;
+  } });
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "../core/lib/domain/Process/Process.js":
+/*!*********************************************!*\
+  !*** ../core/lib/domain/Process/Process.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.fromAsyncState = exports.success = exports.error = exports.busy = void 0;
+var BUSY = { busy: true, error: null, result: null };
+function busy() {
+    return BUSY;
+}
+exports.busy = busy;
+function error(error) {
+    return { busy: false, error: error, result: null };
+}
+exports.error = error;
+function success(result) {
+    return { busy: false, error: null, result: result };
+}
+exports.success = success;
+function fromAsyncState(asyncState) {
+    var _a, _b;
+    return {
+        busy: asyncState.loading,
+        error: (_a = asyncState.error) !== null && _a !== void 0 ? _a : null,
+        result: (_b = asyncState.value) !== null && _b !== void 0 ? _b : null
+    };
+}
+exports.fromAsyncState = fromAsyncState;
+//# sourceMappingURL=Process.js.map
+
+/***/ }),
+
+/***/ "../core/lib/domain/Process/index.js":
+/*!*******************************************!*\
+  !*** ../core/lib/domain/Process/index.js ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function get() {
+            return m[k];
+        } });
+} : function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+var __setModuleDefault = undefined && undefined.__setModuleDefault || (Object.create ? function (o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+} : function (o, v) {
+    o["default"] = v;
+});
+var __importStar = undefined && undefined.__importStar || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) {
+        if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    }__setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Process = void 0;
+exports.Process = __importStar(__webpack_require__(/*! ./Process */ "../core/lib/domain/Process/Process.js"));
+//# sourceMappingURL=index.js.map
 
 /***/ }),
 
@@ -26586,16 +26767,16 @@ exports.useLinkTypeForHref = useLinkTypeForHref;
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.useEditorTransactions = exports.useEditorValue = exports.useEditorState = exports.EditorContext = exports.createEditor = exports.useLinkTypeForHref = exports.useLinkTypes = exports.LinkType = void 0;
-var LinkType_1 = __webpack_require__(/*! ./LinkType */ "../core/lib/domain/LinkType.js");
+exports.Process = exports.useEditorTransactions = exports.useEditorValue = exports.useEditorState = exports.EditorContext = exports.createEditor = exports.useLinkTypeForHref = exports.useLinkTypes = exports.LinkType = void 0;
+var Link_1 = __webpack_require__(/*! ./Link */ "../core/lib/domain/Link/index.js");
 Object.defineProperty(exports, "LinkType", { enumerable: true, get: function get() {
-    return LinkType_1.LinkType;
+    return Link_1.LinkType;
   } });
 Object.defineProperty(exports, "useLinkTypes", { enumerable: true, get: function get() {
-    return LinkType_1.useLinkTypes;
+    return Link_1.useLinkTypes;
   } });
 Object.defineProperty(exports, "useLinkTypeForHref", { enumerable: true, get: function get() {
-    return LinkType_1.useLinkTypeForHref;
+    return Link_1.useLinkTypeForHref;
   } });
 var Editor_1 = __webpack_require__(/*! ./Editor */ "../core/lib/domain/Editor/index.js");
 Object.defineProperty(exports, "createEditor", { enumerable: true, get: function get() {
@@ -26613,6 +26794,10 @@ Object.defineProperty(exports, "useEditorValue", { enumerable: true, get: functi
 Object.defineProperty(exports, "useEditorTransactions", { enumerable: true, get: function get() {
     return Editor_1.useEditorTransactions;
   } });
+var Process_1 = __webpack_require__(/*! ./Process */ "../core/lib/domain/Process/index.js");
+Object.defineProperty(exports, "Process", { enumerable: true, get: function get() {
+    return Process_1.Process;
+  } });
 //# sourceMappingURL=index.js.map
 
 /***/ }),
@@ -26628,7 +26813,7 @@ Object.defineProperty(exports, "useEditorTransactions", { enumerable: true, get:
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.useEditorTransactions = exports.useEditorValue = exports.useEditorState = exports.EditorContext = exports.createEditor = exports.useLinkTypeForHref = exports.registerModal = exports.registerLinkTypes = void 0;
+exports.useEditorTransactions = exports.useEditorValue = exports.useEditorState = exports.EditorContext = exports.createEditor = exports.useLinkTypeForHref = exports.LinkType = exports.registerModal = exports.registerLinkTypes = void 0;
 var application_1 = __webpack_require__(/*! ./application */ "../core/lib/application/index.js");
 Object.defineProperty(exports, "registerLinkTypes", { enumerable: true, get: function get() {
     return application_1.registerLinkTypes;
@@ -26637,6 +26822,9 @@ Object.defineProperty(exports, "registerModal", { enumerable: true, get: functio
     return application_1.registerModal;
   } });
 var domain_1 = __webpack_require__(/*! ./domain */ "../core/lib/domain/index.js");
+Object.defineProperty(exports, "LinkType", { enumerable: true, get: function get() {
+    return domain_1.LinkType;
+  } });
 Object.defineProperty(exports, "useLinkTypeForHref", { enumerable: true, get: function get() {
     return domain_1.useLinkTypeForHref;
   } });
@@ -27905,6 +28093,18 @@ Object.defineProperty(exports, "SearchInput", { enumerable: true, get: function 
 "use strict";
 
 
+var __assign = undefined && undefined.__assign || function () {
+    __assign = Object.assign || function (t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) {
+                if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+            }
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     Object.defineProperty(o, k2, { enumerable: true, get: function get() {
@@ -28017,15 +28217,15 @@ var react_ui_components_1 = __webpack_require__(/*! @neos-project/react-ui-compo
 var archaeopteryx_core_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-core */ "../core/lib/index.js");
 var InspectorEditor = function InspectorEditor(props) {
     var tx = archaeopteryx_core_1.useEditorTransactions();
-    var value = typeof props.value === 'string' ? props.value : '';
-    var linkType = archaeopteryx_core_1.useLinkTypeForHref(value);
+    var value = typeof props.value === 'string' ? props.value || undefined : undefined;
+    var linkType = archaeopteryx_core_1.useLinkTypeForHref(value !== null && value !== void 0 ? value : null);
     var editLink = React.useCallback(function () {
         return __awaiter(void 0, void 0, void 0, function () {
             var result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        return [4, tx.editLink({ href: value })];
+                        return [4, tx.editLink(value === undefined ? null : { href: value })];
                     case 1:
                         result = _a.sent();
                         if (result.change) {
@@ -28037,9 +28237,7 @@ var InspectorEditor = function InspectorEditor(props) {
         });
     }, [value, tx.editLink]);
     if (linkType) {
-        var Preview = linkType.getPreview;
-        var link = { href: value };
-        return React.createElement("div", null, React.createElement(Preview, { link: link }), React.createElement(react_ui_components_1.Button, { onClick: editLink }, "Edit Link"));
+        return React.createElement(InspectorEditorWithLinkType, { value: value, linkType: linkType, editLink: editLink });
     } else if (Boolean(value) === false) {
         return React.createElement(react_ui_components_1.Button, { onClick: editLink }, "Create Link");
     } else {
@@ -28047,6 +28245,20 @@ var InspectorEditor = function InspectorEditor(props) {
     }
 };
 exports.InspectorEditor = InspectorEditor;
+var InspectorEditorWithLinkType = function InspectorEditorWithLinkType(props) {
+    var link = props.value === undefined ? undefined : { href: props.value };
+    var _a = props.linkType.useResolvedProps(link),
+        busy = _a.busy,
+        error = _a.error,
+        linkTypeProps = _a.result;
+    var _b = props.linkType,
+        Preview = _b.getPreview,
+        LoadingPreview = _b.getLoadingPreview;
+    if (error) {
+        throw error;
+    }
+    return React.createElement("div", null, busy ? React.createElement(LoadingPreview, { link: link }) : React.createElement(Preview, __assign({}, linkTypeProps)), React.createElement(react_ui_components_1.Button, { onClick: props.editLink }, "Edit Link"));
+};
 //# sourceMappingURL=InspectorEditor.js.map
 
 /***/ }),
@@ -29132,14 +29344,17 @@ var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@n
 var NeosContext_1 = __webpack_require__(/*! ./NeosContext */ "../neos-bridge/lib/domain/Extensibility/NeosContext.js");
 function useSelector(selector) {
     var neos = NeosContext_1.useNeos();
-    var _a = __read(React.useState(null), 2),
+    var neosWasInitiallyLoadedRef = React.useRef(Boolean(neos));
+    var _a = __read(React.useState(neos ? selector(neos.store.getState()) : null), 2),
         result = _a[0],
         setResult = _a[1];
     React.useEffect(function () {
         if (neos) {
             var state = neos.store.getState();
-            var result_1 = selector(state);
-            setResult(result_1);
+            if (!neosWasInitiallyLoadedRef.current) {
+                var result_1 = selector(state);
+                setResult(result_1);
+            }
             return neos.store.subscribe(function () {
                 var state = neos.store.getState();
                 var result = selector(state);

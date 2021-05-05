@@ -1,7 +1,5 @@
 export type {ILink, ILinkOptions} from './Link';
-
-export type {ILinkTypeProps} from './LinkType';
-export {LinkType, useLinkTypes, useLinkTypeForHref} from './LinkType';
+export {LinkType, useLinkTypes, useLinkTypeForHref} from './Link';
 
 export type {IEditor} from './Editor';
 export {
@@ -11,3 +9,5 @@ export {
     useEditorValue,
     useEditorTransactions
 } from './Editor';
+
+export {IProcess, Process} from './Process';

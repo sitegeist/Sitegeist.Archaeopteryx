@@ -1,107 +1,107 @@
 import * as React from 'react';
+import {useAsync} from 'react-use';
 
 import {q, INodePartialForTree, NodeTypeName, useSiteNodeContextPath, useDocumentNodeContextPath, useConfiguration} from '@sitegeist/archaeopteryx-neos-bridge';
 import {NodeTree as NodeTreeAdapter} from '@sitegeist/archaeopteryx-custom-node-tree';
 
-import {LinkType, ILinkTypeProps, useEditorTransactions, useEditorValue} from '../../../domain';
+import {Process, LinkType, ILink, useEditorTransactions} from '../../../domain';
 
-function useBaseNodeTypeName(): NodeTypeName {
-    const baseNodeTypeName = useConfiguration(c => c.nodeTree?.presets?.default?.baseNodeType);
-    return baseNodeTypeName ?? NodeTypeName('Neos.Neos:Document');
+interface Props {
+    node: null | INodePartialForTree
 }
 
-const cache = new Map<string, INodePartialForTree>();
+const propsCache = new Map<string, Props>();
 
-function useResolvedValue() {
-    const {value} = useEditorValue();
-    const [loading, setLoading] = React.useState(false);
-    const [error, setError] = React.useState<null | Error>(null);
-    const [resolvedValue, setResolvedValue] = React.useState<null | INodePartialForTree>(null);
-    const siteNodeContextPath = useSiteNodeContextPath();
+export const Node = new class extends LinkType<Props> {
+    public readonly id = 'Sitegeist.Archaeopteryx:Node';
 
-    React.useEffect(() => {
-        if (value?.href) {
-            if (cache.has(value.href)) {
-                setResolvedValue(cache.get(value.href)!);
-                return;
+    public readonly isSuitableFor = (link: ILink) =>
+        link.href.startsWith('node://');
+
+    public readonly useResolvedProps = (link?: ILink) => {
+        const siteNodeContextPath = useSiteNodeContextPath();
+        const asyncState = useAsync(async () => {
+            console.log('resolveNodeLink', link);
+            if (link === undefined) {
+                return {node: null};
             }
 
-            const match = /node:\/\/(.*)/.exec(value.href);
-            if (match) {
-                const identifier = match[1];
-
-                (async () => {
-                    if (siteNodeContextPath) {
-                        setLoading(true);
-                        try {
-                            const result = await q(siteNodeContextPath).find(`#${identifier}`)
-                                .getForTree();
-                            for (const node of result) {
-                                cache.set(value.href, node);
-                                setResolvedValue(node);
-                                setLoading(false);
-                                break;
-                            }
-                        } catch (err) {
-                            setError(err);
-                            setLoading(false);
-                        }
-                    }
-                })();
+            if (!siteNodeContextPath) {
+                throw this.error('Could not find siteNodeContextPath.');
             }
-        }
-    }, [value, siteNodeContextPath]);
 
-    return {
-        loading,
-        error,
-        resolvedValue
-    };
-}
+            const match = /node:\/\/(.*)/.exec(link.href);
 
-export const Node = new class extends LinkType {
-    public readonly id = 'Sitegeist.Archaeopteryx:NodeTree';
+            if (!match) {
+                throw this.error(`Cannot handle href "${link.href}".`);
+            }
 
-    public readonly isSuitableFor = (props: ILinkTypeProps) => {
-        return Boolean(props.link?.href.startsWith('node://'));
+            const identifier = match[1];
+            const cacheIdentifier = `${identifier}@${siteNodeContextPath.context}`;
+
+            if (propsCache.has(cacheIdentifier)) {
+                return propsCache.get(cacheIdentifier) as Props;
+            }
+
+            const result = await q(siteNodeContextPath).find(`#${identifier}`)
+                .getForTree();
+
+            for (const node of result) {
+                const props = {node};
+                propsCache.set(cacheIdentifier, props);
+                return props;
+            }
+
+            throw this.error(`Could not find node for identifier "${identifier}".`);
+        }, [siteNodeContextPath]);
+
+        return Process.fromAsyncState(asyncState);
     }
+
+    public readonly getStaticIcon = () => (
+        <div>NODE TREE</div>
+    );
 
     public readonly getIcon = () => (
         <div>NODE TREE</div>
     );
 
+    public readonly getStaticTitle = () => 'Node Tree';
+
     public readonly getTitle = () => 'Node Tree';
+
+    public readonly getLoadingPreview = () => (
+        <div>NODE TREE PREVIEW</div>
+    );
 
     public readonly getPreview = () => (
         <div>NODE TREE PREVIEW</div>
     );
 
-    public readonly getEditor = () => {
-        const {loading, error, resolvedValue} = useResolvedValue();
+    public readonly getLoadingEditor = () => (
+        <div>NODE TREE EDITOR</div>
+    );
+
+    public readonly getEditor = (props: Props) => {
         const {update} = useEditorTransactions();
         const siteNodeContextPath = useSiteNodeContextPath();
         const documentNodeContextPath = useDocumentNodeContextPath();
-        const baseNodeTypeName = useBaseNodeTypeName();
+        const baseNodeTypeName = useConfiguration(c => c.nodeTree?.presets?.default?.baseNodeType) ?? NodeTypeName('Neos.Neos:Document');
         const loadingDepth = useConfiguration(c => c.nodeTree?.loadingDepth) ?? 4;
 
-        if (loading || !siteNodeContextPath || !documentNodeContextPath) {
-            return (
-                <div>Loading...</div>
-            );
-        } else if (error) {
-            console.warn('[Sitegeist.Archaeopteryx]: Could not load node tree, because:');
-            console.error(error);
-            return (
-                <div>An error occurred :(</div>
-            );
+        if (!siteNodeContextPath) {
+            throw this.error('Could not load node tree, because siteNodeContextPath could not be determined.');
+        } else if (!documentNodeContextPath) {
+            throw this.error('Could not load node tree, because documentNodeContextPath could not be determined.');
         } else {
+            console.log('props.node?.contextPath', props.node?.contextPath);
             return (
                 <NodeTreeAdapter
                     configuration={{
                         baseNodeTypeName,
                         rootNodeContextPath: siteNodeContextPath,
                         documentNodeContextPath,
-                        selectedNodeContextPath: resolvedValue?.contextPath,
+                        selectedNodeContextPath: props.node?.contextPath,
                         loadingDepth
                     }}
                     options={{
@@ -109,7 +109,10 @@ export const Node = new class extends LinkType {
                         enableNodeTypeFilter: true
                     }}
                     onSelect={node =>{
-                        cache.set(`node://${node.identifier}`, node);
+                        const cacheIdentifier = `${node.identifier}@${siteNodeContextPath.context}`;
+                        propsCache.set(cacheIdentifier, {node});
+
+                        console.log(cacheIdentifier);
                         update({href: `node://${node.identifier}`});
                     }}
                 />

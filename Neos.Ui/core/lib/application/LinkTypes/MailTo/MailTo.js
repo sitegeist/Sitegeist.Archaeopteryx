@@ -44,37 +44,11 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __rest = (this && this.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MailTo = void 0;
 var React = __importStar(require("react"));
 var react_final_form_1 = require("react-final-form");
 var domain_1 = require("../../../domain");
-function useResolvedValue() {
-    var _a, _b, _c, _d;
-    var value = domain_1.useEditorValue().value;
-    if (value && value.href && value.href.startsWith('mailto:')) {
-        var url = new URL(value.href);
-        return {
-            recipient: url.pathname,
-            subject: (_a = url.searchParams.get('subject')) !== null && _a !== void 0 ? _a : undefined,
-            cc: (_b = url.searchParams.get('cc')) !== null && _b !== void 0 ? _b : undefined,
-            bcc: (_c = url.searchParams.get('bcc')) !== null && _c !== void 0 ? _c : undefined,
-            body: (_d = url.searchParams.get('body')) !== null && _d !== void 0 ? _d : undefined
-        };
-    }
-    return null;
-}
 function convert(mailToLink) {
     var url = new URL("mailto:" + mailToLink.recipient);
     if (mailToLink.subject) {
@@ -96,21 +70,39 @@ exports.MailTo = new (function (_super) {
     function class_1() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.id = 'Sitegeist.Archaeopteryx:MailTo';
-        _this.isSuitableFor = function (props) {
-            var _a;
-            return Boolean((_a = props.link) === null || _a === void 0 ? void 0 : _a.href.startsWith('mailto:'));
+        _this.isSuitableFor = function (link) {
+            return link.href.startsWith('mailto:');
         };
+        _this.useResolvedProps = function (link) {
+            var _a, _b, _c, _d;
+            if (link === undefined) {
+                return domain_1.Process.success({ value: null });
+            }
+            var url = new URL(link.href);
+            return domain_1.Process.success({
+                value: {
+                    recipient: url.pathname,
+                    subject: (_a = url.searchParams.get('subject')) !== null && _a !== void 0 ? _a : undefined,
+                    cc: (_b = url.searchParams.get('cc')) !== null && _b !== void 0 ? _b : undefined,
+                    bcc: (_c = url.searchParams.get('bcc')) !== null && _c !== void 0 ? _c : undefined,
+                    body: (_d = url.searchParams.get('body')) !== null && _d !== void 0 ? _d : undefined
+                }
+            });
+        };
+        _this.getStaticIcon = function () { return (React.createElement("div", null, "MAILTO")); };
         _this.getIcon = function () { return (React.createElement("div", null, "MAILTO")); };
+        _this.getStaticTitle = function () { return 'MAILTO'; };
         _this.getTitle = function () { return 'MAILTO'; };
+        _this.getLoadingPreview = function () { return (React.createElement("div", null, "MAILTO PREVIEW")); };
         _this.getPreview = function (props) { return (React.createElement("div", null, "MAILTO PREVIEW")); };
-        _this.getEditor = function () {
-            var resolvedValue = useResolvedValue();
+        _this.getLoadingEditor = function () { return (React.createElement("div", null, "MAILTO EDITOR")); };
+        _this.getEditor = function (props) {
             var update = domain_1.useEditorTransactions().update;
-            var handleSubmit = React.useCallback(function (values) {
-                update({ href: convert(values) });
+            var handleSubmit = React.useCallback(function (value) {
+                update({ href: convert(value) });
             }, []);
-            return (React.createElement(react_final_form_1.Form, { initialValues: resolvedValue, onSubmit: handleSubmit }, function (_a) {
-                var handleSubmit = _a.handleSubmit, rest = __rest(_a, ["handleSubmit"]);
+            return (React.createElement(react_final_form_1.Form, { initialValues: props.value, onSubmit: handleSubmit }, function (_a) {
+                var handleSubmit = _a.handleSubmit;
                 return (React.createElement("form", { onSubmit: handleSubmit },
                     React.createElement(react_final_form_1.Field, { name: "recipient", validate: function (value) {
                             if (!value) {

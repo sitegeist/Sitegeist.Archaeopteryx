@@ -2,41 +2,60 @@ import * as React from 'react';
 
 import {useRoutes} from '@sitegeist/archaeopteryx-neos-bridge';
 
-import {LinkType, ILinkTypeProps, useEditorTransactions, useEditorValue} from '../../../domain';
+import {Process, LinkType, ILink, useEditorTransactions} from '../../../domain';
 
-function useResolvedValue() {
-    const {value} = useEditorValue();
-
-    if (value) {
-        const match = /asset:\/\/(.*)/.exec(value.href);
-        if (match) {
-            return match[1];
-        }
-    }
-
-    return null;
+interface Props {
+    assetIdentifier: null | string
 }
 
-export const Asset = new class extends LinkType {
+export const Asset = new class extends LinkType<Props> {
     public readonly id = 'Sitegeist.Archaeopteryx:Asset';
 
-    public readonly isSuitableFor = (props: ILinkTypeProps) => {
-        return Boolean(props.link?.href.startsWith('asset://'));
-    }
+    public readonly isSuitableFor = (link: ILink) =>
+        link.href.startsWith('asset://');
+
+    public readonly useResolvedProps = (link?: ILink) => {
+        if (link === undefined) {
+            return Process.success({assetIdentifier: null});
+        }
+
+        const match = /asset:\/\/(.*)/.exec(link.href);
+
+        if (match) {
+            return Process.success({assetIdentifier: match[1]});
+        }
+
+        return Process.error(
+            this.error(`Cannot handle href "${link.href}".`)
+        );
+    };
+
+    public readonly getStaticIcon = () => (
+        <div>ASSET</div>
+    );
 
     public readonly getIcon = () => (
         <div>ASSET</div>
     );
 
-    public readonly getTitle = () => 'ASSET'
+    public readonly getStaticTitle = () => 'ASSET';
+
+    public readonly getTitle = () => 'ASSET';
+
+    public readonly getLoadingPreview = () => (
+        <div>ASSET PREVIEW</div>
+    );
 
     public readonly getPreview = () => (
         <div>ASSET PREVIEW</div>
     );
 
-    public readonly getEditor = () => {
+    public readonly getLoadingEditor = () => (
+        <div>ASSET EDITOR</div>
+    );
+
+    public readonly getEditor = (props: Props) => {
         const {update} = useEditorTransactions();
-        const resolvedValue = useResolvedValue();
         const mediaBrowserUri = useRoutes(r => r.core?.modules?.mediaBrowser);
 
         React.useEffect(() => {
@@ -51,30 +70,28 @@ export const Asset = new class extends LinkType {
             };
         }, [update]);
 
-        if (mediaBrowserUri) {
-            if (resolvedValue) {
-                return (
-                    <iframe
-                        name="neos-media-selection-screen"
-                        src={`${mediaBrowserUri}/images/edit.html?asset[__identity]=${resolvedValue}`}
-                        style={{width: '100%', minHeight: '300px'}}
-                        frameBorder="0"
-                        onLoad={ev => (ev.target as HTMLIFrameElement).contentDocument?.querySelector('form > .neos-footer')?.remove()}
-                        />
-                );
-            } else {
-                return (
-                    <iframe
-                        name="neos-media-selection-screen"
-                        src={`${mediaBrowserUri}/assets/index.html`}
-                        style={{width: '100%', minHeight: '300px'}}
-                        frameBorder="0"
-                        />
-                );
-            }
+        if (!mediaBrowserUri) {
+            throw this.error('Could not resolve mediaBrowserUri.');
+        }
+
+        if (props.assetIdentifier) {
+            return (
+                <iframe
+                    name="neos-media-selection-screen"
+                    src={`${mediaBrowserUri}/images/edit.html?asset[__identity]=${props.assetIdentifier}`}
+                    style={{width: '100%', minHeight: '300px'}}
+                    frameBorder="0"
+                    onLoad={ev => (ev.target as HTMLIFrameElement).contentDocument?.querySelector('form > .neos-footer')?.remove()}
+                />
+            );
         } else {
             return (
-                <div>Media Browser not found.</div>
+                <iframe
+                    name="neos-media-selection-screen"
+                    src={`${mediaBrowserUri}/assets/index.html`}
+                    style={{width: '100%', minHeight: '300px'}}
+                    frameBorder="0"
+                />
             );
         }
     };

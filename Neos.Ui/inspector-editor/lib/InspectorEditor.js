@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
@@ -61,13 +72,13 @@ var react_ui_components_1 = require("@neos-project/react-ui-components");
 var archaeopteryx_core_1 = require("@sitegeist/archaeopteryx-core");
 var InspectorEditor = function (props) {
     var tx = archaeopteryx_core_1.useEditorTransactions();
-    var value = typeof props.value === 'string' ? props.value : '';
-    var linkType = archaeopteryx_core_1.useLinkTypeForHref(value);
+    var value = typeof props.value === 'string' ? (props.value || undefined) : undefined;
+    var linkType = archaeopteryx_core_1.useLinkTypeForHref(value !== null && value !== void 0 ? value : null);
     var editLink = React.useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
         var result;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4, tx.editLink({ href: value })];
+                case 0: return [4, tx.editLink(value === undefined ? null : { href: value })];
                 case 1:
                     result = _a.sent();
                     if (result.change) {
@@ -78,11 +89,7 @@ var InspectorEditor = function (props) {
         });
     }); }, [value, tx.editLink]);
     if (linkType) {
-        var Preview = linkType.getPreview;
-        var link = { href: value };
-        return (React.createElement("div", null,
-            React.createElement(Preview, { link: link }),
-            React.createElement(react_ui_components_1.Button, { onClick: editLink }, "Edit Link")));
+        return (React.createElement(InspectorEditorWithLinkType, { value: value, linkType: linkType, editLink: editLink }));
     }
     else if (Boolean(value) === false) {
         return (React.createElement(react_ui_components_1.Button, { onClick: editLink }, "Create Link"));
@@ -94,4 +101,15 @@ var InspectorEditor = function (props) {
     }
 };
 exports.InspectorEditor = InspectorEditor;
+var InspectorEditorWithLinkType = function (props) {
+    var link = props.value === undefined ? undefined : { href: props.value };
+    var _a = props.linkType.useResolvedProps(link), busy = _a.busy, error = _a.error, linkTypeProps = _a.result;
+    var _b = props.linkType, Preview = _b.getPreview, LoadingPreview = _b.getLoadingPreview;
+    if (error) {
+        throw error;
+    }
+    return (React.createElement("div", null,
+        busy ? (React.createElement(LoadingPreview, { link: link })) : (React.createElement(Preview, __assign({}, linkTypeProps))),
+        React.createElement(react_ui_components_1.Button, { onClick: props.editLink }, "Edit Link")));
+};
 //# sourceMappingURL=InspectorEditor.js.map

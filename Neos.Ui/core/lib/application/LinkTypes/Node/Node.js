@@ -69,22 +69,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __read = (this && this.__read) || function (o, n) {
-    var m = typeof Symbol === "function" && o[Symbol.iterator];
-    if (!m) return o;
-    var i = m.call(o), r, ar = [], e;
-    try {
-        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
-    }
-    catch (error) { e = { error: error }; }
-    finally {
-        try {
-            if (r && !r.done && (m = i["return"])) m.call(i);
-        }
-        finally { if (e) throw e.error; }
-    }
-    return ar;
-};
 var __values = (this && this.__values) || function(o) {
     var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
     if (m) return m.call(o);
@@ -99,120 +83,103 @@ var __values = (this && this.__values) || function(o) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Node = void 0;
 var React = __importStar(require("react"));
+var react_use_1 = require("react-use");
 var archaeopteryx_neos_bridge_1 = require("@sitegeist/archaeopteryx-neos-bridge");
 var archaeopteryx_custom_node_tree_1 = require("@sitegeist/archaeopteryx-custom-node-tree");
 var domain_1 = require("../../../domain");
-function useBaseNodeTypeName() {
-    var baseNodeTypeName = archaeopteryx_neos_bridge_1.useConfiguration(function (c) { var _a, _b, _c; return (_c = (_b = (_a = c.nodeTree) === null || _a === void 0 ? void 0 : _a.presets) === null || _b === void 0 ? void 0 : _b.default) === null || _c === void 0 ? void 0 : _c.baseNodeType; });
-    return baseNodeTypeName !== null && baseNodeTypeName !== void 0 ? baseNodeTypeName : archaeopteryx_neos_bridge_1.NodeTypeName('Neos.Neos:Document');
-}
-var cache = new Map();
-function useResolvedValue() {
-    var _this = this;
-    var value = domain_1.useEditorValue().value;
-    var _a = __read(React.useState(false), 2), loading = _a[0], setLoading = _a[1];
-    var _b = __read(React.useState(null), 2), error = _b[0], setError = _b[1];
-    var _c = __read(React.useState(null), 2), resolvedValue = _c[0], setResolvedValue = _c[1];
-    var siteNodeContextPath = archaeopteryx_neos_bridge_1.useSiteNodeContextPath();
-    React.useEffect(function () {
-        if (value === null || value === void 0 ? void 0 : value.href) {
-            if (cache.has(value.href)) {
-                setResolvedValue(cache.get(value.href));
-                return;
-            }
-            var match = /node:\/\/(.*)/.exec(value.href);
-            if (match) {
-                var identifier_1 = match[1];
-                (function () { return __awaiter(_this, void 0, void 0, function () {
-                    var result, result_1, result_1_1, node, err_1;
-                    var e_1, _a;
-                    return __generator(this, function (_b) {
-                        switch (_b.label) {
-                            case 0:
-                                if (!siteNodeContextPath) return [3, 4];
-                                setLoading(true);
-                                _b.label = 1;
-                            case 1:
-                                _b.trys.push([1, 3, , 4]);
-                                return [4, archaeopteryx_neos_bridge_1.q(siteNodeContextPath).find("#" + identifier_1)
-                                        .getForTree()];
-                            case 2:
-                                result = _b.sent();
-                                try {
-                                    for (result_1 = __values(result), result_1_1 = result_1.next(); !result_1_1.done; result_1_1 = result_1.next()) {
-                                        node = result_1_1.value;
-                                        cache.set(value.href, node);
-                                        setResolvedValue(node);
-                                        setLoading(false);
-                                        break;
-                                    }
-                                }
-                                catch (e_1_1) { e_1 = { error: e_1_1 }; }
-                                finally {
-                                    try {
-                                        if (result_1_1 && !result_1_1.done && (_a = result_1.return)) _a.call(result_1);
-                                    }
-                                    finally { if (e_1) throw e_1.error; }
-                                }
-                                return [3, 4];
-                            case 3:
-                                err_1 = _b.sent();
-                                setError(err_1);
-                                setLoading(false);
-                                return [3, 4];
-                            case 4: return [2];
-                        }
-                    });
-                }); })();
-            }
-        }
-    }, [value, siteNodeContextPath]);
-    return {
-        loading: loading,
-        error: error,
-        resolvedValue: resolvedValue
-    };
-}
+var propsCache = new Map();
 exports.Node = new (function (_super) {
     __extends(class_1, _super);
     function class_1() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.id = 'Sitegeist.Archaeopteryx:NodeTree';
-        _this.isSuitableFor = function (props) {
-            var _a;
-            return Boolean((_a = props.link) === null || _a === void 0 ? void 0 : _a.href.startsWith('node://'));
+        _this.id = 'Sitegeist.Archaeopteryx:Node';
+        _this.isSuitableFor = function (link) {
+            return link.href.startsWith('node://');
         };
+        _this.useResolvedProps = function (link) {
+            var siteNodeContextPath = archaeopteryx_neos_bridge_1.useSiteNodeContextPath();
+            var asyncState = react_use_1.useAsync(function () { return __awaiter(_this, void 0, void 0, function () {
+                var match, identifier, cacheIdentifier, result, result_1, result_1_1, node, props;
+                var e_1, _a;
+                return __generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0:
+                            console.log('resolveNodeLink', link);
+                            if (link === undefined) {
+                                return [2, { node: null }];
+                            }
+                            if (!siteNodeContextPath) {
+                                throw this.error('Could not find siteNodeContextPath.');
+                            }
+                            match = /node:\/\/(.*)/.exec(link.href);
+                            if (!match) {
+                                throw this.error("Cannot handle href \"" + link.href + "\".");
+                            }
+                            identifier = match[1];
+                            cacheIdentifier = identifier + "@" + siteNodeContextPath.context;
+                            if (propsCache.has(cacheIdentifier)) {
+                                return [2, propsCache.get(cacheIdentifier)];
+                            }
+                            return [4, archaeopteryx_neos_bridge_1.q(siteNodeContextPath).find("#" + identifier)
+                                    .getForTree()];
+                        case 1:
+                            result = _b.sent();
+                            try {
+                                for (result_1 = __values(result), result_1_1 = result_1.next(); !result_1_1.done; result_1_1 = result_1.next()) {
+                                    node = result_1_1.value;
+                                    props = { node: node };
+                                    propsCache.set(cacheIdentifier, props);
+                                    return [2, props];
+                                }
+                            }
+                            catch (e_1_1) { e_1 = { error: e_1_1 }; }
+                            finally {
+                                try {
+                                    if (result_1_1 && !result_1_1.done && (_a = result_1.return)) _a.call(result_1);
+                                }
+                                finally { if (e_1) throw e_1.error; }
+                            }
+                            throw this.error("Could not find node for identifier \"" + identifier + "\".");
+                    }
+                });
+            }); }, [siteNodeContextPath]);
+            return domain_1.Process.fromAsyncState(asyncState);
+        };
+        _this.getStaticIcon = function () { return (React.createElement("div", null, "NODE TREE")); };
         _this.getIcon = function () { return (React.createElement("div", null, "NODE TREE")); };
+        _this.getStaticTitle = function () { return 'Node Tree'; };
         _this.getTitle = function () { return 'Node Tree'; };
+        _this.getLoadingPreview = function () { return (React.createElement("div", null, "NODE TREE PREVIEW")); };
         _this.getPreview = function () { return (React.createElement("div", null, "NODE TREE PREVIEW")); };
-        _this.getEditor = function () {
-            var _a;
-            var _b = useResolvedValue(), loading = _b.loading, error = _b.error, resolvedValue = _b.resolvedValue;
+        _this.getLoadingEditor = function () { return (React.createElement("div", null, "NODE TREE EDITOR")); };
+        _this.getEditor = function (props) {
+            var _a, _b, _c, _d;
             var update = domain_1.useEditorTransactions().update;
             var siteNodeContextPath = archaeopteryx_neos_bridge_1.useSiteNodeContextPath();
             var documentNodeContextPath = archaeopteryx_neos_bridge_1.useDocumentNodeContextPath();
-            var baseNodeTypeName = useBaseNodeTypeName();
-            var loadingDepth = (_a = archaeopteryx_neos_bridge_1.useConfiguration(function (c) { var _a; return (_a = c.nodeTree) === null || _a === void 0 ? void 0 : _a.loadingDepth; })) !== null && _a !== void 0 ? _a : 4;
-            if (loading || !siteNodeContextPath || !documentNodeContextPath) {
-                return (React.createElement("div", null, "Loading..."));
+            var baseNodeTypeName = (_a = archaeopteryx_neos_bridge_1.useConfiguration(function (c) { var _a, _b, _c; return (_c = (_b = (_a = c.nodeTree) === null || _a === void 0 ? void 0 : _a.presets) === null || _b === void 0 ? void 0 : _b.default) === null || _c === void 0 ? void 0 : _c.baseNodeType; })) !== null && _a !== void 0 ? _a : archaeopteryx_neos_bridge_1.NodeTypeName('Neos.Neos:Document');
+            var loadingDepth = (_b = archaeopteryx_neos_bridge_1.useConfiguration(function (c) { var _a; return (_a = c.nodeTree) === null || _a === void 0 ? void 0 : _a.loadingDepth; })) !== null && _b !== void 0 ? _b : 4;
+            if (!siteNodeContextPath) {
+                throw _this.error('Could not load node tree, because siteNodeContextPath could not be determined.');
             }
-            else if (error) {
-                console.warn('[Sitegeist.Archaeopteryx]: Could not load node tree, because:');
-                console.error(error);
-                return (React.createElement("div", null, "An error occurred :("));
+            else if (!documentNodeContextPath) {
+                throw _this.error('Could not load node tree, because documentNodeContextPath could not be determined.');
             }
             else {
+                console.log('props.node?.contextPath', (_c = props.node) === null || _c === void 0 ? void 0 : _c.contextPath);
                 return (React.createElement(archaeopteryx_custom_node_tree_1.NodeTree, { configuration: {
                         baseNodeTypeName: baseNodeTypeName,
                         rootNodeContextPath: siteNodeContextPath,
                         documentNodeContextPath: documentNodeContextPath,
-                        selectedNodeContextPath: resolvedValue === null || resolvedValue === void 0 ? void 0 : resolvedValue.contextPath,
+                        selectedNodeContextPath: (_d = props.node) === null || _d === void 0 ? void 0 : _d.contextPath,
                         loadingDepth: loadingDepth
                     }, options: {
                         enableSearch: true,
                         enableNodeTypeFilter: true
                     }, onSelect: function (node) {
-                        cache.set("node://" + node.identifier, node);
+                        var cacheIdentifier = node.identifier + "@" + siteNodeContextPath.context;
+                        propsCache.set(cacheIdentifier, { node: node });
+                        console.log(cacheIdentifier);
                         update({ href: "node://" + node.identifier });
                     } }));
             }

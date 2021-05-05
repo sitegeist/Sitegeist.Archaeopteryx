@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import {Button} from '@neos-project/react-ui-components';
 
-import {useLinkTypeForHref, useEditorTransactions} from '@sitegeist/archaeopteryx-core';
+import {LinkType, useLinkTypeForHref, useEditorTransactions} from '@sitegeist/archaeopteryx-core';
 
 interface Props {
     neos: unknown
@@ -27,27 +27,23 @@ interface Props {
 
 export const InspectorEditor: React.FC<Props> = props => {
     const tx = useEditorTransactions();
-    const value = typeof props.value === 'string' ? props.value : '';
-    const linkType = useLinkTypeForHref(value);
+    const value = typeof props.value === 'string' ? (props.value || undefined) : undefined;
+    const linkType = useLinkTypeForHref(value ?? null);
 
     const editLink = React.useCallback(async () => {
-        const result = await tx.editLink({href: value});
+        const result = await tx.editLink(value === undefined ? null : {href: value});
         if (result.change) {
             props.commit(result.value);
         }
     }, [value, tx.editLink]);
 
     if (linkType) {
-        const {getPreview: Preview} = linkType;
-        const link = {href: value};
-
         return (
-            <div>
-                <Preview link={link}/>
-                <Button onClick={editLink}>
-                    Edit Link
-                </Button>
-            </div>
+            <InspectorEditorWithLinkType
+                value={value}
+                linkType={linkType}
+                editLink={editLink}
+            />
         );
     } else if (Boolean(value) === false) {
         return (
@@ -60,4 +56,31 @@ export const InspectorEditor: React.FC<Props> = props => {
             <div>No Editor found for {JSON.stringify(props.value)}</div>
         );
     }
+};
+
+const InspectorEditorWithLinkType: React.FC<{
+    value: undefined | string,
+    linkType: LinkType,
+    editLink: () => Promise<void>
+}> = props => {
+    const link = props.value === undefined ? undefined : {href: props.value};
+    const {busy, error, result: linkTypeProps} = props.linkType.useResolvedProps(link);
+    const {getPreview: Preview, getLoadingPreview: LoadingPreview} = props.linkType;
+
+    if (error) {
+        throw error;
+    }
+
+    return (
+        <div>
+            {busy ? (
+                <LoadingPreview link={link}/>
+            ) : (
+                <Preview {...linkTypeProps}/>
+            )}
+            <Button onClick={props.editLink}>
+                Edit Link
+            </Button>
+        </div>
+    );
 };

@@ -52,71 +52,91 @@ var react_ui_components_1 = require("@neos-project/react-ui-components");
 var react_final_form_1 = require("react-final-form");
 var domain_1 = require("../../domain");
 var Modal = function () {
-    var _a = domain_1.useEditorState(), isOpen = _a.isOpen, value = _a.value;
-    var _b = domain_1.useEditorTransactions(), dismiss = _b.dismiss, update = _b.update, apply = _b.apply;
-    var linkTypes = domain_1.useLinkTypes();
-    var _c = __read(React.useState(false), 2), showSettings = _c[0], setShowSettings = _c[1];
-    var _d = __read(React.useState(linkTypes[0]), 2), activeLinkType = _d[0], setActiveLinkType = _d[1];
-    var Editor = (activeLinkType !== null && activeLinkType !== void 0 ? activeLinkType : {}).getEditor;
-    React.useEffect(function () {
-        var _a;
-        setActiveLinkType((_a = linkTypes.find(function (linkType) { return value.persistent && linkType.isSuitableFor({
-            link: value.persistent
-        }); })) !== null && _a !== void 0 ? _a : linkTypes[0]);
-    }, [value.persistent]);
-    return (React.createElement(react_ui_components_1.Dialog, { title: "Sitegeist.Archaeopteryx", isOpen: isOpen, onRequestClose: dismiss, style: "jumbo" },
-        linkTypes.map(function (linkType) {
-            var Icon = linkType.getIcon, id = linkType.id;
-            return (React.createElement(react_ui_components_1.Button, { isActive: linkType.id === (activeLinkType === null || activeLinkType === void 0 ? void 0 : activeLinkType.id), key: id, onClick: function () {
-                    setActiveLinkType(linkType);
-                    setShowSettings(false);
-                } },
-                React.createElement(Icon, null)));
-        }),
-        React.createElement(react_ui_components_1.Button, { isActive: showSettings, onClick: function () {
-                setActiveLinkType(null);
-                setShowSettings(true);
-            } }, "SETTINGS"),
-        React.createElement("div", null,
-            Editor ? (React.createElement(Editor, null)) : null,
-            showSettings ? (React.createElement(react_final_form_1.Form, { onSubmit: function (values) { return update({ options: values }); } }, function (_a) {
-                var _b, _c, _d, _e, _f, _g, _h, _j;
-                var handleSubmit = _a.handleSubmit;
-                return (React.createElement("form", { onSubmit: handleSubmit },
-                    React.createElement(react_final_form_1.Field, { name: "anchor", initialValue: (_c = (_b = value.transient) === null || _b === void 0 ? void 0 : _b.options) === null || _c === void 0 ? void 0 : _c.anchor }, function (_a) {
-                        var input = _a.input;
-                        return (React.createElement("label", null,
-                            "Anchor:",
-                            React.createElement("input", __assign({ type: "text" }, input))));
-                    }),
-                    React.createElement(react_final_form_1.Field, { name: "title", initialValue: (_e = (_d = value.transient) === null || _d === void 0 ? void 0 : _d.options) === null || _e === void 0 ? void 0 : _e.title }, function (_a) {
-                        var input = _a.input;
-                        return (React.createElement("label", null,
-                            "Title:",
-                            React.createElement("input", __assign({ type: "text" }, input))));
-                    }),
-                    React.createElement(react_final_form_1.Field, { type: "checkbox", name: "targetBlank", initialValue: ((_g = (_f = value.transient) === null || _f === void 0 ? void 0 : _f.options) === null || _g === void 0 ? void 0 : _g.targetBlank) ? 'true' : '' }, function (_a) {
-                        var input = _a.input;
-                        return (React.createElement("label", null,
-                            "Open in new Window:",
-                            React.createElement("input", __assign({ style: {
-                                    appearance: 'checkbox',
-                                    backgroundColor: 'white',
-                                }, type: "checkbox" }, input))));
-                    }),
-                    React.createElement(react_final_form_1.Field, { type: "checkbox", name: "relNoFollow", initialValue: ((_j = (_h = value.transient) === null || _h === void 0 ? void 0 : _h.options) === null || _j === void 0 ? void 0 : _j.relNoFollow) ? 'true' : '' }, function (_a) {
-                        var input = _a.input;
-                        return (React.createElement("label", null,
-                            "No Follow:",
-                            React.createElement("input", __assign({ style: {
-                                    appearance: 'checkbox',
-                                    backgroundColor: 'white',
-                                }, type: "checkbox" }, input))));
-                    }),
-                    React.createElement("button", { type: "submit" }, "Apply")));
-            })) : null),
-        React.createElement(react_ui_components_1.Button, { onClick: dismiss }, "Click here!"),
-        React.createElement(react_ui_components_1.Button, { onClick: function () { return apply(value.transient); } }, "Apply")));
+    var _a;
+    var _b = domain_1.useEditorState(), isOpen = _b.isOpen, value = _b.value;
+    if (isOpen) {
+        if (value.persistent) {
+            return (React.createElement(DialogWithValue, { value: (_a = value.transient) !== null && _a !== void 0 ? _a : value.persistent }));
+        }
+        else {
+            return (React.createElement(DialogWithEmptyValue, null));
+        }
+    }
+    return null;
 };
 exports.Modal = Modal;
+var DialogWithEmptyValue = function () {
+    var dismiss = domain_1.useEditorTransactions().dismiss;
+    var linkTypes = domain_1.useLinkTypes();
+    var _a = __read(React.useState(linkTypes[0]), 2), activeLinkType = _a[0], setActiveLinkType = _a[1];
+    return (React.createElement(react_ui_components_1.Dialog, { title: "Sitegeist.Archaeopteryx", isOpen: true, style: "jumbo" },
+        linkTypes.map(function (linkType) { return (React.createElement(react_ui_components_1.Button, { key: linkType.id, onClick: function () { return setActiveLinkType(linkType); } },
+            React.createElement(linkType.getStaticIcon, null))); }),
+        React.createElement("div", null, activeLinkType ? (React.createElement(LinkEditor, { link: null, linkType: activeLinkType })) : null),
+        React.createElement(react_ui_components_1.Button, { onClick: dismiss }, "Cancel"),
+        React.createElement(react_ui_components_1.Button, { disabled: true }, "Apply")));
+};
+var DialogWithValue = function (props) {
+    var _a = domain_1.useEditorTransactions(), dismiss = _a.dismiss, update = _a.update, apply = _a.apply, clear = _a.clear;
+    var linkType = domain_1.useLinkTypeForHref(props.value.href);
+    var _b = __read(React.useState(false), 2), showSettings = _b[0], setShowSettings = _b[1];
+    return (React.createElement(react_ui_components_1.Dialog, { title: "Sitegeist.Archaeopteryx", isOpen: true, style: "jumbo" },
+        React.createElement(react_ui_components_1.Button, { isActive: !showSettings, onClick: function () { return setShowSettings(false); } },
+            React.createElement(linkType.getIcon, null)),
+        React.createElement(react_ui_components_1.Button, { isActive: showSettings, onClick: function () { return setShowSettings(true); } }, "SETTINGS"),
+        React.createElement("div", null,
+            React.createElement(react_ui_components_1.Button, { onClick: clear }, "Reset")),
+        React.createElement("div", null, showSettings ? (React.createElement(react_final_form_1.Form, { onSubmit: function (values) { return update({ options: values }); } }, function (_a) {
+            var _b, _c, _d, _e;
+            var handleSubmit = _a.handleSubmit;
+            return (React.createElement("form", { onSubmit: handleSubmit },
+                React.createElement(react_final_form_1.Field, { name: "anchor", initialValue: (_b = props.value.options) === null || _b === void 0 ? void 0 : _b.anchor }, function (_a) {
+                    var input = _a.input;
+                    return (React.createElement("label", null,
+                        "Anchor:",
+                        React.createElement("input", __assign({ type: "text" }, input))));
+                }),
+                React.createElement(react_final_form_1.Field, { name: "title", initialValue: (_c = props.value.options) === null || _c === void 0 ? void 0 : _c.title }, function (_a) {
+                    var input = _a.input;
+                    return (React.createElement("label", null,
+                        "Title:",
+                        React.createElement("input", __assign({ type: "text" }, input))));
+                }),
+                React.createElement(react_final_form_1.Field, { type: "checkbox", name: "targetBlank", initialValue: ((_d = props.value.options) === null || _d === void 0 ? void 0 : _d.targetBlank) ? 'true' : '' }, function (_a) {
+                    var input = _a.input;
+                    return (React.createElement("label", null,
+                        "Open in new Window:",
+                        React.createElement("input", __assign({ style: {
+                                appearance: 'checkbox',
+                                backgroundColor: 'white',
+                            }, type: "checkbox" }, input))));
+                }),
+                React.createElement(react_final_form_1.Field, { type: "checkbox", name: "relNoFollow", initialValue: ((_e = props.value.options) === null || _e === void 0 ? void 0 : _e.relNoFollow) ? 'true' : '' }, function (_a) {
+                    var input = _a.input;
+                    return (React.createElement("label", null,
+                        "No Follow:",
+                        React.createElement("input", __assign({ style: {
+                                appearance: 'checkbox',
+                                backgroundColor: 'white',
+                            }, type: "checkbox" }, input))));
+                }),
+                React.createElement("button", { type: "submit" }, "Apply")));
+        })) : (React.createElement(LinkEditor, { link: props.value, linkType: linkType }))),
+        React.createElement(react_ui_components_1.Button, { onClick: dismiss }, "Click here!"),
+        React.createElement(react_ui_components_1.Button, { onClick: function () { return apply(props.value); } }, "Apply")));
+};
+var LinkEditor = function (props) {
+    var _a, _b;
+    var _c = props.linkType.useResolvedProps((_a = props.link) !== null && _a !== void 0 ? _a : undefined), busy = _c.busy, error = _c.error, editorProps = _c.result;
+    var _d = props.linkType, Editor = _d.getEditor, LoadingEditor = _d.getLoadingEditor;
+    if (error) {
+        throw error;
+    }
+    else if (busy) {
+        return (React.createElement(LoadingEditor, { link: (_b = props.link) !== null && _b !== void 0 ? _b : undefined }));
+    }
+    else {
+        return (React.createElement(Editor, __assign({}, editorProps)));
+    }
+};
 //# sourceMappingURL=Modal.js.map

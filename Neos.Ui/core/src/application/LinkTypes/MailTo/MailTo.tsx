@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Form, Field} from 'react-final-form';
 
-import {LinkType, ILinkTypeProps, useEditorTransactions, useEditorValue} from '../../../domain';
+import {LinkType, ILink, useEditorTransactions, Process} from '../../../domain';
 
 interface IMailToLink {
     recipient: string
@@ -9,23 +9,6 @@ interface IMailToLink {
     cc?: string
     bcc?: string
     body?: string
-}
-
-function useResolvedValue(): null | IMailToLink {
-    const {value} = useEditorValue();
-    if (value && value.href && value.href.startsWith('mailto:')) {
-        const url = new URL(value.href);
-
-        return {
-            recipient: url.pathname,
-            subject: url.searchParams.get('subject') ?? undefined,
-            cc: url.searchParams.get('cc') ?? undefined,
-            bcc: url.searchParams.get('bcc') ?? undefined,
-            body: url.searchParams.get('body') ?? undefined
-        };
-    }
-
-    return null;
 }
 
 function convert(mailToLink: IMailToLink): string {
@@ -50,33 +33,67 @@ function convert(mailToLink: IMailToLink): string {
     return url.toString();
 }
 
-export const MailTo = new class extends LinkType {
+interface Props {
+    value: null | IMailToLink
+}
+
+export const MailTo = new class extends LinkType<Props> {
     public readonly id = 'Sitegeist.Archaeopteryx:MailTo';
 
-    public readonly isSuitableFor = (props: ILinkTypeProps) => {
-        return Boolean(props.link?.href.startsWith('mailto:'));
-    }
+    public readonly isSuitableFor = (link: ILink) =>
+        link.href.startsWith('mailto:');
+
+    public readonly useResolvedProps = (link?: ILink) => {
+        if (link === undefined) {
+            return Process.success({value: null});
+        }
+
+        const url = new URL(link.href);
+
+        return Process.success({
+            value: {
+                recipient: url.pathname,
+                subject: url.searchParams.get('subject') ?? undefined,
+                cc: url.searchParams.get('cc') ?? undefined,
+                bcc: url.searchParams.get('bcc') ?? undefined,
+                body: url.searchParams.get('body') ?? undefined
+            }
+        });
+    };
+
+    public readonly getStaticIcon = () => (
+        <div>MAILTO</div>
+    );
 
     public readonly getIcon = () => (
         <div>MAILTO</div>
     );
 
+    public readonly getStaticTitle = () => 'MAILTO'
+
     public readonly getTitle = () => 'MAILTO'
 
-    public readonly getPreview = (props: ILinkTypeProps) => (
+    public readonly getLoadingPreview = () => (
         <div>MAILTO PREVIEW</div>
     );
 
-    public readonly getEditor = () => {
-        const resolvedValue = useResolvedValue();
+    public readonly getPreview = (props: Props) => (
+        <div>MAILTO PREVIEW</div>
+    );
+
+    public readonly getLoadingEditor = () => (
+        <div>MAILTO EDITOR</div>
+    );
+
+    public readonly getEditor = (props: Props) => {
         const {update} = useEditorTransactions();
-        const handleSubmit = React.useCallback((values: IMailToLink) => {
-            update({href: convert(values)});
+        const handleSubmit = React.useCallback((value: IMailToLink) => {
+            update({href: convert(value)});
         }, []);
 
         return (
-            <Form initialValues={resolvedValue} onSubmit={handleSubmit}>
-                {({handleSubmit, ...rest }) => (
+            <Form initialValues={props.value} onSubmit={handleSubmit}>
+                {({handleSubmit}) => (
                     <form onSubmit={handleSubmit}>
                         <Field<string>
                             name="recipient"
