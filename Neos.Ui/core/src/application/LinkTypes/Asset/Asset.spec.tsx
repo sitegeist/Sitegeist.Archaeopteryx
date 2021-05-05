@@ -5,7 +5,7 @@ import '@testing-library/jest-dom/extend-expect';
 
 import {Asset} from './Asset';
 
-describe('AssetEditor', () => {
+describe('LinkType: Asset', () => {
     it('is not satisfied by http:// links', () => {
         const props = {
             link: {

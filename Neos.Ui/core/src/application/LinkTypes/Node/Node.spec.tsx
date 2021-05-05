@@ -1,12 +1,13 @@
 jest.mock('@neos-project/neos-ui-backend-connector', () => ({}), { virtual: true });
 jest.mock('@neos-project/react-ui-components', () => ({}));
+jest.mock('@sitegeist/archaeopteryx-custom-node-tree', () => ({}));
 
 import '@testing-library/jest-dom/extend-expect';
 
-import {NodeTree} from './NodeTree';
+import {Node} from './Node';
 
 
-describe('NodeTree Editor', () => {
+describe('LinkType: Node', () => {
     it('is not satisfied by http:// links', () => {
         const props = {
             link: {
@@ -14,7 +15,7 @@ describe('NodeTree Editor', () => {
             }
         };
 
-        expect(NodeTree.isSuitableFor(props))
+        expect(Node.isSuitableFor(props))
             .toBe(false);
     });
 
@@ -25,7 +26,7 @@ describe('NodeTree Editor', () => {
             }
         };
 
-        expect(NodeTree.isSuitableFor(props))
+        expect(Node.isSuitableFor(props))
             .toBe(false);
     });
 
@@ -36,7 +37,7 @@ describe('NodeTree Editor', () => {
             }
         };
 
-        expect(NodeTree.isSuitableFor(props))
+        expect(Node.isSuitableFor(props))
             .toBe(true);
     });
 
@@ -47,7 +48,7 @@ describe('NodeTree Editor', () => {
             }
         };
 
-        expect(NodeTree.isSuitableFor(props))
+        expect(Node.isSuitableFor(props))
             .toBe(false);
     });
 
@@ -58,7 +59,7 @@ describe('NodeTree Editor', () => {
             }
         };
 
-        expect(NodeTree.isSuitableFor(props))
+        expect(Node.isSuitableFor(props))
             .toBe(false);
     });
 
@@ -69,12 +70,12 @@ describe('NodeTree Editor', () => {
             }
         };
 
-        expect(NodeTree.isSuitableFor(props))
+        expect(Node.isSuitableFor(props))
             .toBe(false);
     });
 
     it('returns title', () => {
-        expect(NodeTree.getTitle())
+        expect(Node.getTitle())
             .toBe('Node Tree');
     });
 });

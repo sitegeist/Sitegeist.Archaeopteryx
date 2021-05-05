@@ -4,7 +4,7 @@ jest.mock('@neos-project/neos-ui-backend-connector', function () { return ({}); 
 jest.mock('@neos-project/react-ui-components', function () { return ({}); });
 require("@testing-library/jest-dom/extend-expect");
 var MailTo_1 = require("./MailTo");
-describe('MailToEditor', function () {
+describe('LinkType: MailTo', function () {
     it('is not satisfied by http:// links', function () {
         var props = {
             link: {

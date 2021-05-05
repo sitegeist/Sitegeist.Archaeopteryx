@@ -25513,10 +25513,10 @@ Object.defineProperty(exports, "MailTo", { enumerable: true, get: function get()
 
 /***/ }),
 
-/***/ "../core/lib/application/LinkTypes/NodeTree/NodeTree.js":
-/*!**************************************************************!*\
-  !*** ../core/lib/application/LinkTypes/NodeTree/NodeTree.js ***!
-  \**************************************************************/
+/***/ "../core/lib/application/LinkTypes/Node/Node.js":
+/*!******************************************************!*\
+  !*** ../core/lib/application/LinkTypes/Node/Node.js ***!
+  \******************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -25684,7 +25684,7 @@ var __values = undefined && undefined.__values || function (o) {
     throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NodeTree = void 0;
+exports.Node = void 0;
 var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
 var archaeopteryx_neos_bridge_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-neos-bridge */ "../neos-bridge/lib/index.js");
 var archaeopteryx_custom_node_tree_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-custom-node-tree */ "../custom-node-tree/lib/index.js");
@@ -25771,7 +25771,7 @@ function useResolvedValue() {
         resolvedValue: resolvedValue
     };
 }
-exports.NodeTree = new (function (_super) {
+exports.Node = new (function (_super) {
     __extends(class_1, _super);
     function class_1() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
@@ -25828,14 +25828,14 @@ exports.NodeTree = new (function (_super) {
     }
     return class_1;
 }(domain_1.LinkType))();
-//# sourceMappingURL=NodeTree.js.map
+//# sourceMappingURL=Node.js.map
 
 /***/ }),
 
-/***/ "../core/lib/application/LinkTypes/NodeTree/index.js":
-/*!***********************************************************!*\
-  !*** ../core/lib/application/LinkTypes/NodeTree/index.js ***!
-  \***********************************************************/
+/***/ "../core/lib/application/LinkTypes/Node/index.js":
+/*!*******************************************************!*\
+  !*** ../core/lib/application/LinkTypes/Node/index.js ***!
+  \*******************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -25843,10 +25843,10 @@ exports.NodeTree = new (function (_super) {
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NodeTree = void 0;
-var NodeTree_1 = __webpack_require__(/*! ./NodeTree */ "../core/lib/application/LinkTypes/NodeTree/NodeTree.js");
-Object.defineProperty(exports, "NodeTree", { enumerable: true, get: function get() {
-    return NodeTree_1.NodeTree;
+exports.Node = void 0;
+var Node_1 = __webpack_require__(/*! ./Node */ "../core/lib/application/LinkTypes/Node/Node.js");
+Object.defineProperty(exports, "Node", { enumerable: true, get: function get() {
+    return Node_1.Node;
   } });
 //# sourceMappingURL=index.js.map
 
@@ -25987,13 +25987,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.registerLinkTypes = void 0;
 var neos_ui_extensibility_1 = __webpack_require__(/*! @neos-project/neos-ui-extensibility */ "../../node_modules/@neos-project/neos-ui-extensibility/dist/index.js");
 var WebLink_1 = __webpack_require__(/*! ./WebLink */ "../core/lib/application/LinkTypes/WebLink/index.js");
-var NodeTree_1 = __webpack_require__(/*! ./NodeTree */ "../core/lib/application/LinkTypes/NodeTree/index.js");
+var Node_1 = __webpack_require__(/*! ./Node */ "../core/lib/application/LinkTypes/Node/index.js");
 var Asset_1 = __webpack_require__(/*! ./Asset */ "../core/lib/application/LinkTypes/Asset/index.js");
 var MailTo_1 = __webpack_require__(/*! ./MailTo */ "../core/lib/application/LinkTypes/MailTo/index.js");
 function registerLinkTypes(globalRegistry) {
     var linkTypeRegistry = new neos_ui_extensibility_1.SynchronousRegistry("\n        # Sitegeist.Archaeopteryx LinkType Registry\n    ");
     linkTypeRegistry.set(WebLink_1.WebLink.id, WebLink_1.WebLink);
-    linkTypeRegistry.set(NodeTree_1.NodeTree.id, NodeTree_1.NodeTree);
+    linkTypeRegistry.set(Node_1.Node.id, Node_1.Node);
     linkTypeRegistry.set(Asset_1.Asset.id, Asset_1.Asset);
     linkTypeRegistry.set(MailTo_1.MailTo.id, MailTo_1.MailTo);
     globalRegistry.set('@sitegeist/archaeopteryx/link-types', linkTypeRegistry);

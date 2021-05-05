@@ -2,16 +2,17 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 jest.mock('@neos-project/neos-ui-backend-connector', function () { return ({}); }, { virtual: true });
 jest.mock('@neos-project/react-ui-components', function () { return ({}); });
+jest.mock('@sitegeist/archaeopteryx-custom-node-tree', function () { return ({}); });
 require("@testing-library/jest-dom/extend-expect");
-var NodeTree_1 = require("./NodeTree");
-describe('NodeTree Editor', function () {
+var Node_1 = require("./Node");
+describe('LinkType: Node', function () {
     it('is not satisfied by http:// links', function () {
         var props = {
             link: {
                 href: 'http://www.example.com'
             }
         };
-        expect(NodeTree_1.NodeTree.isSuitableFor(props))
+        expect(Node_1.Node.isSuitableFor(props))
             .toBe(false);
     });
     it('is not satisfied by https:// links', function () {
@@ -20,7 +21,7 @@ describe('NodeTree Editor', function () {
                 href: 'https://www.example.com'
             }
         };
-        expect(NodeTree_1.NodeTree.isSuitableFor(props))
+        expect(Node_1.Node.isSuitableFor(props))
             .toBe(false);
     });
     it('is satisfied by node:// links', function () {
@@ -29,7 +30,7 @@ describe('NodeTree Editor', function () {
                 href: 'node://97c9a6e3-4b50-4559-9f60-b5ad68f25758'
             }
         };
-        expect(NodeTree_1.NodeTree.isSuitableFor(props))
+        expect(Node_1.Node.isSuitableFor(props))
             .toBe(true);
     });
     it('is not satisfied by asset:// links', function () {
@@ -38,7 +39,7 @@ describe('NodeTree Editor', function () {
                 href: 'asset://97c9a6e3-4b50-4559-9f60-b5ad68f25758'
             }
         };
-        expect(NodeTree_1.NodeTree.isSuitableFor(props))
+        expect(Node_1.Node.isSuitableFor(props))
             .toBe(false);
     });
     it('is not satisfied by mailto: links', function () {
@@ -47,7 +48,7 @@ describe('NodeTree Editor', function () {
                 href: 'mailto:foo@example.com'
             }
         };
-        expect(NodeTree_1.NodeTree.isSuitableFor(props))
+        expect(Node_1.Node.isSuitableFor(props))
             .toBe(false);
     });
     it('is not satisfied by invalid links', function () {
@@ -56,12 +57,12 @@ describe('NodeTree Editor', function () {
                 href: 'Think of Beethoven\'s 5th: foo foo foo bar'
             }
         };
-        expect(NodeTree_1.NodeTree.isSuitableFor(props))
+        expect(Node_1.Node.isSuitableFor(props))
             .toBe(false);
     });
     it('returns title', function () {
-        expect(NodeTree_1.NodeTree.getTitle())
+        expect(Node_1.Node.getTitle())
             .toBe('Node Tree');
     });
 });
-//# sourceMappingURL=NodeTree.spec.js.map
+//# sourceMappingURL=Node.spec.js.map

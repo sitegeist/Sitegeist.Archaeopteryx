@@ -97,7 +97,7 @@ var __values = (this && this.__values) || function(o) {
     throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NodeTree = void 0;
+exports.Node = void 0;
 var React = __importStar(require("react"));
 var archaeopteryx_neos_bridge_1 = require("@sitegeist/archaeopteryx-neos-bridge");
 var archaeopteryx_custom_node_tree_1 = require("@sitegeist/archaeopteryx-custom-node-tree");
@@ -173,7 +173,7 @@ function useResolvedValue() {
         resolvedValue: resolvedValue
     };
 }
-exports.NodeTree = new (function (_super) {
+exports.Node = new (function (_super) {
     __extends(class_1, _super);
     function class_1() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
@@ -221,4 +221,4 @@ exports.NodeTree = new (function (_super) {
     }
     return class_1;
 }(domain_1.LinkType));
-//# sourceMappingURL=NodeTree.js.map
+//# sourceMappingURL=Node.js.map

@@ -5,7 +5,7 @@ import '@testing-library/jest-dom/extend-expect';
 
 import {MailTo} from './MailTo';
 
-describe('MailToEditor', () => {
+describe('LinkType: MailTo', () => {
     it('is not satisfied by http:// links', () => {
         const props = {
             link: {

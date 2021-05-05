@@ -59,7 +59,7 @@ function useResolvedValue() {
     };
 }
 
-export const NodeTree = new class extends LinkType {
+export const Node = new class extends LinkType {
     public readonly id = 'Sitegeist.Archaeopteryx:NodeTree';
 
     public readonly isSuitableFor = (props: ILinkTypeProps) => {
