@@ -25852,10 +25852,10 @@ Object.defineProperty(exports, "Node", { enumerable: true, get: function get() {
 
 /***/ }),
 
-/***/ "../core/lib/application/LinkTypes/WebLink/WebLink.js":
-/*!************************************************************!*\
-  !*** ../core/lib/application/LinkTypes/WebLink/WebLink.js ***!
-  \************************************************************/
+/***/ "../core/lib/application/LinkTypes/Web/Web.js":
+/*!****************************************************!*\
+  !*** ../core/lib/application/LinkTypes/Web/Web.js ***!
+  \****************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -25905,10 +25905,10 @@ var __importStar = undefined && undefined.__importStar || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.WebLink = void 0;
+exports.Web = void 0;
 var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
 var domain_1 = __webpack_require__(/*! ../../../domain */ "../core/lib/domain/index.js");
-exports.WebLink = new (function (_super) {
+exports.Web = new (function (_super) {
     __extends(class_1, _super);
     function class_1() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
@@ -25949,14 +25949,14 @@ exports.WebLink = new (function (_super) {
     }
     return class_1;
 }(domain_1.LinkType))();
-//# sourceMappingURL=WebLink.js.map
+//# sourceMappingURL=Web.js.map
 
 /***/ }),
 
-/***/ "../core/lib/application/LinkTypes/WebLink/index.js":
-/*!**********************************************************!*\
-  !*** ../core/lib/application/LinkTypes/WebLink/index.js ***!
-  \**********************************************************/
+/***/ "../core/lib/application/LinkTypes/Web/index.js":
+/*!******************************************************!*\
+  !*** ../core/lib/application/LinkTypes/Web/index.js ***!
+  \******************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -25964,10 +25964,10 @@ exports.WebLink = new (function (_super) {
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.WebLink = void 0;
-var WebLink_1 = __webpack_require__(/*! ./WebLink */ "../core/lib/application/LinkTypes/WebLink/WebLink.js");
-Object.defineProperty(exports, "WebLink", { enumerable: true, get: function get() {
-    return WebLink_1.WebLink;
+exports.Web = void 0;
+var Web_1 = __webpack_require__(/*! ./Web */ "../core/lib/application/LinkTypes/Web/Web.js");
+Object.defineProperty(exports, "Web", { enumerable: true, get: function get() {
+    return Web_1.Web;
   } });
 //# sourceMappingURL=index.js.map
 
@@ -25986,13 +25986,13 @@ Object.defineProperty(exports, "WebLink", { enumerable: true, get: function get(
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.registerLinkTypes = void 0;
 var neos_ui_extensibility_1 = __webpack_require__(/*! @neos-project/neos-ui-extensibility */ "../../node_modules/@neos-project/neos-ui-extensibility/dist/index.js");
-var WebLink_1 = __webpack_require__(/*! ./WebLink */ "../core/lib/application/LinkTypes/WebLink/index.js");
+var Web_1 = __webpack_require__(/*! ./Web */ "../core/lib/application/LinkTypes/Web/index.js");
 var Node_1 = __webpack_require__(/*! ./Node */ "../core/lib/application/LinkTypes/Node/index.js");
 var Asset_1 = __webpack_require__(/*! ./Asset */ "../core/lib/application/LinkTypes/Asset/index.js");
 var MailTo_1 = __webpack_require__(/*! ./MailTo */ "../core/lib/application/LinkTypes/MailTo/index.js");
 function registerLinkTypes(globalRegistry) {
     var linkTypeRegistry = new neos_ui_extensibility_1.SynchronousRegistry("\n        # Sitegeist.Archaeopteryx LinkType Registry\n    ");
-    linkTypeRegistry.set(WebLink_1.WebLink.id, WebLink_1.WebLink);
+    linkTypeRegistry.set(Web_1.Web.id, Web_1.Web);
     linkTypeRegistry.set(Node_1.Node.id, Node_1.Node);
     linkTypeRegistry.set(Asset_1.Asset.id, Asset_1.Asset);
     linkTypeRegistry.set(MailTo_1.MailTo.id, MailTo_1.MailTo);
