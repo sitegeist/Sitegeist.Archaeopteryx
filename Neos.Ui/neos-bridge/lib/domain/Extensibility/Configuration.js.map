@@ -1,1 +1,0 @@
-{"version":3,"file":"Configuration.js","sourceRoot":"","sources":["../../../src/domain/Extensibility/Configuration.ts"],"names":[],"mappings":";;;AACA,6CAAsC;AAqBtC,SAAgB,gBAAgB,CAAI,QAA+C;IAC/E,IAAM,IAAI,GAAG,qBAAO,EAAE,CAAC;IAEvB,IAAI,QAAQ,EAAE;QACV,OAAO,QAAQ,CAAC,IAAI,CAAC,aAAa,CAAC,CAAC;KACvC;SAAM;QACH,OAAO,IAAI,CAAC,aAAkB,CAAC;KAClC;AACL,CAAC;AARD,4CAQC"}

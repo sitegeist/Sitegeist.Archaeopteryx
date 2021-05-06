@@ -1,1 +1,0 @@
-{"version":3,"file":"Routes.js","sourceRoot":"","sources":["../../../src/domain/Extensibility/Routes.ts"],"names":[],"mappings":";;;AAAA,6CAAsC;AActC,SAAgB,SAAS,CAAI,QAAwC;IACjE,IAAM,IAAI,GAAG,qBAAO,EAAE,CAAC;IAEvB,IAAI,IAAI,CAAC,MAAM,EAAE;QACb,IAAI,QAAQ,EAAE;YACV,OAAO,QAAQ,CAAC,IAAI,CAAC,MAAM,CAAC,CAAC;SAChC;aAAM;YACH,OAAO,IAAI,CAAC,MAAW,CAAC;SAC3B;KACJ;AACL,CAAC;AAVD,8BAUC"}

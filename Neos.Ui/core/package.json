@@ -4,7 +4,7 @@
     "version": "0.0.0",
     "main": "./lib/index.js",
     "scripts": {
-        "build": "tsc -p tsconfig.build.json",
+        "build": "rm -rf lib && tsc -p tsconfig.build.json",
         "watch": "tsc -w -p tsconfig.build.json",
         "test": "jest"
     },

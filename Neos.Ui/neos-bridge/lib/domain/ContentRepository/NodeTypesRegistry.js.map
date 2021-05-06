@@ -1,1 +1,0 @@
-{"version":3,"file":"NodeTypesRegistry.js","sourceRoot":"","sources":["../../../src/domain/ContentRepository/NodeTypesRegistry.ts"],"names":[],"mappings":";;;AAEA,kDAAmD;AAWnD,SAAgB,oBAAoB;IAChC,IAAM,cAAc,GAAG,iCAAiB,EAAE,CAAC;IAC3C,IAAM,iBAAiB,GAAG,cAAc,CAAC,GAAG,CAAC,yCAAyC,CAAC,CAAC;IAExF,OAAO,iBAAiB,CAAC;AAC7B,CAAC;AALD,oDAKC"}

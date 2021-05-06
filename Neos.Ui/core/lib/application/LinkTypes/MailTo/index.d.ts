@@ -1,1 +1,0 @@
-export { MailTo } from './MailTo';
