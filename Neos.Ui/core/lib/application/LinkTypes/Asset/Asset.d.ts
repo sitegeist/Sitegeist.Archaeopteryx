@@ -19,6 +19,9 @@ export declare const Asset: {
         error: null;
         result: any;
     };
+    readonly convertPropsToLink: (props: Props) => {
+        href: string;
+    } | null;
     readonly getStaticIcon: () => JSX.Element;
     readonly getIcon: () => JSX.Element;
     readonly getStaticTitle: () => string;

@@ -2,9 +2,9 @@ import * as React from 'react';
 import {useAsync} from 'react-use';
 
 import {q, INodePartialForTree, NodeTypeName, useSiteNodeContextPath, useDocumentNodeContextPath, useConfiguration} from '@sitegeist/archaeopteryx-neos-bridge';
-import {NodeTree as NodeTreeAdapter} from '@sitegeist/archaeopteryx-custom-node-tree';
+import {NodeTree} from '@sitegeist/archaeopteryx-custom-node-tree';
 
-import {Process, LinkType, ILink, useEditorTransactions} from '../../../domain';
+import {Process, LinkType, ILink, Field} from '../../../domain';
 
 interface Props {
     node: null | INodePartialForTree
@@ -57,6 +57,16 @@ export const Node = new class extends LinkType<Props> {
         return Process.fromAsyncState(asyncState);
     }
 
+    public readonly convertPropsToLink = (props: Props) => {
+        if (props.node === null) {
+            return null;
+        }
+
+        return {
+            href: `node://${props.node.identifier}`
+        };
+    };
+
     public readonly getStaticIcon = () => (
         <div>NODE TREE</div>
     );
@@ -82,7 +92,6 @@ export const Node = new class extends LinkType<Props> {
     );
 
     public readonly getEditor = (props: Props) => {
-        const {update} = useEditorTransactions();
         const siteNodeContextPath = useSiteNodeContextPath();
         const documentNodeContextPath = useDocumentNodeContextPath();
         const baseNodeTypeName = useConfiguration(c => c.nodeTree?.presets?.default?.baseNodeType) ?? NodeTypeName('Neos.Neos:Document');
@@ -94,24 +103,29 @@ export const Node = new class extends LinkType<Props> {
             throw this.error('Could not load node tree, because documentNodeContextPath could not be determined.');
         } else {
             return (
-                <NodeTreeAdapter
-                    configuration={{
-                        baseNodeTypeName,
-                        rootNodeContextPath: siteNodeContextPath,
-                        documentNodeContextPath,
-                        selectedNodeContextPath: props.node?.contextPath,
-                        loadingDepth
-                    }}
-                    options={{
-                        enableSearch: true,
-                        enableNodeTypeFilter: true
-                    }}
-                    onSelect={node =>{
-                        const cacheIdentifier = `${node.identifier}@${siteNodeContextPath.context}`;
-                        propsCache.set(cacheIdentifier, {node});
-                        update({href: `node://${node.identifier}`});
-                    }}
-                />
+                <Field<null | INodePartialForTree>
+                    name="node"
+                    initialValue={props.node}
+                >{({input}) => (
+                    <NodeTree
+                        configuration={{
+                            baseNodeTypeName,
+                            rootNodeContextPath: siteNodeContextPath,
+                            documentNodeContextPath,
+                            selectedNodeContextPath: input.value?.contextPath,
+                            loadingDepth
+                        }}
+                        options={{
+                            enableSearch: true,
+                            enableNodeTypeFilter: true
+                        }}
+                        onSelect={node =>{
+                            const cacheIdentifier = `${node.identifier}@${siteNodeContextPath.context}`;
+                            propsCache.set(cacheIdentifier, {node});
+                            input.onChange(node);
+                        }}
+                    />
+                )}</Field>
             );
         }
     };

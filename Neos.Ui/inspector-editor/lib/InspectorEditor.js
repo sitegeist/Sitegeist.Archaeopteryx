@@ -76,13 +76,14 @@ var InspectorEditor = function (props) {
     var linkType = archaeopteryx_core_1.useLinkTypeForHref(value !== null && value !== void 0 ? value : null);
     var editLink = React.useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
         var result;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
+        var _a;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
                 case 0: return [4, tx.editLink(value === undefined ? null : { href: value })];
                 case 1:
-                    result = _a.sent();
+                    result = _b.sent();
                     if (result.change) {
-                        props.commit(result.value);
+                        props.commit((_a = result.value) === null || _a === void 0 ? void 0 : _a.href);
                     }
                     return [2];
             }

@@ -47,24 +47,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MailTo = void 0;
 var React = __importStar(require("react"));
-var react_final_form_1 = require("react-final-form");
 var domain_1 = require("../../../domain");
-function convert(mailToLink) {
-    var url = new URL("mailto:" + mailToLink.recipient);
-    if (mailToLink.subject) {
-        url.searchParams.set('subject', mailToLink.subject);
-    }
-    if (mailToLink.cc) {
-        url.searchParams.set('cc', mailToLink.cc);
-    }
-    if (mailToLink.bcc) {
-        url.searchParams.set('bcc', mailToLink.bcc);
-    }
-    if (mailToLink.body) {
-        url.searchParams.set('body', mailToLink.body);
-    }
-    return url.toString();
-}
 exports.MailTo = new (function (_super) {
     __extends(class_1, _super);
     function class_1() {
@@ -89,6 +72,25 @@ exports.MailTo = new (function (_super) {
                 }
             });
         };
+        _this.convertPropsToLink = function (props) {
+            if (props.value === null) {
+                return null;
+            }
+            var url = new URL("mailto:" + props.value.recipient);
+            if (props.value.subject) {
+                url.searchParams.set('subject', props.value.subject);
+            }
+            if (props.value.cc) {
+                url.searchParams.set('cc', props.value.cc);
+            }
+            if (props.value.bcc) {
+                url.searchParams.set('bcc', props.value.bcc);
+            }
+            if (props.value.body) {
+                url.searchParams.set('body', props.value.body);
+            }
+            return { href: url.toString() };
+        };
         _this.getStaticIcon = function () { return (React.createElement("div", null, "MAILTO")); };
         _this.getIcon = function () { return (React.createElement("div", null, "MAILTO")); };
         _this.getStaticTitle = function () { return 'MAILTO'; };
@@ -97,51 +99,44 @@ exports.MailTo = new (function (_super) {
         _this.getPreview = function (props) { return (React.createElement("div", null, "MAILTO PREVIEW")); };
         _this.getLoadingEditor = function () { return (React.createElement("div", null, "MAILTO EDITOR")); };
         _this.getEditor = function (props) {
-            var update = domain_1.useEditorTransactions().update;
-            var handleSubmit = React.useCallback(function (value) {
-                update({ href: convert(value) });
-            }, []);
-            return (React.createElement(react_final_form_1.Form, { initialValues: props.value, onSubmit: handleSubmit }, function (_a) {
-                var handleSubmit = _a.handleSubmit;
-                return (React.createElement("form", { onSubmit: handleSubmit },
-                    React.createElement(react_final_form_1.Field, { name: "recipient", validate: function (value) {
-                            if (!value) {
-                                return 'recipient is required';
-                            }
-                        } }, function (_a) {
-                        var input = _a.input, meta = _a.meta;
-                        return (React.createElement("div", null,
-                            React.createElement("label", null,
-                                "Recipient:",
-                                React.createElement("input", __assign({ type: "text" }, input))),
-                            meta.error));
-                    }),
-                    React.createElement(react_final_form_1.Field, { name: "cc" }, function (_a) {
-                        var input = _a.input, meta = _a.meta;
-                        return (React.createElement("div", null,
-                            React.createElement("label", null,
-                                "CC:",
-                                React.createElement("input", __assign({ type: "text" }, input))),
-                            meta.error));
-                    }),
-                    React.createElement(react_final_form_1.Field, { name: "bcc" }, function (_a) {
-                        var input = _a.input, meta = _a.meta;
-                        return (React.createElement("div", null,
-                            React.createElement("label", null,
-                                "BCC:",
-                                React.createElement("input", __assign({ type: "text" }, input))),
-                            meta.error));
-                    }),
-                    React.createElement(react_final_form_1.Field, { name: "body" }, function (_a) {
-                        var input = _a.input, meta = _a.meta;
-                        return (React.createElement("div", null,
-                            React.createElement("label", null,
-                                "Body:",
-                                React.createElement("textarea", __assign({}, input))),
-                            meta.error));
-                    }),
-                    React.createElement("button", { type: "submit" }, "Apply")));
-            }));
+            var _a, _b, _c, _d;
+            return (React.createElement("div", null,
+                React.createElement(domain_1.Field, { name: "value.recipient", initialValue: (_a = props.value) === null || _a === void 0 ? void 0 : _a.recipient, validate: function (value) {
+                        if (!value) {
+                            return 'recipient is required';
+                        }
+                    } }, function (_a) {
+                    var input = _a.input, meta = _a.meta;
+                    return (React.createElement("div", null,
+                        React.createElement("label", null,
+                            "Recipient:",
+                            React.createElement("input", __assign({ type: "text" }, input))),
+                        meta.error));
+                }),
+                React.createElement(domain_1.Field, { name: "value.cc", initialValue: (_b = props.value) === null || _b === void 0 ? void 0 : _b.cc }, function (_a) {
+                    var input = _a.input, meta = _a.meta;
+                    return (React.createElement("div", null,
+                        React.createElement("label", null,
+                            "CC:",
+                            React.createElement("input", __assign({ type: "text" }, input))),
+                        meta.error));
+                }),
+                React.createElement(domain_1.Field, { name: "value.bcc", initialValue: (_c = props.value) === null || _c === void 0 ? void 0 : _c.bcc }, function (_a) {
+                    var input = _a.input, meta = _a.meta;
+                    return (React.createElement("div", null,
+                        React.createElement("label", null,
+                            "BCC:",
+                            React.createElement("input", __assign({ type: "text" }, input))),
+                        meta.error));
+                }),
+                React.createElement(domain_1.Field, { name: "value.body", initialValue: (_d = props.value) === null || _d === void 0 ? void 0 : _d.body }, function (_a) {
+                    var input = _a.input, meta = _a.meta;
+                    return (React.createElement("div", null,
+                        React.createElement("label", null,
+                            "Body:",
+                            React.createElement("textarea", __assign({}, input))),
+                        meta.error));
+                })));
         };
         return _this;
     }

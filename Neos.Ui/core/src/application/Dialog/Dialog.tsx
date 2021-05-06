@@ -1,219 +1,138 @@
 import * as React from 'react';
 import {Dialog as NeosDialog, Button} from '@neos-project/react-ui-components';
-import {Form, Field} from 'react-final-form';
+import {Form, useForm} from 'react-final-form';
 
-import {ILink, ILinkOptions, LinkType, useEditorState, useEditorTransactions, useLinkTypes, useLinkTypeForHref} from '../../domain';
+import {ILink, ILinkOptions, useEditorState, useEditorTransactions, useLinkTypes, useLinkTypeForHref, Field} from '../../domain';
+import {LinkEditor} from './LinkEditor';
+import {Settings} from './Settings';
 
 export const Dialog: React.FC = () => {
+    const linkTypes = useLinkTypes();
+    const {dismiss, apply} = useEditorTransactions();
     const {isOpen, value} = useEditorState();
+    const handleSubmit = React.useCallback((values: any) => {
+        const linkType = linkTypes.find(linkType => linkType.id === values.linkTypeId);
+        if (linkType) {
+            const props = values.linkTypeProps?.[linkType.id.split('.').join('_')];
 
-    let contents = null;
-    if (isOpen) {
-        if (value.transient) {
-            contents = (
-                <DialogWithValue
-                    value={value.transient}
-                />
-            );
-        } else {
-            contents = (
-                <DialogWithEmptyValue/>
-            );
+            if (props) {
+                const link = linkType.convertPropsToLink(props);
+                apply(link);
+            }
         }
+    }, [linkTypes]);
 
-        return (
-            <NeosDialog
-                title="Sitegeist.Archaeopteryx"
-                isOpen={isOpen}
-                style="jumbo"
-                onRequestClose={() => {}}
-            >
-                {contents}
-            </NeosDialog>
-        );
-    }
+    return (
+        <NeosDialog
+            title="Sitegeist.Archaeopteryx"
+            isOpen={isOpen}
+            style="jumbo"
+            onRequestClose={() => {}}
+        >
+            <Form<ILinkOptions> onSubmit={handleSubmit}>
+                {({handleSubmit, valid}) => (
+                    <form onSubmit={handleSubmit}>
+                        {value.transient === null ? (
+                            <DialogWithEmptyValue/>
+                        ) : (
+                            <DialogWithValue
+                                value={value.transient!}
+                            />
+                        )}
 
-    return null;
+                        <Button onClick={dismiss}>
+                            Cancel
+                        </Button>
+                        <Button
+                            style="success"
+                            type="submit"
+                            disabled={!valid}
+                            >
+                            Apply
+                        </Button>
+                    </form>
+                )}
+            </Form>
+        </NeosDialog>
+    );
 };
 
 const DialogWithEmptyValue: React.FC = () => {
-    const {dismiss} = useEditorTransactions();
     const linkTypes = useLinkTypes();
-    const [activeLinkType, setActiveLinkType] = React.useState<null | LinkType>(linkTypes[0]);
 
     return (
-        <>
-            {linkTypes.map(linkType => (
-                <Button
-                    key={linkType.id}
-                    onClick={() => setActiveLinkType(linkType)}
-                >
-                    <linkType.getStaticIcon/>
-                </Button>
-            ))}
-
+        <Field name="linkTypeId" initialValue={linkTypes[0].id}>{({input}) => (
             <div>
-                {activeLinkType ? (
-                    <LinkEditor
-                        key={activeLinkType.id}
-                        link={null}
-                        linkType={activeLinkType}
-                    />
-                ) : null}
-            </div>
+                {linkTypes.map(linkType => (
+                    <Button
+                        isActive={linkType.id === input.value}
+                        key={linkType.id}
+                        onClick={() => input.onChange(linkType.id)}
+                    >
+                        <linkType.getStaticIcon/>
+                    </Button>
+                ))}
 
-            <Button onClick={dismiss}>
-                Cancel
-            </Button>
-            <Button disabled>
-                Apply
-            </Button>
-        </>
+                <div>
+                    <LinkEditor
+                        key={input.value}
+                        link={null}
+                        linkType={linkTypes.find(linkType => linkType.id === input.value)!}
+                    />
+                </div>
+            </div>
+        )}</Field>
     );
 }
 
 const DialogWithValue: React.FC<{
     value: ILink
 }> = props => {
-    const {dismiss, update, unset, apply} = useEditorTransactions();
+    const form = useForm();
+    const {unset} = useEditorTransactions();
     const linkType = useLinkTypeForHref(props.value.href)!;
     const [showSettings, setShowSettings] = React.useState(false);
 
     return (
-        <>
-            <Button
-                isActive={!showSettings}
-                onClick={() => setShowSettings(false)}
-            >
-                <linkType.getIcon/>
-            </Button>
-            <Button
-                isActive={showSettings}
-                onClick={() => setShowSettings(true)}
-            >
-                SETTINGS
-            </Button>
-
+        <Field name="linkTypeId" initialValue={linkType.id}>{() => (
             <div>
-                <Button onClick={unset}>
-                    Delete
+                <Button
+                    isActive={!showSettings}
+                    onClick={() => setShowSettings(false)}
+                >
+                    <linkType.getIcon/>
                 </Button>
+                <Button
+                    isActive={showSettings}
+                    onClick={() => setShowSettings(true)}
+                >
+                    SETTINGS
+                </Button>
+
+                <div>
+                    <Button
+                        onClick={() => {
+                            unset();
+                            form.change('linkTypeProps', null);
+                        }}
+                    >
+                        Delete
+                    </Button>
+                </div>
+
+                <div>
+                    <div hidden={!showSettings}>
+                        <Settings initialValue={props.value.options}/>
+                    </div>
+                    <div hidden={showSettings}>
+                        <LinkEditor
+                            key={linkType.id}
+                            link={props.value}
+                            linkType={linkType}
+                        />
+                    </div>
+                </div>
             </div>
-
-            <div>
-                {showSettings ? (
-                    <Form<ILinkOptions> onSubmit={values => update({options: values})}>
-                        {({handleSubmit}) => (
-                            <form onSubmit={handleSubmit}>
-                                <Field<string>
-                                    name="anchor"
-                                    initialValue={props.value.options?.anchor}
-                                    >
-                                    {({input}) => (
-                                        <label>
-                                            Anchor:
-                                            <input type="text" {...input}/>
-                                        </label>
-                                    )}
-                                </Field>
-                                <Field<string>
-                                    name="title"
-                                    initialValue={props.value.options?.title}
-                                    >
-                                    {({input}) => (
-                                        <label>
-                                            Title:
-                                            <input type="text" {...input}/>
-                                        </label>
-                                    )}
-                                </Field>
-                                <Field<string>
-                                    type="checkbox"
-                                    name="targetBlank"
-                                    initialValue={props.value.options?.targetBlank ? 'true' : ''}
-                                    >
-                                    {({input}) => (
-                                        <label>
-                                            Open in new Window:
-                                            <input
-                                                style={{
-                                                    appearance: 'checkbox',
-                                                    backgroundColor: 'white',
-                                                }}
-                                                type="checkbox"
-                                                {...input}
-                                            />
-                                        </label>
-                                    )}
-                                </Field>
-                                <Field<string>
-                                    type="checkbox"
-                                    name="relNoFollow"
-                                    initialValue={props.value.options?.relNoFollow ? 'true' : ''}
-                                    >
-                                    {({input}) => (
-                                        <label>
-                                            No Follow:
-                                            <input
-                                                style={{
-                                                    appearance: 'checkbox',
-                                                    backgroundColor: 'white',
-                                                }}
-                                                type="checkbox"
-                                                {...input}
-                                            />
-                                        </label>
-                                    )}
-                                </Field>
-
-                                <button type="submit">Apply</button>
-                            </form>
-                        )}
-                    </Form>
-                ) : (
-                    <LinkEditor
-                        key={linkType.id}
-                        link={props.value}
-                        linkType={linkType}
-                    />
-                )}
-            </div>
-
-            <Button onClick={dismiss}>
-                Click here!
-            </Button>
-            <Button onClick={() => apply(props.value)}>
-                Apply
-            </Button>
-        </>
+        )}</Field>
     );
-}
-
-function useLastNonNull<V>(value: null | V) {
-    const valueRef = React.useRef(value);
-
-    if (value !== null) {
-        valueRef.current = value;
-    }
-
-    return valueRef.current;
-}
-
-const LinkEditor: React.FC<{
-    link: null | ILink
-    linkType: LinkType
-}> = props => {
-    const {busy, error, result} = props.linkType.useResolvedProps(props.link ?? undefined);
-    const editorProps = useLastNonNull(result);
-    const {getEditor: Editor, getLoadingEditor: LoadingEditor} = props.linkType;
-
-
-
-    if (error) {
-        throw error;
-    } else if (busy && !editorProps) {
-        return (<LoadingEditor link={props.link ?? undefined}/>);
-    } else {
-        return (<Editor {...editorProps}/>);
-    }
 }

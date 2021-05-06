@@ -10,6 +10,7 @@ export abstract class LinkType<P = any> {
     public abstract id: string;
     public abstract isSuitableFor: (link: ILink) => boolean;
     public abstract useResolvedProps: (link?: ILink) => IProcess<P>;
+    public abstract convertPropsToLink: (props: P) => null | ILink
     public abstract getStaticIcon: React.FC;
     public abstract getIcon: React.FC<P>;
     public abstract getStaticTitle: () => string;

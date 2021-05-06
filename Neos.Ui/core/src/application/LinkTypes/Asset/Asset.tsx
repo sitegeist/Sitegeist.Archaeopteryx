@@ -1,8 +1,7 @@
 import * as React from 'react';
 
-import {useRoutes} from '@sitegeist/archaeopteryx-neos-bridge';
-
-import {Process, LinkType, ILink, useEditorTransactions} from '../../../domain';
+import {Process, Field, LinkType, ILink} from '../../../domain';
+import {MediaBrowser} from './MediaBrowser';
 
 interface Props {
     assetIdentifier: null | string
@@ -30,6 +29,16 @@ export const Asset = new class extends LinkType<Props> {
         );
     };
 
+    public readonly convertPropsToLink = (props: Props) => {
+        if (props.assetIdentifier === null) {
+            return null;
+        }
+
+        return {
+            href: `asset://${props.assetIdentifier}`
+        };
+    };
+
     public readonly getStaticIcon = () => (
         <div>ASSET</div>
     );
@@ -55,44 +64,16 @@ export const Asset = new class extends LinkType<Props> {
     );
 
     public readonly getEditor = (props: Props) => {
-        const {update} = useEditorTransactions();
-        const mediaBrowserUri = useRoutes(r => r.core?.modules?.mediaBrowser);
-
-        React.useEffect(() => {
-            (window as any).NeosMediaBrowserCallbacks = {
-                assetChosen: (assetIdentifier: string) => {
-                    update({href: `asset://${assetIdentifier}`});
-                }
-            };
-
-            () => {
-                (window as any).NeosMediaBrowserCallbacks = {};
-            };
-        }, [update]);
-
-        if (!mediaBrowserUri) {
-            throw this.error('Could not resolve mediaBrowserUri.');
-        }
-
-        if (props.assetIdentifier) {
-            return (
-                <iframe
-                    name="neos-media-selection-screen"
-                    src={`${mediaBrowserUri}/images/edit.html?asset[__identity]=${props.assetIdentifier}`}
-                    style={{width: '100%', minHeight: '300px'}}
-                    frameBorder="0"
-                    onLoad={ev => (ev.target as HTMLIFrameElement).contentDocument?.querySelector('form > .neos-footer')?.remove()}
+        return (
+            <Field
+                name="assetIdentifier"
+                initialValue={props.assetIdentifier}
+            >{({input}) => (
+                <MediaBrowser
+                    assetIdentifier={input.value}
+                    onSelectAsset={input.onChange}
                 />
-            );
-        } else {
-            return (
-                <iframe
-                    name="neos-media-selection-screen"
-                    src={`${mediaBrowserUri}/assets/index.html`}
-                    style={{width: '100%', minHeight: '300px'}}
-                    frameBorder="0"
-                />
-            );
-        }
+            )}</Field>
+        );
     };
 }

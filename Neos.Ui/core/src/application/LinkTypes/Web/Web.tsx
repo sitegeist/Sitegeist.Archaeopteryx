@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import {Process, LinkType, ILink, useEditorTransactions, useEditorValue} from '../../../domain';
+import {Process, LinkType, ILink, Field} from '../../../domain';
 
 interface Props {
     value: null | {
@@ -41,6 +41,16 @@ export const Web = new class extends LinkType<Props> {
         );
     }
 
+    public readonly convertPropsToLink = (props: Props) => {
+        if (props.value === null) {
+            return null;
+        }
+
+        return {
+            href: `${props.value.protocol}://${props.value.urlWithoutProtocol}`
+        };
+    };
+
     public readonly getStaticIcon = () => (
         <div>ICON</div>
     );
@@ -79,17 +89,30 @@ export const Web = new class extends LinkType<Props> {
         <div>{this.getStaticTitle()}</div>
     );
 
-    public readonly getEditor = () => {
-        const {value} = useEditorValue();
-        const {update} = useEditorTransactions();
-        const onChange = React.useCallback(
-            (ev: React.SyntheticEvent) =>
-                update({href: (ev.target as HTMLInputElement).value}),
-            [update]
-        );
-
+    public readonly getEditor = (props: Props) => {
         return (
-            <input type="text" value={value?.href ?? ''} onChange={onChange}/>
+            <div>
+                <Field<string>
+                    name="value.protocol"
+                    initialValue={props.value?.protocol ?? 'https'}
+                >{({input}) => (
+                    <select {...input}>
+                        <option value="https">HTTTPS</option>
+                        <option value="http">HTTP</option>
+                    </select>
+                )}</Field>
+                <Field<string>
+                    name="value.urlWithoutProtocol"
+                    initialValue={props.value?.urlWithoutProtocol}
+                    validate={value => {
+                        if (!value) {
+                            return 'Url is required';
+                        }
+                    }}
+                >{({input}) => (
+                    <input type="text" {...input}/>
+                )}</Field>
+            </div>
         );
     };
 }

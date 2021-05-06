@@ -1,14 +1,13 @@
 /// <reference types="react" />
 import { ILink } from '../../../domain';
-interface IMailToLink {
-    recipient: string;
-    subject?: string;
-    cc?: string;
-    bcc?: string;
-    body?: string;
-}
 interface Props {
-    value: null | IMailToLink;
+    value: null | {
+        recipient: string;
+        subject?: string;
+        cc?: string;
+        bcc?: string;
+        body?: string;
+    };
 }
 export declare const MailTo: {
     readonly id: "Sitegeist.Archaeopteryx:MailTo";
@@ -40,6 +39,9 @@ export declare const MailTo: {
             };
         };
     };
+    readonly convertPropsToLink: (props: Props) => {
+        href: string;
+    } | null;
     readonly getStaticIcon: () => JSX.Element;
     readonly getIcon: () => JSX.Element;
     readonly getStaticTitle: () => string;

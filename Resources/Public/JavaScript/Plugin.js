@@ -25195,18 +25195,6 @@ function __classPrivateFieldSet(receiver, privateMap, value) {
 "use strict";
 
 
-var __assign = undefined && undefined.__assign || function () {
-    __assign = Object.assign || function (t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) {
-                if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
-            }
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     Object.defineProperty(o, k2, { enumerable: true, get: function get() {
@@ -25257,76 +25245,119 @@ var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@n
 var react_ui_components_1 = __webpack_require__(/*! @neos-project/react-ui-components */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/react-ui-components/index.js");
 var react_final_form_1 = __webpack_require__(/*! react-final-form */ "../../node_modules/react-final-form/dist/react-final-form.es.js");
 var domain_1 = __webpack_require__(/*! ../../domain */ "../core/lib/domain/index.js");
+var LinkEditor_1 = __webpack_require__(/*! ./LinkEditor */ "../core/lib/application/Dialog/LinkEditor.js");
+var Settings_1 = __webpack_require__(/*! ./Settings */ "../core/lib/application/Dialog/Settings.js");
 var Dialog = function Dialog() {
-    var _a = domain_1.useEditorState(),
-        isOpen = _a.isOpen,
-        value = _a.value;
-    var contents = null;
-    if (isOpen) {
-        if (value.transient) {
-            contents = React.createElement(DialogWithValue, { value: value.transient });
-        } else {
-            contents = React.createElement(DialogWithEmptyValue, null);
+    var linkTypes = domain_1.useLinkTypes();
+    var _a = domain_1.useEditorTransactions(),
+        dismiss = _a.dismiss,
+        apply = _a.apply;
+    var _b = domain_1.useEditorState(),
+        isOpen = _b.isOpen,
+        value = _b.value;
+    var handleSubmit = React.useCallback(function (values) {
+        var _a;
+        var linkType = linkTypes.find(function (linkType) {
+            return linkType.id === values.linkTypeId;
+        });
+        if (linkType) {
+            var props = (_a = values.linkTypeProps) === null || _a === void 0 ? void 0 : _a[linkType.id.split('.').join('_')];
+            if (props) {
+                var link = linkType.convertPropsToLink(props);
+                apply(link);
+            }
         }
-        return React.createElement(react_ui_components_1.Dialog, { title: "Sitegeist.Archaeopteryx", isOpen: isOpen, style: "jumbo", onRequestClose: function onRequestClose() {} }, contents);
-    }
-    return null;
+    }, [linkTypes]);
+    return React.createElement(react_ui_components_1.Dialog, { title: "Sitegeist.Archaeopteryx", isOpen: isOpen, style: "jumbo", onRequestClose: function onRequestClose() {} }, React.createElement(react_final_form_1.Form, { onSubmit: handleSubmit }, function (_a) {
+        var handleSubmit = _a.handleSubmit,
+            valid = _a.valid;
+        return React.createElement("form", { onSubmit: handleSubmit }, value.transient === null ? React.createElement(DialogWithEmptyValue, null) : React.createElement(DialogWithValue, { value: value.transient }), React.createElement(react_ui_components_1.Button, { onClick: dismiss }, "Cancel"), React.createElement(react_ui_components_1.Button, { style: "success", type: "submit", disabled: !valid }, "Apply"));
+    }));
 };
 exports.Dialog = Dialog;
 var DialogWithEmptyValue = function DialogWithEmptyValue() {
-    var dismiss = domain_1.useEditorTransactions().dismiss;
     var linkTypes = domain_1.useLinkTypes();
-    var _a = __read(React.useState(linkTypes[0]), 2),
-        activeLinkType = _a[0],
-        setActiveLinkType = _a[1];
-    return React.createElement(React.Fragment, null, linkTypes.map(function (linkType) {
-        return React.createElement(react_ui_components_1.Button, { key: linkType.id, onClick: function onClick() {
-                return setActiveLinkType(linkType);
-            } }, React.createElement(linkType.getStaticIcon, null));
-    }), React.createElement("div", null, activeLinkType ? React.createElement(LinkEditor, { key: activeLinkType.id, link: null, linkType: activeLinkType }) : null), React.createElement(react_ui_components_1.Button, { onClick: dismiss }, "Cancel"), React.createElement(react_ui_components_1.Button, { disabled: true }, "Apply"));
+    return React.createElement(domain_1.Field, { name: "linkTypeId", initialValue: linkTypes[0].id }, function (_a) {
+        var input = _a.input;
+        return React.createElement("div", null, linkTypes.map(function (linkType) {
+            return React.createElement(react_ui_components_1.Button, { isActive: linkType.id === input.value, key: linkType.id, onClick: function onClick() {
+                    return input.onChange(linkType.id);
+                } }, React.createElement(linkType.getStaticIcon, null));
+        }), React.createElement("div", null, React.createElement(LinkEditor_1.LinkEditor, { key: input.value, link: null, linkType: linkTypes.find(function (linkType) {
+                return linkType.id === input.value;
+            }) })));
+    });
 };
 var DialogWithValue = function DialogWithValue(props) {
-    var _a = domain_1.useEditorTransactions(),
-        dismiss = _a.dismiss,
-        update = _a.update,
-        unset = _a.unset,
-        apply = _a.apply;
+    var form = react_final_form_1.useForm();
+    var unset = domain_1.useEditorTransactions().unset;
     var linkType = domain_1.useLinkTypeForHref(props.value.href);
-    var _b = __read(React.useState(false), 2),
-        showSettings = _b[0],
-        setShowSettings = _b[1];
-    return React.createElement(React.Fragment, null, React.createElement(react_ui_components_1.Button, { isActive: !showSettings, onClick: function onClick() {
-            return setShowSettings(false);
-        } }, React.createElement(linkType.getIcon, null)), React.createElement(react_ui_components_1.Button, { isActive: showSettings, onClick: function onClick() {
-            return setShowSettings(true);
-        } }, "SETTINGS"), React.createElement("div", null, React.createElement(react_ui_components_1.Button, { onClick: unset }, "Delete")), React.createElement("div", null, showSettings ? React.createElement(react_final_form_1.Form, { onSubmit: function onSubmit(values) {
-            return update({ options: values });
-        } }, function (_a) {
-        var _b, _c, _d, _e;
-        var handleSubmit = _a.handleSubmit;
-        return React.createElement("form", { onSubmit: handleSubmit }, React.createElement(react_final_form_1.Field, { name: "anchor", initialValue: (_b = props.value.options) === null || _b === void 0 ? void 0 : _b.anchor }, function (_a) {
-            var input = _a.input;
-            return React.createElement("label", null, "Anchor:", React.createElement("input", __assign({ type: "text" }, input)));
-        }), React.createElement(react_final_form_1.Field, { name: "title", initialValue: (_c = props.value.options) === null || _c === void 0 ? void 0 : _c.title }, function (_a) {
-            var input = _a.input;
-            return React.createElement("label", null, "Title:", React.createElement("input", __assign({ type: "text" }, input)));
-        }), React.createElement(react_final_form_1.Field, { type: "checkbox", name: "targetBlank", initialValue: ((_d = props.value.options) === null || _d === void 0 ? void 0 : _d.targetBlank) ? 'true' : '' }, function (_a) {
-            var input = _a.input;
-            return React.createElement("label", null, "Open in new Window:", React.createElement("input", __assign({ style: {
-                    appearance: 'checkbox',
-                    backgroundColor: 'white'
-                }, type: "checkbox" }, input)));
-        }), React.createElement(react_final_form_1.Field, { type: "checkbox", name: "relNoFollow", initialValue: ((_e = props.value.options) === null || _e === void 0 ? void 0 : _e.relNoFollow) ? 'true' : '' }, function (_a) {
-            var input = _a.input;
-            return React.createElement("label", null, "No Follow:", React.createElement("input", __assign({ style: {
-                    appearance: 'checkbox',
-                    backgroundColor: 'white'
-                }, type: "checkbox" }, input)));
-        }), React.createElement("button", { type: "submit" }, "Apply"));
-    }) : React.createElement(LinkEditor, { key: linkType.id, link: props.value, linkType: linkType })), React.createElement(react_ui_components_1.Button, { onClick: dismiss }, "Click here!"), React.createElement(react_ui_components_1.Button, { onClick: function onClick() {
-            return apply(props.value);
-        } }, "Apply"));
+    var _a = __read(React.useState(false), 2),
+        showSettings = _a[0],
+        setShowSettings = _a[1];
+    return React.createElement(domain_1.Field, { name: "linkTypeId", initialValue: linkType.id }, function () {
+        return React.createElement("div", null, React.createElement(react_ui_components_1.Button, { isActive: !showSettings, onClick: function onClick() {
+                return setShowSettings(false);
+            } }, React.createElement(linkType.getIcon, null)), React.createElement(react_ui_components_1.Button, { isActive: showSettings, onClick: function onClick() {
+                return setShowSettings(true);
+            } }, "SETTINGS"), React.createElement("div", null, React.createElement(react_ui_components_1.Button, { onClick: function onClick() {
+                unset();
+                form.change('linkTypeProps', null);
+            } }, "Delete")), React.createElement("div", null, React.createElement("div", { hidden: !showSettings }, React.createElement(Settings_1.Settings, { initialValue: props.value.options })), React.createElement("div", { hidden: showSettings }, React.createElement(LinkEditor_1.LinkEditor, { key: linkType.id, link: props.value, linkType: linkType }))));
+    });
 };
+//# sourceMappingURL=Dialog.js.map
+
+/***/ }),
+
+/***/ "../core/lib/application/Dialog/LinkEditor.js":
+/*!****************************************************!*\
+  !*** ../core/lib/application/Dialog/LinkEditor.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __assign = undefined && undefined.__assign || function () {
+    __assign = Object.assign || function (t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) {
+                if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+            }
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function get() {
+            return m[k];
+        } });
+} : function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+var __setModuleDefault = undefined && undefined.__setModuleDefault || (Object.create ? function (o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+} : function (o, v) {
+    o["default"] = v;
+});
+var __importStar = undefined && undefined.__importStar || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) {
+        if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    }__setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.LinkEditor = void 0;
+var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
+var domain_1 = __webpack_require__(/*! ../../domain */ "../core/lib/domain/index.js");
 function useLastNonNull(value) {
     var valueRef = React.useRef(value);
     if (value !== null) {
@@ -25349,10 +25380,86 @@ var LinkEditor = function LinkEditor(props) {
     } else if (busy && !editorProps) {
         return React.createElement(LoadingEditor, { link: (_b = props.link) !== null && _b !== void 0 ? _b : undefined });
     } else {
-        return React.createElement(Editor, __assign({}, editorProps));
+        return React.createElement(domain_1.FieldGroup, { prefix: "linkTypeProps." + props.linkType.id.split('.').join('_') }, React.createElement(Editor, __assign({}, editorProps)));
     }
 };
-//# sourceMappingURL=Dialog.js.map
+exports.LinkEditor = LinkEditor;
+//# sourceMappingURL=LinkEditor.js.map
+
+/***/ }),
+
+/***/ "../core/lib/application/Dialog/Settings.js":
+/*!**************************************************!*\
+  !*** ../core/lib/application/Dialog/Settings.js ***!
+  \**************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __assign = undefined && undefined.__assign || function () {
+    __assign = Object.assign || function (t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) {
+                if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+            }
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function get() {
+            return m[k];
+        } });
+} : function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+var __setModuleDefault = undefined && undefined.__setModuleDefault || (Object.create ? function (o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+} : function (o, v) {
+    o["default"] = v;
+});
+var __importStar = undefined && undefined.__importStar || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) {
+        if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    }__setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Settings = void 0;
+var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
+var react_final_form_1 = __webpack_require__(/*! react-final-form */ "../../node_modules/react-final-form/dist/react-final-form.es.js");
+var Settings = function Settings(props) {
+    var _a, _b, _c, _d;
+    return React.createElement("div", null, React.createElement(react_final_form_1.Field, { name: "anchor", initialValue: (_a = props.initialValue) === null || _a === void 0 ? void 0 : _a.anchor }, function (_a) {
+        var input = _a.input;
+        return React.createElement("label", null, "Anchor:", React.createElement("input", __assign({ type: "text" }, input)));
+    }), React.createElement(react_final_form_1.Field, { name: "title", initialValue: (_b = props.initialValue) === null || _b === void 0 ? void 0 : _b.title }, function (_a) {
+        var input = _a.input;
+        return React.createElement("label", null, "Title:", React.createElement("input", __assign({ type: "text" }, input)));
+    }), React.createElement(react_final_form_1.Field, { type: "checkbox", name: "targetBlank", initialValue: ((_c = props.initialValue) === null || _c === void 0 ? void 0 : _c.targetBlank) ? 'true' : '' }, function (_a) {
+        var input = _a.input;
+        return React.createElement("label", null, "Open in new Window:", React.createElement("input", __assign({ style: {
+                appearance: 'checkbox',
+                backgroundColor: 'white'
+            }, type: "checkbox" }, input)));
+    }), React.createElement(react_final_form_1.Field, { type: "checkbox", name: "relNoFollow", initialValue: ((_d = props.initialValue) === null || _d === void 0 ? void 0 : _d.relNoFollow) ? 'true' : '' }, function (_a) {
+        var input = _a.input;
+        return React.createElement("label", null, "No Follow:", React.createElement("input", __assign({ style: {
+                appearance: 'checkbox',
+                backgroundColor: 'white'
+            }, type: "checkbox" }, input)));
+    }));
+};
+exports.Settings = Settings;
+//# sourceMappingURL=Settings.js.map
 
 /***/ }),
 
@@ -25461,8 +25568,8 @@ var __importStar = undefined && undefined.__importStar || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Asset = void 0;
 var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
-var archaeopteryx_neos_bridge_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-neos-bridge */ "../neos-bridge/lib/index.js");
 var domain_1 = __webpack_require__(/*! ../../../domain */ "../core/lib/domain/index.js");
+var MediaBrowser_1 = __webpack_require__(/*! ./MediaBrowser */ "../core/lib/application/LinkTypes/Asset/MediaBrowser.js");
 exports.Asset = new (function (_super) {
     __extends(class_1, _super);
     function class_1() {
@@ -25480,6 +25587,14 @@ exports.Asset = new (function (_super) {
                 return domain_1.Process.success({ assetIdentifier: match[1] });
             }
             return domain_1.Process.error(_this.error("Cannot handle href \"" + link.href + "\"."));
+        };
+        _this.convertPropsToLink = function (props) {
+            if (props.assetIdentifier === null) {
+                return null;
+            }
+            return {
+                href: "asset://" + props.assetIdentifier
+            };
         };
         _this.getStaticIcon = function () {
             return React.createElement("div", null, "ASSET");
@@ -25503,36 +25618,87 @@ exports.Asset = new (function (_super) {
             return React.createElement("div", null, "ASSET EDITOR");
         };
         _this.getEditor = function (props) {
-            var update = domain_1.useEditorTransactions().update;
-            var mediaBrowserUri = archaeopteryx_neos_bridge_1.useRoutes(function (r) {
-                var _a, _b;return (_b = (_a = r.core) === null || _a === void 0 ? void 0 : _a.modules) === null || _b === void 0 ? void 0 : _b.mediaBrowser;
+            return React.createElement(domain_1.Field, { name: "assetIdentifier", initialValue: props.assetIdentifier }, function (_a) {
+                var input = _a.input;
+                return React.createElement(MediaBrowser_1.MediaBrowser, { assetIdentifier: input.value, onSelectAsset: input.onChange });
             });
-            React.useEffect(function () {
-                window.NeosMediaBrowserCallbacks = {
-                    assetChosen: function assetChosen(assetIdentifier) {
-                        update({ href: "asset://" + assetIdentifier });
-                    }
-                };
-                (function () {
-                    window.NeosMediaBrowserCallbacks = {};
-                });
-            }, [update]);
-            if (!mediaBrowserUri) {
-                throw _this.error('Could not resolve mediaBrowserUri.');
-            }
-            if (props.assetIdentifier) {
-                return React.createElement("iframe", { name: "neos-media-selection-screen", src: mediaBrowserUri + "/images/edit.html?asset[__identity]=" + props.assetIdentifier, style: { width: '100%', minHeight: '300px' }, frameBorder: "0", onLoad: function onLoad(ev) {
-                        var _a, _b;return (_b = (_a = ev.target.contentDocument) === null || _a === void 0 ? void 0 : _a.querySelector('form > .neos-footer')) === null || _b === void 0 ? void 0 : _b.remove();
-                    } });
-            } else {
-                return React.createElement("iframe", { name: "neos-media-selection-screen", src: mediaBrowserUri + "/assets/index.html", style: { width: '100%', minHeight: '300px' }, frameBorder: "0" });
-            }
         };
         return _this;
     }
     return class_1;
 }(domain_1.LinkType))();
 //# sourceMappingURL=Asset.js.map
+
+/***/ }),
+
+/***/ "../core/lib/application/LinkTypes/Asset/MediaBrowser.js":
+/*!***************************************************************!*\
+  !*** ../core/lib/application/LinkTypes/Asset/MediaBrowser.js ***!
+  \***************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function get() {
+            return m[k];
+        } });
+} : function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+var __setModuleDefault = undefined && undefined.__setModuleDefault || (Object.create ? function (o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+} : function (o, v) {
+    o["default"] = v;
+});
+var __importStar = undefined && undefined.__importStar || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) {
+        if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    }__setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.MediaBrowser = void 0;
+var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
+var archaeopteryx_neos_bridge_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-neos-bridge */ "../neos-bridge/lib/index.js");
+var MediaBrowser = function MediaBrowser(props) {
+    var mediaBrowserUri = archaeopteryx_neos_bridge_1.useRoutes(function (r) {
+        var _a, _b;return (_b = (_a = r.core) === null || _a === void 0 ? void 0 : _a.modules) === null || _b === void 0 ? void 0 : _b.mediaBrowser;
+    });
+    React.useEffect(function () {
+        window.NeosMediaBrowserCallbacks = {
+            assetChosen: function assetChosen(assetIdentifier) {
+                props.onSelectAsset(assetIdentifier);
+            }
+        };
+        (function () {
+            window.NeosMediaBrowserCallbacks = {};
+        });
+    }, [props.onSelectAsset]);
+    if (!mediaBrowserUri) {
+        throw new Error('[Sitegeist.Archaeopteryx]: Could not resolve mediaBrowserUri.');
+    }
+    if (props.assetIdentifier) {
+        return React.createElement("iframe", { name: "neos-media-selection-screen", src: mediaBrowserUri + "/images/edit.html?asset[__identity]=" + props.assetIdentifier, style: { width: '100%', minHeight: '467px' }, frameBorder: "0", onLoad: function onLoad(ev) {
+                var _a, _b;
+                var iframe = ev.target.contentDocument;
+                (_a = iframe === null || iframe === void 0 ? void 0 : iframe.querySelector('form > .neos-footer')) === null || _a === void 0 ? void 0 : _a.remove();
+                (_b = iframe === null || iframe === void 0 ? void 0 : iframe.querySelectorAll('input, select, textarea')) === null || _b === void 0 ? void 0 : _b.forEach(function (input) {
+                    input.readOnly = true;
+                });
+            } });
+    } else {
+        return React.createElement("iframe", { name: "neos-media-selection-screen", src: mediaBrowserUri + "/assets/index.html", style: { width: '100%', minHeight: '467px' }, frameBorder: "0" });
+    }
+};
+exports.MediaBrowser = MediaBrowser;
+//# sourceMappingURL=MediaBrowser.js.map
 
 /***/ }),
 
@@ -25623,24 +25789,7 @@ var __importStar = undefined && undefined.__importStar || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MailTo = void 0;
 var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
-var react_final_form_1 = __webpack_require__(/*! react-final-form */ "../../node_modules/react-final-form/dist/react-final-form.es.js");
 var domain_1 = __webpack_require__(/*! ../../../domain */ "../core/lib/domain/index.js");
-function convert(mailToLink) {
-    var url = new URL("mailto:" + mailToLink.recipient);
-    if (mailToLink.subject) {
-        url.searchParams.set('subject', mailToLink.subject);
-    }
-    if (mailToLink.cc) {
-        url.searchParams.set('cc', mailToLink.cc);
-    }
-    if (mailToLink.bcc) {
-        url.searchParams.set('bcc', mailToLink.bcc);
-    }
-    if (mailToLink.body) {
-        url.searchParams.set('body', mailToLink.body);
-    }
-    return url.toString();
-}
 exports.MailTo = new (function (_super) {
     __extends(class_1, _super);
     function class_1() {
@@ -25665,6 +25814,25 @@ exports.MailTo = new (function (_super) {
                 }
             });
         };
+        _this.convertPropsToLink = function (props) {
+            if (props.value === null) {
+                return null;
+            }
+            var url = new URL("mailto:" + props.value.recipient);
+            if (props.value.subject) {
+                url.searchParams.set('subject', props.value.subject);
+            }
+            if (props.value.cc) {
+                url.searchParams.set('cc', props.value.cc);
+            }
+            if (props.value.bcc) {
+                url.searchParams.set('bcc', props.value.bcc);
+            }
+            if (props.value.body) {
+                url.searchParams.set('body', props.value.body);
+            }
+            return { href: url.toString() };
+        };
         _this.getStaticIcon = function () {
             return React.createElement("div", null, "MAILTO");
         };
@@ -25687,34 +25855,28 @@ exports.MailTo = new (function (_super) {
             return React.createElement("div", null, "MAILTO EDITOR");
         };
         _this.getEditor = function (props) {
-            var update = domain_1.useEditorTransactions().update;
-            var handleSubmit = React.useCallback(function (value) {
-                update({ href: convert(value) });
-            }, []);
-            return React.createElement(react_final_form_1.Form, { initialValues: props.value, onSubmit: handleSubmit }, function (_a) {
-                var handleSubmit = _a.handleSubmit;
-                return React.createElement("form", { onSubmit: handleSubmit }, React.createElement(react_final_form_1.Field, { name: "recipient", validate: function validate(value) {
-                        if (!value) {
-                            return 'recipient is required';
-                        }
-                    } }, function (_a) {
-                    var input = _a.input,
-                        meta = _a.meta;
-                    return React.createElement("div", null, React.createElement("label", null, "Recipient:", React.createElement("input", __assign({ type: "text" }, input))), meta.error);
-                }), React.createElement(react_final_form_1.Field, { name: "cc" }, function (_a) {
-                    var input = _a.input,
-                        meta = _a.meta;
-                    return React.createElement("div", null, React.createElement("label", null, "CC:", React.createElement("input", __assign({ type: "text" }, input))), meta.error);
-                }), React.createElement(react_final_form_1.Field, { name: "bcc" }, function (_a) {
-                    var input = _a.input,
-                        meta = _a.meta;
-                    return React.createElement("div", null, React.createElement("label", null, "BCC:", React.createElement("input", __assign({ type: "text" }, input))), meta.error);
-                }), React.createElement(react_final_form_1.Field, { name: "body" }, function (_a) {
-                    var input = _a.input,
-                        meta = _a.meta;
-                    return React.createElement("div", null, React.createElement("label", null, "Body:", React.createElement("textarea", __assign({}, input))), meta.error);
-                }), React.createElement("button", { type: "submit" }, "Apply"));
-            });
+            var _a, _b, _c, _d;
+            return React.createElement("div", null, React.createElement(domain_1.Field, { name: "value.recipient", initialValue: (_a = props.value) === null || _a === void 0 ? void 0 : _a.recipient, validate: function validate(value) {
+                    if (!value) {
+                        return 'recipient is required';
+                    }
+                } }, function (_a) {
+                var input = _a.input,
+                    meta = _a.meta;
+                return React.createElement("div", null, React.createElement("label", null, "Recipient:", React.createElement("input", __assign({ type: "text" }, input))), meta.error);
+            }), React.createElement(domain_1.Field, { name: "value.cc", initialValue: (_b = props.value) === null || _b === void 0 ? void 0 : _b.cc }, function (_a) {
+                var input = _a.input,
+                    meta = _a.meta;
+                return React.createElement("div", null, React.createElement("label", null, "CC:", React.createElement("input", __assign({ type: "text" }, input))), meta.error);
+            }), React.createElement(domain_1.Field, { name: "value.bcc", initialValue: (_c = props.value) === null || _c === void 0 ? void 0 : _c.bcc }, function (_a) {
+                var input = _a.input,
+                    meta = _a.meta;
+                return React.createElement("div", null, React.createElement("label", null, "BCC:", React.createElement("input", __assign({ type: "text" }, input))), meta.error);
+            }), React.createElement(domain_1.Field, { name: "value.body", initialValue: (_d = props.value) === null || _d === void 0 ? void 0 : _d.body }, function (_a) {
+                var input = _a.input,
+                    meta = _a.meta;
+                return React.createElement("div", null, React.createElement("label", null, "Body:", React.createElement("textarea", __assign({}, input))), meta.error);
+            }));
         };
         return _this;
     }
@@ -25958,6 +26120,14 @@ exports.Node = new (function (_super) {
             }, [link === null || link === void 0 ? void 0 : link.href, siteNodeContextPath]);
             return domain_1.Process.fromAsyncState(asyncState);
         };
+        _this.convertPropsToLink = function (props) {
+            if (props.node === null) {
+                return null;
+            }
+            return {
+                href: "node://" + props.node.identifier
+            };
+        };
         _this.getStaticIcon = function () {
             return React.createElement("div", null, "NODE TREE");
         };
@@ -25980,8 +26150,7 @@ exports.Node = new (function (_super) {
             return React.createElement("div", null, "NODE TREE EDITOR");
         };
         _this.getEditor = function (props) {
-            var _a, _b, _c;
-            var update = domain_1.useEditorTransactions().update;
+            var _a, _b;
             var siteNodeContextPath = archaeopteryx_neos_bridge_1.useSiteNodeContextPath();
             var documentNodeContextPath = archaeopteryx_neos_bridge_1.useDocumentNodeContextPath();
             var baseNodeTypeName = (_a = archaeopteryx_neos_bridge_1.useConfiguration(function (c) {
@@ -25995,20 +26164,24 @@ exports.Node = new (function (_super) {
             } else if (!documentNodeContextPath) {
                 throw _this.error('Could not load node tree, because documentNodeContextPath could not be determined.');
             } else {
-                return React.createElement(archaeopteryx_custom_node_tree_1.NodeTree, { configuration: {
-                        baseNodeTypeName: baseNodeTypeName,
-                        rootNodeContextPath: siteNodeContextPath,
-                        documentNodeContextPath: documentNodeContextPath,
-                        selectedNodeContextPath: (_c = props.node) === null || _c === void 0 ? void 0 : _c.contextPath,
-                        loadingDepth: loadingDepth
-                    }, options: {
-                        enableSearch: true,
-                        enableNodeTypeFilter: true
-                    }, onSelect: function onSelect(node) {
-                        var cacheIdentifier = node.identifier + "@" + siteNodeContextPath.context;
-                        propsCache.set(cacheIdentifier, { node: node });
-                        update({ href: "node://" + node.identifier });
-                    } });
+                return React.createElement(domain_1.Field, { name: "node", initialValue: props.node }, function (_a) {
+                    var _b;
+                    var input = _a.input;
+                    return React.createElement(archaeopteryx_custom_node_tree_1.NodeTree, { configuration: {
+                            baseNodeTypeName: baseNodeTypeName,
+                            rootNodeContextPath: siteNodeContextPath,
+                            documentNodeContextPath: documentNodeContextPath,
+                            selectedNodeContextPath: (_b = input.value) === null || _b === void 0 ? void 0 : _b.contextPath,
+                            loadingDepth: loadingDepth
+                        }, options: {
+                            enableSearch: true,
+                            enableNodeTypeFilter: true
+                        }, onSelect: function onSelect(node) {
+                            var cacheIdentifier = node.identifier + "@" + siteNodeContextPath.context;
+                            propsCache.set(cacheIdentifier, { node: node });
+                            input.onChange(node);
+                        } });
+                });
             }
         };
         return _this;
@@ -26069,6 +26242,18 @@ var __extends = undefined && undefined.__extends || function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 }();
+var __assign = undefined && undefined.__assign || function () {
+    __assign = Object.assign || function (t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) {
+                if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+            }
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     Object.defineProperty(o, k2, { enumerable: true, get: function get() {
@@ -26145,6 +26330,14 @@ exports.Web = new (function (_super) {
             }
             return domain_1.Process.error(_this.error("Cannot handle href \"" + link.href + "\"."));
         };
+        _this.convertPropsToLink = function (props) {
+            if (props.value === null) {
+                return null;
+            }
+            return {
+                href: props.value.protocol + "://" + props.value.urlWithoutProtocol
+            };
+        };
         _this.getStaticIcon = function () {
             return React.createElement("div", null, "ICON");
         };
@@ -26174,14 +26367,19 @@ exports.Web = new (function (_super) {
         _this.getLoadingEditor = function () {
             return React.createElement("div", null, _this.getStaticTitle());
         };
-        _this.getEditor = function () {
-            var _a;
-            var value = domain_1.useEditorValue().value;
-            var update = domain_1.useEditorTransactions().update;
-            var onChange = React.useCallback(function (ev) {
-                return update({ href: ev.target.value });
-            }, [update]);
-            return React.createElement("input", { type: "text", value: (_a = value === null || value === void 0 ? void 0 : value.href) !== null && _a !== void 0 ? _a : '', onChange: onChange });
+        _this.getEditor = function (props) {
+            var _a, _b, _c;
+            return React.createElement("div", null, React.createElement(domain_1.Field, { name: "value.protocol", initialValue: (_b = (_a = props.value) === null || _a === void 0 ? void 0 : _a.protocol) !== null && _b !== void 0 ? _b : 'https' }, function (_a) {
+                var input = _a.input;
+                return React.createElement("select", __assign({}, input), React.createElement("option", { value: "https" }, "HTTTPS"), React.createElement("option", { value: "http" }, "HTTP"));
+            }), React.createElement(domain_1.Field, { name: "value.urlWithoutProtocol", initialValue: (_c = props.value) === null || _c === void 0 ? void 0 : _c.urlWithoutProtocol, validate: function validate(value) {
+                    if (!value) {
+                        return 'Url is required';
+                    }
+                } }, function (_a) {
+                var input = _a.input;
+                return React.createElement("input", __assign({ type: "text" }, input));
+            }));
         };
         return _this;
     }
@@ -26546,6 +26744,93 @@ Object.defineProperty(exports, "useEditorTransactions", { enumerable: true, get:
 
 /***/ }),
 
+/***/ "../core/lib/domain/Form/Field.js":
+/*!****************************************!*\
+  !*** ../core/lib/domain/Form/Field.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __assign = undefined && undefined.__assign || function () {
+    __assign = Object.assign || function (t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) {
+                if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+            }
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function get() {
+            return m[k];
+        } });
+} : function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+var __setModuleDefault = undefined && undefined.__setModuleDefault || (Object.create ? function (o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+} : function (o, v) {
+    o["default"] = v;
+});
+var __importStar = undefined && undefined.__importStar || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) {
+        if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    }__setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.FieldGroup = exports.Field = void 0;
+var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
+var react_final_form_1 = __webpack_require__(/*! react-final-form */ "../../node_modules/react-final-form/dist/react-final-form.es.js");
+var FieldGroupContext = React.createContext(null);
+function Field(props) {
+    var groupPrefix = React.useContext(FieldGroupContext);
+    var name = groupPrefix !== null ? groupPrefix + "." + props.name : props.name;
+    return React.createElement(react_final_form_1.Field, __assign({}, props, { name: name }));
+}
+exports.Field = Field;
+;
+var FieldGroup = function FieldGroup(props) {
+    return React.createElement(FieldGroupContext.Provider, { value: props.prefix }, props.children);
+};
+exports.FieldGroup = FieldGroup;
+//# sourceMappingURL=Field.js.map
+
+/***/ }),
+
+/***/ "../core/lib/domain/Form/index.js":
+/*!****************************************!*\
+  !*** ../core/lib/domain/Form/index.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.FieldGroup = exports.Field = void 0;
+var Field_1 = __webpack_require__(/*! ./Field */ "../core/lib/domain/Form/Field.js");
+Object.defineProperty(exports, "Field", { enumerable: true, get: function get() {
+    return Field_1.Field;
+  } });
+Object.defineProperty(exports, "FieldGroup", { enumerable: true, get: function get() {
+    return Field_1.FieldGroup;
+  } });
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
 /***/ "../core/lib/domain/Link/LinkType.js":
 /*!*******************************************!*\
   !*** ../core/lib/domain/Link/LinkType.js ***!
@@ -26784,7 +27069,7 @@ exports.Process = __importStar(__webpack_require__(/*! ./Process */ "../core/lib
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Process = exports.useEditorTransactions = exports.useEditorValue = exports.useEditorState = exports.EditorContext = exports.createEditor = exports.useLinkTypeForHref = exports.useLinkTypes = exports.LinkType = void 0;
+exports.FieldGroup = exports.Field = exports.Process = exports.useEditorTransactions = exports.useEditorValue = exports.useEditorState = exports.EditorContext = exports.createEditor = exports.useLinkTypeForHref = exports.useLinkTypes = exports.LinkType = void 0;
 var Link_1 = __webpack_require__(/*! ./Link */ "../core/lib/domain/Link/index.js");
 Object.defineProperty(exports, "LinkType", { enumerable: true, get: function get() {
     return Link_1.LinkType;
@@ -26814,6 +27099,13 @@ Object.defineProperty(exports, "useEditorTransactions", { enumerable: true, get:
 var Process_1 = __webpack_require__(/*! ./Process */ "../core/lib/domain/Process/index.js");
 Object.defineProperty(exports, "Process", { enumerable: true, get: function get() {
     return Process_1.Process;
+  } });
+var Form_1 = __webpack_require__(/*! ./Form */ "../core/lib/domain/Form/index.js");
+Object.defineProperty(exports, "Field", { enumerable: true, get: function get() {
+    return Form_1.Field;
+  } });
+Object.defineProperty(exports, "FieldGroup", { enumerable: true, get: function get() {
+    return Form_1.FieldGroup;
   } });
 //# sourceMappingURL=index.js.map
 
@@ -28236,14 +28528,15 @@ var InspectorEditor = function InspectorEditor(props) {
     var editLink = React.useCallback(function () {
         return __awaiter(void 0, void 0, void 0, function () {
             var result;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
                         return [4, tx.editLink(value === undefined ? null : { href: value })];
                     case 1:
-                        result = _a.sent();
+                        result = _b.sent();
                         if (result.change) {
-                            props.commit(result.value);
+                            props.commit((_a = result.value) === null || _a === void 0 ? void 0 : _a.href);
                         }
                         return [2];
                 }

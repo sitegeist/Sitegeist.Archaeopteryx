@@ -14,6 +14,17 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
@@ -79,6 +90,14 @@ exports.Web = new (function (_super) {
             }
             return domain_1.Process.error(_this.error("Cannot handle href \"" + link.href + "\"."));
         };
+        _this.convertPropsToLink = function (props) {
+            if (props.value === null) {
+                return null;
+            }
+            return {
+                href: props.value.protocol + "://" + props.value.urlWithoutProtocol
+            };
+        };
         _this.getStaticIcon = function () { return (React.createElement("div", null, "ICON")); };
         _this.getIcon = function () { return (React.createElement("div", null, "ICON")); };
         _this.getStaticTitle = function () {
@@ -99,14 +118,23 @@ exports.Web = new (function (_super) {
         _this.getLoadingPreview = function () { return (React.createElement("div", null, _this.getStaticTitle())); };
         _this.getPreview = function (props) { return (React.createElement("div", null, _this.getTitle(props))); };
         _this.getLoadingEditor = function () { return (React.createElement("div", null, _this.getStaticTitle())); };
-        _this.getEditor = function () {
-            var _a;
-            var value = domain_1.useEditorValue().value;
-            var update = domain_1.useEditorTransactions().update;
-            var onChange = React.useCallback(function (ev) {
-                return update({ href: ev.target.value });
-            }, [update]);
-            return (React.createElement("input", { type: "text", value: (_a = value === null || value === void 0 ? void 0 : value.href) !== null && _a !== void 0 ? _a : '', onChange: onChange }));
+        _this.getEditor = function (props) {
+            var _a, _b, _c;
+            return (React.createElement("div", null,
+                React.createElement(domain_1.Field, { name: "value.protocol", initialValue: (_b = (_a = props.value) === null || _a === void 0 ? void 0 : _a.protocol) !== null && _b !== void 0 ? _b : 'https' }, function (_a) {
+                    var input = _a.input;
+                    return (React.createElement("select", __assign({}, input),
+                        React.createElement("option", { value: "https" }, "HTTTPS"),
+                        React.createElement("option", { value: "http" }, "HTTP")));
+                }),
+                React.createElement(domain_1.Field, { name: "value.urlWithoutProtocol", initialValue: (_c = props.value) === null || _c === void 0 ? void 0 : _c.urlWithoutProtocol, validate: function (value) {
+                        if (!value) {
+                            return 'Url is required';
+                        }
+                    } }, function (_a) {
+                    var input = _a.input;
+                    return (React.createElement("input", __assign({ type: "text" }, input)));
+                })));
         };
         return _this;
     }

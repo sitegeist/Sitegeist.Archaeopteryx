@@ -1,40 +1,15 @@
 import * as React from 'react';
-import {Form, Field} from 'react-final-form';
 
-import {LinkType, ILink, useEditorTransactions, Process} from '../../../domain';
-
-interface IMailToLink {
-    recipient: string
-    subject?: string
-    cc?: string
-    bcc?: string
-    body?: string
-}
-
-function convert(mailToLink: IMailToLink): string {
-    const url = new URL(`mailto:${mailToLink.recipient}`);
-
-    if (mailToLink.subject) {
-        url.searchParams.set('subject', mailToLink.subject)
-    }
-
-    if (mailToLink.cc) {
-        url.searchParams.set('cc', mailToLink.cc)
-    }
-
-    if (mailToLink.bcc) {
-        url.searchParams.set('bcc', mailToLink.bcc)
-    }
-
-    if (mailToLink.body) {
-        url.searchParams.set('body', mailToLink.body)
-    }
-
-    return url.toString();
-}
+import {LinkType, ILink, Process, Field} from '../../../domain';
 
 interface Props {
-    value: null | IMailToLink
+    value: null | {
+        recipient: string
+        subject?: string
+        cc?: string
+        bcc?: string
+        body?: string
+    }
 }
 
 export const MailTo = new class extends LinkType<Props> {
@@ -59,6 +34,32 @@ export const MailTo = new class extends LinkType<Props> {
                 body: url.searchParams.get('body') ?? undefined
             }
         });
+    };
+
+    public readonly convertPropsToLink = (props: Props) => {
+        if (props.value === null) {
+            return null;
+        }
+
+        const url = new URL(`mailto:${props.value.recipient}`);
+
+        if (props.value.subject) {
+            url.searchParams.set('subject', props.value.subject)
+        }
+
+        if (props.value.cc) {
+            url.searchParams.set('cc', props.value.cc)
+        }
+
+        if (props.value.bcc) {
+            url.searchParams.set('bcc', props.value.bcc)
+        }
+
+        if (props.value.body) {
+            url.searchParams.set('body', props.value.body)
+        }
+
+        return {href: url.toString()};
     };
 
     public readonly getStaticIcon = () => (
@@ -86,70 +87,62 @@ export const MailTo = new class extends LinkType<Props> {
     );
 
     public readonly getEditor = (props: Props) => {
-        const {update} = useEditorTransactions();
-        const handleSubmit = React.useCallback((value: IMailToLink) => {
-            update({href: convert(value)});
-        }, []);
-
         return (
-            <Form initialValues={props.value} onSubmit={handleSubmit}>
-                {({handleSubmit}) => (
-                    <form onSubmit={handleSubmit}>
-                        <Field<string>
-                            name="recipient"
-                            validate={value => {
-                                if (!value) {
-                                    return 'recipient is required';
-                                }
-                            }}
-                            >
-                            {({input, meta}) => (
-                                <div>
-                                    <label>
-                                        Recipient:
-                                        <input type="text" {...input}/>
-                                    </label>
-                                    {meta.error}
-                                </div>
-                            )}
-                        </Field>
-                        <Field<string> name="cc">
-                            {({input, meta}) => (
-                                <div>
-                                    <label>
-                                        CC:
-                                        <input type="text" {...input}/>
-                                    </label>
-                                    {meta.error}
-                                </div>
-                            )}
-                        </Field>
-                        <Field<string> name="bcc">
-                            {({input, meta}) => (
-                                <div>
-                                    <label>
-                                        BCC:
-                                        <input type="text" {...input}/>
-                                    </label>
-                                    {meta.error}
-                                </div>
-                            )}
-                        </Field>
-                        <Field<string> name="body">
-                            {({input, meta}) => (
-                                <div>
-                                    <label>
-                                        Body:
-                                        <textarea {...input}/>
-                                    </label>
-                                    {meta.error}
-                                </div>
-                            )}
-                        </Field>
-                        <button type="submit">Apply</button>
-                    </form>
-                )}
-            </Form>
+            <div>
+                <Field<string>
+                    name="value.recipient"
+                    initialValue={props.value?.recipient}
+                    validate={value => {
+                        if (!value) {
+                            return 'recipient is required';
+                        }
+                    }}
+                >{({input, meta}) => (
+                        <div>
+                            <label>
+                                Recipient:
+                                <input type="text" {...input}/>
+                            </label>
+                            {meta.error}
+                        </div>
+                )}</Field>
+                <Field<string>
+                    name="value.cc"
+                    initialValue={props.value?.cc}
+                >{({input, meta}) => (
+                    <div>
+                        <label>
+                            CC:
+                            <input type="text" {...input}/>
+                        </label>
+                        {meta.error}
+                    </div>
+                )}</Field>
+                <Field<string>
+                    name="value.bcc"
+                    initialValue={props.value?.bcc}
+                >{({input, meta}) => (
+                    <div>
+                        <label>
+                            BCC:
+                            <input type="text" {...input}/>
+                        </label>
+                        {meta.error}
+                    </div>
+                )}</Field>
+                <Field<string>
+                    name="value.body"
+                    initialValue={props.value?.body}
+                >{({input, meta}) => (
+                    <div>
+                        <label>
+                            Body:
+                            <textarea {...input}/>
+                        </label>
+                        {meta.error}
+                    </div>
+                )}</Field>
+            </div>
         );
     };
 }

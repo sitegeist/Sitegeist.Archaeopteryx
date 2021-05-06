@@ -22,6 +22,9 @@ export declare const Web: {
         error: null;
         result: any;
     };
+    readonly convertPropsToLink: (props: Props) => {
+        href: string;
+    } | null;
     readonly getStaticIcon: () => JSX.Element;
     readonly getIcon: () => JSX.Element;
     readonly getStaticTitle: () => string;
@@ -29,7 +32,7 @@ export declare const Web: {
     readonly getLoadingPreview: () => JSX.Element;
     readonly getPreview: (props: Props) => JSX.Element;
     readonly getLoadingEditor: () => JSX.Element;
-    readonly getEditor: () => JSX.Element;
+    readonly getEditor: (props: Props) => JSX.Element;
     readonly error: (message: string) => Error;
 };
 export {};

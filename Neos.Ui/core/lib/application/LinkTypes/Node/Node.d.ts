@@ -8,6 +8,9 @@ export declare const Node: {
     readonly id: "Sitegeist.Archaeopteryx:Node";
     readonly isSuitableFor: (link: ILink) => boolean;
     readonly useResolvedProps: (link?: ILink | undefined) => Process.IProcess<Props>;
+    readonly convertPropsToLink: (props: Props) => {
+        href: string;
+    } | null;
     readonly getStaticIcon: () => JSX.Element;
     readonly getIcon: () => JSX.Element;
     readonly getStaticTitle: () => string;

@@ -144,6 +144,14 @@ exports.Node = new (function (_super) {
             }); }, [link === null || link === void 0 ? void 0 : link.href, siteNodeContextPath]);
             return domain_1.Process.fromAsyncState(asyncState);
         };
+        _this.convertPropsToLink = function (props) {
+            if (props.node === null) {
+                return null;
+            }
+            return {
+                href: "node://" + props.node.identifier
+            };
+        };
         _this.getStaticIcon = function () { return (React.createElement("div", null, "NODE TREE")); };
         _this.getIcon = function () { return (React.createElement("div", null, "NODE TREE")); };
         _this.getStaticTitle = function () { return 'Node Tree'; };
@@ -152,8 +160,7 @@ exports.Node = new (function (_super) {
         _this.getPreview = function () { return (React.createElement("div", null, "NODE TREE PREVIEW")); };
         _this.getLoadingEditor = function () { return (React.createElement("div", null, "NODE TREE EDITOR")); };
         _this.getEditor = function (props) {
-            var _a, _b, _c;
-            var update = domain_1.useEditorTransactions().update;
+            var _a, _b;
             var siteNodeContextPath = archaeopteryx_neos_bridge_1.useSiteNodeContextPath();
             var documentNodeContextPath = archaeopteryx_neos_bridge_1.useDocumentNodeContextPath();
             var baseNodeTypeName = (_a = archaeopteryx_neos_bridge_1.useConfiguration(function (c) { var _a, _b, _c; return (_c = (_b = (_a = c.nodeTree) === null || _a === void 0 ? void 0 : _a.presets) === null || _b === void 0 ? void 0 : _b.default) === null || _c === void 0 ? void 0 : _c.baseNodeType; })) !== null && _a !== void 0 ? _a : archaeopteryx_neos_bridge_1.NodeTypeName('Neos.Neos:Document');
@@ -165,20 +172,24 @@ exports.Node = new (function (_super) {
                 throw _this.error('Could not load node tree, because documentNodeContextPath could not be determined.');
             }
             else {
-                return (React.createElement(archaeopteryx_custom_node_tree_1.NodeTree, { configuration: {
-                        baseNodeTypeName: baseNodeTypeName,
-                        rootNodeContextPath: siteNodeContextPath,
-                        documentNodeContextPath: documentNodeContextPath,
-                        selectedNodeContextPath: (_c = props.node) === null || _c === void 0 ? void 0 : _c.contextPath,
-                        loadingDepth: loadingDepth
-                    }, options: {
-                        enableSearch: true,
-                        enableNodeTypeFilter: true
-                    }, onSelect: function (node) {
-                        var cacheIdentifier = node.identifier + "@" + siteNodeContextPath.context;
-                        propsCache.set(cacheIdentifier, { node: node });
-                        update({ href: "node://" + node.identifier });
-                    } }));
+                return (React.createElement(domain_1.Field, { name: "node", initialValue: props.node }, function (_a) {
+                    var _b;
+                    var input = _a.input;
+                    return (React.createElement(archaeopteryx_custom_node_tree_1.NodeTree, { configuration: {
+                            baseNodeTypeName: baseNodeTypeName,
+                            rootNodeContextPath: siteNodeContextPath,
+                            documentNodeContextPath: documentNodeContextPath,
+                            selectedNodeContextPath: (_b = input.value) === null || _b === void 0 ? void 0 : _b.contextPath,
+                            loadingDepth: loadingDepth
+                        }, options: {
+                            enableSearch: true,
+                            enableNodeTypeFilter: true
+                        }, onSelect: function (node) {
+                            var cacheIdentifier = node.identifier + "@" + siteNodeContextPath.context;
+                            propsCache.set(cacheIdentifier, { node: node });
+                            input.onChange(node);
+                        } }));
+                }));
             }
         };
         return _this;

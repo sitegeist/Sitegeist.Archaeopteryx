@@ -5,6 +5,7 @@ export declare abstract class LinkType<P = any> {
     abstract id: string;
     abstract isSuitableFor: (link: ILink) => boolean;
     abstract useResolvedProps: (link?: ILink) => IProcess<P>;
+    abstract convertPropsToLink: (props: P) => null | ILink;
     abstract getStaticIcon: React.FC;
     abstract getIcon: React.FC<P>;
     abstract getStaticTitle: () => string;
