@@ -46,12 +46,12 @@ var __read = (this && this.__read) || function (o, n) {
     return ar;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Modal = void 0;
+exports.Dialog = void 0;
 var React = __importStar(require("react"));
 var react_ui_components_1 = require("@neos-project/react-ui-components");
 var react_final_form_1 = require("react-final-form");
 var domain_1 = require("../../domain");
-var Modal = function () {
+var Dialog = function () {
     var _a = domain_1.useEditorState(), isOpen = _a.isOpen, value = _a.value;
     var contents = null;
     if (isOpen) {
@@ -65,7 +65,7 @@ var Modal = function () {
     }
     return null;
 };
-exports.Modal = Modal;
+exports.Dialog = Dialog;
 var DialogWithEmptyValue = function () {
     var dismiss = domain_1.useEditorTransactions().dismiss;
     var linkTypes = domain_1.useLinkTypes();
@@ -148,4 +148,4 @@ var LinkEditor = function (props) {
         return (React.createElement(Editor, __assign({}, editorProps)));
     }
 };
-//# sourceMappingURL=Modal.js.map
+//# sourceMappingURL=Dialog.js.map

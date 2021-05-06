@@ -19,16 +19,16 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.registerModal = void 0;
+exports.registerDialog = void 0;
 var React = __importStar(require("react"));
 var archaeopteryx_neos_bridge_1 = require("@sitegeist/archaeopteryx-neos-bridge");
 var domain_1 = require("../../domain");
-var Modal_1 = require("./Modal");
-function registerModal(neosContextProperties, editor) {
+var Dialog_1 = require("./Dialog");
+function registerDialog(neosContextProperties, editor) {
     var globalRegistry = neosContextProperties.globalRegistry;
     var containersRegistry = globalRegistry.get('containers');
     containersRegistry === null || containersRegistry === void 0 ? void 0 : containersRegistry.set('Modals/Sitegeist.Archaeopteryx', function (props) { return (React.createElement(archaeopteryx_neos_bridge_1.NeosContext.Provider, { value: neosContextProperties },
-        React.createElement(domain_1.EditorContext.Provider, { value: editor }, React.createElement(Modal_1.Modal, props)))); });
+        React.createElement(domain_1.EditorContext.Provider, { value: editor }, React.createElement(Dialog_1.Dialog, props)))); });
 }
-exports.registerModal = registerModal;
+exports.registerDialog = registerDialog;
 //# sourceMappingURL=index.js.map

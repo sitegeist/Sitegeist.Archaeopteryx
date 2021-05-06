@@ -1,2 +1,2 @@
 export { registerLinkTypes } from './LinkTypes';
-export { registerModal } from './Modal';
+export { registerDialog } from './Dialog';

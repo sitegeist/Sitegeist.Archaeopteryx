@@ -1,10 +1,10 @@
 import * as React from 'react';
-import {Dialog, Button} from '@neos-project/react-ui-components';
+import {Dialog as NeosDialog, Button} from '@neos-project/react-ui-components';
 import {Form, Field} from 'react-final-form';
 
 import {ILink, ILinkOptions, LinkType, useEditorState, useEditorTransactions, useLinkTypes, useLinkTypeForHref} from '../../domain';
 
-export const Modal: React.FC = () => {
+export const Dialog: React.FC = () => {
     const {isOpen, value} = useEditorState();
 
     let contents = null;
@@ -22,14 +22,14 @@ export const Modal: React.FC = () => {
         }
 
         return (
-            <Dialog
+            <NeosDialog
                 title="Sitegeist.Archaeopteryx"
                 isOpen={isOpen}
                 style="jumbo"
                 onRequestClose={() => {}}
             >
                 {contents}
-            </Dialog>
+            </NeosDialog>
         );
     }
 

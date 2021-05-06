@@ -1,4 +1,4 @@
-export {registerLinkTypes, registerModal} from './application';
+export {registerLinkTypes, registerDialog} from './application';
 
 export type {IEditor} from './domain';
 export {

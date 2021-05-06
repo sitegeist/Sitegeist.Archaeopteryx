@@ -2,9 +2,9 @@ import * as React from 'react';
 import {INeosContextProperties, NeosContext} from '@sitegeist/archaeopteryx-neos-bridge';
 
 import {createEditor, EditorContext} from '../../domain';
-import {Modal} from './Modal';
+import {Dialog} from './Dialog';
 
-export function registerModal(
+export function registerDialog(
     neosContextProperties: INeosContextProperties,
     editor: ReturnType<typeof createEditor>
 ): void {
@@ -16,7 +16,7 @@ export function registerModal(
         (props: any) => (
             <NeosContext.Provider value={neosContextProperties}>
                 <EditorContext.Provider value={editor}>
-                    {React.createElement(Modal, props)}
+                    {React.createElement(Dialog, props)}
                 </EditorContext.Provider>
             </NeosContext.Provider>
         )
