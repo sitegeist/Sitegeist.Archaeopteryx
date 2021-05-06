@@ -1,10 +1,11 @@
 import * as React from 'react';
 import {useAsync} from 'react-use';
 
-import {q, INodePartialForTree, NodeTypeName, useSiteNodeContextPath, useDocumentNodeContextPath, useConfiguration} from '@sitegeist/archaeopteryx-neos-bridge';
+import {q, INodePartialForTree, NodeTypeName, useSiteNodeContextPath, useDocumentNodeContextPath, useConfiguration, useNodeType} from '@sitegeist/archaeopteryx-neos-bridge';
 import {NodeTree} from '@sitegeist/archaeopteryx-custom-node-tree';
 
 import {Process, LinkType, ILink, Field} from '../../../domain';
+import {IconCard} from '../../../presentation';
 
 interface Props {
     node: null | INodePartialForTree
@@ -83,9 +84,21 @@ export const Node = new class extends LinkType<Props> {
         <div>NODE TREE PREVIEW</div>
     );
 
-    public readonly getPreview = () => (
-        <div>NODE TREE PREVIEW</div>
-    );
+    public readonly getPreview = (props: Props) =>  {
+        const nodeType = useNodeType(props.node?.nodeType ?? NodeTypeName('Neos.Neos:Document'));
+
+        if (!props.node) {
+            return null;
+        }
+
+        return (
+           <IconCard
+                icon={nodeType?.ui?.icon ?? 'square'}
+                title={props.node.label}
+                subTitle={props.node.contextPath.toString()}
+            />
+        );
+    };
 
     public readonly getLoadingEditor = () => (
         <div>NODE TREE EDITOR</div>

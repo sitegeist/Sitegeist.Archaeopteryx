@@ -26061,6 +26061,7 @@ var react_use_1 = __webpack_require__(/*! react-use */ "../../node_modules/react
 var archaeopteryx_neos_bridge_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-neos-bridge */ "../neos-bridge/lib/index.js");
 var archaeopteryx_custom_node_tree_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-custom-node-tree */ "../custom-node-tree/lib/index.js");
 var domain_1 = __webpack_require__(/*! ../../../domain */ "../core/lib/domain/index.js");
+var presentation_1 = __webpack_require__(/*! ../../../presentation */ "../core/lib/presentation/index.js");
 var propsCache = new Map();
 exports.Node = new (function (_super) {
     __extends(class_1, _super);
@@ -26143,8 +26144,13 @@ exports.Node = new (function (_super) {
         _this.getLoadingPreview = function () {
             return React.createElement("div", null, "NODE TREE PREVIEW");
         };
-        _this.getPreview = function () {
-            return React.createElement("div", null, "NODE TREE PREVIEW");
+        _this.getPreview = function (props) {
+            var _a, _b, _c, _d;
+            var nodeType = archaeopteryx_neos_bridge_1.useNodeType((_b = (_a = props.node) === null || _a === void 0 ? void 0 : _a.nodeType) !== null && _b !== void 0 ? _b : archaeopteryx_neos_bridge_1.NodeTypeName('Neos.Neos:Document'));
+            if (!props.node) {
+                return null;
+            }
+            return React.createElement(presentation_1.IconCard, { icon: (_d = (_c = nodeType === null || nodeType === void 0 ? void 0 : nodeType.ui) === null || _c === void 0 ? void 0 : _c.icon) !== null && _d !== void 0 ? _d : 'square', title: props.node.label, subTitle: props.node.contextPath.toString() });
         };
         _this.getLoadingEditor = function () {
             return React.createElement("div", null, "NODE TREE EDITOR");
@@ -27151,6 +27157,89 @@ Object.defineProperty(exports, "useEditorValue", { enumerable: true, get: functi
   } });
 Object.defineProperty(exports, "useEditorTransactions", { enumerable: true, get: function get() {
     return domain_1.useEditorTransactions;
+  } });
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "../core/lib/presentation/IconCard.js":
+/*!********************************************!*\
+  !*** ../core/lib/presentation/IconCard.js ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __makeTemplateObject = undefined && undefined.__makeTemplateObject || function (cooked, raw) {
+    if (Object.defineProperty) {
+        Object.defineProperty(cooked, "raw", { value: raw });
+    } else {
+        cooked.raw = raw;
+    }
+    return cooked;
+};
+var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function get() {
+            return m[k];
+        } });
+} : function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+var __setModuleDefault = undefined && undefined.__setModuleDefault || (Object.create ? function (o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+} : function (o, v) {
+    o["default"] = v;
+});
+var __importStar = undefined && undefined.__importStar || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) {
+        if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    }__setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.IconCard = void 0;
+var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
+var styled_components_1 = __importStar(__webpack_require__(/*! styled-components */ "../../node_modules/styled-components/dist/styled-components.browser.esm.js"));
+var react_ui_components_1 = __webpack_require__(/*! @neos-project/react-ui-components */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/react-ui-components/index.js");
+var Container = styled_components_1.default.div(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n    display: grid;\n    grid-gap: 8px;\n    grid-template-columns: 20px 1fr;\n    grid-template-rows: repeat(2, 1fr);\n    background-color: #141414;\n    padding: 8px 16px;\n"], ["\n    display: grid;\n    grid-gap: 8px;\n    grid-template-columns: 20px 1fr;\n    grid-template-rows: repeat(2, 1fr);\n    background-color: #141414;\n    padding: 8px 16px;\n"])));
+var IconWrapper = styled_components_1.default.span(templateObject_2 || (templateObject_2 = __makeTemplateObject(["\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    grid-column: 1 / span 1;\n    grid-row: 1 / span ", ";\n"], ["\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    grid-column: 1 / span 1;\n    grid-row: 1 / span ", ";\n"])), function (props) {
+    return props.span;
+});
+var baseFontStyle = styled_components_1.css(templateObject_3 || (templateObject_3 = __makeTemplateObject(["\n    display: block;\n    overflow: hidden;\n    white-space: nowrap;\n    text-overflow: ellipsis;\n    line-height: 1;\n"], ["\n    display: block;\n    overflow: hidden;\n    white-space: nowrap;\n    text-overflow: ellipsis;\n    line-height: 1;\n"])));
+var Title = styled_components_1.default.span(templateObject_4 || (templateObject_4 = __makeTemplateObject(["\n    ", "\n    grid-column: 2 / span 1;\n    grid-row: 1 / span ", ";\n    font-size: 14px;\n    color: #FFF;\n"], ["\n    ", "\n    grid-column: 2 / span 1;\n    grid-row: 1 / span ", ";\n    font-size: 14px;\n    color: #FFF;\n"])), baseFontStyle, function (props) {
+    return props.span;
+});
+var SubTitle = styled_components_1.default.span(templateObject_5 || (templateObject_5 = __makeTemplateObject(["\n    ", "\n    font-size: 12px;\n    color: #999;\n    grid-column: 1 / span 2;\n    grid-row: 2 / span 1;\n"], ["\n    ", "\n    font-size: 12px;\n    color: #999;\n    grid-column: 1 / span 2;\n    grid-row: 2 / span 1;\n"])), baseFontStyle);
+var IconCard = function IconCard(props) {
+    return React.createElement(Container, null, React.createElement(IconWrapper, { span: props.subTitle ? 1 : 2 }, React.createElement(react_ui_components_1.Icon, { icon: props.icon })), React.createElement(Title, { span: props.subTitle ? 1 : 2 }, props.title), React.createElement(SubTitle, null, props.subTitle));
+};
+exports.IconCard = IconCard;
+var templateObject_1, templateObject_2, templateObject_3, templateObject_4, templateObject_5;
+//# sourceMappingURL=IconCard.js.map
+
+/***/ }),
+
+/***/ "../core/lib/presentation/index.js":
+/*!*****************************************!*\
+  !*** ../core/lib/presentation/index.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.IconCard = void 0;
+var IconCard_1 = __webpack_require__(/*! ./IconCard */ "../core/lib/presentation/IconCard.js");
+Object.defineProperty(exports, "IconCard", { enumerable: true, get: function get() {
+    return IconCard_1.IconCard;
   } });
 //# sourceMappingURL=index.js.map
 
