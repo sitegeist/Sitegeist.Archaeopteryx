@@ -13,6 +13,8 @@ export {
     NodeTypeName,
     useSiteNodeContextPath,
     useDocumentNodeContextPath,
+    useAssetSummary,
+    useNodeSummary,
     useNodeType,
     useNodeTypes,
     useNodeTypesRegistry,

@@ -8,6 +8,7 @@
         "watch": "tsc -w -p tsconfig.build.json"
     },
     "dependencies": {
+        "react-use": "^17.2.4",
         "ts-toolbelt": "^9.6.0"
     },
     "devDependencies": {

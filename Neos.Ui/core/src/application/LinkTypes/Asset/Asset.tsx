@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import {useAssetSummary} from '@sitegeist/archaeopteryx-neos-bridge';
+
 import {Process, Field, LinkType, ILink} from '../../../domain';
 import {MediaBrowser} from './MediaBrowser';
 
@@ -55,9 +57,12 @@ export const Asset = new class extends LinkType<Props> {
         <div>ASSET PREVIEW</div>
     );
 
-    public readonly getPreview = () => (
-        <div>ASSET PREVIEW</div>
-    );
+    public readonly getPreview = (props: Props) => {
+        const asset = useAssetSummary(props.assetIdentifier!);
+        return (
+            <div>{asset.value?.label}</div>
+        );
+    }
 
     public readonly getLoadingEditor = () => (
         <div>ASSET EDITOR</div>

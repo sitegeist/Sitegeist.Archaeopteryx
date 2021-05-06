@@ -4,6 +4,7 @@ export {
     NodeTypeName,
     useSiteNodeContextPath,
     useDocumentNodeContextPath,
+    useNodeSummary,
     useNodeType,
     useNodeTypes,
     useNodeTypesRegistry
@@ -16,3 +17,5 @@ export {
     useConfiguration,
     useRoutes
 } from './Extensibility';
+
+export {useAssetSummary} from './Media';

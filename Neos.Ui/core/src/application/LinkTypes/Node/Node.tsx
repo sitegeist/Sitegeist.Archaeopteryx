@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {useAsync} from 'react-use';
 
-import {q, INodePartialForTree, NodeTypeName, useSiteNodeContextPath, useDocumentNodeContextPath, useConfiguration, useNodeType} from '@sitegeist/archaeopteryx-neos-bridge';
+import {q, INodePartialForTree, NodeTypeName, useSiteNodeContextPath, useDocumentNodeContextPath, useConfiguration, useNodeSummary, useNodeType} from '@sitegeist/archaeopteryx-neos-bridge';
 import {NodeTree} from '@sitegeist/archaeopteryx-custom-node-tree';
 
 import {Process, LinkType, ILink, Field} from '../../../domain';
@@ -85,6 +85,7 @@ export const Node = new class extends LinkType<Props> {
     );
 
     public readonly getPreview = (props: Props) =>  {
+        const nodeSummary = useNodeSummary(props.node?.identifier!);
         const nodeType = useNodeType(props.node?.nodeType ?? NodeTypeName('Neos.Neos:Document'));
 
         if (!props.node) {
@@ -94,8 +95,8 @@ export const Node = new class extends LinkType<Props> {
         return (
            <IconCard
                 icon={nodeType?.ui?.icon ?? 'square'}
-                title={props.node.label}
-                subTitle={props.node.contextPath.toString()}
+                title={nodeSummary.value?.label ?? props.node.label}
+                subTitle={nodeSummary.value?.breadcrumb ?? `node://${props.node.identifier}`}
             />
         );
     };
