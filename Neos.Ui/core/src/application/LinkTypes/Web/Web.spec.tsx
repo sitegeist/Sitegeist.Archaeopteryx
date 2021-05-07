@@ -63,42 +63,4 @@ describe('LinType: Web', () => {
         expect(Web.isSuitableFor(link))
             .toBe(false);
     });
-
-
-    it('returns title for undefined links', () => {
-        expect(Web.getTitle({value: null}))
-            .toBe('Web Link');
-    });
-
-    it('returns title for insecure links', () => {
-        expect(Web.getTitle({value: {protocol: 'http', urlWithoutProtocol: 'www.example.com'}}))
-            .toBe('Web Link (not secure)');
-    });
-
-    it('returns title for secure links', () => {
-        expect(Web.getTitle({value: {protocol: 'https', urlWithoutProtocol: 'www.example.com'}}))
-            .toBe('Web Link (secure)');
-    });
-
-    it('renders preview for insecure links', async () => {
-        const {getPreview: Preview} = Web;
-
-        render(<Preview value={{protocol: 'http', urlWithoutProtocol: 'www.example.com'}}/>);
-
-        const els = await screen.findAllByText('Web Link (not secure)');
-
-        expect(els.length).toBe(1);
-        expect(els[0].innerHTML).toContain('Web Link (not secure)');
-    });
-
-    it('renders preview for secure links', async () => {
-        const {getPreview: Preview} = Web;
-
-        render(<Preview value={{protocol: 'https', urlWithoutProtocol: 'www.example.com'}}/>);
-
-        const els = await screen.findAllByText('Web Link (secure)');
-
-        expect(els.length).toBe(1);
-        expect(els[0].innerHTML).toContain('Web Link (secure)');
-    });
 });

@@ -1,100 +1,69 @@
 import * as React from 'react';
 
-import {Process, LinkType, ILink, Field} from '../../../domain';
+import {Process, makeLinkType, Field} from '../../../domain';
+import {IconCard} from '../../../presentation';
 
-interface Props {
-    value: null | {
-        protocol: 'http' | 'https'
-        urlWithoutProtocol: string
-    }
+interface WebLinkModel {
+    protocol: 'http' | 'https'
+    urlWithoutProtocol: string
 }
 
-export const Web = new class extends LinkType<Props> {
-    public readonly id = 'Sitegeist.Archaeopteryx:Web';
+export const Web = makeLinkType<WebLinkModel>(
+    'Sitegeist.Archaeopteryx:Web',
+    ({createError}) => ({
+        isSuitableFor: link => {
+            const isHttp = link.href.startsWith('http://');
+            const isHttps = link.href.startsWith('https://');
 
-    public readonly isSuitableFor = (link: ILink) => {
-        const isHttp = link.href.startsWith('http://');
-        const isHttps = link.href.startsWith('https://');
+            return isHttp || isHttps;
+        },
 
-        return isHttp || isHttps;
-    }
+        useResolvedModel: link => {
+            const matches = link.href.match(/^(https?):\/\/(.*)$/);
+            if (matches) {
+                const [, protocol, urlWithoutProtocol] = matches;
 
-    public readonly useResolvedProps = (link?: ILink) => {
-        if (link === undefined) {
-            return Process.success({value: null});
-        }
-
-        const matches = link.href.match(/^(https?):\/\/(.*)$/);
-        if (matches) {
-            const [, protocol, urlWithoutProtocol] = matches;
-
-            return Process.success({
-                value: {
+                return Process.success({
                     protocol: protocol as 'http' | 'https',
                     urlWithoutProtocol
-                }
-            });
-        }
+                });
+            }
 
-        return Process.error(
-            this.error(`Cannot handle href "${link.href}".`)
-        );
-    }
+            return Process.error(
+                createError(`Cannot handle href "${link.href}".`)
+            );
+        },
 
-    public readonly convertPropsToLink = (props: Props) => {
-        if (props.value === null) {
-            return null;
-        }
+        convertModelToLink: model => ({
+            href: `${model.protocol}://${model.urlWithoutProtocol}`
+        }),
 
-        return {
-            href: `${props.value.protocol}://${props.value.urlWithoutProtocol}`
-        };
-    };
+        StaticIcon: () => (<div>WEB</div>),
 
-    public readonly getStaticIcon = () => (
-        <div>ICON</div>
-    );
+        StaticTitle: () => 'Web Link',
 
-    public readonly getIcon = () => (
-        <div>ICON</div>
-    );
+        Title: ({model}) => {
+            const isSecure = model.protocol === 'https';
 
-    public readonly getStaticTitle = () => {
-        return 'Web Link';
-    }
+            if (isSecure) {
+                return 'Web Link (secure)';
+            } else {
+                return 'Web Link (not secure)';
+            }
+        },
 
-    public readonly getTitle = (props: Props) => {
-        if (props.value === null) {
-            return this.getStaticTitle();
-        }
+        Preview: ({model}) => (
+            <IconCard
+                icon="external-link"
+                title={`${model.protocol}://${model.urlWithoutProtocol}`}
+            />
+        ),
 
-        const isSecure = props.value.protocol === 'https';
-
-        if (isSecure) {
-            return 'Web Link (secure)';
-        } else {
-            return 'Web Link (not secure)';
-        }
-    }
-
-    public readonly getLoadingPreview = () => (
-        <div>{this.getStaticTitle()}</div>
-    );
-
-    public readonly getPreview = (props: Props) => (
-        <div>{this.getTitle(props)}</div>
-    );
-
-    public readonly getLoadingEditor = () => (
-        <div>{this.getStaticTitle()}</div>
-    );
-
-    public readonly getEditor = (props: Props) => {
-        return (
+        Editor: ({model}) => (
             <div>
                 <Field<string>
                     name="value.protocol"
-                    initialValue={props.value?.protocol ?? 'https'}
+                    initialValue={model?.protocol ?? 'https'}
                 >{({input}) => (
                     <select {...input}>
                         <option value="https">HTTTPS</option>
@@ -103,7 +72,7 @@ export const Web = new class extends LinkType<Props> {
                 )}</Field>
                 <Field<string>
                     name="value.urlWithoutProtocol"
-                    initialValue={props.value?.urlWithoutProtocol}
+                    initialValue={model?.urlWithoutProtocol}
                     validate={value => {
                         if (!value) {
                             return 'Url is required';
@@ -113,6 +82,6 @@ export const Web = new class extends LinkType<Props> {
                     <input type="text" {...input}/>
                 )}</Field>
             </div>
-        );
-    };
-}
+        )
+    })
+);

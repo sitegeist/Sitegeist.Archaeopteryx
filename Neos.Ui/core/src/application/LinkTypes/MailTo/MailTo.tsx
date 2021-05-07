@@ -1,97 +1,76 @@
 import * as React from 'react';
 
-import {LinkType, ILink, Process, Field} from '../../../domain';
+import {makeLinkType, Process, Field} from '../../../domain';
+import {IconCard} from '../../../presentation';
 
-interface Props {
-    value: null | {
-        recipient: string
-        subject?: string
-        cc?: string
-        bcc?: string
-        body?: string
-    }
+interface EMail {
+    recipient: string
+    subject?: string
+    cc?: string
+    bcc?: string
+    body?: string
 }
 
-export const MailTo = new class extends LinkType<Props> {
-    public readonly id = 'Sitegeist.Archaeopteryx:MailTo';
+export const MailTo = makeLinkType<EMail>(
+    'Sitegeist.Archaeopteryx:MailTo',
+    () => ({
+        isSuitableFor: link => link.href.startsWith('mailto:'),
 
-    public readonly isSuitableFor = (link: ILink) =>
-        link.href.startsWith('mailto:');
+        useResolvedModel: link => {
+            const url = new URL(link.href);
 
-    public readonly useResolvedProps = (link?: ILink) => {
-        if (link === undefined) {
-            return Process.success({value: null});
-        }
-
-        const url = new URL(link.href);
-
-        return Process.success({
-            value: {
+            return Process.success({
                 recipient: url.pathname,
                 subject: url.searchParams.get('subject') ?? undefined,
                 cc: url.searchParams.get('cc') ?? undefined,
                 bcc: url.searchParams.get('bcc') ?? undefined,
                 body: url.searchParams.get('body') ?? undefined
+            });
+        },
+
+        convertModelToLink: email => {
+            const url = new URL(`mailto:${email.recipient}`);
+
+            if (email.subject) {
+                url.searchParams.set('subject', email.subject)
             }
-        });
-    };
 
-    public readonly convertPropsToLink = (props: Props) => {
-        if (props.value === null) {
-            return null;
-        }
+            if (email.cc) {
+                url.searchParams.set('cc', email.cc)
+            }
 
-        const url = new URL(`mailto:${props.value.recipient}`);
+            if (email.bcc) {
+                url.searchParams.set('bcc', email.bcc)
+            }
 
-        if (props.value.subject) {
-            url.searchParams.set('subject', props.value.subject)
-        }
+            if (email.body) {
+                url.searchParams.set('body', email.body)
+            }
 
-        if (props.value.cc) {
-            url.searchParams.set('cc', props.value.cc)
-        }
+            return {href: url.toString()};
+        },
 
-        if (props.value.bcc) {
-            url.searchParams.set('bcc', props.value.bcc)
-        }
+        StaticIcon: () => (<div>MAILTO</div>),
 
-        if (props.value.body) {
-            url.searchParams.set('body', props.value.body)
-        }
+        StaticTitle: () => 'MAILTO',
 
-        return {href: url.toString()};
-    };
+        Preview: ({model: email}) => (
+            <IconCard
+                icon="envelope"
+                title={email.recipient}
+                subTitle={
+                    email.subject || email.body
+                        ? `${email.subject ?? ''} ${email.body ?? ''}`.trim()
+                        : undefined
+                }
+            />
+        ),
 
-    public readonly getStaticIcon = () => (
-        <div>MAILTO</div>
-    );
-
-    public readonly getIcon = () => (
-        <div>MAILTO</div>
-    );
-
-    public readonly getStaticTitle = () => 'MAILTO'
-
-    public readonly getTitle = () => 'MAILTO'
-
-    public readonly getLoadingPreview = () => (
-        <div>MAILTO PREVIEW</div>
-    );
-
-    public readonly getPreview = (props: Props) => (
-        <div>MAILTO PREVIEW</div>
-    );
-
-    public readonly getLoadingEditor = () => (
-        <div>MAILTO EDITOR</div>
-    );
-
-    public readonly getEditor = (props: Props) => {
-        return (
+        Editor: ({model: email}) => (
             <div>
                 <Field<string>
-                    name="value.recipient"
-                    initialValue={props.value?.recipient}
+                    name="recipient"
+                    initialValue={email?.recipient}
                     validate={value => {
                         if (!value) {
                             return 'recipient is required';
@@ -107,8 +86,20 @@ export const MailTo = new class extends LinkType<Props> {
                         </div>
                 )}</Field>
                 <Field<string>
-                    name="value.cc"
-                    initialValue={props.value?.cc}
+                    name="subject"
+                    initialValue={email?.subject}
+                >{({input, meta}) => (
+                    <div>
+                        <label>
+                            Subject:
+                            <input type="text" {...input}/>
+                        </label>
+                        {meta.error}
+                    </div>
+                )}</Field>
+                <Field<string>
+                    name="cc"
+                    initialValue={email?.cc}
                 >{({input, meta}) => (
                     <div>
                         <label>
@@ -119,8 +110,8 @@ export const MailTo = new class extends LinkType<Props> {
                     </div>
                 )}</Field>
                 <Field<string>
-                    name="value.bcc"
-                    initialValue={props.value?.bcc}
+                    name="bcc"
+                    initialValue={email?.bcc}
                 >{({input, meta}) => (
                     <div>
                         <label>
@@ -131,8 +122,8 @@ export const MailTo = new class extends LinkType<Props> {
                     </div>
                 )}</Field>
                 <Field<string>
-                    name="value.body"
-                    initialValue={props.value?.body}
+                    name="body"
+                    initialValue={email?.body}
                 >{({input, meta}) => (
                     <div>
                         <label>
@@ -143,6 +134,6 @@ export const MailTo = new class extends LinkType<Props> {
                     </div>
                 )}</Field>
             </div>
-        );
-    };
-}
+        )
+    })
+);

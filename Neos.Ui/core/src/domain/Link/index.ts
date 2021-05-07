@@ -1,3 +1,4 @@
 export type {ILink, ILinkOptions} from './Link';
 
-export {LinkType, useLinkTypes, useLinkTypeForHref} from './LinkType';
+export type {ILinkType} from './LinkType';
+export {makeLinkType, useLinkTypes, useLinkTypeForHref} from './LinkType';

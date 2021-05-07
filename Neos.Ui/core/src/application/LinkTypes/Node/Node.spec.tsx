@@ -62,9 +62,4 @@ describe('LinkType: Node', () => {
         expect(Node.isSuitableFor(link))
             .toBe(false);
     });
-
-    it('returns title', () => {
-        expect(Node.getTitle())
-            .toBe('Node Tree');
-    });
 });

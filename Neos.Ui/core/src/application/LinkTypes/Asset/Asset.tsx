@@ -2,83 +2,68 @@ import * as React from 'react';
 
 import {useAssetSummary} from '@sitegeist/archaeopteryx-neos-bridge';
 
-import {Process, Field, LinkType, ILink} from '../../../domain';
+import {Process, Field, makeLinkType} from '../../../domain';
+import {ImageCard} from '../../../presentation';
+
 import {MediaBrowser} from './MediaBrowser';
 
-interface Props {
-    assetIdentifier: null | string
+interface Asset {
+    identifier: string
 }
 
-export const Asset = new class extends LinkType<Props> {
-    public readonly id = 'Sitegeist.Archaeopteryx:Asset';
+export const Asset = makeLinkType<Asset>(
+    'Sitegeist.Archaeopteryx:Asset',
+    ({createError}) => ({
+        isSuitableFor: link => link.href.startsWith('asset://'),
 
-    public readonly isSuitableFor = (link: ILink) =>
-        link.href.startsWith('asset://');
+        useResolvedModel: link => {
+            const match = /asset:\/\/(.*)/.exec(link.href);
 
-    public readonly useResolvedProps = (link?: ILink) => {
-        if (link === undefined) {
-            return Process.success({assetIdentifier: null});
-        }
+            if (match) {
+                return Process.success({assetIdentifier: match[1]});
+            }
 
-        const match = /asset:\/\/(.*)/.exec(link.href);
+            return Process.error(
+                createError(`Cannot handle href "${link.href}".`)
+            );
+        },
 
-        if (match) {
-            return Process.success({assetIdentifier: match[1]});
-        }
+        convertModelToLink: assetIdentifier => ({
+            href: `asset://${assetIdentifier}`
+        }),
 
-        return Process.error(
-            this.error(`Cannot handle href "${link.href}".`)
-        );
-    };
+        StaticIcon: () => (<div>ASSET</div>),
 
-    public readonly convertPropsToLink = (props: Props) => {
-        if (props.assetIdentifier === null) {
-            return null;
-        }
+        StaticTitle: () => 'ASSET',
 
-        return {
-            href: `asset://${props.assetIdentifier}`
-        };
-    };
+        Preview: props => {
+            const asset = useAssetSummary(props.model.identifier);
 
-    public readonly getStaticIcon = () => (
-        <div>ASSET</div>
-    );
+            if (!asset.value) {
+                return null;
+            }
 
-    public readonly getIcon = () => (
-        <div>ASSET</div>
-    );
-
-    public readonly getStaticTitle = () => 'ASSET';
-
-    public readonly getTitle = () => 'ASSET';
-
-    public readonly getLoadingPreview = () => (
-        <div>ASSET PREVIEW</div>
-    );
-
-    public readonly getPreview = (props: Props) => {
-        const asset = useAssetSummary(props.assetIdentifier!);
-        return (
-            <div>{asset.value?.label}</div>
-        );
-    }
-
-    public readonly getLoadingEditor = () => (
-        <div>ASSET EDITOR</div>
-    );
-
-    public readonly getEditor = (props: Props) => {
-        return (
-            <Field
-                name="assetIdentifier"
-                initialValue={props.assetIdentifier}
-            >{({input}) => (
-                <MediaBrowser
-                    assetIdentifier={input.value}
-                    onSelectAsset={input.onChange}
+            return (
+                <ImageCard
+                    label={asset.value?.label}
+                    src={asset.value?.preview}
                 />
-            )}</Field>
-        );
-    };
-}
+            );
+        },
+
+        Editor: props => {
+            return (
+                <Field
+                    name="identifier"
+                    initialValue={props.model?.identifier}
+                >{({input}) => (
+                    <MediaBrowser
+                        assetIdentifier={input.value}
+                        onSelectAsset={input.onChange}
+                    />
+                )}</Field>
+            );
+        }
+    })
+);
+

@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import {Button} from '@neos-project/react-ui-components';
 
-import {LinkType, useLinkTypeForHref, useEditorTransactions} from '@sitegeist/archaeopteryx-core';
+import {ILinkType, useLinkTypeForHref, useEditorTransactions} from '@sitegeist/archaeopteryx-core';
 
 interface Props {
     neos: unknown
@@ -40,7 +40,7 @@ export const InspectorEditor: React.FC<Props> = props => {
     if (linkType) {
         return (
             <InspectorEditorWithLinkType
-                value={value}
+                value={value!}
                 linkType={linkType}
                 editLink={editLink}
             />
@@ -59,13 +59,13 @@ export const InspectorEditor: React.FC<Props> = props => {
 };
 
 const InspectorEditorWithLinkType: React.FC<{
-    value: undefined | string,
-    linkType: LinkType,
+    value: string,
+    linkType: ILinkType,
     editLink: () => Promise<void>
 }> = props => {
-    const link = props.value === undefined ? undefined : {href: props.value};
-    const {busy, error, result: linkTypeProps} = props.linkType.useResolvedProps(link);
-    const {getPreview: Preview, getLoadingPreview: LoadingPreview} = props.linkType;
+    const link = {href: props.value};
+    const {busy, error, result: model} = props.linkType.useResolvedModel(link);
+    const {Preview, LoadingPreview} = props.linkType;
 
     if (error) {
         throw error;
@@ -76,7 +76,7 @@ const InspectorEditorWithLinkType: React.FC<{
             {busy ? (
                 <LoadingPreview link={link}/>
             ) : (
-                <Preview {...linkTypeProps}/>
+                <Preview model={model} link={link}/>
             )}
             <Button onClick={props.editLink}>
                 Edit Link
