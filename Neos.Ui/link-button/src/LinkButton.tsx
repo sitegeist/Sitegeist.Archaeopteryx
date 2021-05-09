@@ -50,18 +50,21 @@ export const LinkButton: React.FC<Props> = props => {
                 props.executeCommand('linkTitle', false, false);
                 props.executeCommand('linkRelNofollow', false, false);
                 props.executeCommand('linkTargetBlank', false, false);
-                props.executeCommand('unlink');
+                props.executeCommand('unlink', undefined, true);
             } else {
                 props.executeCommand('linkTitle', result.value.options?.title || false, false);
                 props.executeCommand('linkTargetBlank', result.value.options?.targetBlank ?? false, false);
                 props.executeCommand('linkRelNofollow', result.value.options?.relNoFollow ?? false, false);
 
                 if (result.value.options?.anchor) {
-                    props.executeCommand('link', `${result.value.href}#${result.value.options?.anchor}`, false);
+                    props.executeCommand('link', `${result.value.href}#${result.value.options?.anchor}`, true);
                 } else {
-                    props.executeCommand('link', result.value.href, false);
+                    props.executeCommand('link', result.value.href, true);
                 }
             }
+        } else {
+            props.executeCommand('undo', undefined, true);
+            props.executeCommand('redo', undefined, true);
         }
     }, [props.executeCommand, props.formattingUnderCursor.link, tx]);
 

@@ -11,5 +11,5 @@ export function useAssetSummary(assetIdentifier: string) {
     return useAsync(async () => {
         const result = await endpoints().assetDetail(assetIdentifier);
         return result as null | IAssetSummary;
-    });
+    }, [assetIdentifier]);
 }

@@ -1,6 +1,8 @@
 import * as React from 'react';
 import {useAsync} from 'react-use';
 
+import {Icon} from '@neos-project/react-ui-components';
+
 import {q, INodePartialForTree, NodeTypeName, useSiteNodeContextPath, useDocumentNodeContextPath, useConfiguration, useNodeSummary, useNodeType} from '@sitegeist/archaeopteryx-neos-bridge';
 import {NodeTree} from '@sitegeist/archaeopteryx-custom-node-tree';
 
@@ -57,7 +59,12 @@ export const Node = makeLinkType<NodeModel>(
             href: `node://${node.identifier}`
         }),
 
-        StaticIcon: () => (<div>NODE TREE</div>),
+        StaticIcon: () => (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Icon icon="file"/>
+                Document
+            </div>
+        ),
 
         StaticTitle: () => 'Node Tree',
 
@@ -89,6 +96,11 @@ export const Node = makeLinkType<NodeModel>(
                     <Field<null | INodePartialForTree>
                         name="node"
                         initialValue={model?.node}
+                        validate={value => {
+                            if (!value) {
+                                return 'node is required';
+                            }
+                        }}
                     >{({input}) => (
                         <NodeTree
                             configuration={{

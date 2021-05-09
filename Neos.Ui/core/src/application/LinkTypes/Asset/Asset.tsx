@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import {Icon} from '@neos-project/react-ui-components';
+
 import {useAssetSummary} from '@sitegeist/archaeopteryx-neos-bridge';
 
 import {Process, Field, makeLinkType} from '../../../domain';
@@ -20,7 +22,7 @@ export const Asset = makeLinkType<Asset>(
             const match = /asset:\/\/(.*)/.exec(link.href);
 
             if (match) {
-                return Process.success({assetIdentifier: match[1]});
+                return Process.success({identifier: match[1]});
             }
 
             return Process.error(
@@ -28,11 +30,16 @@ export const Asset = makeLinkType<Asset>(
             );
         },
 
-        convertModelToLink: assetIdentifier => ({
-            href: `asset://${assetIdentifier}`
+        convertModelToLink: asset => ({
+            href: `asset://${asset.identifier}`
         }),
 
-        StaticIcon: () => (<div>ASSET</div>),
+        StaticIcon: () => (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Icon icon="camera"/>
+                Asset
+            </div>
+        ),
 
         StaticTitle: () => 'ASSET',
 
@@ -56,6 +63,11 @@ export const Asset = makeLinkType<Asset>(
                 <Field
                     name="identifier"
                     initialValue={props.model?.identifier}
+                    validate={value => {
+                        if (!value) {
+                            return 'identifier is required';
+                        }
+                    }}
                 >{({input}) => (
                     <MediaBrowser
                         assetIdentifier={input.value}

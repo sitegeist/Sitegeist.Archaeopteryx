@@ -31,15 +31,18 @@ export const MediaBrowser: React.FC<Props> = props => {
             <iframe
                 name="neos-media-selection-screen"
                 src={`${mediaBrowserUri}/images/edit.html?asset[__identity]=${props.assetIdentifier}`}
-                style={{width: '100%', minHeight: '467px'}}
+                style={{width: 'calc(100vw - 160px)', maxWidth: '1260px', height: 'calc(100vh - 480px)'}}
                 frameBorder="0"
                 onLoad={ev => {
                     const iframe = (ev.target as HTMLIFrameElement).contentDocument;
-
-                    iframe?.querySelector('form > .neos-footer')?.remove();
-                    iframe?.querySelectorAll('input, select, textarea')?.forEach(input => {
-                        (input as HTMLInputElement).readOnly = true;
-                    });
+                    if (iframe) {
+                        iframe.body.style.overflowX = 'hidden';
+                        iframe.body.style.padding = '0';
+                        iframe.querySelector('form > .neos-footer')?.remove();
+                        iframe.querySelectorAll('input, select, textarea')?.forEach(input => {
+                            (input as HTMLInputElement).readOnly = true;
+                        });
+                    }
                 }}
             />
         );
@@ -48,8 +51,15 @@ export const MediaBrowser: React.FC<Props> = props => {
             <iframe
                 name="neos-media-selection-screen"
                 src={`${mediaBrowserUri}/assets/index.html`}
-                style={{width: '100%', minHeight: '467px'}}
+                style={{width: 'calc(100vw - 160px)', maxWidth: '1260px', height: 'calc(100vh - 480px)'}}
                 frameBorder="0"
+                onLoad={ev => {
+                    const iframe = (ev.target as HTMLIFrameElement).contentDocument;
+                    if (iframe) {
+                        iframe.body.style.overflowX = 'hidden';
+                        iframe.body.style.padding = '0';
+                    }
+                }}
             />
         );
     }

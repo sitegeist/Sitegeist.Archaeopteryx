@@ -105,7 +105,9 @@ export const NodeTree: React.FC<Props> = props => {
         <div
             style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(2, 1fr)'
+                gridTemplateColumns: 'repeat(2, 1fr)',
+                backgroundColor: '#141414',
+                border: '1px solid #3f3f3f'
             }}
             >
             {search ? (
@@ -133,6 +135,8 @@ export const NodeTree: React.FC<Props> = props => {
             {main ? (
                 <div
                     style={{
+                        marginTop: '-5px',
+                        borderTop: '1px solid #3f3f3f',
                         gridColumn: '1 / span 2',
                         height: '50vh',
                         maxHeight: '300px',

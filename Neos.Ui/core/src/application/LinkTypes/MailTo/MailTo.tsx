@@ -1,7 +1,9 @@
 import * as React from 'react';
 
+import {Icon, TextInput, TextArea} from '@neos-project/react-ui-components';
+
 import {makeLinkType, Process, Field} from '../../../domain';
-import {IconCard} from '../../../presentation';
+import {IconCard, Grid} from '../../../presentation';
 
 interface EMail {
     recipient: string
@@ -50,7 +52,12 @@ export const MailTo = makeLinkType<EMail>(
             return {href: url.toString()};
         },
 
-        StaticIcon: () => (<div>MAILTO</div>),
+        StaticIcon: () => (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Icon icon="envelope"/>
+                Mailto
+            </div>
+        ),
 
         StaticTitle: () => 'MAILTO',
 
@@ -67,7 +74,7 @@ export const MailTo = makeLinkType<EMail>(
         ),
 
         Editor: ({model: email}) => (
-            <div>
+            <Grid>
                 <Field<string>
                     name="recipient"
                     initialValue={email?.recipient}
@@ -77,10 +84,10 @@ export const MailTo = makeLinkType<EMail>(
                         }
                     }}
                 >{({input, meta}) => (
-                        <div>
+                        <div style={{ gridColumn: '1 / -1' }}>
                             <label>
                                 Recipient:
-                                <input type="text" {...input}/>
+                                <TextInput type="text" {...input}/>
                             </label>
                             {meta.error}
                         </div>
@@ -89,10 +96,10 @@ export const MailTo = makeLinkType<EMail>(
                     name="subject"
                     initialValue={email?.subject}
                 >{({input, meta}) => (
-                    <div>
+                    <div style={{ gridColumn: '1 / -1' }}>
                         <label>
                             Subject:
-                            <input type="text" {...input}/>
+                            <TextInput type="text" {...input}/>
                         </label>
                         {meta.error}
                     </div>
@@ -101,10 +108,10 @@ export const MailTo = makeLinkType<EMail>(
                     name="cc"
                     initialValue={email?.cc}
                 >{({input, meta}) => (
-                    <div>
+                    <div style={{ gridColumn: '1 / -1' }}>
                         <label>
                             CC:
-                            <input type="text" {...input}/>
+                            <TextInput type="text" {...input}/>
                         </label>
                         {meta.error}
                     </div>
@@ -113,10 +120,10 @@ export const MailTo = makeLinkType<EMail>(
                     name="bcc"
                     initialValue={email?.bcc}
                 >{({input, meta}) => (
-                    <div>
+                    <div style={{ gridColumn: '1 / -1' }}>
                         <label>
                             BCC:
-                            <input type="text" {...input}/>
+                            <TextInput type="text" {...input}/>
                         </label>
                         {meta.error}
                     </div>
@@ -125,15 +132,15 @@ export const MailTo = makeLinkType<EMail>(
                     name="body"
                     initialValue={email?.body}
                 >{({input, meta}) => (
-                    <div>
+                    <div style={{ gridColumn: '1 / -1' }}>
                         <label>
                             Body:
-                            <textarea {...input}/>
+                            <TextArea {...input}/>
                         </label>
                         {meta.error}
                     </div>
                 )}</Field>
-            </div>
+            </Grid>
         )
     })
 );

@@ -12,8 +12,8 @@ function useLastNonNull<V>(value: null | V) {
 }
 
 export const LinkEditor: React.FC<{
-    link: null | ILink;
-    linkType: ILinkType;
+    link: null | ILink
+    linkType: ILinkType
 }> = props => {
     if (props.link === null) {
         return (
@@ -32,7 +32,7 @@ export const LinkEditor: React.FC<{
 };
 
 const LinkEditorWithoutValue: React.FC<{
-    linkType: ILinkType;
+    linkType: ILinkType
 }> = props => {
     const {Editor} = props.linkType;
     const prefix = `linkTypeProps.${props.linkType.id.split('.').join('_')}`;
@@ -48,8 +48,8 @@ const LinkEditorWithoutValue: React.FC<{
 }
 
 const LinkEditorWithValue: React.FC<{
-    link: ILink;
-    linkType: ILinkType;
+    link: ILink
+    linkType: ILinkType
 }> = props => {
     const {busy, error, result} = props.linkType.useResolvedModel(props.link);
     const model = useLastNonNull(result);

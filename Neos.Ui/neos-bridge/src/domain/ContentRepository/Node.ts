@@ -65,5 +65,5 @@ export function useNodeSummary(identifier: NodeAggregateIdentifier) {
         }
 
         return null;
-    });
+    }, [identifier]);
 }

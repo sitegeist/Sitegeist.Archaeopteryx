@@ -1,8 +1,12 @@
 import * as React from 'react';
-import {Dialog as NeosDialog, Button} from '@neos-project/react-ui-components';
 import {Form, useForm} from 'react-final-form';
+import {useKey} from 'react-use';
+
+import {Button} from '@neos-project/react-ui-components';
 
 import {ILink, ILinkOptions, useEditorState, useEditorTransactions, useLinkTypes, useLinkTypeForHref, Field, ILinkType} from '../../domain';
+import {Form as StyledForm, Modal, Tabs, Deletable} from '../../presentation';
+
 import {LinkEditor} from './LinkEditor';
 import {Settings} from './Settings';
 
@@ -16,45 +20,58 @@ export const Dialog: React.FC = () => {
             const props = values.linkTypeProps?.[linkType.id.split('.').join('_')];
 
             if (props) {
-                const link = linkType.convertModelToLink(props);
+                const link = {
+                    ...linkType.convertModelToLink(props),
+                    options: values.options
+                };
                 apply(link);
             }
         }
     }, [linkTypes]);
 
-    return (
-        <NeosDialog
-            title="Sitegeist.Archaeopteryx"
-            isOpen={isOpen}
-            style="jumbo"
-            onRequestClose={() => {}}
-        >
-            <Form<ILinkOptions> onSubmit={handleSubmit}>
-                {({handleSubmit, valid, dirty}) => (
-                    <form onSubmit={handleSubmit}>
-                        {value.transient === null ? (
-                            <DialogWithEmptyValue/>
-                        ) : (
-                            <DialogWithValue
-                                value={value.transient!}
+    useKey('Escape', dismiss);
+
+    if (isOpen) {
+        return (
+            <Modal
+                renderTitle={() => (
+                    <div>Sitegeist.Archaeopteryx</div>
+                )}
+                renderBody={() => (
+                    <Form<ILinkOptions> onSubmit={handleSubmit}>
+                        {({handleSubmit, valid, dirty}) => (
+                            <StyledForm
+                                renderBody={() => value.transient === null ? (
+                                    <DialogWithEmptyValue/>
+                                ) : (
+                                    <DialogWithValue
+                                        value={value.transient!}
+                                    />
+                                )}
+                                renderActions={() => (
+                                    <>
+                                        <Button onClick={dismiss}>
+                                            Cancel
+                                        </Button>
+                                        <Button
+                                            style="success"
+                                            type="submit"
+                                            disabled={!valid || !dirty}
+                                        >
+                                            Apply
+                                        </Button>
+                                    </>
+                                )}
+                                onSubmit={handleSubmit}
                             />
                         )}
-
-                        <Button onClick={dismiss}>
-                            Cancel
-                        </Button>
-                        <Button
-                            style="success"
-                            type="submit"
-                            disabled={!valid || !dirty}
-                            >
-                            Apply
-                        </Button>
-                    </form>
+                    </Form>
                 )}
-            </Form>
-        </NeosDialog>
-    );
+            />
+        )
+    }
+
+    return null;
 };
 
 const DialogWithEmptyValue: React.FC = () => {
@@ -62,25 +79,25 @@ const DialogWithEmptyValue: React.FC = () => {
 
     return (
         <Field name="linkTypeId" initialValue={linkTypes[0].id}>{({input}) => (
-            <div>
-                {linkTypes.map(({id, StaticIcon}) => (
-                    <Button
-                        isActive={id === input.value}
-                        key={id}
-                        onClick={() => input.onChange(id)}
-                    >
-                        <StaticIcon/>
-                    </Button>
-                ))}
+            <Tabs
+                lazy
+                from={linkTypes}
+                activeItemKey={input.value}
+                getKey={linkType => linkType.id}
+                renderHeader={({StaticIcon}) => (<StaticIcon/>)}
+                renderPanel={linkType => (
+                    <div style={{ display: 'grid', gap: '16px' }}>
+                        <LinkEditor
+                            key={linkType.id}
+                            link={null}
+                            linkType={linkType}
+                        />
 
-                <div>
-                    <LinkEditor
-                        key={input.value}
-                        link={null}
-                        linkType={linkTypes.find(linkType => linkType.id === input.value)!}
-                    />
-                </div>
-            </div>
+                        <Settings/>
+                    </div>
+                )}
+                onSwitchTab={input.onChange}
+            />
         )}</Field>
     );
 }
@@ -91,51 +108,47 @@ const DialogWithValue: React.FC<{
     const form = useForm();
     const {unset} = useEditorTransactions();
     const linkType = useLinkTypeForHref(props.value.href)!;
-    const [showSettings, setShowSettings] = React.useState(false);
+    const {result} = linkType.useResolvedModel(props.value);
+    const {Preview} = linkType;
+    const state = form.getState();
+    const model = state.valid
+        ? state.values.linkTypeProps?.[linkType.id.split('.').join('_')]
+        : result;
 
     return (
         <Field name="linkTypeId" initialValue={linkType.id}>{() => (
-            <div>
-                <Button
-                    isActive={!showSettings}
-                    onClick={() => setShowSettings(false)}
-                >
-                    <LinkTypeIcon
-                        linkType={linkType}
-                        link={props.value}
-                    />
-                </Button>
-                <Button
-                    isActive={showSettings}
-                    onClick={() => setShowSettings(true)}
-                >
-                    SETTINGS
-                </Button>
+            <Tabs
+                lazy
+                from={[linkType]}
+                activeItemKey={linkType.id}
+                getKey={linkType => linkType.id}
+                renderHeader={({StaticIcon}) => (<StaticIcon/>)}
+                renderPanel={linkType => (
+                    <div style={{ display: 'grid', gap: '16px' }}>
+                        {model ? (
+                            <Deletable
+                                onDelete={() => {
+                                    unset();
+                                    form.change('linkTypeProps', null);
+                                }}
+                            >
+                                <Preview
+                                    model={model}
+                                    link={props.value}
+                                />
+                            </Deletable>
+                        ) : null}
 
-                <div>
-                    <Button
-                        onClick={() => {
-                            unset();
-                            form.change('linkTypeProps', null);
-                        }}
-                    >
-                        Delete
-                    </Button>
-                </div>
-
-                <div>
-                    <div hidden={!showSettings}>
-                        <Settings initialValue={props.value.options}/>
-                    </div>
-                    <div hidden={showSettings}>
                         <LinkEditor
                             key={linkType.id}
                             link={props.value}
                             linkType={linkType}
                         />
+
+                        <Settings initialValue={props.value.options}/>
                     </div>
-                </div>
-            </div>
+                )}
+            />
         )}</Field>
     );
 }

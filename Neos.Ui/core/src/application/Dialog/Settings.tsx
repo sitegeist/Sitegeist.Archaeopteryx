@@ -1,6 +1,10 @@
 import * as React from 'react';
 import {Field} from 'react-final-form';
 
+import {TextInput, CheckBox} from '@neos-project/react-ui-components';
+
+import {Grid} from '../../presentation';
+
 interface Props {
     initialValue?: {
         anchor?: string
@@ -12,67 +16,53 @@ interface Props {
 
 export const Settings: React.FC<Props> = props => {
     return (
-        <div>
+        <Grid>
             <Field<string>
-                name="anchor"
+                name="options.anchor"
                 initialValue={props.initialValue?.anchor}
                 >
                 {({input}) => (
                     <label>
                         Anchor:
-                        <input type="text" {...input}/>
+                        <TextInput type="text" {...input}/>
                     </label>
                 )}
             </Field>
             <Field<string>
-                name="title"
+                name="options.title"
                 initialValue={props.initialValue?.title}
                 >
                 {({input}) => (
                     <label>
                         Title:
-                        <input type="text" {...input}/>
+                        <TextInput type="text" {...input}/>
                     </label>
                 )}
             </Field>
-            <Field<string>
+            <Field<boolean>
                 type="checkbox"
-                name="targetBlank"
-                initialValue={props.initialValue?.targetBlank ? 'true' : ''}
+                name="options.targetBlank"
+                initialValue={Boolean(props.initialValue?.targetBlank)}
                 >
                 {({input}) => (
                     <label>
-                        Open in new Window:
-                        <input
-                            style={{
-                                appearance: 'checkbox',
-                                backgroundColor: 'white',
-                            }}
-                            type="checkbox"
-                            {...input}
-                        />
+                        <CheckBox onChange={input.onChange} isChecked={input.checked}/>
+                        Open in new Window
                     </label>
                 )}
             </Field>
-            <Field<string>
+            <Field<boolean>
                 type="checkbox"
-                name="relNoFollow"
-                initialValue={props.initialValue?.relNoFollow ? 'true' : ''}
+                name="options.relNoFollow"
+                initialValue={Boolean(props.initialValue?.relNoFollow)}
                 >
                 {({input}) => (
                     <label>
-                        No Follow:
-                        <input
-                            style={{
-                                appearance: 'checkbox',
-                                backgroundColor: 'white',
-                            }}
-                            type="checkbox"
-                            {...input}
-                        />
+                        <CheckBox onChange={input.onChange} isChecked={input.checked}/>
+                        No Follow
                     </label>
                 )}
             </Field>
-        </div>
+        </Grid>
     );
 }
