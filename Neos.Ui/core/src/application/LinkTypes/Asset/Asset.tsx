@@ -34,14 +34,12 @@ export const Asset = makeLinkType<Asset>(
             href: `asset://${asset.identifier}`
         }),
 
-        StaticIcon: () => (
+        TabHeader: () => (
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Icon icon="camera"/>
                 Asset
             </div>
         ),
-
-        StaticTitle: () => 'ASSET',
 
         Preview: props => {
             const asset = useAssetSummary(props.model.identifier);

@@ -59,14 +59,12 @@ export const Node = makeLinkType<NodeModel>(
             href: `node://${node.identifier}`
         }),
 
-        StaticIcon: () => (
+        TabHeader: () => (
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Icon icon="file"/>
                 Document
             </div>
         ),
-
-        StaticTitle: () => 'Node Tree',
 
         Preview: ({model: {node}}) =>  {
             const nodeSummary = useNodeSummary(node.identifier!);

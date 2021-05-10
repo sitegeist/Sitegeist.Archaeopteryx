@@ -13,7 +13,7 @@ import {Settings} from './Settings';
 export const Dialog: React.FC = () => {
     const linkTypes = useLinkTypes();
     const {dismiss, apply} = useEditorTransactions();
-    const {isOpen, value} = useEditorState();
+    const {isOpen, enableOptions, value} = useEditorState();
     const handleSubmit = React.useCallback((values: any) => {
         const linkType = linkTypes.find(linkType => linkType.id === values.linkTypeId);
         if (linkType) {
@@ -42,9 +42,12 @@ export const Dialog: React.FC = () => {
                         {({handleSubmit, valid, dirty}) => (
                             <StyledForm
                                 renderBody={() => value.transient === null ? (
-                                    <DialogWithEmptyValue/>
+                                    <DialogWithEmptyValue
+                                        enableOptions={enableOptions}
+                                    />
                                 ) : (
                                     <DialogWithValue
+                                        enableOptions={enableOptions}
                                         value={value.transient!}
                                     />
                                 )}
@@ -74,7 +77,9 @@ export const Dialog: React.FC = () => {
     return null;
 };
 
-const DialogWithEmptyValue: React.FC = () => {
+const DialogWithEmptyValue: React.FC<{
+    enableOptions: boolean
+}> = props => {
     const linkTypes = useLinkTypes();
 
     return (
@@ -84,7 +89,7 @@ const DialogWithEmptyValue: React.FC = () => {
                 from={linkTypes}
                 activeItemKey={input.value}
                 getKey={linkType => linkType.id}
-                renderHeader={({StaticIcon}) => (<StaticIcon/>)}
+                renderHeader={({TabHeader}) => (<TabHeader/>)}
                 renderPanel={linkType => (
                     <div style={{ display: 'grid', gap: '16px' }}>
                         <LinkEditor
@@ -93,7 +98,9 @@ const DialogWithEmptyValue: React.FC = () => {
                             linkType={linkType}
                         />
 
-                        <Settings/>
+                        {props.enableOptions && linkType.enableLinkOptionsWhenPossible ? (
+                            <Settings/>
+                        ) : null}
                     </div>
                 )}
                 onSwitchTab={input.onChange}
@@ -103,6 +110,7 @@ const DialogWithEmptyValue: React.FC = () => {
 }
 
 const DialogWithValue: React.FC<{
+    enableOptions: boolean
     value: ILink
 }> = props => {
     const form = useForm();
@@ -122,7 +130,7 @@ const DialogWithValue: React.FC<{
                 from={[linkType]}
                 activeItemKey={linkType.id}
                 getKey={linkType => linkType.id}
-                renderHeader={({StaticIcon}) => (<StaticIcon/>)}
+                renderHeader={({TabHeader}) => (<TabHeader/>)}
                 renderPanel={linkType => (
                     <div style={{ display: 'grid', gap: '16px' }}>
                         {model ? (
@@ -145,45 +153,12 @@ const DialogWithValue: React.FC<{
                             linkType={linkType}
                         />
 
-                        <Settings initialValue={props.value.options}/>
+                        {props.enableOptions && linkType.enableLinkOptionsWhenPossible ? (
+                            <Settings initialValue={props.value.options}/>
+                        ) : null}
                     </div>
                 )}
             />
         )}</Field>
     );
-}
-
-
-function useLastNonNull<V>(value: null | V) {
-    const valueRef = React.useRef(value);
-
-    if (value !== null) {
-        valueRef.current = value;
-    }
-
-    return valueRef.current;
-}
-
-const LinkTypeIcon: React.FC<{
-    link: ILink
-    linkType: ILinkType
-}> = props => {
-    const {StaticIcon, Icon} = props.linkType
-    const {result} = props.linkType.useResolvedModel(props.link);
-    const model = useLastNonNull(result);
-
-    if (model) {
-        return (
-            <Icon
-                model={model}
-                link={props.link}
-            />
-        );
-    } else {
-        return (
-            <StaticIcon
-                link={props.link}
-            />
-        );
-    }
 }

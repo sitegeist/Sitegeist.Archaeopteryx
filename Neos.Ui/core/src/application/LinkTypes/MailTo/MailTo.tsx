@@ -52,14 +52,12 @@ export const MailTo = makeLinkType<EMail>(
             return {href: url.toString()};
         },
 
-        StaticIcon: () => (
+        TabHeader: () => (
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Icon icon="envelope"/>
                 Mailto
             </div>
         ),
-
-        StaticTitle: () => 'MAILTO',
 
         Preview: ({model: email}) => (
             <IconCard

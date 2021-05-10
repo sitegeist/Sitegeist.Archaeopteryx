@@ -14,6 +14,8 @@ interface WebLinkModel {
 export const Web = makeLinkType<WebLinkModel>(
     'Sitegeist.Archaeopteryx:Web',
     ({createError}) => ({
+        enableLinkOptionsWhenPossible: true,
+
         isSuitableFor: link => {
             const isHttp = link.href.startsWith('http://');
             const isHttps = link.href.startsWith('https://');
@@ -41,24 +43,12 @@ export const Web = makeLinkType<WebLinkModel>(
             href: `${model.protocol}://${model.urlWithoutProtocol}`
         }),
 
-        StaticIcon: () => (
+        TabHeader: () => (
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Icon icon="globe"/>
                 Web
             </div>
         ),
-
-        StaticTitle: () => 'Web Link',
-
-        Title: ({model}) => {
-            const isSecure = model.protocol === 'https';
-
-            if (isSecure) {
-                return 'Web Link (secure)';
-            } else {
-                return 'Web Link (not secure)';
-            }
-        },
 
         Preview: ({model}) => (
             <IconCard

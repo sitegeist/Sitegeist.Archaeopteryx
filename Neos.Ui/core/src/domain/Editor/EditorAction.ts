@@ -3,7 +3,7 @@ import {ILink} from '../Link';
 
 export const EditorWasOpened = createAction(
     'http://sitegeist.de/Sitegeist.Archaeopteryx/EditorWasOpened',
-    (value: null | ILink) => value
+    (value: null | ILink, enableOptions: boolean = false) => ({value, enableOptions})
 )();
 
 export const EditorWasDismissed = createAction(

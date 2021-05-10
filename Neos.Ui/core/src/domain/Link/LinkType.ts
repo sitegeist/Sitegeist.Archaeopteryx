@@ -13,16 +13,14 @@ interface LinkTypeProps<ModelType = any> {
 }
 
 export interface ILinkType<ModelType = any> {
-    id: string;
+    id: string
+    enableLinkOptionsWhenPossible: boolean
     isSuitableFor: (link: ILink) => boolean
 
     useResolvedModel: (link: ILink) => IProcess<ModelType>
     convertModelToLink: (model: ModelType) => ILink
 
-    StaticIcon: React.FC<{link?: ILink}>
-    Icon: React.FC<LinkTypeProps<ModelType>>
-    StaticTitle: (props: {link?: ILink}) => string
-    Title: (props: LinkTypeProps<ModelType>) => string
+    TabHeader: React.FC<{link?: ILink}>
     LoadingPreview: React.FC<{link?: ILink}>
     Preview: React.FC<LinkTypeProps<ModelType>>
     LoadingEditor: React.FC<{link?: ILink}>
@@ -37,7 +35,7 @@ export function makeLinkType<ModelType = any>(
     id: string,
     createOptions: (factoryApi: ILinkTypeFactoryApi) => Object.Optional<
         Omit<ILinkType<ModelType>, 'id'>,
-        'Icon' | 'Title' | 'LoadingPreview' | 'LoadingEditor'
+        'enableLinkOptionsWhenPossible' | 'Icon' | 'Title' | 'LoadingPreview' | 'LoadingEditor'
     >
 ): ILinkType<ModelType> {
     const createError = (message: string) => new Error(`[${id}]: ${message}`);
@@ -45,12 +43,8 @@ export function makeLinkType<ModelType = any>(
 
     return {
         id,
+        enableLinkOptionsWhenPossible: false,
         ...options,
-        Icon: options.Icon ?? (props => React.createElement(
-            options.StaticIcon,
-            props
-        )),
-        Title: options.Title ?? options.StaticTitle,
         LoadingPreview: options.LoadingPreview ?? (() => React.createElement(
             'div',
             {},

@@ -43,7 +43,7 @@ export const LinkButton: React.FC<Props> = props => {
             return null;
         })();
 
-        const result = await tx.editLink(link);
+        const result = await tx.editLink(link, true);
 
         if (result.change) {
             if (result.value === null) {

@@ -7,6 +7,7 @@ import {ILink} from '../Link';
 import * as actions from './EditorAction';
 
 export interface IEditorState {
+    enableOptions: boolean
     isOpen: boolean
     value: {
         persistent: null | ILink
@@ -20,6 +21,7 @@ type IEditorResult =
 ;
 
 const initialState: IEditorState = {
+    enableOptions: false,
     isOpen: false,
     value: {
         persistent: null,
@@ -34,14 +36,16 @@ export function editorReducer(
     switch (action.type) {
         case getType(actions.EditorWasOpened):
             return {
+                enableOptions: action.payload.enableOptions,
                 isOpen: true,
                 value: {
-                    transient: action.payload,
-                    persistent: action.payload
+                    transient: action.payload.value,
+                    persistent: action.payload.value
                 }
             };
         case getType(actions.EditorWasDismissed):
             return {
+                ...state,
                 isOpen: false,
                 value: {
                     transient: null,
@@ -52,6 +56,7 @@ export function editorReducer(
             const href = action.payload.href ?? state.value.transient?.href;
             if (href) {
                 return {
+                    ...state,
                     isOpen: true,
                     value: {
                         ...state.value,
@@ -69,6 +74,7 @@ export function editorReducer(
         }
         case getType(actions.ValueWasUnset): {
             return {
+                ...state,
                 isOpen: true,
                 value: {
                     ...state.value,
@@ -78,6 +84,7 @@ export function editorReducer(
         }
         case getType(actions.ValueWasReset):
             return {
+                ...state,
                 isOpen: true,
                 value: {
                     ...state.value,
@@ -86,6 +93,7 @@ export function editorReducer(
             };
         case getType(actions.ValueWasApplied):
             return {
+                ...state,
                 isOpen: false,
                 value: {
                     transient: null,
@@ -105,15 +113,17 @@ export function createEditor() {
         shareReplay(1)
     );
 
-    const open = (value: null | ILink) => dispatch(actions.EditorWasOpened(value));
+    const open = (value: null | ILink, enableOptions: boolean = false) => dispatch(
+        actions.EditorWasOpened(value, enableOptions)
+    );
     const dismiss = () => dispatch(actions.EditorWasDismissed());
     const update = (value: Partial<ILink>) => dispatch(actions.ValueWasUpdated(value));
     const reset = () => dispatch(actions.ValueWasReset());
     const unset = () => dispatch(actions.ValueWasUnset());
     const apply = (value: null | ILink) => dispatch(actions.ValueWasApplied(value));
-    const editLink = (link: null | ILink) => new Promise<IEditorResult>(
+    const editLink = (link: null | ILink, enableOptions: boolean = false) => new Promise<IEditorResult>(
         resolve => {
-            open(link);
+            open(link, enableOptions);
 
             actions$.subscribe(action => {
                 switch (action.type) {
