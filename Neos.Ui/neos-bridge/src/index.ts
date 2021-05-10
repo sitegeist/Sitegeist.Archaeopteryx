@@ -20,5 +20,6 @@ export {
     useNodeTypesRegistry,
     useGlobalRegistry,
     useConfiguration,
-    useRoutes
+    useRoutes,
+    useI18n
 } from './domain';

@@ -4,3 +4,5 @@ export {useRoutes} from './Routes';
 
 export type {INeosContextProperties} from './NeosContext';
 export {NeosContext} from './NeosContext';
+
+export {useI18n} from './Translation';

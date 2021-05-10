@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import {Button} from '@neos-project/react-ui-components';
 
+import {useI18n} from '@sitegeist/archaeopteryx-neos-bridge';
 import {ILinkType, useLinkTypeForHref, useEditorTransactions} from '@sitegeist/archaeopteryx-core';
 
 interface Props {
@@ -26,6 +27,7 @@ interface Props {
 }
 
 export const InspectorEditor: React.FC<Props> = props => {
+    const i18n = useI18n();
     const tx = useEditorTransactions();
     const value = typeof props.value === 'string' ? (props.value || undefined) : undefined;
     const linkType = useLinkTypeForHref(value ?? null);
@@ -48,12 +50,16 @@ export const InspectorEditor: React.FC<Props> = props => {
     } else if (Boolean(value) === false) {
         return (
             <Button onClick={editLink}>
-                Create Link
+                {i18n('Sitegeist.Archaeopteryx:Main:inspector.create')}
             </Button>
         );
     } else {
         return (
-            <div>No Editor found for {JSON.stringify(props.value)}</div>
+            <div>
+                {i18n('Sitegeist.Archaeopteryx:Main:inspector.notfound', undefined, {
+                    href: JSON.stringify(value)
+                })}
+            </div>
         );
     }
 };
@@ -63,6 +69,7 @@ const InspectorEditorWithLinkType: React.FC<{
     linkType: ILinkType,
     editLink: () => Promise<void>
 }> = props => {
+    const i18n = useI18n();
     const link = {href: props.value};
     const {busy, error, result: model} = props.linkType.useResolvedModel(link);
     const {Preview, LoadingPreview} = props.linkType;
@@ -79,7 +86,7 @@ const InspectorEditorWithLinkType: React.FC<{
                 <Preview model={model} link={link}/>
             )}
             <Button onClick={props.editLink}>
-                Edit Link
+                {i18n('Sitegeist.Archaeopteryx:Main:inspector.edit')}
             </Button>
         </div>
     );

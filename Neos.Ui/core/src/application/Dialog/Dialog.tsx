@@ -4,6 +4,8 @@ import {useKey} from 'react-use';
 
 import {Button} from '@neos-project/react-ui-components';
 
+import {useI18n} from '@sitegeist/archaeopteryx-neos-bridge';
+
 import {ILink, ILinkOptions, useEditorState, useEditorTransactions, useLinkTypes, useLinkTypeForHref, Field, ILinkType} from '../../domain';
 import {Form as StyledForm, Modal, Tabs, Deletable} from '../../presentation';
 
@@ -11,6 +13,7 @@ import {LinkEditor} from './LinkEditor';
 import {Settings} from './Settings';
 
 export const Dialog: React.FC = () => {
+    const i18n = useI18n();
     const linkTypes = useLinkTypes();
     const {dismiss, apply} = useEditorTransactions();
     const {isOpen, enableOptions, value} = useEditorState();
@@ -35,7 +38,7 @@ export const Dialog: React.FC = () => {
         return (
             <Modal
                 renderTitle={() => (
-                    <div>Sitegeist.Archaeopteryx</div>
+                    <div>{i18n('Sitegeist.Archaeopteryx:Main:dialog.title')}</div>
                 )}
                 renderBody={() => (
                     <Form<ILinkOptions> onSubmit={handleSubmit}>

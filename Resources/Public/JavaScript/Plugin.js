@@ -25275,11 +25275,13 @@ var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@n
 var react_final_form_1 = __webpack_require__(/*! react-final-form */ "../../node_modules/react-final-form/dist/react-final-form.es.js");
 var react_use_1 = __webpack_require__(/*! react-use */ "../../node_modules/react-use/esm/index.js");
 var react_ui_components_1 = __webpack_require__(/*! @neos-project/react-ui-components */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/react-ui-components/index.js");
+var archaeopteryx_neos_bridge_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-neos-bridge */ "../neos-bridge/lib/index.js");
 var domain_1 = __webpack_require__(/*! ../../domain */ "../core/lib/domain/index.js");
 var presentation_1 = __webpack_require__(/*! ../../presentation */ "../core/lib/presentation/index.js");
 var LinkEditor_1 = __webpack_require__(/*! ./LinkEditor */ "../core/lib/application/Dialog/LinkEditor.js");
 var Settings_1 = __webpack_require__(/*! ./Settings */ "../core/lib/application/Dialog/Settings.js");
 var Dialog = function Dialog() {
+    var i18n = archaeopteryx_neos_bridge_1.useI18n();
     var linkTypes = domain_1.useLinkTypes();
     var _a = domain_1.useEditorTransactions(),
         dismiss = _a.dismiss,
@@ -25304,7 +25306,7 @@ var Dialog = function Dialog() {
     react_use_1.useKey('Escape', dismiss);
     if (isOpen) {
         return React.createElement(presentation_1.Modal, { renderTitle: function renderTitle() {
-                return React.createElement("div", null, "Sitegeist.Archaeopteryx");
+                return React.createElement("div", null, i18n('Sitegeist.Archaeopteryx:Main:dialog.title'));
             }, renderBody: function renderBody() {
                 return React.createElement(react_final_form_1.Form, { onSubmit: handleSubmit }, function (_a) {
                     var handleSubmit = _a.handleSubmit,
@@ -28963,8 +28965,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.InspectorEditor = void 0;
 var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
 var react_ui_components_1 = __webpack_require__(/*! @neos-project/react-ui-components */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/react-ui-components/index.js");
+var archaeopteryx_neos_bridge_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-neos-bridge */ "../neos-bridge/lib/index.js");
 var archaeopteryx_core_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-core */ "../core/lib/index.js");
 var InspectorEditor = function InspectorEditor(props) {
+    var i18n = archaeopteryx_neos_bridge_1.useI18n();
     var tx = archaeopteryx_core_1.useEditorTransactions();
     var value = typeof props.value === 'string' ? props.value || undefined : undefined;
     var linkType = archaeopteryx_core_1.useLinkTypeForHref(value !== null && value !== void 0 ? value : null);
@@ -28989,13 +28993,16 @@ var InspectorEditor = function InspectorEditor(props) {
     if (linkType) {
         return React.createElement(InspectorEditorWithLinkType, { value: value, linkType: linkType, editLink: editLink });
     } else if (Boolean(value) === false) {
-        return React.createElement(react_ui_components_1.Button, { onClick: editLink }, "Create Link");
+        return React.createElement(react_ui_components_1.Button, { onClick: editLink }, i18n('Sitegeist.Archaeopteryx:Main:inspector.create'));
     } else {
-        return React.createElement("div", null, "No Editor found for ", JSON.stringify(props.value));
+        return React.createElement("div", null, i18n('Sitegeist.Archaeopteryx:Main:inspector.notfound', undefined, {
+            href: JSON.stringify(value)
+        }));
     }
 };
 exports.InspectorEditor = InspectorEditor;
 var InspectorEditorWithLinkType = function InspectorEditorWithLinkType(props) {
+    var i18n = archaeopteryx_neos_bridge_1.useI18n();
     var link = { href: props.value };
     var _a = props.linkType.useResolvedModel(link),
         busy = _a.busy,
@@ -29007,7 +29014,7 @@ var InspectorEditorWithLinkType = function InspectorEditorWithLinkType(props) {
     if (error) {
         throw error;
     }
-    return React.createElement("div", null, busy ? React.createElement(LoadingPreview, { link: link }) : React.createElement(Preview, { model: model, link: link }), React.createElement(react_ui_components_1.Button, { onClick: props.editLink }, "Edit Link"));
+    return React.createElement("div", null, busy ? React.createElement(LoadingPreview, { link: link }) : React.createElement(Preview, { model: model, link: link }), React.createElement(react_ui_components_1.Button, { onClick: props.editLink }, i18n('Sitegeist.Archaeopteryx:Main:inspector.edit')));
 };
 //# sourceMappingURL=InspectorEditor.js.map
 
@@ -30259,6 +30266,43 @@ exports.useSelector = useSelector;
 
 /***/ }),
 
+/***/ "../neos-bridge/lib/domain/Extensibility/Translation.js":
+/*!**************************************************************!*\
+  !*** ../neos-bridge/lib/domain/Extensibility/Translation.js ***!
+  \**************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.useI18n = void 0;
+var GlobalRegistry_1 = __webpack_require__(/*! ./GlobalRegistry */ "../neos-bridge/lib/domain/Extensibility/GlobalRegistry.js");
+function useI18n() {
+    var globalRegistry = GlobalRegistry_1.useGlobalRegistry();
+    var i18nRegistry = globalRegistry.get('i18n');
+    return function (idOrig, fallbackOrig, params, packageKeyOrig, sourceNameOrig, quantity) {
+        if (params === void 0) {
+            params = {};
+        }
+        if (packageKeyOrig === void 0) {
+            packageKeyOrig = 'Neos.Neos';
+        }
+        if (sourceNameOrig === void 0) {
+            sourceNameOrig = 'Main';
+        }
+        if (quantity === void 0) {
+            quantity = 0;
+        }
+        return i18nRegistry.translate(idOrig, fallbackOrig, params, packageKeyOrig, sourceNameOrig, quantity);
+    };
+}
+exports.useI18n = useI18n;
+//# sourceMappingURL=Translation.js.map
+
+/***/ }),
+
 /***/ "../neos-bridge/lib/domain/Extensibility/index.js":
 /*!********************************************************!*\
   !*** ../neos-bridge/lib/domain/Extensibility/index.js ***!
@@ -30270,7 +30314,7 @@ exports.useSelector = useSelector;
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NeosContext = exports.useRoutes = exports.useConfiguration = exports.useGlobalRegistry = void 0;
+exports.useI18n = exports.NeosContext = exports.useRoutes = exports.useConfiguration = exports.useGlobalRegistry = void 0;
 var GlobalRegistry_1 = __webpack_require__(/*! ./GlobalRegistry */ "../neos-bridge/lib/domain/Extensibility/GlobalRegistry.js");
 Object.defineProperty(exports, "useGlobalRegistry", { enumerable: true, get: function get() {
     return GlobalRegistry_1.useGlobalRegistry;
@@ -30286,6 +30330,10 @@ Object.defineProperty(exports, "useRoutes", { enumerable: true, get: function ge
 var NeosContext_1 = __webpack_require__(/*! ./NeosContext */ "../neos-bridge/lib/domain/Extensibility/NeosContext.js");
 Object.defineProperty(exports, "NeosContext", { enumerable: true, get: function get() {
     return NeosContext_1.NeosContext;
+  } });
+var Translation_1 = __webpack_require__(/*! ./Translation */ "../neos-bridge/lib/domain/Extensibility/Translation.js");
+Object.defineProperty(exports, "useI18n", { enumerable: true, get: function get() {
+    return Translation_1.useI18n;
   } });
 //# sourceMappingURL=index.js.map
 
@@ -30441,7 +30489,7 @@ Object.defineProperty(exports, "useAssetSummary", { enumerable: true, get: funct
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.useAssetSummary = exports.useRoutes = exports.useConfiguration = exports.useGlobalRegistry = exports.NeosContext = exports.useNodeTypesRegistry = exports.useNodeTypes = exports.useNodeType = exports.useNodeSummary = exports.useDocumentNodeContextPath = exports.useSiteNodeContextPath = exports.NodeTypeName = exports.ContextPath = void 0;
+exports.useAssetSummary = exports.useI18n = exports.useRoutes = exports.useConfiguration = exports.useGlobalRegistry = exports.NeosContext = exports.useNodeTypesRegistry = exports.useNodeTypes = exports.useNodeType = exports.useNodeSummary = exports.useDocumentNodeContextPath = exports.useSiteNodeContextPath = exports.NodeTypeName = exports.ContextPath = void 0;
 var ContentRepository_1 = __webpack_require__(/*! ./ContentRepository */ "../neos-bridge/lib/domain/ContentRepository/index.js");
 Object.defineProperty(exports, "ContextPath", { enumerable: true, get: function get() {
     return ContentRepository_1.ContextPath;
@@ -30480,6 +30528,9 @@ Object.defineProperty(exports, "useConfiguration", { enumerable: true, get: func
 Object.defineProperty(exports, "useRoutes", { enumerable: true, get: function get() {
     return Extensibility_1.useRoutes;
   } });
+Object.defineProperty(exports, "useI18n", { enumerable: true, get: function get() {
+    return Extensibility_1.useI18n;
+  } });
 var Media_1 = __webpack_require__(/*! ./Media */ "../neos-bridge/lib/domain/Media/index.js");
 Object.defineProperty(exports, "useAssetSummary", { enumerable: true, get: function get() {
     return Media_1.useAssetSummary;
@@ -30499,7 +30550,7 @@ Object.defineProperty(exports, "useAssetSummary", { enumerable: true, get: funct
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.useRoutes = exports.useConfiguration = exports.useGlobalRegistry = exports.useNodeTypesRegistry = exports.useNodeTypes = exports.useNodeType = exports.useNodeSummary = exports.useAssetSummary = exports.useDocumentNodeContextPath = exports.useSiteNodeContextPath = exports.NodeTypeName = exports.ContextPath = exports.NeosContext = exports.q = void 0;
+exports.useI18n = exports.useRoutes = exports.useConfiguration = exports.useGlobalRegistry = exports.useNodeTypesRegistry = exports.useNodeTypes = exports.useNodeType = exports.useNodeSummary = exports.useAssetSummary = exports.useDocumentNodeContextPath = exports.useSiteNodeContextPath = exports.NodeTypeName = exports.ContextPath = exports.NeosContext = exports.q = void 0;
 var application_1 = __webpack_require__(/*! ./application */ "../neos-bridge/lib/application/index.js");
 Object.defineProperty(exports, "q", { enumerable: true, get: function get() {
     return application_1.q;
@@ -30543,6 +30594,9 @@ Object.defineProperty(exports, "useConfiguration", { enumerable: true, get: func
   } });
 Object.defineProperty(exports, "useRoutes", { enumerable: true, get: function get() {
     return domain_1.useRoutes;
+  } });
+Object.defineProperty(exports, "useI18n", { enumerable: true, get: function get() {
+    return domain_1.useI18n;
   } });
 //# sourceMappingURL=index.js.map
 

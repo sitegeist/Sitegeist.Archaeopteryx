@@ -15,7 +15,8 @@ export {
     NeosContext,
     useGlobalRegistry,
     useConfiguration,
-    useRoutes
+    useRoutes,
+    useI18n
 } from './Extensibility';
 
 export {useAssetSummary} from './Media';

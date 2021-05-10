@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+    <file original="" product-name="Sitegeist.Archaeopteryx" source-language="en" datatype="plaintext">
+        <body>
+            <trans-unit id="inspector.create" xml:space="preserve" approved="yes">
+                <source>Create Link</source>
+            </trans-unit>
+            <trans-unit id="inspector.edit" xml:space="preserve" approved="yes">
+                <source>Edit Link</source>
+            </trans-unit>
+            <trans-unit id="inspector.notfound" xml:space="preserve" approved="yes">
+                <source>Could not find an editor suitable for {href}</source>
+            </trans-unit>
+            <trans-unit id="dialog.title" xml:space="preserve" approved="yes">
+                <source>Edit Link</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
