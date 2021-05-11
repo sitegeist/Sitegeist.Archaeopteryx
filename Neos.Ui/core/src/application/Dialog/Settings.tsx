@@ -4,6 +4,7 @@ import {Field} from 'react-final-form';
 import {TextInput, CheckBox} from '@neos-project/react-ui-components';
 
 import {Grid} from '../../presentation';
+import {useI18n} from '@sitegeist/archaeopteryx-neos-bridge';
 
 interface Props {
     initialValue?: {
@@ -15,6 +16,8 @@ interface Props {
 }
 
 export const Settings: React.FC<Props> = props => {
+    const i18n = useI18n();
+
     return (
         <Grid>
             <Field<string>
@@ -23,7 +26,7 @@ export const Settings: React.FC<Props> = props => {
                 >
                 {({input}) => (
                     <label>
-                        Anchor:
+                        {i18n('Sitegeist.Archaeopteryx:Main:options.label.anchor')}:
                         <TextInput type="text" {...input}/>
                     </label>
                 )}
@@ -34,7 +37,7 @@ export const Settings: React.FC<Props> = props => {
                 >
                 {({input}) => (
                     <label>
-                        Title:
+                        {i18n('Sitegeist.Archaeopteryx:Main:options.label.title')}:
                         <TextInput type="text" {...input}/>
                     </label>
                 )}
@@ -47,7 +50,7 @@ export const Settings: React.FC<Props> = props => {
                 {({input}) => (
                     <label>
                         <CheckBox onChange={input.onChange} isChecked={input.checked}/>
-                        Open in new Window
+                        {i18n('Sitegeist.Archaeopteryx:Main:options.label.targetBlank')}
                     </label>
                 )}
             </Field>
@@ -59,7 +62,7 @@ export const Settings: React.FC<Props> = props => {
                 {({input}) => (
                     <label>
                         <CheckBox onChange={input.onChange} isChecked={input.checked}/>
-                        No Follow
+                        {i18n('Sitegeist.Archaeopteryx:Main:options.label.noFollow')}
                     </label>
                 )}
             </Field>

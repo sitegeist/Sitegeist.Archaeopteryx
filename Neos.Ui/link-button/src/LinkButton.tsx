@@ -3,6 +3,7 @@ import * as React from 'react';
 import {IconButton} from '@neos-project/react-ui-components';
 
 import {useEditorTransactions} from '@sitegeist/archaeopteryx-core';
+import {useI18n} from '@sitegeist/archaeopteryx-neos-bridge';
 
 interface Props {
     inlineEditorOptions?: {
@@ -24,6 +25,7 @@ interface Props {
 }
 
 export const LinkButton: React.FC<Props> = props => {
+    const i18n = useI18n();
     const tx = useEditorTransactions();
     const handleLinkButtonClick = React.useCallback(async () => {
         const link = (() => {
@@ -70,7 +72,7 @@ export const LinkButton: React.FC<Props> = props => {
 
     return (
         <IconButton
-            title={'Link'}
+            title={i18n('Sitegeist.Archaeopteryx:Main:linkButton.title')}
             isActive={Boolean(props.formattingUnderCursor.link)}
             icon={Boolean(props.formattingUnderCursor.link) ? 'unlink' : 'link'}
             onClick={handleLinkButtonClick}

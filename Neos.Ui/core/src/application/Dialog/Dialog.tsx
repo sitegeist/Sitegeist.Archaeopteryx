@@ -57,14 +57,14 @@ export const Dialog: React.FC = () => {
                                 renderActions={() => (
                                     <>
                                         <Button onClick={dismiss}>
-                                            Cancel
+                                            {i18n('Sitegeist.Archaeopteryx:Main:dialog.action.cancel')}
                                         </Button>
                                         <Button
                                             style="success"
                                             type="submit"
                                             disabled={!valid || !dirty}
                                         >
-                                            Apply
+                                            {i18n('Sitegeist.Archaeopteryx:Main:dialog.action.apply')}
                                         </Button>
                                     </>
                                 )}

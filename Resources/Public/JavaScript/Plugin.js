@@ -25315,7 +25315,7 @@ var Dialog = function Dialog() {
                     return React.createElement(presentation_1.Form, { renderBody: function renderBody() {
                             return value.transient === null ? React.createElement(DialogWithEmptyValue, { enableOptions: enableOptions }) : React.createElement(DialogWithValue, { enableOptions: enableOptions, value: value.transient });
                         }, renderActions: function renderActions() {
-                            return React.createElement(React.Fragment, null, React.createElement(react_ui_components_1.Button, { onClick: dismiss }, "Cancel"), React.createElement(react_ui_components_1.Button, { style: "success", type: "submit", disabled: !valid || !dirty }, "Apply"));
+                            return React.createElement(React.Fragment, null, React.createElement(react_ui_components_1.Button, { onClick: dismiss }, i18n('Sitegeist.Archaeopteryx:Main:dialog.action.cancel')), React.createElement(react_ui_components_1.Button, { style: "success", type: "submit", disabled: !valid || !dirty }, i18n('Sitegeist.Archaeopteryx:Main:dialog.action.apply')));
                         }, onSubmit: handleSubmit });
                 });
             } });
@@ -25492,20 +25492,22 @@ var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@n
 var react_final_form_1 = __webpack_require__(/*! react-final-form */ "../../node_modules/react-final-form/dist/react-final-form.es.js");
 var react_ui_components_1 = __webpack_require__(/*! @neos-project/react-ui-components */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/react-ui-components/index.js");
 var presentation_1 = __webpack_require__(/*! ../../presentation */ "../core/lib/presentation/index.js");
+var archaeopteryx_neos_bridge_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-neos-bridge */ "../neos-bridge/lib/index.js");
 var Settings = function Settings(props) {
     var _a, _b, _c, _d;
+    var i18n = archaeopteryx_neos_bridge_1.useI18n();
     return React.createElement(presentation_1.Grid, null, React.createElement(react_final_form_1.Field, { name: "options.anchor", initialValue: (_a = props.initialValue) === null || _a === void 0 ? void 0 : _a.anchor }, function (_a) {
         var input = _a.input;
-        return React.createElement("label", null, "Anchor:", React.createElement(react_ui_components_1.TextInput, __assign({ type: "text" }, input)));
+        return React.createElement("label", null, i18n('Sitegeist.Archaeopteryx:Main:options.label.anchor'), ":", React.createElement(react_ui_components_1.TextInput, __assign({ type: "text" }, input)));
     }), React.createElement(react_final_form_1.Field, { name: "options.title", initialValue: (_b = props.initialValue) === null || _b === void 0 ? void 0 : _b.title }, function (_a) {
         var input = _a.input;
-        return React.createElement("label", null, "Title:", React.createElement(react_ui_components_1.TextInput, __assign({ type: "text" }, input)));
+        return React.createElement("label", null, i18n('Sitegeist.Archaeopteryx:Main:options.label.title'), ":", React.createElement(react_ui_components_1.TextInput, __assign({ type: "text" }, input)));
     }), React.createElement(react_final_form_1.Field, { type: "checkbox", name: "options.targetBlank", initialValue: Boolean((_c = props.initialValue) === null || _c === void 0 ? void 0 : _c.targetBlank) }, function (_a) {
         var input = _a.input;
-        return React.createElement("label", null, React.createElement(react_ui_components_1.CheckBox, { onChange: input.onChange, isChecked: input.checked }), "Open in new Window");
+        return React.createElement("label", null, React.createElement(react_ui_components_1.CheckBox, { onChange: input.onChange, isChecked: input.checked }), i18n('Sitegeist.Archaeopteryx:Main:options.label.targetBlank'));
     }), React.createElement(react_final_form_1.Field, { type: "checkbox", name: "options.relNoFollow", initialValue: Boolean((_d = props.initialValue) === null || _d === void 0 ? void 0 : _d.relNoFollow) }, function (_a) {
         var input = _a.input;
-        return React.createElement("label", null, React.createElement(react_ui_components_1.CheckBox, { onChange: input.onChange, isChecked: input.checked }), "No Follow");
+        return React.createElement("label", null, React.createElement(react_ui_components_1.CheckBox, { onChange: input.onChange, isChecked: input.checked }), i18n('Sitegeist.Archaeopteryx:Main:options.label.noFollow'));
     }));
 };
 exports.Settings = Settings;
@@ -29225,7 +29227,9 @@ exports.LinkButton = void 0;
 var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
 var react_ui_components_1 = __webpack_require__(/*! @neos-project/react-ui-components */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/react-ui-components/index.js");
 var archaeopteryx_core_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-core */ "../core/lib/index.js");
+var archaeopteryx_neos_bridge_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-neos-bridge */ "../neos-bridge/lib/index.js");
 var LinkButton = function LinkButton(props) {
+    var i18n = archaeopteryx_neos_bridge_1.useI18n();
     var tx = archaeopteryx_core_1.useEditorTransactions();
     var handleLinkButtonClick = React.useCallback(function () {
         return __awaiter(void 0, void 0, void 0, function () {
@@ -29279,7 +29283,7 @@ var LinkButton = function LinkButton(props) {
             });
         });
     }, [props.executeCommand, props.formattingUnderCursor.link, tx]);
-    return React.createElement(react_ui_components_1.IconButton, { title: 'Link', isActive: Boolean(props.formattingUnderCursor.link), icon: Boolean(props.formattingUnderCursor.link) ? 'unlink' : 'link', onClick: handleLinkButtonClick });
+    return React.createElement(react_ui_components_1.IconButton, { title: i18n('Sitegeist.Archaeopteryx:Main:linkButton.title'), isActive: Boolean(props.formattingUnderCursor.link), icon: Boolean(props.formattingUnderCursor.link) ? 'unlink' : 'link', onClick: handleLinkButtonClick });
 };
 exports.LinkButton = LinkButton;
 //# sourceMappingURL=LinkButton.js.map
