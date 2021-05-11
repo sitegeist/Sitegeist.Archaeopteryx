@@ -7,12 +7,17 @@ import {IProcess} from '../Process';
 
 import {ILink} from './Link';
 
-interface LinkTypeProps<ModelType = any> {
+interface LinkTypeStaticProps<OptionsType extends object = {}> {
+    link?: ILink
+    options: Object.Partial<OptionsType, 'deep'>
+}
+interface LinkTypeProps<ModelType = any, OptionsType extends object = {}> {
     link: ILink
     model: ModelType
+    options: Object.Partial<OptionsType, 'deep'>
 }
 
-export interface ILinkType<ModelType = any> {
+export interface ILinkType<ModelType = any, OptionsType extends object = {}> {
     id: string
     enableLinkOptionsWhenPossible: boolean
     isSuitableFor: (link: ILink) => boolean
@@ -20,24 +25,24 @@ export interface ILinkType<ModelType = any> {
     useResolvedModel: (link: ILink) => IProcess<ModelType>
     convertModelToLink: (model: ModelType) => ILink
 
-    TabHeader: React.FC<{link?: ILink}>
-    LoadingPreview: React.FC<{link?: ILink}>
-    Preview: React.FC<LinkTypeProps<ModelType>>
-    LoadingEditor: React.FC<{link?: ILink}>
-    Editor: React.FC<Object.Nullable<LinkTypeProps<ModelType>, 'link' | 'model'>>
+    TabHeader: React.FC<LinkTypeStaticProps<OptionsType>>
+    LoadingPreview: React.FC<LinkTypeStaticProps<OptionsType>>
+    Preview: React.FC<LinkTypeProps<ModelType, OptionsType>>
+    LoadingEditor: React.FC<LinkTypeStaticProps<OptionsType>>
+    Editor: React.FC<Object.Nullable<LinkTypeProps<ModelType, OptionsType>, 'link' | 'model'>>
 }
 
 export interface ILinkTypeFactoryApi {
     createError: (message: string) => Error
 }
 
-export function makeLinkType<ModelType = any>(
+export function makeLinkType<ModelType = any, OptionsType extends object = {}>(
     id: string,
     createOptions: (factoryApi: ILinkTypeFactoryApi) => Object.Optional<
-        Omit<ILinkType<ModelType>, 'id'>,
+        Omit<ILinkType<ModelType, OptionsType>, 'id'>,
         'enableLinkOptionsWhenPossible' | 'Icon' | 'Title' | 'LoadingPreview' | 'LoadingEditor'
     >
-): ILinkType<ModelType> {
+): ILinkType<ModelType, OptionsType> {
     const createError = (message: string) => new Error(`[${id}]: ${message}`);
     const options = createOptions({createError});
 

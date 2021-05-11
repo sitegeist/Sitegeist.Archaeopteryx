@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {ILink, ILinkType, FieldGroup} from '../../domain';
+import {ILink, ILinkType, FieldGroup, useEditorState} from '../../domain';
 
 function useLastNonNull<V>(value: null | V) {
     const valueRef = React.useRef(value);
@@ -34,6 +34,7 @@ export const LinkEditor: React.FC<{
 const LinkEditorWithoutValue: React.FC<{
     linkType: ILinkType
 }> = props => {
+    const {editorOptions} = useEditorState();
     const {Editor} = props.linkType;
     const prefix = `linkTypeProps.${props.linkType.id.split('.').join('_')}`;
 
@@ -41,6 +42,7 @@ const LinkEditorWithoutValue: React.FC<{
         <FieldGroup prefix={prefix}>
             <Editor
                 model={null}
+                options={editorOptions[props.linkType.id] as any ?? {}}
                 link={null}
             />
         </FieldGroup>
@@ -51,6 +53,7 @@ const LinkEditorWithValue: React.FC<{
     link: ILink
     linkType: ILinkType
 }> = props => {
+    const {editorOptions} = useEditorState();
     const {busy, error, result} = props.linkType.useResolvedModel(props.link);
     const model = useLastNonNull(result);
     const {Editor, LoadingEditor} = props.linkType;
@@ -58,12 +61,18 @@ const LinkEditorWithValue: React.FC<{
     if (error) {
         throw error;
     } else if (busy && !model) {
-        return (<LoadingEditor link={props.link ?? undefined} />);
+        return (
+            <LoadingEditor
+                link={props.link ?? undefined}
+                options={editorOptions[props.linkType.id] as any ?? {}}
+            />
+        );
     } else {
         return (
             <FieldGroup prefix={`linkTypeProps.${props.linkType.id.split('.').join('_')}`}>
                 <Editor
                     model={model}
+                    options={editorOptions[props.linkType.id] as any ?? {}}
                     link={props.link}
                 />
             </FieldGroup>

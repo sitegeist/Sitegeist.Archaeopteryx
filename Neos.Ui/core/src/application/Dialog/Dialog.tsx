@@ -16,7 +16,7 @@ export const Dialog: React.FC = () => {
     const i18n = useI18n();
     const linkTypes = useLinkTypes();
     const {dismiss, apply} = useEditorTransactions();
-    const {isOpen, enableOptions, value} = useEditorState();
+    const {isOpen, value} = useEditorState();
     const handleSubmit = React.useCallback((values: any) => {
         const linkType = linkTypes.find(linkType => linkType.id === values.linkTypeId);
         if (linkType) {
@@ -45,12 +45,9 @@ export const Dialog: React.FC = () => {
                         {({handleSubmit, valid, dirty}) => (
                             <StyledForm
                                 renderBody={() => value.transient === null ? (
-                                    <DialogWithEmptyValue
-                                        enableOptions={enableOptions}
-                                    />
+                                    <DialogWithEmptyValue />
                                 ) : (
                                     <DialogWithValue
-                                        enableOptions={enableOptions}
                                         value={value.transient!}
                                     />
                                 )}
@@ -80,10 +77,9 @@ export const Dialog: React.FC = () => {
     return null;
 };
 
-const DialogWithEmptyValue: React.FC<{
-    enableOptions: boolean
-}> = props => {
+const DialogWithEmptyValue: React.FC = () => {
     const linkTypes = useLinkTypes();
+    const {enableOptions, editorOptions} = useEditorState();
 
     return (
         <Field name="linkTypeId" initialValue={linkTypes[0].id}>{({input}) => (
@@ -92,7 +88,11 @@ const DialogWithEmptyValue: React.FC<{
                 from={linkTypes}
                 activeItemKey={input.value}
                 getKey={linkType => linkType.id}
-                renderHeader={({TabHeader}) => (<TabHeader/>)}
+                renderHeader={({id, TabHeader}) => (
+                    <TabHeader
+                        options={editorOptions[id] as any ?? {}}
+                    />
+                )}
                 renderPanel={linkType => (
                     <div style={{ display: 'grid', gap: '16px' }}>
                         <LinkEditor
@@ -101,7 +101,7 @@ const DialogWithEmptyValue: React.FC<{
                             linkType={linkType}
                         />
 
-                        {props.enableOptions && linkType.enableLinkOptionsWhenPossible ? (
+                        {enableOptions && linkType.enableLinkOptionsWhenPossible ? (
                             <Settings/>
                         ) : null}
                     </div>
@@ -113,11 +113,11 @@ const DialogWithEmptyValue: React.FC<{
 }
 
 const DialogWithValue: React.FC<{
-    enableOptions: boolean
     value: ILink
 }> = props => {
     const form = useForm();
     const {unset} = useEditorTransactions();
+    const {enableOptions, editorOptions} = useEditorState();
     const linkType = useLinkTypeForHref(props.value.href)!;
     const {result} = linkType.useResolvedModel(props.value);
     const {Preview} = linkType;
@@ -126,6 +126,8 @@ const DialogWithValue: React.FC<{
         ? state.values.linkTypeProps?.[linkType.id.split('.').join('_')]
         : result;
 
+    console.log(editorOptions);
+
     return (
         <Field name="linkTypeId" initialValue={linkType.id}>{() => (
             <Tabs
@@ -133,7 +135,11 @@ const DialogWithValue: React.FC<{
                 from={[linkType]}
                 activeItemKey={linkType.id}
                 getKey={linkType => linkType.id}
-                renderHeader={({TabHeader}) => (<TabHeader/>)}
+                renderHeader={({id, TabHeader}) => (
+                    <TabHeader
+                        options={editorOptions[id] as any ?? {}}
+                    />
+                )}
                 renderPanel={linkType => (
                     <div style={{ display: 'grid', gap: '16px' }}>
                         {model ? (
@@ -145,6 +151,7 @@ const DialogWithValue: React.FC<{
                             >
                                 <Preview
                                     model={model}
+                                    options={editorOptions[linkType.id] as any ?? {}}
                                     link={props.value}
                                 />
                             </Deletable>
@@ -156,7 +163,7 @@ const DialogWithValue: React.FC<{
                             linkType={linkType}
                         />
 
-                        {props.enableOptions && linkType.enableLinkOptionsWhenPossible ? (
+                        {enableOptions && linkType.enableLinkOptionsWhenPossible ? (
                             <Settings initialValue={props.value.options}/>
                         ) : null}
                     </div>

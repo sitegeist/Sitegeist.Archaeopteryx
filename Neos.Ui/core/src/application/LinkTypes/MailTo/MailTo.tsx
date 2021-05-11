@@ -14,6 +14,13 @@ export const MailTo = makeLinkType<{
     cc?: string
     bcc?: string
     body?: string
+}, {
+    enabledFields: {
+        subject: boolean
+        cc: boolean
+        bcc: boolean
+        body: boolean
+    }
 }>('Sitegeist.Archaeopteryx:MailTo', () => ({
     isSuitableFor: link => link.href.startsWith('mailto:'),
 
@@ -73,7 +80,7 @@ export const MailTo = makeLinkType<{
         />
     ),
 
-    Editor: ({model: email}) => {
+    Editor: ({model: email, options}) => {
         const i18n = useI18n();
 
         return (
@@ -103,76 +110,84 @@ export const MailTo = makeLinkType<{
                             {meta.error}
                         </div>
                 )}</Field>
-                <Field<string>
-                    name="subject"
-                    initialValue={email?.subject}
-                >{({input, meta}) => (
-                    <div style={{ gridColumn: '1 / -1' }}>
-                        <label>
-                            {i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:subject.label')}:
-                            <TextInput type="text" {...input}/>
-                        </label>
-                        {meta.error}
-                    </div>
-                )}</Field>
-                <Field<string>
-                    name="cc"
-                    initialValue={email?.cc}
-                    validate={value => {
-                        if (value !== undefined && value !== null) {
-                            if (!value.split(',').every(value => simpleEmailRegex.test(value.trim()))) {
-                                return i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:cc.validation.emaillist');
+                {options.enabledFields?.subject !== false ? (
+                    <Field<string>
+                        name="subject"
+                        initialValue={email?.subject}
+                    >{({input, meta}) => (
+                        <div style={{ gridColumn: '1 / -1' }}>
+                            <label>
+                                {i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:subject.label')}:
+                                <TextInput type="text" {...input}/>
+                            </label>
+                            {meta.error}
+                        </div>
+                    )}</Field>
+                ) : null}
+                {options.enabledFields?.cc !== false ? (
+                    <Field<string>
+                        name="cc"
+                        initialValue={email?.cc}
+                        validate={value => {
+                            if (value !== undefined && value !== null) {
+                                if (!value.split(',').every(value => simpleEmailRegex.test(value.trim()))) {
+                                    return i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:cc.validation.emaillist');
+                                }
                             }
-                        }
-                    }}
-                >{({input, meta}) => (
-                    <div style={{ gridColumn: '1 / -1' }}>
-                        <label>
-                            {i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:cc.label')}:
-                            <TextInput
-                                type="text"
-                                placeholder={i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:cc.placeholder')}
-                                {...input}
-                            />
-                        </label>
-                        {meta.error}
-                    </div>
-                )}</Field>
-                <Field<string>
-                    name="bcc"
-                    initialValue={email?.bcc}
-                    validate={value => {
-                        if (value !== undefined && value !== null) {
-                            if (!value.split(',').every(value => simpleEmailRegex.test(value.trim()))) {
-                                return i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:bcc.validation.emaillist');
+                        }}
+                    >{({input, meta}) => (
+                        <div style={{ gridColumn: '1 / -1' }}>
+                            <label>
+                                {i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:cc.label')}:
+                                <TextInput
+                                    type="text"
+                                    placeholder={i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:cc.placeholder')}
+                                    {...input}
+                                />
+                            </label>
+                            {meta.error}
+                        </div>
+                    )}</Field>
+                ) : null}
+                {options.enabledFields?.bcc !== false ? (
+                    <Field<string>
+                        name="bcc"
+                        initialValue={email?.bcc}
+                        validate={value => {
+                            if (value !== undefined && value !== null) {
+                                if (!value.split(',').every(value => simpleEmailRegex.test(value.trim()))) {
+                                    return i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:bcc.validation.emaillist');
+                                }
                             }
-                        }
-                    }}
-                >{({input, meta}) => (
-                    <div style={{ gridColumn: '1 / -1' }}>
-                        <label>
-                            {i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:bcc.label')}:
-                            <TextInput
-                                type="text"
-                                placeholder={i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:bcc.placeholder')}
-                                {...input}
-                            />
-                        </label>
-                        {meta.error}
-                    </div>
-                )}</Field>
-                <Field<string>
-                    name="body"
-                    initialValue={email?.body}
-                >{({input, meta}) => (
-                    <div style={{ gridColumn: '1 / -1' }}>
-                        <label>
-                            {i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:body.label')}:
-                            <TextArea {...input}/>
-                        </label>
-                        {meta.error}
-                    </div>
-                )}</Field>
+                        }}
+                    >{({input, meta}) => (
+                        <div style={{ gridColumn: '1 / -1' }}>
+                            <label>
+                                {i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:bcc.label')}:
+                                <TextInput
+                                    type="text"
+                                    placeholder={i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:bcc.placeholder')}
+                                    {...input}
+                                />
+                            </label>
+                            {meta.error}
+                        </div>
+                    )}</Field>
+                ) : null}
+                {options.enabledFields?.body !== false ? (
+                    <Field<string>
+                        name="body"
+                        initialValue={email?.body}
+                    >{({input, meta}) => (
+                        <div style={{ gridColumn: '1 / -1' }}>
+                            <label>
+                                {i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:body.label')}:
+                                <TextArea {...input}/>
+                            </label>
+                            {meta.error}
+                        </div>
+                    )}</Field>
+                ) : null}
             </Grid>
         );
     }

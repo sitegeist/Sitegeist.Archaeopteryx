@@ -25288,7 +25288,6 @@ var Dialog = function Dialog() {
         apply = _a.apply;
     var _b = domain_1.useEditorState(),
         isOpen = _b.isOpen,
-        enableOptions = _b.enableOptions,
         value = _b.value;
     var handleSubmit = React.useCallback(function (values) {
         var _a;
@@ -25313,7 +25312,7 @@ var Dialog = function Dialog() {
                         valid = _a.valid,
                         dirty = _a.dirty;
                     return React.createElement(presentation_1.Form, { renderBody: function renderBody() {
-                            return value.transient === null ? React.createElement(DialogWithEmptyValue, { enableOptions: enableOptions }) : React.createElement(DialogWithValue, { enableOptions: enableOptions, value: value.transient });
+                            return value.transient === null ? React.createElement(DialogWithEmptyValue, null) : React.createElement(DialogWithValue, { value: value.transient });
                         }, renderActions: function renderActions() {
                             return React.createElement(React.Fragment, null, React.createElement(react_ui_components_1.Button, { onClick: dismiss }, i18n('Sitegeist.Archaeopteryx:Main:dialog.action.cancel')), React.createElement(react_ui_components_1.Button, { style: "success", type: "submit", disabled: !valid || !dirty }, i18n('Sitegeist.Archaeopteryx:Main:dialog.action.apply')));
                         }, onSubmit: handleSubmit });
@@ -25323,17 +25322,22 @@ var Dialog = function Dialog() {
     return null;
 };
 exports.Dialog = Dialog;
-var DialogWithEmptyValue = function DialogWithEmptyValue(props) {
+var DialogWithEmptyValue = function DialogWithEmptyValue() {
     var linkTypes = domain_1.useLinkTypes();
+    var _a = domain_1.useEditorState(),
+        enableOptions = _a.enableOptions,
+        editorOptions = _a.editorOptions;
     return React.createElement(domain_1.Field, { name: "linkTypeId", initialValue: linkTypes[0].id }, function (_a) {
         var input = _a.input;
         return React.createElement(presentation_1.Tabs, { lazy: true, from: linkTypes, activeItemKey: input.value, getKey: function getKey(linkType) {
                 return linkType.id;
             }, renderHeader: function renderHeader(_a) {
-                var TabHeader = _a.TabHeader;
-                return React.createElement(TabHeader, null);
+                var _b;
+                var id = _a.id,
+                    TabHeader = _a.TabHeader;
+                return React.createElement(TabHeader, { options: (_b = editorOptions[id]) !== null && _b !== void 0 ? _b : {} });
             }, renderPanel: function renderPanel(linkType) {
-                return React.createElement("div", { style: { display: 'grid', gap: '16px' } }, React.createElement(LinkEditor_1.LinkEditor, { key: linkType.id, link: null, linkType: linkType }), props.enableOptions && linkType.enableLinkOptionsWhenPossible ? React.createElement(Settings_1.Settings, null) : null);
+                return React.createElement("div", { style: { display: 'grid', gap: '16px' } }, React.createElement(LinkEditor_1.LinkEditor, { key: linkType.id, link: null, linkType: linkType }), enableOptions && linkType.enableLinkOptionsWhenPossible ? React.createElement(Settings_1.Settings, null) : null);
             }, onSwitchTab: input.onChange });
     });
 };
@@ -25341,22 +25345,29 @@ var DialogWithValue = function DialogWithValue(props) {
     var _a;
     var form = react_final_form_1.useForm();
     var unset = domain_1.useEditorTransactions().unset;
+    var _b = domain_1.useEditorState(),
+        enableOptions = _b.enableOptions,
+        editorOptions = _b.editorOptions;
     var linkType = domain_1.useLinkTypeForHref(props.value.href);
     var result = linkType.useResolvedModel(props.value).result;
     var Preview = linkType.Preview;
     var state = form.getState();
     var model = state.valid ? (_a = state.values.linkTypeProps) === null || _a === void 0 ? void 0 : _a[linkType.id.split('.').join('_')] : result;
+    console.log(editorOptions);
     return React.createElement(domain_1.Field, { name: "linkTypeId", initialValue: linkType.id }, function () {
         return React.createElement(presentation_1.Tabs, { lazy: true, from: [linkType], activeItemKey: linkType.id, getKey: function getKey(linkType) {
                 return linkType.id;
             }, renderHeader: function renderHeader(_a) {
-                var TabHeader = _a.TabHeader;
-                return React.createElement(TabHeader, null);
+                var _b;
+                var id = _a.id,
+                    TabHeader = _a.TabHeader;
+                return React.createElement(TabHeader, { options: (_b = editorOptions[id]) !== null && _b !== void 0 ? _b : {} });
             }, renderPanel: function renderPanel(linkType) {
+                var _a;
                 return React.createElement("div", { style: { display: 'grid', gap: '16px' } }, model ? React.createElement(presentation_1.Deletable, { onDelete: function onDelete() {
                         unset();
                         form.change('linkTypeProps', null);
-                    } }, React.createElement(Preview, { model: model, link: props.value })) : null, React.createElement(LinkEditor_1.LinkEditor, { key: linkType.id, link: props.value, linkType: linkType }), props.enableOptions && linkType.enableLinkOptionsWhenPossible ? React.createElement(Settings_1.Settings, { initialValue: props.value.options }) : null);
+                    } }, React.createElement(Preview, { model: model, options: (_a = editorOptions[linkType.id]) !== null && _a !== void 0 ? _a : {}, link: props.value })) : null, React.createElement(LinkEditor_1.LinkEditor, { key: linkType.id, link: props.value, linkType: linkType }), enableOptions && linkType.enableLinkOptionsWhenPossible ? React.createElement(Settings_1.Settings, { initialValue: props.value.options }) : null);
             } });
     });
 };
@@ -25416,26 +25427,29 @@ var LinkEditor = function LinkEditor(props) {
 };
 exports.LinkEditor = LinkEditor;
 var LinkEditorWithoutValue = function LinkEditorWithoutValue(props) {
+    var _a;
+    var editorOptions = domain_1.useEditorState().editorOptions;
     var Editor = props.linkType.Editor;
     var prefix = "linkTypeProps." + props.linkType.id.split('.').join('_');
-    return React.createElement(domain_1.FieldGroup, { prefix: prefix }, React.createElement(Editor, { model: null, link: null }));
+    return React.createElement(domain_1.FieldGroup, { prefix: prefix }, React.createElement(Editor, { model: null, options: (_a = editorOptions[props.linkType.id]) !== null && _a !== void 0 ? _a : {}, link: null }));
 };
 var LinkEditorWithValue = function LinkEditorWithValue(props) {
-    var _a;
-    var _b = props.linkType.useResolvedModel(props.link),
-        busy = _b.busy,
-        error = _b.error,
-        result = _b.result;
+    var _a, _b, _c;
+    var editorOptions = domain_1.useEditorState().editorOptions;
+    var _d = props.linkType.useResolvedModel(props.link),
+        busy = _d.busy,
+        error = _d.error,
+        result = _d.result;
     var model = useLastNonNull(result);
-    var _c = props.linkType,
-        Editor = _c.Editor,
-        LoadingEditor = _c.LoadingEditor;
+    var _e = props.linkType,
+        Editor = _e.Editor,
+        LoadingEditor = _e.LoadingEditor;
     if (error) {
         throw error;
     } else if (busy && !model) {
-        return React.createElement(LoadingEditor, { link: (_a = props.link) !== null && _a !== void 0 ? _a : undefined });
+        return React.createElement(LoadingEditor, { link: (_a = props.link) !== null && _a !== void 0 ? _a : undefined, options: (_b = editorOptions[props.linkType.id]) !== null && _b !== void 0 ? _b : {} });
     } else {
-        return React.createElement(domain_1.FieldGroup, { prefix: "linkTypeProps." + props.linkType.id.split('.').join('_') }, React.createElement(Editor, { model: model, link: props.link }));
+        return React.createElement(domain_1.FieldGroup, { prefix: "linkTypeProps." + props.linkType.id.split('.').join('_') }, React.createElement(Editor, { model: model, options: (_c = editorOptions[props.linkType.id]) !== null && _c !== void 0 ? _c : {}, link: props.link }));
     }
 };
 //# sourceMappingURL=LinkEditor.js.map
@@ -25847,7 +25861,9 @@ exports.MailTo = domain_1.makeLinkType('Sitegeist.Archaeopteryx:MailTo', functio
             return React.createElement(presentation_1.IconCard, { icon: "envelope", title: email.recipient, subTitle: email.subject || email.body ? (((_b = email.subject) !== null && _b !== void 0 ? _b : '') + " " + ((_c = email.body) !== null && _c !== void 0 ? _c : '')).trim() : undefined });
         },
         Editor: function Editor(_a) {
-            var email = _a.model;
+            var _b, _c, _d, _e;
+            var email = _a.model,
+                options = _a.options;
             var i18n = archaeopteryx_neos_bridge_1.useI18n();
             return React.createElement(presentation_1.Grid, null, React.createElement(domain_1.Field, { name: "recipient", initialValue: email === null || email === void 0 ? void 0 : email.recipient, validate: function validate(value) {
                     if (!value) {
@@ -25860,11 +25876,11 @@ exports.MailTo = domain_1.makeLinkType('Sitegeist.Archaeopteryx:MailTo', functio
                 var input = _a.input,
                     meta = _a.meta;
                 return React.createElement("div", { style: { gridColumn: '1 / -1' } }, React.createElement("label", null, i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:recipient.label'), ":", React.createElement(react_ui_components_1.TextInput, __assign({ type: "text", placeholder: i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:recipient.placeholder') }, input))), meta.error);
-            }), React.createElement(domain_1.Field, { name: "subject", initialValue: email === null || email === void 0 ? void 0 : email.subject }, function (_a) {
+            }), ((_b = options.enabledFields) === null || _b === void 0 ? void 0 : _b.subject) !== false ? React.createElement(domain_1.Field, { name: "subject", initialValue: email === null || email === void 0 ? void 0 : email.subject }, function (_a) {
                 var input = _a.input,
                     meta = _a.meta;
                 return React.createElement("div", { style: { gridColumn: '1 / -1' } }, React.createElement("label", null, i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:subject.label'), ":", React.createElement(react_ui_components_1.TextInput, __assign({ type: "text" }, input))), meta.error);
-            }), React.createElement(domain_1.Field, { name: "cc", initialValue: email === null || email === void 0 ? void 0 : email.cc, validate: function validate(value) {
+            }) : null, ((_c = options.enabledFields) === null || _c === void 0 ? void 0 : _c.cc) !== false ? React.createElement(domain_1.Field, { name: "cc", initialValue: email === null || email === void 0 ? void 0 : email.cc, validate: function validate(value) {
                     if (value !== undefined && value !== null) {
                         if (!value.split(',').every(function (value) {
                             return simpleEmailRegex.test(value.trim());
@@ -25876,7 +25892,7 @@ exports.MailTo = domain_1.makeLinkType('Sitegeist.Archaeopteryx:MailTo', functio
                 var input = _a.input,
                     meta = _a.meta;
                 return React.createElement("div", { style: { gridColumn: '1 / -1' } }, React.createElement("label", null, i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:cc.label'), ":", React.createElement(react_ui_components_1.TextInput, __assign({ type: "text", placeholder: i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:cc.placeholder') }, input))), meta.error);
-            }), React.createElement(domain_1.Field, { name: "bcc", initialValue: email === null || email === void 0 ? void 0 : email.bcc, validate: function validate(value) {
+            }) : null, ((_d = options.enabledFields) === null || _d === void 0 ? void 0 : _d.bcc) !== false ? React.createElement(domain_1.Field, { name: "bcc", initialValue: email === null || email === void 0 ? void 0 : email.bcc, validate: function validate(value) {
                     if (value !== undefined && value !== null) {
                         if (!value.split(',').every(function (value) {
                             return simpleEmailRegex.test(value.trim());
@@ -25888,11 +25904,11 @@ exports.MailTo = domain_1.makeLinkType('Sitegeist.Archaeopteryx:MailTo', functio
                 var input = _a.input,
                     meta = _a.meta;
                 return React.createElement("div", { style: { gridColumn: '1 / -1' } }, React.createElement("label", null, i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:bcc.label'), ":", React.createElement(react_ui_components_1.TextInput, __assign({ type: "text", placeholder: i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:bcc.placeholder') }, input))), meta.error);
-            }), React.createElement(domain_1.Field, { name: "body", initialValue: email === null || email === void 0 ? void 0 : email.body }, function (_a) {
+            }) : null, ((_e = options.enabledFields) === null || _e === void 0 ? void 0 : _e.body) !== false ? React.createElement(domain_1.Field, { name: "body", initialValue: email === null || email === void 0 ? void 0 : email.body }, function (_a) {
                 var input = _a.input,
                     meta = _a.meta;
                 return React.createElement("div", { style: { gridColumn: '1 / -1' } }, React.createElement("label", null, i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:body.label'), ":", React.createElement(react_ui_components_1.TextArea, __assign({}, input))), meta.error);
-            }));
+            }) : null);
         }
     };
 });
@@ -26129,7 +26145,9 @@ exports.Node = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Node', function (_
         },
         Editor: function Editor(_a) {
             var _b, _c;
-            var model = _a.model;
+            var model = _a.model,
+                options = _a.options;
+            console.log('LinkType Node :: options', options);
             var i18n = archaeopteryx_neos_bridge_1.useI18n();
             var siteNodeContextPath = archaeopteryx_neos_bridge_1.useSiteNodeContextPath();
             var documentNodeContextPath = archaeopteryx_neos_bridge_1.useDocumentNodeContextPath();
@@ -26149,14 +26167,14 @@ exports.Node = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Node', function (_
                             return i18n('Sitegeist.Archaeopteryx:LinkTypes.Node:node.validation.required');
                         }
                     } }, function (_a) {
-                    var _b;
+                    var _b, _c, _d, _e;
                     var input = _a.input;
                     return React.createElement(archaeopteryx_custom_node_tree_1.NodeTree, { configuration: {
-                            baseNodeTypeName: baseNodeTypeName,
-                            rootNodeContextPath: siteNodeContextPath,
+                            baseNodeTypeName: (_b = options.baseNodeType) !== null && _b !== void 0 ? _b : baseNodeTypeName,
+                            rootNodeContextPath: options.startingPoint ? (_c = siteNodeContextPath.adopt(options.startingPoint)) !== null && _c !== void 0 ? _c : siteNodeContextPath : siteNodeContextPath,
                             documentNodeContextPath: documentNodeContextPath,
-                            selectedNodeContextPath: (_b = input.value) === null || _b === void 0 ? void 0 : _b.contextPath,
-                            loadingDepth: loadingDepth
+                            selectedNodeContextPath: (_d = input.value) === null || _d === void 0 ? void 0 : _d.contextPath,
+                            loadingDepth: (_e = options.loadingDepth) !== null && _e !== void 0 ? _e : loadingDepth
                         }, options: {
                             enableSearch: true,
                             enableNodeTypeFilter: true
@@ -26498,6 +26516,7 @@ var operators_1 = __webpack_require__(/*! rxjs/operators */ "../../node_modules/
 var actions = __importStar(__webpack_require__(/*! ./EditorAction */ "../core/lib/domain/Editor/EditorAction.js"));
 var initialState = {
     enableOptions: false,
+    editorOptions: {},
     isOpen: false,
     value: {
         persistent: null,
@@ -26513,6 +26532,7 @@ function editorReducer(state, action) {
         case typesafe_actions_1.getType(actions.EditorWasOpened):
             return {
                 enableOptions: action.payload.enableOptions,
+                editorOptions: action.payload.editorOptions,
                 isOpen: true,
                 value: {
                     transient: action.payload.value,
@@ -26556,11 +26576,14 @@ function createEditor() {
         return actions$.next(action);
     };
     var state$ = actions$.pipe(operators_1.scan(editorReducer, initialState), operators_1.shareReplay(1));
-    var open = function open(value, enableOptions) {
+    var open = function open(value, enableOptions, editorOptions) {
         if (enableOptions === void 0) {
             enableOptions = false;
         }
-        return dispatch(actions.EditorWasOpened(value, enableOptions));
+        if (editorOptions === void 0) {
+            editorOptions = {};
+        }
+        return dispatch(actions.EditorWasOpened(value, enableOptions, editorOptions));
     };
     var dismiss = function dismiss() {
         return dispatch(actions.EditorWasDismissed());
@@ -26577,12 +26600,15 @@ function createEditor() {
     var apply = function apply(value) {
         return dispatch(actions.ValueWasApplied(value));
     };
-    var editLink = function editLink(link, enableOptions) {
+    var editLink = function editLink(link, enableOptions, editorOptions) {
         if (enableOptions === void 0) {
             enableOptions = false;
         }
+        if (editorOptions === void 0) {
+            editorOptions = {};
+        }
         return new Promise(function (resolve) {
-            open(link, enableOptions);
+            open(link, enableOptions, editorOptions);
             actions$.subscribe(function (action) {
                 switch (action.type) {
                     case typesafe_actions_1.getType(actions.EditorWasDismissed):
@@ -26649,11 +26675,14 @@ exports.useEditorTransactions = useEditorTransactions;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ValueWasApplied = exports.ValueWasReset = exports.ValueWasUnset = exports.ValueWasUpdated = exports.EditorWasDismissed = exports.EditorWasOpened = void 0;
 var typesafe_actions_1 = __webpack_require__(/*! typesafe-actions */ "../../node_modules/typesafe-actions/dist/typesafe-actions.umd.production.js");
-exports.EditorWasOpened = typesafe_actions_1.createAction('http://sitegeist.de/Sitegeist.Archaeopteryx/EditorWasOpened', function (value, enableOptions) {
+exports.EditorWasOpened = typesafe_actions_1.createAction('http://sitegeist.de/Sitegeist.Archaeopteryx/EditorWasOpened', function (value, enableOptions, editorOptions) {
     if (enableOptions === void 0) {
         enableOptions = false;
     }
-    return { value: value, enableOptions: enableOptions };
+    if (editorOptions === void 0) {
+        editorOptions = {};
+    }
+    return { value: value, enableOptions: enableOptions, editorOptions: editorOptions };
 })();
 exports.EditorWasDismissed = typesafe_actions_1.createAction('http://sitegeist.de/Sitegeist.Archaeopteryx/EditorWasDismissed')();
 exports.ValueWasUpdated = typesafe_actions_1.createAction('http://sitegeist.de/Sitegeist.Archaeopteryx/ValueWasUpdated', function (value) {
@@ -29070,6 +29099,7 @@ var react_ui_components_1 = __webpack_require__(/*! @neos-project/react-ui-compo
 var archaeopteryx_neos_bridge_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-neos-bridge */ "../neos-bridge/lib/index.js");
 var archaeopteryx_core_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-core */ "../core/lib/index.js");
 var InspectorEditor = function InspectorEditor(props) {
+    var _a, _b, _c;
     var i18n = archaeopteryx_neos_bridge_1.useI18n();
     var tx = archaeopteryx_core_1.useEditorTransactions();
     var value = typeof props.value === 'string' ? props.value || undefined : undefined;
@@ -29077,23 +29107,23 @@ var InspectorEditor = function InspectorEditor(props) {
     var editLink = React.useCallback(function () {
         return __awaiter(void 0, void 0, void 0, function () {
             var result;
-            var _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var _a, _b, _c;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
                     case 0:
-                        return [4, tx.editLink(value === undefined ? null : { href: value })];
+                        return [4, tx.editLink(value === undefined ? null : { href: value }, false, (_b = (_a = props.options) === null || _a === void 0 ? void 0 : _a.linkTypes) !== null && _b !== void 0 ? _b : {})];
                     case 1:
-                        result = _b.sent();
+                        result = _d.sent();
                         if (result.change) {
-                            props.commit((_a = result.value) === null || _a === void 0 ? void 0 : _a.href);
+                            props.commit((_c = result.value) === null || _c === void 0 ? void 0 : _c.href);
                         }
                         return [2];
                 }
             });
         });
-    }, [value, tx.editLink]);
+    }, [value, tx.editLink, props.options]);
     if (linkType) {
-        return React.createElement(InspectorEditorWithLinkType, { value: value, linkType: linkType, editLink: editLink });
+        return React.createElement(InspectorEditorWithLinkType, { value: value, linkType: linkType, options: (_c = (_b = (_a = props.options) === null || _a === void 0 ? void 0 : _a.linkTypes) === null || _b === void 0 ? void 0 : _b[linkType.id]) !== null && _c !== void 0 ? _c : {}, editLink: editLink });
     } else if (Boolean(value) === false) {
         return React.createElement(react_ui_components_1.Button, { onClick: editLink }, i18n('Sitegeist.Archaeopteryx:Main:inspector.create'));
     } else {
@@ -29116,7 +29146,7 @@ var InspectorEditorWithLinkType = function InspectorEditorWithLinkType(props) {
     if (error) {
         throw error;
     }
-    return React.createElement("div", null, busy ? React.createElement(LoadingPreview, { link: link }) : React.createElement(Preview, { model: model, link: link }), React.createElement(react_ui_components_1.Button, { onClick: props.editLink }, i18n('Sitegeist.Archaeopteryx:Main:inspector.edit')));
+    return React.createElement("div", null, busy ? React.createElement(LoadingPreview, { link: link, options: props.options }) : React.createElement(Preview, { model: model, link: link, options: props.options }), React.createElement(react_ui_components_1.Button, { onClick: props.editLink }, i18n('Sitegeist.Archaeopteryx:Main:inspector.edit')));
 };
 //# sourceMappingURL=InspectorEditor.js.map
 

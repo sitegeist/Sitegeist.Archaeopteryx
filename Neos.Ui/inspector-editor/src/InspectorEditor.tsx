@@ -33,17 +33,23 @@ export const InspectorEditor: React.FC<Props> = props => {
     const linkType = useLinkTypeForHref(value ?? null);
 
     const editLink = React.useCallback(async () => {
-        const result = await tx.editLink(value === undefined ? null : {href: value});
+        const result = await tx.editLink(
+            value === undefined ? null : {href: value},
+            false,
+            props.options?.linkTypes ?? {}
+        );
+
         if (result.change) {
             props.commit(result.value?.href);
         }
-    }, [value, tx.editLink]);
+    }, [value, tx.editLink, props.options]);
 
     if (linkType) {
         return (
             <InspectorEditorWithLinkType
                 value={value!}
                 linkType={linkType}
+                options={props.options?.linkTypes?.[linkType.id] ?? {}}
                 editLink={editLink}
             />
         );
@@ -65,8 +71,9 @@ export const InspectorEditor: React.FC<Props> = props => {
 };
 
 const InspectorEditorWithLinkType: React.FC<{
-    value: string,
-    linkType: ILinkType,
+    value: string
+    linkType: ILinkType
+    options: any
     editLink: () => Promise<void>
 }> = props => {
     const i18n = useI18n();
@@ -81,9 +88,16 @@ const InspectorEditorWithLinkType: React.FC<{
     return (
         <div>
             {busy ? (
-                <LoadingPreview link={link}/>
+                <LoadingPreview
+                    link={link}
+                    options={props.options}
+                />
             ) : (
-                <Preview model={model} link={link}/>
+                <Preview
+                    model={model}
+                    link={link}
+                    options={props.options}
+                />
             )}
             <Button onClick={props.editLink}>
                 {i18n('Sitegeist.Archaeopteryx:Main:inspector.edit')}

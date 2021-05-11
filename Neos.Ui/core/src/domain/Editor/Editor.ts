@@ -8,6 +8,7 @@ import * as actions from './EditorAction';
 
 export interface IEditorState {
     enableOptions: boolean
+    editorOptions: Record<string, unknown>
     isOpen: boolean
     value: {
         persistent: null | ILink
@@ -22,6 +23,7 @@ type IEditorResult =
 
 const initialState: IEditorState = {
     enableOptions: false,
+    editorOptions: {},
     isOpen: false,
     value: {
         persistent: null,
@@ -37,6 +39,7 @@ export function editorReducer(
         case getType(actions.EditorWasOpened):
             return {
                 enableOptions: action.payload.enableOptions,
+                editorOptions: action.payload.editorOptions,
                 isOpen: true,
                 value: {
                     transient: action.payload.value,
@@ -113,17 +116,25 @@ export function createEditor() {
         shareReplay(1)
     );
 
-    const open = (value: null | ILink, enableOptions: boolean = false) => dispatch(
-        actions.EditorWasOpened(value, enableOptions)
+    const open = (
+        value: null | ILink,
+        enableOptions: boolean = false,
+        editorOptions: Record<string, unknown> = {}
+    ) => dispatch(
+        actions.EditorWasOpened(value, enableOptions, editorOptions)
     );
     const dismiss = () => dispatch(actions.EditorWasDismissed());
     const update = (value: Partial<ILink>) => dispatch(actions.ValueWasUpdated(value));
     const reset = () => dispatch(actions.ValueWasReset());
     const unset = () => dispatch(actions.ValueWasUnset());
     const apply = (value: null | ILink) => dispatch(actions.ValueWasApplied(value));
-    const editLink = (link: null | ILink, enableOptions: boolean = false) => new Promise<IEditorResult>(
+    const editLink = (
+        link: null | ILink,
+        enableOptions: boolean = false,
+        editorOptions: Record<string, unknown> = {}
+    ) => new Promise<IEditorResult>(
         resolve => {
-            open(link, enableOptions);
+            open(link, enableOptions, editorOptions);
 
             actions$.subscribe(action => {
                 switch (action.type) {

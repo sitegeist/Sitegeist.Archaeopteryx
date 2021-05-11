@@ -21,6 +21,10 @@ const nodeCache = new Map<string, INodePartialForTree>();
 
 export const Node = makeLinkType<{
     node: INodePartialForTree
+}, {
+    startingPoint: string
+    baseNodeType: NodeTypeName
+    loadingDepth: number
 }>('Sitegeist.Archaeopteryx:Node', ({createError}) => ({
     isSuitableFor: link => link.href.startsWith('node://'),
 
@@ -86,7 +90,8 @@ export const Node = makeLinkType<{
         );
     },
 
-    Editor: ({model}) => {
+    Editor: ({model, options}) => {
+        console.log('LinkType Node :: options', options);
         const i18n = useI18n();
         const siteNodeContextPath = useSiteNodeContextPath();
         const documentNodeContextPath = useDocumentNodeContextPath();
@@ -110,11 +115,14 @@ export const Node = makeLinkType<{
                 >{({input}) => (
                     <NodeTree
                         configuration={{
-                            baseNodeTypeName,
-                            rootNodeContextPath: siteNodeContextPath,
+                            baseNodeTypeName:
+                                options.baseNodeType as NodeTypeName ?? baseNodeTypeName,
+                            rootNodeContextPath: options.startingPoint
+                                ? siteNodeContextPath.adopt(options.startingPoint) ?? siteNodeContextPath
+                                : siteNodeContextPath,
                             documentNodeContextPath,
                             selectedNodeContextPath: input.value?.contextPath,
-                            loadingDepth
+                            loadingDepth: options.loadingDepth ?? loadingDepth
                         }}
                         options={{
                             enableSearch: true,
