@@ -26052,12 +26052,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Node = void 0;
 var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
 var react_use_1 = __webpack_require__(/*! react-use */ "../../node_modules/react-use/esm/index.js");
-var react_ui_components_1 = __webpack_require__(/*! @neos-project/react-ui-components */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/react-ui-components/index.js");
 var archaeopteryx_neos_bridge_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-neos-bridge */ "../neos-bridge/lib/index.js");
 var archaeopteryx_custom_node_tree_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-custom-node-tree */ "../custom-node-tree/lib/index.js");
 var domain_1 = __webpack_require__(/*! ../../../domain */ "../core/lib/domain/index.js");
 var presentation_1 = __webpack_require__(/*! ../../../presentation */ "../core/lib/presentation/index.js");
-var modelCache = new Map();
+var nodeCache = new Map();
 exports.Node = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Node', function (_a) {
     var createError = _a.createError;
     return {
@@ -26068,7 +26067,7 @@ exports.Node = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Node', function (_
             var siteNodeContextPath = archaeopteryx_neos_bridge_1.useSiteNodeContextPath();
             var asyncState = react_use_1.useAsync(function () {
                 return __awaiter(void 0, void 0, void 0, function () {
-                    var match, identifier, cacheIdentifier, result, result_1, result_1_1, node, props;
+                    var match, identifier, cacheIdentifier, result, result_1, result_1_1, node, model;
                     var e_1, _a;
                     return __generator(this, function (_b) {
                         switch (_b.label) {
@@ -26082,8 +26081,8 @@ exports.Node = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Node', function (_
                                 }
                                 identifier = match[1];
                                 cacheIdentifier = identifier + "@" + siteNodeContextPath.context;
-                                if (modelCache.has(cacheIdentifier)) {
-                                    return [2, modelCache.get(cacheIdentifier)];
+                                if (nodeCache.has(cacheIdentifier)) {
+                                    return [2, { node: nodeCache.get(cacheIdentifier) }];
                                 }
                                 return [4, archaeopteryx_neos_bridge_1.q(siteNodeContextPath).find("#" + identifier).getForTree()];
                             case 1:
@@ -26091,9 +26090,9 @@ exports.Node = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Node', function (_
                                 try {
                                     for (result_1 = __values(result), result_1_1 = result_1.next(); !result_1_1.done; result_1_1 = result_1.next()) {
                                         node = result_1_1.value;
-                                        props = { node: node };
-                                        modelCache.set(cacheIdentifier, props);
-                                        return [2, props];
+                                        model = { node: node };
+                                        nodeCache.set(cacheIdentifier, model.node);
+                                        return [2, model];
                                     }
                                 } catch (e_1_1) {
                                     e_1 = { error: e_1_1 };
@@ -26118,7 +26117,8 @@ exports.Node = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Node', function (_
             };
         },
         TabHeader: function TabHeader() {
-            return React.createElement("div", { style: { display: 'flex', alignItems: 'center', gap: '8px' } }, React.createElement(react_ui_components_1.Icon, { icon: "file" }), "Document");
+            var i18n = archaeopteryx_neos_bridge_1.useI18n();
+            return React.createElement(presentation_1.IconLabel, { icon: "file" }, i18n('Sitegeist.Archaeopteryx:LinkTypes.Node:title'));
         },
         Preview: function Preview(_a) {
             var _b, _c, _d, _e, _f, _g, _h;
@@ -26130,6 +26130,7 @@ exports.Node = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Node', function (_
         Editor: function Editor(_a) {
             var _b, _c;
             var model = _a.model;
+            var i18n = archaeopteryx_neos_bridge_1.useI18n();
             var siteNodeContextPath = archaeopteryx_neos_bridge_1.useSiteNodeContextPath();
             var documentNodeContextPath = archaeopteryx_neos_bridge_1.useDocumentNodeContextPath();
             var baseNodeTypeName = (_b = archaeopteryx_neos_bridge_1.useConfiguration(function (c) {
@@ -26145,7 +26146,7 @@ exports.Node = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Node', function (_
             } else {
                 return React.createElement(domain_1.Field, { name: "node", initialValue: model === null || model === void 0 ? void 0 : model.node, validate: function validate(value) {
                         if (!value) {
-                            return 'node is required';
+                            return i18n('Sitegeist.Archaeopteryx:LinkTypes.Node:node.validation.required');
                         }
                     } }, function (_a) {
                     var _b;
@@ -26161,7 +26162,7 @@ exports.Node = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Node', function (_
                             enableNodeTypeFilter: true
                         }, onSelect: function onSelect(node) {
                             var cacheIdentifier = node.identifier + "@" + siteNodeContextPath.context;
-                            modelCache.set(cacheIdentifier, { node: node });
+                            nodeCache.set(cacheIdentifier, node);
                             input.onChange(node);
                         } });
                 });
@@ -28066,6 +28067,7 @@ var searchOptions = function searchOptions(searchTerm, processedSelectBoxOptions
 };
 var NodeTypeFilter = function NodeTypeFilter(props) {
     var _a;
+    var i18n = archaeopteryx_neos_bridge_1.useI18n();
     var presets = (_a = archaeopteryx_neos_bridge_1.useConfiguration(function (c) {
         var _a;return (_a = c.nodeTree) === null || _a === void 0 ? void 0 : _a.presets;
     })) !== null && _a !== void 0 ? _a : {};
@@ -28083,7 +28085,7 @@ var NodeTypeFilter = function NodeTypeFilter(props) {
             var _a, _b;
             return {
                 value: presets[presetName].baseNodeType,
-                label: ((_a = presets[presetName].ui) === null || _a === void 0 ? void 0 : _a.label) || '[' + presetName + ']',
+                label: ((_a = presets[presetName].ui) === null || _a === void 0 ? void 0 : _a.label) ? i18n(presets[presetName].ui.label) : '[' + presetName + ']',
                 icon: (_b = presets[presetName].ui) === null || _b === void 0 ? void 0 : _b.icon
             };
         });
@@ -28095,7 +28097,7 @@ var NodeTypeFilter = function NodeTypeFilter(props) {
                 var _a;
                 return {
                     value: nodeType.name,
-                    label: nodeType.label,
+                    label: i18n(nodeType.label),
                     icon: (_a = nodeType.ui) === null || _a === void 0 ? void 0 : _a.icon
                 };
             });
@@ -28107,7 +28109,7 @@ var NodeTypeFilter = function NodeTypeFilter(props) {
             domain_1.filterNodesByNodeTypeInNodeTree({ state: props.state, dispatch: props.dispatch }, nodeTypesRegistry, value ? archaeopteryx_neos_bridge_1.NodeTypeName(value) : null);
         }
     }, [value, nodeTypesRegistry]);
-    return React.createElement(react_ui_components_1.SelectBox, { placeholder: 'TODO: Label', placeholderIcon: 'filter', onValueChange: setValue, allowEmpty: true, value: value, options: searchOptions(filterTerm, options), displaySearchBox: true, searchTerm: filterTerm, onSearchTermChange: setFilterTerm, threshold: 0, noMatchesFoundLabel: 'Neos.Neos:Main:noMatchesFound', searchBoxLeftToTypeLabel: 'Neos.Neos:Main:searchBoxLeftToType' });
+    return React.createElement(react_ui_components_1.SelectBox, { placeholder: i18n('Neos.Neos:Main:filter'), placeholderIcon: 'filter', onValueChange: setValue, allowEmpty: true, value: value, options: searchOptions(filterTerm, options), displaySearchBox: true, searchTerm: filterTerm, onSearchTermChange: setFilterTerm, threshold: 0, noMatchesFoundLabel: i18n('Neos.Neos:Main:noMatchesFound'), searchBoxLeftToTypeLabel: i18n('Neos.Neos:Main:searchBoxLeftToType') });
 };
 exports.NodeTypeFilter = NodeTypeFilter;
 //# sourceMappingURL=NodeTypeFilter.js.map
@@ -28904,12 +28906,21 @@ exports.SearchInput = void 0;
 var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
 var styled_components_1 = __importDefault(__webpack_require__(/*! styled-components */ "../../node_modules/styled-components/dist/styled-components.browser.esm.js"));
 var react_ui_components_1 = __webpack_require__(/*! @neos-project/react-ui-components */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/react-ui-components/index.js");
+var archaeopteryx_neos_bridge_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-neos-bridge */ "../neos-bridge/lib/index.js");
 var SearchIcon = styled_components_1.default(react_ui_components_1.Icon)(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n    position: absolute;\n    top: 50%;\n    left: 21px;\n    transform: translate(-50%, -50%);\n"], ["\n    position: absolute;\n    top: 50%;\n    left: 21px;\n    transform: translate(-50%, -50%);\n"])));
 var ClearIcon = styled_components_1.default(react_ui_components_1.IconButton)(templateObject_2 || (templateObject_2 = __makeTemplateObject(["\n    position: absolute;\n    top: 0;\n    right: 0;\n    color: #000;\n"], ["\n    position: absolute;\n    top: 0;\n    right: 0;\n    color: #000;\n"])));
 var StyledTextInput = styled_components_1.default(react_ui_components_1.TextInput)(templateObject_3 || (templateObject_3 = __makeTemplateObject(["\n    padding-left: 42px;\n\n    &:focus {\n        background: #3f3f3f;\n        color: #fff;\n    }\n"], ["\n    padding-left: 42px;\n\n    &:focus {\n        background: #3f3f3f;\n        color: #fff;\n    }\n"])));
 var SearchInputContainer = styled_components_1.default.div(templateObject_4 || (templateObject_4 = __makeTemplateObject(["\n    position: relative;\n"], ["\n    position: relative;\n"])));
 var SearchInput = function SearchInput(props) {
-    return React.createElement(SearchInputContainer, null, React.createElement(SearchIcon, { icon: "search" }), React.createElement(StyledTextInput, { type: "search", value: props.value, placeholder: 'Search', onChange: props.onChange }), props.value && React.createElement(ClearIcon, { icon: "times", onClick: props.onClear }));
+    var i18n = archaeopteryx_neos_bridge_1.useI18n();
+    var latestValue = React.useRef(props.value);
+    React.useEffect(function () {
+        if (latestValue.current !== props.value && !props.value) {
+            props.onClear();
+        }
+        latestValue.current = props.value;
+    }, [props.value]);
+    return React.createElement(SearchInputContainer, null, React.createElement(SearchIcon, { icon: "search" }), React.createElement(StyledTextInput, { type: "search", value: props.value, placeholder: i18n('Neos.Neos:Main:search'), onChange: props.onChange }), props.value && React.createElement(ClearIcon, { icon: "times", onClick: props.onClear }));
 };
 exports.SearchInput = SearchInput;
 var templateObject_1, templateObject_2, templateObject_3, templateObject_4;

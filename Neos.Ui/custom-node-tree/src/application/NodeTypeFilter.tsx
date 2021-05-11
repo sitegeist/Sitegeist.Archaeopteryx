@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import {INodeType, useNodeTypesRegistry, useConfiguration, NodeTypeName} from '@sitegeist/archaeopteryx-neos-bridge';
+import {INodeType, useNodeTypesRegistry, useConfiguration, NodeTypeName, useI18n} from '@sitegeist/archaeopteryx-neos-bridge';
 import {SelectBox} from '@neos-project/react-ui-components';
 
 import {INodeTreeState, NodeTreeDispatch, filterNodesByNodeTypeInNodeTree} from '../domain';
@@ -19,6 +19,7 @@ interface Props {
 }
 
 export const NodeTypeFilter: React.FC<Props> = props => {
+    const i18n = useI18n();
     const presets = useConfiguration(c => c.nodeTree?.presets) ?? {};
     const nodeTypesRegistry = useNodeTypesRegistry();
     const [filterTerm, setFilterTerm] = React.useState('');
@@ -28,7 +29,9 @@ export const NodeTypeFilter: React.FC<Props> = props => {
             .filter(presetName => (presetName !== 'default'))
             .map(presetName => ({
                 value: presets[presetName].baseNodeType,
-                label: presets[presetName].ui?.label || '[' + presetName + ']',
+                label: presets[presetName].ui?.label
+                    ? i18n(presets[presetName].ui!.label!)
+                    : '[' + presetName + ']',
                 icon: presets[presetName].ui?.icon
             }));
 
@@ -40,7 +43,7 @@ export const NodeTypeFilter: React.FC<Props> = props => {
 
             options = documentNodeTypes.map(nodeType => ({
                 value: nodeType.name,
-                label: nodeType.label,
+                label: i18n(nodeType.label),
                 icon: nodeType.ui?.icon
             }));
         }
@@ -60,7 +63,7 @@ export const NodeTypeFilter: React.FC<Props> = props => {
 
     return (
         <SelectBox
-            placeholder={'TODO: Label'}
+            placeholder={i18n('Neos.Neos:Main:filter')}
             placeholderIcon={'filter'}
             onValueChange={setValue}
             allowEmpty={true}
@@ -70,8 +73,8 @@ export const NodeTypeFilter: React.FC<Props> = props => {
             searchTerm={filterTerm}
             onSearchTermChange={setFilterTerm}
             threshold={0}
-            noMatchesFoundLabel={'Neos.Neos:Main:noMatchesFound'}
-            searchBoxLeftToTypeLabel={'Neos.Neos:Main:searchBoxLeftToType'}
+            noMatchesFoundLabel={i18n('Neos.Neos:Main:noMatchesFound')}
+            searchBoxLeftToTypeLabel={i18n('Neos.Neos:Main:searchBoxLeftToType')}
         />
     );
 }

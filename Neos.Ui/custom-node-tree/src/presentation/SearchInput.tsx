@@ -3,6 +3,8 @@ import styled from 'styled-components';
 
 import {TextInput, Icon, IconButton} from '@neos-project/react-ui-components';
 
+import {useI18n} from '@sitegeist/archaeopteryx-neos-bridge';
+
 const SearchIcon = styled(Icon)`
     position: absolute;
     top: 50%;
@@ -37,13 +39,24 @@ interface Props {
 }
 
 export const SearchInput: React.FC<Props> = props => {
+    const i18n = useI18n();
+    const latestValue = React.useRef(props.value);
+
+    React.useEffect(() => {
+        if (latestValue.current !== props.value && !props.value) {
+            props.onClear();
+        }
+
+        latestValue.current = props.value;
+    }, [props.value])
+
     return (
         <SearchInputContainer>
             <SearchIcon icon="search"/>
             <StyledTextInput
                 type="search"
                 value={props.value}
-                placeholder={'Search'}
+                placeholder={i18n('Neos.Neos:Main:search')}
                 onChange={props.onChange}
             />
             {props.value && (
