@@ -25801,8 +25801,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MailTo = void 0;
 var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
 var react_ui_components_1 = __webpack_require__(/*! @neos-project/react-ui-components */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/react-ui-components/index.js");
+var archaeopteryx_neos_bridge_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-neos-bridge */ "../neos-bridge/lib/index.js");
 var domain_1 = __webpack_require__(/*! ../../../domain */ "../core/lib/domain/index.js");
 var presentation_1 = __webpack_require__(/*! ../../../presentation */ "../core/lib/presentation/index.js");
+var simpleEmailRegex = /^[^\s@]+@[^\s@]+$/;
 exports.MailTo = domain_1.makeLinkType('Sitegeist.Archaeopteryx:MailTo', function () {
     return {
         isSuitableFor: function isSuitableFor(link) {
@@ -25836,7 +25838,8 @@ exports.MailTo = domain_1.makeLinkType('Sitegeist.Archaeopteryx:MailTo', functio
             return { href: url.toString() };
         },
         TabHeader: function TabHeader() {
-            return React.createElement("div", { style: { display: 'flex', alignItems: 'center', gap: '8px' } }, React.createElement(react_ui_components_1.Icon, { icon: "envelope" }), "Mailto");
+            var i18n = archaeopteryx_neos_bridge_1.useI18n();
+            return React.createElement(presentation_1.IconLabel, { icon: "envelope" }, i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:title'));
         },
         Preview: function Preview(_a) {
             var _b, _c;
@@ -25845,30 +25848,50 @@ exports.MailTo = domain_1.makeLinkType('Sitegeist.Archaeopteryx:MailTo', functio
         },
         Editor: function Editor(_a) {
             var email = _a.model;
+            var i18n = archaeopteryx_neos_bridge_1.useI18n();
             return React.createElement(presentation_1.Grid, null, React.createElement(domain_1.Field, { name: "recipient", initialValue: email === null || email === void 0 ? void 0 : email.recipient, validate: function validate(value) {
                     if (!value) {
-                        return 'recipient is required';
+                        return i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:recipient.validation.required');
+                    }
+                    if (!simpleEmailRegex.test(value)) {
+                        return i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:recipient.validation.email');
                     }
                 } }, function (_a) {
                 var input = _a.input,
                     meta = _a.meta;
-                return React.createElement("div", { style: { gridColumn: '1 / -1' } }, React.createElement("label", null, "Recipient:", React.createElement(react_ui_components_1.TextInput, __assign({ type: "text" }, input))), meta.error);
+                return React.createElement("div", { style: { gridColumn: '1 / -1' } }, React.createElement("label", null, i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:recipient.label'), ":", React.createElement(react_ui_components_1.TextInput, __assign({ type: "text", placeholder: i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:recipient.placeholder') }, input))), meta.error);
             }), React.createElement(domain_1.Field, { name: "subject", initialValue: email === null || email === void 0 ? void 0 : email.subject }, function (_a) {
                 var input = _a.input,
                     meta = _a.meta;
-                return React.createElement("div", { style: { gridColumn: '1 / -1' } }, React.createElement("label", null, "Subject:", React.createElement(react_ui_components_1.TextInput, __assign({ type: "text" }, input))), meta.error);
-            }), React.createElement(domain_1.Field, { name: "cc", initialValue: email === null || email === void 0 ? void 0 : email.cc }, function (_a) {
+                return React.createElement("div", { style: { gridColumn: '1 / -1' } }, React.createElement("label", null, i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:subject.label'), ":", React.createElement(react_ui_components_1.TextInput, __assign({ type: "text" }, input))), meta.error);
+            }), React.createElement(domain_1.Field, { name: "cc", initialValue: email === null || email === void 0 ? void 0 : email.cc, validate: function validate(value) {
+                    if (value !== undefined && value !== null) {
+                        if (!value.split(',').every(function (value) {
+                            return simpleEmailRegex.test(value.trim());
+                        })) {
+                            return i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:cc.validation.emaillist');
+                        }
+                    }
+                } }, function (_a) {
                 var input = _a.input,
                     meta = _a.meta;
-                return React.createElement("div", { style: { gridColumn: '1 / -1' } }, React.createElement("label", null, "CC:", React.createElement(react_ui_components_1.TextInput, __assign({ type: "text" }, input))), meta.error);
-            }), React.createElement(domain_1.Field, { name: "bcc", initialValue: email === null || email === void 0 ? void 0 : email.bcc }, function (_a) {
+                return React.createElement("div", { style: { gridColumn: '1 / -1' } }, React.createElement("label", null, i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:cc.label'), ":", React.createElement(react_ui_components_1.TextInput, __assign({ type: "text", placeholder: i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:cc.placeholder') }, input))), meta.error);
+            }), React.createElement(domain_1.Field, { name: "bcc", initialValue: email === null || email === void 0 ? void 0 : email.bcc, validate: function validate(value) {
+                    if (value !== undefined && value !== null) {
+                        if (!value.split(',').every(function (value) {
+                            return simpleEmailRegex.test(value.trim());
+                        })) {
+                            return i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:bcc.validation.emaillist');
+                        }
+                    }
+                } }, function (_a) {
                 var input = _a.input,
                     meta = _a.meta;
-                return React.createElement("div", { style: { gridColumn: '1 / -1' } }, React.createElement("label", null, "BCC:", React.createElement(react_ui_components_1.TextInput, __assign({ type: "text" }, input))), meta.error);
+                return React.createElement("div", { style: { gridColumn: '1 / -1' } }, React.createElement("label", null, i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:bcc.label'), ":", React.createElement(react_ui_components_1.TextInput, __assign({ type: "text", placeholder: i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:bcc.placeholder') }, input))), meta.error);
             }), React.createElement(domain_1.Field, { name: "body", initialValue: email === null || email === void 0 ? void 0 : email.body }, function (_a) {
                 var input = _a.input,
                     meta = _a.meta;
-                return React.createElement("div", { style: { gridColumn: '1 / -1' } }, React.createElement("label", null, "Body:", React.createElement(react_ui_components_1.TextArea, __assign({}, input))), meta.error);
+                return React.createElement("div", { style: { gridColumn: '1 / -1' } }, React.createElement("label", null, i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:body.label'), ":", React.createElement(react_ui_components_1.TextArea, __assign({}, input))), meta.error);
             }));
         }
     };
