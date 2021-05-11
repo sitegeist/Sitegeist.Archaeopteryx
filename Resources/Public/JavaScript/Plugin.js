@@ -25600,7 +25600,6 @@ var __importStar = undefined && undefined.__importStar || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Asset = void 0;
 var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
-var react_ui_components_1 = __webpack_require__(/*! @neos-project/react-ui-components */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/react-ui-components/index.js");
 var archaeopteryx_neos_bridge_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-neos-bridge */ "../neos-bridge/lib/index.js");
 var domain_1 = __webpack_require__(/*! ../../../domain */ "../core/lib/domain/index.js");
 var presentation_1 = __webpack_require__(/*! ../../../presentation */ "../core/lib/presentation/index.js");
@@ -25624,7 +25623,8 @@ exports.Asset = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Asset', function 
             };
         },
         TabHeader: function TabHeader() {
-            return React.createElement("div", { style: { display: 'flex', alignItems: 'center', gap: '8px' } }, React.createElement(react_ui_components_1.Icon, { icon: "camera" }), "Asset");
+            var i18n = archaeopteryx_neos_bridge_1.useI18n();
+            return React.createElement(presentation_1.IconLabel, { icon: "camera" }, i18n('Sitegeist.Archaeopteryx:LinkTypes.Asset:title'));
         },
         Preview: function Preview(props) {
             var _a, _b;
@@ -25636,9 +25636,10 @@ exports.Asset = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Asset', function 
         },
         Editor: function Editor(props) {
             var _a;
+            var i18n = archaeopteryx_neos_bridge_1.useI18n();
             return React.createElement(domain_1.Field, { name: "identifier", initialValue: (_a = props.model) === null || _a === void 0 ? void 0 : _a.identifier, validate: function validate(value) {
                     if (!value) {
-                        return 'identifier is required';
+                        return i18n('Sitegeist.Archaeopteryx:LinkTypes.Asset:identifier.validation.required');
                     }
                 } }, function (_a) {
                 var input = _a.input;
