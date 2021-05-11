@@ -26240,6 +26240,7 @@ exports.Web = void 0;
 var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
 var react_final_form_1 = __webpack_require__(/*! react-final-form */ "../../node_modules/react-final-form/dist/react-final-form.es.js");
 var react_ui_components_1 = __webpack_require__(/*! @neos-project/react-ui-components */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/react-ui-components/index.js");
+var archaeopteryx_neos_bridge_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-neos-bridge */ "../neos-bridge/lib/index.js");
 var domain_1 = __webpack_require__(/*! ../../../domain */ "../core/lib/domain/index.js");
 var presentation_1 = __webpack_require__(/*! ../../../presentation */ "../core/lib/presentation/index.js");
 exports.Web = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Web', function (_a) {
@@ -26270,7 +26271,8 @@ exports.Web = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Web', function (_a)
             };
         },
         TabHeader: function TabHeader() {
-            return React.createElement("div", { style: { display: 'flex', alignItems: 'center', gap: '8px' } }, React.createElement(react_ui_components_1.Icon, { icon: "globe" }), "Web");
+            var i18n = archaeopteryx_neos_bridge_1.useI18n();
+            return React.createElement(presentation_1.IconLabel, { icon: "globe" }, i18n('Sitegeist.Archaeopteryx:LinkTypes.Web:title'));
         },
         Preview: function Preview(_a) {
             var model = _a.model;
@@ -26279,11 +26281,12 @@ exports.Web = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Web', function (_a)
         Editor: function Editor(_a) {
             var _b;
             var model = _a.model;
+            var i18n = archaeopteryx_neos_bridge_1.useI18n();
             var form = react_final_form_1.useForm();
             var prefix = "linkTypeProps.Sitegeist_Archaeopteryx:Web";
-            return React.createElement("div", null, React.createElement("label", { htmlFor: "linkTypeProps.Sitegeist_Archaeopteryx:Web.urlWithoutProtocol" }, "Link:"), React.createElement("div", { style: { display: 'grid', gridTemplateColumns: '160px 1fr', minWidth: '600px' } }, React.createElement(domain_1.Field, { name: "protocol", initialValue: (_b = model === null || model === void 0 ? void 0 : model.protocol) !== null && _b !== void 0 ? _b : 'https', validate: function validate(value) {
+            return React.createElement("div", null, React.createElement("label", { htmlFor: "linkTypeProps.Sitegeist_Archaeopteryx:Web.urlWithoutProtocol" }, i18n('Sitegeist.Archaeopteryx:LinkTypes.Web:label.link'), ":"), React.createElement("div", { style: { display: 'grid', gridTemplateColumns: '160px 1fr', minWidth: '600px' } }, React.createElement(domain_1.Field, { name: "protocol", initialValue: (_b = model === null || model === void 0 ? void 0 : model.protocol) !== null && _b !== void 0 ? _b : 'https', validate: function validate(value) {
                     if (!value) {
-                        return 'protocol is required';
+                        return i18n('Sitegeist.Archaeopteryx:LinkTypes.Web:protocol.validation.required');
                     }
                 } }, function (_a) {
                 var input = _a.input;
@@ -26308,11 +26311,11 @@ exports.Web = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Web', function (_a)
                     return value;
                 }, initialValue: model === null || model === void 0 ? void 0 : model.urlWithoutProtocol, validate: function validate(value) {
                     if (!value) {
-                        return 'Url is required';
+                        return i18n('Sitegeist.Archaeopteryx:LinkTypes.Web:urlWithoutProtocol.validation.required');
                     }
                 } }, function (_a) {
                 var input = _a.input;
-                return React.createElement(react_ui_components_1.TextInput, __assign({ id: input.name, type: "text" }, input));
+                return React.createElement(react_ui_components_1.TextInput, __assign({ id: input.name, type: "text", placeholder: i18n('Sitegeist.Archaeopteryx:LinkTypes.Web:urlWithoutProtocol.placeholder') }, input));
             })));
         }
     };
@@ -27372,6 +27375,64 @@ var templateObject_1, templateObject_2;
 
 /***/ }),
 
+/***/ "../core/lib/presentation/IconLabel.js":
+/*!*********************************************!*\
+  !*** ../core/lib/presentation/IconLabel.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __makeTemplateObject = undefined && undefined.__makeTemplateObject || function (cooked, raw) {
+    if (Object.defineProperty) {
+        Object.defineProperty(cooked, "raw", { value: raw });
+    } else {
+        cooked.raw = raw;
+    }
+    return cooked;
+};
+var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function get() {
+            return m[k];
+        } });
+} : function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+var __setModuleDefault = undefined && undefined.__setModuleDefault || (Object.create ? function (o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+} : function (o, v) {
+    o["default"] = v;
+});
+var __importStar = undefined && undefined.__importStar || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) {
+        if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    }__setModuleDefault(result, mod);
+    return result;
+};
+var __importDefault = undefined && undefined.__importDefault || function (mod) {
+    return mod && mod.__esModule ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.IconLabel = void 0;
+var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
+var styled_components_1 = __importDefault(__webpack_require__(/*! styled-components */ "../../node_modules/styled-components/dist/styled-components.browser.esm.js"));
+var react_ui_components_1 = __webpack_require__(/*! @neos-project/react-ui-components */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/react-ui-components/index.js");
+var Container = styled_components_1.default.div(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n    display: flex;\n    align-items: center;\n    gap: 8px;\n"], ["\n    display: flex;\n    align-items: center;\n    gap: 8px;\n"])));
+var IconLabel = function IconLabel(props) {
+    return React.createElement(Container, null, React.createElement(react_ui_components_1.Icon, { icon: props.icon }), props.children);
+};
+exports.IconLabel = IconLabel;
+var templateObject_1;
+//# sourceMappingURL=IconLabel.js.map
+
+/***/ }),
+
 /***/ "../core/lib/presentation/ImageCard.js":
 /*!*********************************************!*\
   !*** ../core/lib/presentation/ImageCard.js ***!
@@ -27578,7 +27639,7 @@ var templateObject_1, templateObject_2, templateObject_3, templateObject_4, temp
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Grid = exports.Deletable = exports.Modal = exports.Form = exports.Tabs = exports.ImageCard = exports.IconCard = void 0;
+exports.IconLabel = exports.Grid = exports.Deletable = exports.Modal = exports.Form = exports.Tabs = exports.ImageCard = exports.IconCard = void 0;
 var IconCard_1 = __webpack_require__(/*! ./IconCard */ "../core/lib/presentation/IconCard.js");
 Object.defineProperty(exports, "IconCard", { enumerable: true, get: function get() {
     return IconCard_1.IconCard;
@@ -27606,6 +27667,10 @@ Object.defineProperty(exports, "Deletable", { enumerable: true, get: function ge
 var Grid_1 = __webpack_require__(/*! ./Grid */ "../core/lib/presentation/Grid.js");
 Object.defineProperty(exports, "Grid", { enumerable: true, get: function get() {
     return Grid_1.Grid;
+  } });
+var IconLabel_1 = __webpack_require__(/*! ./IconLabel */ "../core/lib/presentation/IconLabel.js");
+Object.defineProperty(exports, "IconLabel", { enumerable: true, get: function get() {
+    return IconLabel_1.IconLabel;
   } });
 //# sourceMappingURL=index.js.map
 
