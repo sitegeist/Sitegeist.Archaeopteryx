@@ -1,5 +1,7 @@
 import * as React from 'react';
-import {ILink, ILinkType, FieldGroup, useEditorState} from '../../domain';
+
+import {FieldGroup} from '../../framework';
+import {ILink, ILinkType, useEditorState} from '../../domain';
 
 function useLastNonNull<V>(value: null | V) {
     const valueRef = React.useRef(value);

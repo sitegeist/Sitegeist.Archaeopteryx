@@ -6,7 +6,8 @@ import {Button} from '@neos-project/react-ui-components';
 
 import {useI18n} from '@sitegeist/archaeopteryx-neos-bridge';
 
-import {ILink, ILinkOptions, useEditorState, useEditorTransactions, useLinkTypes, useLinkTypeForHref, Field, ILinkType} from '../../domain';
+import {Field} from '../../framework';
+import {ILink, ILinkOptions, useEditorState, useEditorTransactions, useLinkTypes, useLinkTypeForHref} from '../../domain';
 import {Form as StyledForm, Modal, Tabs, Deletable} from '../../presentation';
 
 import {LinkEditor} from './LinkEditor';

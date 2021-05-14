@@ -2,7 +2,8 @@ import * as React from 'react';
 
 import {useAssetSummary, useI18n} from '@sitegeist/archaeopteryx-neos-bridge';
 
-import {Process, Field, makeLinkType} from '../../../domain';
+import {Process, Field} from '../../../framework';
+import {makeLinkType} from '../../../domain';
 import {ImageCard, IconLabel} from '../../../presentation';
 
 import {MediaBrowser} from './MediaBrowser';

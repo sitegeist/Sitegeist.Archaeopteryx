@@ -3,7 +3,7 @@ import {Object} from 'ts-toolbelt';
 
 import {useGlobalRegistry} from '@sitegeist/archaeopteryx-neos-bridge';
 
-import {IProcess} from '../Process';
+import {IProcess} from '../../framework';
 
 import {ILink} from './Link';
 

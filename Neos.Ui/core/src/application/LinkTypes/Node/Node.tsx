@@ -15,7 +15,8 @@ import {
 } from '@sitegeist/archaeopteryx-neos-bridge';
 import {NodeTree} from '@sitegeist/archaeopteryx-custom-node-tree';
 
-import {Process, makeLinkType, Field} from '../../../domain';
+import {Process, Field} from '../../../framework';
+import {makeLinkType} from '../../../domain';
 import {IconCard, IconLabel} from '../../../presentation';
 
 const nodeCache = new Map<string, INodePartialForTree>();

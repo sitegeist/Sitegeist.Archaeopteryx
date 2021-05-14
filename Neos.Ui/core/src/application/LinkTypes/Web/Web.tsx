@@ -5,7 +5,8 @@ import {SelectBox, TextInput} from '@neos-project/react-ui-components';
 
 import {useI18n} from '@sitegeist/archaeopteryx-neos-bridge';
 
-import {Process, makeLinkType, Field} from '../../../domain';
+import {Process, Field} from '../../../framework';
+import {makeLinkType} from '../../../domain';
 import {IconCard, IconLabel} from '../../../presentation';
 
 export const Web = makeLinkType<{

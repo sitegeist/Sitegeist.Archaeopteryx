@@ -4,7 +4,8 @@ import {EditorEnvelope} from '@neos-project/neos-ui-editors';
 
 import {useI18n} from '@sitegeist/archaeopteryx-neos-bridge';
 
-import {makeLinkType, Process, Field} from '../../../domain';
+import {Process, Field} from '../../../framework';
+import {makeLinkType} from '../../../domain';
 import {IconCard, Grid, IconLabel} from '../../../presentation';
 
 const simpleEmailRegex = /^[^\s@]+@[^\s@]+$/;

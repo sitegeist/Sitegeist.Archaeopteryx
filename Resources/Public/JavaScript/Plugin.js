@@ -25296,6 +25296,7 @@ var react_final_form_1 = __webpack_require__(/*! react-final-form */ "../../node
 var react_use_1 = __webpack_require__(/*! react-use */ "../../node_modules/react-use/esm/index.js");
 var react_ui_components_1 = __webpack_require__(/*! @neos-project/react-ui-components */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/react-ui-components/index.js");
 var archaeopteryx_neos_bridge_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-neos-bridge */ "../neos-bridge/lib/index.js");
+var framework_1 = __webpack_require__(/*! ../../framework */ "../core/lib/framework/index.js");
 var domain_1 = __webpack_require__(/*! ../../domain */ "../core/lib/domain/index.js");
 var presentation_1 = __webpack_require__(/*! ../../presentation */ "../core/lib/presentation/index.js");
 var LinkEditor_1 = __webpack_require__(/*! ./LinkEditor */ "../core/lib/application/Dialog/LinkEditor.js");
@@ -25347,7 +25348,7 @@ var DialogWithEmptyValue = function DialogWithEmptyValue() {
     var _a = domain_1.useEditorState(),
         enableOptions = _a.enableOptions,
         editorOptions = _a.editorOptions;
-    return React.createElement(domain_1.Field, { name: "linkTypeId", initialValue: linkTypes[0].id }, function (_a) {
+    return React.createElement(framework_1.Field, { name: "linkTypeId", initialValue: linkTypes[0].id }, function (_a) {
         var input = _a.input;
         return React.createElement(presentation_1.Tabs, { lazy: true, from: linkTypes, activeItemKey: input.value, getKey: function getKey(linkType) {
                 return linkType.id;
@@ -25373,7 +25374,7 @@ var DialogWithValue = function DialogWithValue(props) {
     var Preview = linkType.Preview;
     var state = form.getState();
     var model = state.valid ? (_a = state.values.linkTypeProps) === null || _a === void 0 ? void 0 : _a[linkType.id.split('.').join('_')] : result;
-    return React.createElement(domain_1.Field, { name: "linkTypeId", initialValue: linkType.id }, function () {
+    return React.createElement(framework_1.Field, { name: "linkTypeId", initialValue: linkType.id }, function () {
         return React.createElement(presentation_1.Tabs, { lazy: true, from: [linkType], activeItemKey: linkType.id, getKey: function getKey(linkType) {
                 return linkType.id;
             }, renderHeader: function renderHeader(_a) {
@@ -25429,6 +25430,7 @@ var __importStar = undefined && undefined.__importStar || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LinkEditor = void 0;
 var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
+var framework_1 = __webpack_require__(/*! ../../framework */ "../core/lib/framework/index.js");
 var domain_1 = __webpack_require__(/*! ../../domain */ "../core/lib/domain/index.js");
 function useLastNonNull(value) {
     var valueRef = React.useRef(value);
@@ -25450,7 +25452,7 @@ var LinkEditorWithoutValue = function LinkEditorWithoutValue(props) {
     var editorOptions = domain_1.useEditorState().editorOptions;
     var Editor = props.linkType.Editor;
     var prefix = "linkTypeProps." + props.linkType.id.split('.').join('_');
-    return React.createElement(domain_1.FieldGroup, { prefix: prefix }, React.createElement(Editor, { model: null, options: (_b = (_a = editorOptions.linkTypes) === null || _a === void 0 ? void 0 : _a[props.linkType.id]) !== null && _b !== void 0 ? _b : {}, link: null }));
+    return React.createElement(framework_1.FieldGroup, { prefix: prefix }, React.createElement(Editor, { model: null, options: (_b = (_a = editorOptions.linkTypes) === null || _a === void 0 ? void 0 : _a[props.linkType.id]) !== null && _b !== void 0 ? _b : {}, link: null }));
 };
 var LinkEditorWithValue = function LinkEditorWithValue(props) {
     var _a, _b, _c, _d, _e;
@@ -25468,7 +25470,7 @@ var LinkEditorWithValue = function LinkEditorWithValue(props) {
     } else if (busy && !model) {
         return React.createElement(LoadingEditor, { link: (_a = props.link) !== null && _a !== void 0 ? _a : undefined, options: (_c = (_b = editorOptions.linkTypes) === null || _b === void 0 ? void 0 : _b[props.linkType.id]) !== null && _c !== void 0 ? _c : {} });
     } else {
-        return React.createElement(domain_1.FieldGroup, { prefix: "linkTypeProps." + props.linkType.id.split('.').join('_') }, React.createElement(Editor, { model: model, options: (_e = (_d = editorOptions.linkTypes) === null || _d === void 0 ? void 0 : _d[props.linkType.id]) !== null && _e !== void 0 ? _e : {}, link: props.link }));
+        return React.createElement(framework_1.FieldGroup, { prefix: "linkTypeProps." + props.linkType.id.split('.').join('_') }, React.createElement(Editor, { model: model, options: (_e = (_d = editorOptions.linkTypes) === null || _d === void 0 ? void 0 : _d[props.linkType.id]) !== null && _e !== void 0 ? _e : {}, link: props.link }));
     }
 };
 //# sourceMappingURL=LinkEditor.js.map
@@ -25634,6 +25636,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Asset = void 0;
 var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
 var archaeopteryx_neos_bridge_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-neos-bridge */ "../neos-bridge/lib/index.js");
+var framework_1 = __webpack_require__(/*! ../../../framework */ "../core/lib/framework/index.js");
 var domain_1 = __webpack_require__(/*! ../../../domain */ "../core/lib/domain/index.js");
 var presentation_1 = __webpack_require__(/*! ../../../presentation */ "../core/lib/presentation/index.js");
 var MediaBrowser_1 = __webpack_require__(/*! ./MediaBrowser */ "../core/lib/application/LinkTypes/Asset/MediaBrowser.js");
@@ -25646,9 +25649,9 @@ exports.Asset = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Asset', function 
         useResolvedModel: function useResolvedModel(link) {
             var match = /asset:\/\/(.*)/.exec(link.href);
             if (match) {
-                return domain_1.Process.success({ identifier: match[1] });
+                return framework_1.Process.success({ identifier: match[1] });
             }
-            return domain_1.Process.error(createError("Cannot handle href \"" + link.href + "\"."));
+            return framework_1.Process.error(createError("Cannot handle href \"" + link.href + "\"."));
         },
         convertModelToLink: function convertModelToLink(asset) {
             return {
@@ -25670,7 +25673,7 @@ exports.Asset = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Asset', function 
         Editor: function Editor(props) {
             var _a;
             var i18n = archaeopteryx_neos_bridge_1.useI18n();
-            return React.createElement(domain_1.Field, { name: "identifier", initialValue: (_a = props.model) === null || _a === void 0 ? void 0 : _a.identifier, validate: function validate(value) {
+            return React.createElement(framework_1.Field, { name: "identifier", initialValue: (_a = props.model) === null || _a === void 0 ? void 0 : _a.identifier, validate: function validate(value) {
                     if (!value) {
                         return i18n('Sitegeist.Archaeopteryx:LinkTypes.Asset:identifier.validation.required');
                     }
@@ -25823,6 +25826,7 @@ exports.MailTo = void 0;
 var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
 var neos_ui_editors_1 = __webpack_require__(/*! @neos-project/neos-ui-editors */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/neos-ui-editors/index.js");
 var archaeopteryx_neos_bridge_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-neos-bridge */ "../neos-bridge/lib/index.js");
+var framework_1 = __webpack_require__(/*! ../../../framework */ "../core/lib/framework/index.js");
 var domain_1 = __webpack_require__(/*! ../../../domain */ "../core/lib/domain/index.js");
 var presentation_1 = __webpack_require__(/*! ../../../presentation */ "../core/lib/presentation/index.js");
 var simpleEmailRegex = /^[^\s@]+@[^\s@]+$/;
@@ -25834,7 +25838,7 @@ exports.MailTo = domain_1.makeLinkType('Sitegeist.Archaeopteryx:MailTo', functio
         useResolvedModel: function useResolvedModel(link) {
             var _a, _b, _c, _d;
             var url = new URL(link.href);
-            return domain_1.Process.success({
+            return framework_1.Process.success({
                 recipient: url.pathname,
                 subject: (_a = url.searchParams.get('subject')) !== null && _a !== void 0 ? _a : undefined,
                 cc: (_b = url.searchParams.get('cc')) !== null && _b !== void 0 ? _b : undefined,
@@ -25872,7 +25876,7 @@ exports.MailTo = domain_1.makeLinkType('Sitegeist.Archaeopteryx:MailTo', functio
             var email = _a.model,
                 options = _a.options;
             var i18n = archaeopteryx_neos_bridge_1.useI18n();
-            return React.createElement(presentation_1.Grid, null, React.createElement(domain_1.Field, { name: "recipient", initialValue: email === null || email === void 0 ? void 0 : email.recipient, validate: function validate(value) {
+            return React.createElement(presentation_1.Grid, null, React.createElement(framework_1.Field, { name: "recipient", initialValue: email === null || email === void 0 ? void 0 : email.recipient, validate: function validate(value) {
                     if (!value) {
                         return i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:recipient.validation.required');
                     }
@@ -25883,11 +25887,11 @@ exports.MailTo = domain_1.makeLinkType('Sitegeist.Archaeopteryx:MailTo', functio
                 var input = _a.input,
                     meta = _a.meta;
                 return React.createElement("div", { style: { gridColumn: '1 / -1' } }, React.createElement(neos_ui_editors_1.EditorEnvelope, { identifier: "Sitegeist-Archaeopteryx-Mailto-" + input.name, label: i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:recipient.label'), editor: 'Neos.Neos/Inspector/Editors/TextFieldEditor', validationErrors: meta.dirty && meta.error ? [meta.error] : [], value: input.value, commit: input.onChange }));
-            }), ((_b = options.enabledFields) === null || _b === void 0 ? void 0 : _b.subject) !== false ? React.createElement(domain_1.Field, { name: "subject", initialValue: email === null || email === void 0 ? void 0 : email.subject }, function (_a) {
+            }), ((_b = options.enabledFields) === null || _b === void 0 ? void 0 : _b.subject) !== false ? React.createElement(framework_1.Field, { name: "subject", initialValue: email === null || email === void 0 ? void 0 : email.subject }, function (_a) {
                 var input = _a.input,
                     meta = _a.meta;
                 return React.createElement("div", { style: { gridColumn: '1 / -1' } }, React.createElement(neos_ui_editors_1.EditorEnvelope, { identifier: "Sitegeist-Archaeopteryx-Mailto-" + input.name, label: i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:subject.label'), editor: 'Neos.Neos/Inspector/Editors/TextFieldEditor', validationErrors: meta.dirty && meta.error ? [meta.error] : [], value: input.value, commit: input.onChange }));
-            }) : null, ((_c = options.enabledFields) === null || _c === void 0 ? void 0 : _c.cc) !== false ? React.createElement(domain_1.Field, { name: "cc", initialValue: email === null || email === void 0 ? void 0 : email.cc, validate: function validate(value) {
+            }) : null, ((_c = options.enabledFields) === null || _c === void 0 ? void 0 : _c.cc) !== false ? React.createElement(framework_1.Field, { name: "cc", initialValue: email === null || email === void 0 ? void 0 : email.cc, validate: function validate(value) {
                     if (value !== undefined && value !== null) {
                         if (!value.split(',').every(function (value) {
                             return simpleEmailRegex.test(value.trim());
@@ -25901,7 +25905,7 @@ exports.MailTo = domain_1.makeLinkType('Sitegeist.Archaeopteryx:MailTo', functio
                 return React.createElement("div", { style: { gridColumn: '1 / -1' } }, React.createElement(neos_ui_editors_1.EditorEnvelope, { identifier: "Sitegeist-Archaeopteryx-Mailto-" + input.name, label: i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:cc.label'), editor: 'Neos.Neos/Inspector/Editors/TextFieldEditor', options: {
                         placeholder: i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:cc.placeholder')
                     }, validationErrors: meta.dirty && meta.error ? [meta.error] : [], value: input.value, commit: input.onChange }));
-            }) : null, ((_d = options.enabledFields) === null || _d === void 0 ? void 0 : _d.bcc) !== false ? React.createElement(domain_1.Field, { name: "bcc", initialValue: email === null || email === void 0 ? void 0 : email.bcc, validate: function validate(value) {
+            }) : null, ((_d = options.enabledFields) === null || _d === void 0 ? void 0 : _d.bcc) !== false ? React.createElement(framework_1.Field, { name: "bcc", initialValue: email === null || email === void 0 ? void 0 : email.bcc, validate: function validate(value) {
                     if (value !== undefined && value !== null) {
                         if (!value.split(',').every(function (value) {
                             return simpleEmailRegex.test(value.trim());
@@ -25915,7 +25919,7 @@ exports.MailTo = domain_1.makeLinkType('Sitegeist.Archaeopteryx:MailTo', functio
                 return React.createElement("div", { style: { gridColumn: '1 / -1' } }, React.createElement(neos_ui_editors_1.EditorEnvelope, { identifier: "Sitegeist-Archaeopteryx-Mailto-" + input.name, label: i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:bcc.label'), editor: 'Neos.Neos/Inspector/Editors/TextFieldEditor', options: {
                         placeholder: i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:bcc.placeholder')
                     }, validationErrors: meta.dirty && meta.error ? [meta.error] : [], value: input.value, commit: input.onChange }));
-            }) : null, ((_e = options.enabledFields) === null || _e === void 0 ? void 0 : _e.body) !== false ? React.createElement(domain_1.Field, { name: "body", initialValue: email === null || email === void 0 ? void 0 : email.body }, function (_a) {
+            }) : null, ((_e = options.enabledFields) === null || _e === void 0 ? void 0 : _e.body) !== false ? React.createElement(framework_1.Field, { name: "body", initialValue: email === null || email === void 0 ? void 0 : email.body }, function (_a) {
                 var input = _a.input,
                     meta = _a.meta;
                 return React.createElement("div", { style: { gridColumn: '1 / -1' } }, React.createElement(neos_ui_editors_1.EditorEnvelope, { identifier: "Sitegeist-Archaeopteryx-Mailto-" + input.name, label: i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:body.label'), editor: 'Neos.Neos/Inspector/Editors/TextAreaEditor', validationErrors: meta.dirty && meta.error ? [meta.error] : [], value: input.value, commit: input.onChange }));
@@ -26081,6 +26085,7 @@ var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@n
 var react_use_1 = __webpack_require__(/*! react-use */ "../../node_modules/react-use/esm/index.js");
 var archaeopteryx_neos_bridge_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-neos-bridge */ "../neos-bridge/lib/index.js");
 var archaeopteryx_custom_node_tree_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-custom-node-tree */ "../custom-node-tree/lib/index.js");
+var framework_1 = __webpack_require__(/*! ../../../framework */ "../core/lib/framework/index.js");
 var domain_1 = __webpack_require__(/*! ../../../domain */ "../core/lib/domain/index.js");
 var presentation_1 = __webpack_require__(/*! ../../../presentation */ "../core/lib/presentation/index.js");
 var nodeCache = new Map();
@@ -26135,7 +26140,7 @@ exports.Node = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Node', function (_
                     });
                 });
             }, [link.href, siteNodeContextPath]);
-            return domain_1.Process.fromAsyncState(asyncState);
+            return framework_1.Process.fromAsyncState(asyncState);
         },
         convertModelToLink: function convertModelToLink(_a) {
             var node = _a.node;
@@ -26178,7 +26183,7 @@ exports.Node = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Node', function (_
             } else if (!documentNodeContextPath) {
                 throw createError('Could not load node tree, because documentNodeContextPath could not be determined.');
             } else {
-                return React.createElement(domain_1.Field, { name: "node", initialValue: model === null || model === void 0 ? void 0 : model.node, validate: function validate(value) {
+                return React.createElement(framework_1.Field, { name: "node", initialValue: model === null || model === void 0 ? void 0 : model.node, validate: function validate(value) {
                         if (!value) {
                             return i18n('Sitegeist.Archaeopteryx:LinkTypes.Node:node.validation.required');
                         }
@@ -26300,6 +26305,7 @@ var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@n
 var react_final_form_1 = __webpack_require__(/*! react-final-form */ "../../node_modules/react-final-form/dist/react-final-form.es.js");
 var react_ui_components_1 = __webpack_require__(/*! @neos-project/react-ui-components */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/react-ui-components/index.js");
 var archaeopteryx_neos_bridge_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-neos-bridge */ "../neos-bridge/lib/index.js");
+var framework_1 = __webpack_require__(/*! ../../../framework */ "../core/lib/framework/index.js");
 var domain_1 = __webpack_require__(/*! ../../../domain */ "../core/lib/domain/index.js");
 var presentation_1 = __webpack_require__(/*! ../../../presentation */ "../core/lib/presentation/index.js");
 exports.Web = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Web', function (_a) {
@@ -26317,12 +26323,12 @@ exports.Web = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Web', function (_a)
                 var _a = __read(matches, 3),
                     protocol = _a[1],
                     urlWithoutProtocol = _a[2];
-                return domain_1.Process.success({
+                return framework_1.Process.success({
                     protocol: protocol,
                     urlWithoutProtocol: urlWithoutProtocol
                 });
             }
-            return domain_1.Process.error(createError("Cannot handle href \"" + link.href + "\"."));
+            return framework_1.Process.error(createError("Cannot handle href \"" + link.href + "\"."));
         },
         convertModelToLink: function convertModelToLink(model) {
             return {
@@ -26343,7 +26349,7 @@ exports.Web = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Web', function (_a)
             var i18n = archaeopteryx_neos_bridge_1.useI18n();
             var form = react_final_form_1.useForm();
             var prefix = "linkTypeProps.Sitegeist_Archaeopteryx:Web";
-            return React.createElement("div", null, React.createElement("label", { htmlFor: "linkTypeProps.Sitegeist_Archaeopteryx:Web.urlWithoutProtocol" }, i18n('Sitegeist.Archaeopteryx:LinkTypes.Web:label.link'), ":"), React.createElement("div", { style: { display: 'grid', gridTemplateColumns: '160px 1fr', minWidth: '600px' } }, React.createElement(domain_1.Field, { name: "protocol", initialValue: (_b = model === null || model === void 0 ? void 0 : model.protocol) !== null && _b !== void 0 ? _b : 'https', validate: function validate(value) {
+            return React.createElement("div", null, React.createElement("label", { htmlFor: "linkTypeProps.Sitegeist_Archaeopteryx:Web.urlWithoutProtocol" }, i18n('Sitegeist.Archaeopteryx:LinkTypes.Web:label.link'), ":"), React.createElement("div", { style: { display: 'grid', gridTemplateColumns: '160px 1fr', minWidth: '600px' } }, React.createElement(framework_1.Field, { name: "protocol", initialValue: (_b = model === null || model === void 0 ? void 0 : model.protocol) !== null && _b !== void 0 ? _b : 'https', validate: function validate(value) {
                     if (!value) {
                         return i18n('Sitegeist.Archaeopteryx:LinkTypes.Web:protocol.validation.required');
                     }
@@ -26358,7 +26364,7 @@ exports.Web = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Web', function (_a)
                         label: 'HTTP',
                         icon: 'unlock'
                     }] });
-            }), React.createElement(domain_1.Field, { name: "urlWithoutProtocol", format: function format(value) {
+            }), React.createElement(framework_1.Field, { name: "urlWithoutProtocol", format: function format(value) {
                     var matches = value === null || value === void 0 ? void 0 : value.match(/^(https?):\/\/(.*)$/);
                     if (matches) {
                         var _a = __read(matches, 3),
@@ -26744,93 +26750,6 @@ Object.defineProperty(exports, "useEditorTransactions", { enumerable: true, get:
 
 /***/ }),
 
-/***/ "../core/lib/domain/Form/Field.js":
-/*!****************************************!*\
-  !*** ../core/lib/domain/Form/Field.js ***!
-  \****************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var __assign = undefined && undefined.__assign || function () {
-    __assign = Object.assign || function (t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) {
-                if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
-            }
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function get() {
-            return m[k];
-        } });
-} : function (o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-});
-var __setModuleDefault = undefined && undefined.__setModuleDefault || (Object.create ? function (o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-} : function (o, v) {
-    o["default"] = v;
-});
-var __importStar = undefined && undefined.__importStar || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) {
-        if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    }__setModuleDefault(result, mod);
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.FieldGroup = exports.Field = void 0;
-var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
-var react_final_form_1 = __webpack_require__(/*! react-final-form */ "../../node_modules/react-final-form/dist/react-final-form.es.js");
-var FieldGroupContext = React.createContext(null);
-function Field(props) {
-    var groupPrefix = React.useContext(FieldGroupContext);
-    var name = groupPrefix !== null ? groupPrefix + "." + props.name : props.name;
-    return React.createElement(react_final_form_1.Field, __assign({}, props, { name: name }));
-}
-exports.Field = Field;
-;
-var FieldGroup = function FieldGroup(props) {
-    return React.createElement(FieldGroupContext.Provider, { value: props.prefix }, props.children);
-};
-exports.FieldGroup = FieldGroup;
-//# sourceMappingURL=Field.js.map
-
-/***/ }),
-
-/***/ "../core/lib/domain/Form/index.js":
-/*!****************************************!*\
-  !*** ../core/lib/domain/Form/index.js ***!
-  \****************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.FieldGroup = exports.Field = void 0;
-var Field_1 = __webpack_require__(/*! ./Field */ "../core/lib/domain/Form/Field.js");
-Object.defineProperty(exports, "Field", { enumerable: true, get: function get() {
-    return Field_1.Field;
-  } });
-Object.defineProperty(exports, "FieldGroup", { enumerable: true, get: function get() {
-    return Field_1.FieldGroup;
-  } });
-//# sourceMappingURL=index.js.map
-
-/***/ }),
-
 /***/ "../core/lib/domain/Link/LinkType.js":
 /*!*******************************************!*\
   !*** ../core/lib/domain/Link/LinkType.js ***!
@@ -26996,10 +26915,139 @@ Object.defineProperty(exports, "useLinkTypeForHref", { enumerable: true, get: fu
 
 /***/ }),
 
-/***/ "../core/lib/domain/Process/Process.js":
-/*!*********************************************!*\
-  !*** ../core/lib/domain/Process/Process.js ***!
-  \*********************************************/
+/***/ "../core/lib/domain/index.js":
+/*!***********************************!*\
+  !*** ../core/lib/domain/index.js ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.useEditorTransactions = exports.useEditorValue = exports.useEditorState = exports.EditorContext = exports.createEditor = exports.useLinkTypeForHref = exports.useLinkTypes = exports.makeLinkType = void 0;
+var Link_1 = __webpack_require__(/*! ./Link */ "../core/lib/domain/Link/index.js");
+Object.defineProperty(exports, "makeLinkType", { enumerable: true, get: function get() {
+    return Link_1.makeLinkType;
+  } });
+Object.defineProperty(exports, "useLinkTypes", { enumerable: true, get: function get() {
+    return Link_1.useLinkTypes;
+  } });
+Object.defineProperty(exports, "useLinkTypeForHref", { enumerable: true, get: function get() {
+    return Link_1.useLinkTypeForHref;
+  } });
+var Editor_1 = __webpack_require__(/*! ./Editor */ "../core/lib/domain/Editor/index.js");
+Object.defineProperty(exports, "createEditor", { enumerable: true, get: function get() {
+    return Editor_1.createEditor;
+  } });
+Object.defineProperty(exports, "EditorContext", { enumerable: true, get: function get() {
+    return Editor_1.EditorContext;
+  } });
+Object.defineProperty(exports, "useEditorState", { enumerable: true, get: function get() {
+    return Editor_1.useEditorState;
+  } });
+Object.defineProperty(exports, "useEditorValue", { enumerable: true, get: function get() {
+    return Editor_1.useEditorValue;
+  } });
+Object.defineProperty(exports, "useEditorTransactions", { enumerable: true, get: function get() {
+    return Editor_1.useEditorTransactions;
+  } });
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "../core/lib/framework/Form/Field.js":
+/*!*******************************************!*\
+  !*** ../core/lib/framework/Form/Field.js ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __assign = undefined && undefined.__assign || function () {
+    __assign = Object.assign || function (t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) {
+                if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+            }
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function get() {
+            return m[k];
+        } });
+} : function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+var __setModuleDefault = undefined && undefined.__setModuleDefault || (Object.create ? function (o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+} : function (o, v) {
+    o["default"] = v;
+});
+var __importStar = undefined && undefined.__importStar || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) {
+        if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    }__setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.FieldGroup = exports.Field = void 0;
+var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
+var react_final_form_1 = __webpack_require__(/*! react-final-form */ "../../node_modules/react-final-form/dist/react-final-form.es.js");
+var FieldGroupContext = React.createContext(null);
+function Field(props) {
+    var groupPrefix = React.useContext(FieldGroupContext);
+    var name = groupPrefix !== null ? groupPrefix + "." + props.name : props.name;
+    return React.createElement(react_final_form_1.Field, __assign({}, props, { name: name }));
+}
+exports.Field = Field;
+;
+var FieldGroup = function FieldGroup(props) {
+    return React.createElement(FieldGroupContext.Provider, { value: props.prefix }, props.children);
+};
+exports.FieldGroup = FieldGroup;
+//# sourceMappingURL=Field.js.map
+
+/***/ }),
+
+/***/ "../core/lib/framework/Form/index.js":
+/*!*******************************************!*\
+  !*** ../core/lib/framework/Form/index.js ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.FieldGroup = exports.Field = void 0;
+var Field_1 = __webpack_require__(/*! ./Field */ "../core/lib/framework/Form/Field.js");
+Object.defineProperty(exports, "Field", { enumerable: true, get: function get() {
+    return Field_1.Field;
+  } });
+Object.defineProperty(exports, "FieldGroup", { enumerable: true, get: function get() {
+    return Field_1.FieldGroup;
+  } });
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "../core/lib/framework/Process/Process.js":
+/*!************************************************!*\
+  !*** ../core/lib/framework/Process/Process.js ***!
+  \************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -27034,10 +27082,10 @@ exports.fromAsyncState = fromAsyncState;
 
 /***/ }),
 
-/***/ "../core/lib/domain/Process/index.js":
-/*!*******************************************!*\
-  !*** ../core/lib/domain/Process/index.js ***!
-  \*******************************************/
+/***/ "../core/lib/framework/Process/index.js":
+/*!**********************************************!*\
+  !*** ../core/lib/framework/Process/index.js ***!
+  \**********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -27068,15 +27116,15 @@ var __importStar = undefined && undefined.__importStar || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Process = void 0;
-exports.Process = __importStar(__webpack_require__(/*! ./Process */ "../core/lib/domain/Process/Process.js"));
+exports.Process = __importStar(__webpack_require__(/*! ./Process */ "../core/lib/framework/Process/Process.js"));
 //# sourceMappingURL=index.js.map
 
 /***/ }),
 
-/***/ "../core/lib/domain/index.js":
-/*!***********************************!*\
-  !*** ../core/lib/domain/index.js ***!
-  \***********************************/
+/***/ "../core/lib/framework/index.js":
+/*!**************************************!*\
+  !*** ../core/lib/framework/index.js ***!
+  \**************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -27084,38 +27132,12 @@ exports.Process = __importStar(__webpack_require__(/*! ./Process */ "../core/lib
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.FieldGroup = exports.Field = exports.Process = exports.useEditorTransactions = exports.useEditorValue = exports.useEditorState = exports.EditorContext = exports.createEditor = exports.useLinkTypeForHref = exports.useLinkTypes = exports.makeLinkType = void 0;
-var Link_1 = __webpack_require__(/*! ./Link */ "../core/lib/domain/Link/index.js");
-Object.defineProperty(exports, "makeLinkType", { enumerable: true, get: function get() {
-    return Link_1.makeLinkType;
-  } });
-Object.defineProperty(exports, "useLinkTypes", { enumerable: true, get: function get() {
-    return Link_1.useLinkTypes;
-  } });
-Object.defineProperty(exports, "useLinkTypeForHref", { enumerable: true, get: function get() {
-    return Link_1.useLinkTypeForHref;
-  } });
-var Editor_1 = __webpack_require__(/*! ./Editor */ "../core/lib/domain/Editor/index.js");
-Object.defineProperty(exports, "createEditor", { enumerable: true, get: function get() {
-    return Editor_1.createEditor;
-  } });
-Object.defineProperty(exports, "EditorContext", { enumerable: true, get: function get() {
-    return Editor_1.EditorContext;
-  } });
-Object.defineProperty(exports, "useEditorState", { enumerable: true, get: function get() {
-    return Editor_1.useEditorState;
-  } });
-Object.defineProperty(exports, "useEditorValue", { enumerable: true, get: function get() {
-    return Editor_1.useEditorValue;
-  } });
-Object.defineProperty(exports, "useEditorTransactions", { enumerable: true, get: function get() {
-    return Editor_1.useEditorTransactions;
-  } });
-var Process_1 = __webpack_require__(/*! ./Process */ "../core/lib/domain/Process/index.js");
+exports.FieldGroup = exports.Field = exports.Process = void 0;
+var Process_1 = __webpack_require__(/*! ./Process */ "../core/lib/framework/Process/index.js");
 Object.defineProperty(exports, "Process", { enumerable: true, get: function get() {
     return Process_1.Process;
   } });
-var Form_1 = __webpack_require__(/*! ./Form */ "../core/lib/domain/Form/index.js");
+var Form_1 = __webpack_require__(/*! ./Form */ "../core/lib/framework/Form/index.js");
 Object.defineProperty(exports, "Field", { enumerable: true, get: function get() {
     return Form_1.Field;
   } });
