@@ -91,7 +91,6 @@ export const Node = makeLinkType<{
     },
 
     Editor: ({model, options}) => {
-        console.log('LinkType Node :: options', options);
         const i18n = useI18n();
         const siteNodeContextPath = useSiteNodeContextPath();
         const documentNodeContextPath = useDocumentNodeContextPath();

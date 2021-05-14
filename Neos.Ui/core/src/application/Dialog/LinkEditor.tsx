@@ -42,7 +42,7 @@ const LinkEditorWithoutValue: React.FC<{
         <FieldGroup prefix={prefix}>
             <Editor
                 model={null}
-                options={editorOptions[props.linkType.id] as any ?? {}}
+                options={editorOptions.linkTypes?.[props.linkType.id] as any ?? {}}
                 link={null}
             />
         </FieldGroup>
@@ -64,7 +64,7 @@ const LinkEditorWithValue: React.FC<{
         return (
             <LoadingEditor
                 link={props.link ?? undefined}
-                options={editorOptions[props.linkType.id] as any ?? {}}
+                options={editorOptions.linkTypes?.[props.linkType.id] as any ?? {}}
             />
         );
     } else {
@@ -72,7 +72,7 @@ const LinkEditorWithValue: React.FC<{
             <FieldGroup prefix={`linkTypeProps.${props.linkType.id.split('.').join('_')}`}>
                 <Editor
                     model={model}
-                    options={editorOptions[props.linkType.id] as any ?? {}}
+                    options={editorOptions.linkTypes?.[props.linkType.id] as any ?? {}}
                     link={props.link}
                 />
             </FieldGroup>

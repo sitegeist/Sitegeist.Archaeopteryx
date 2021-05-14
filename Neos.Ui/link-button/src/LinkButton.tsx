@@ -13,6 +13,11 @@ interface Props {
             relNofollow?: boolean
             targetBlank?: boolean
             startingPoint?: string
+            'Sitegeist.Archaeopteryx'?: {
+                linkTypes?: {
+                    [key: string]: object
+                }
+            }
         }
     }
     formattingUnderCursor: {
@@ -27,6 +32,22 @@ interface Props {
 export const LinkButton: React.FC<Props> = props => {
     const i18n = useI18n();
     const tx = useEditorTransactions();
+    const editorOptions = {
+        ...props.inlineEditorOptions?.linking?.['Sitegeist.Archaeopteryx'],
+        linkTypes: {
+            ...props.inlineEditorOptions?.linking?.['Sitegeist.Archaeopteryx']?.linkTypes
+        }
+    };
+
+    if (props.inlineEditorOptions?.linking?.startingPoint) {
+        editorOptions.linkTypes['Sitegeist.Archaeopteryx:Node'] = {
+            ...editorOptions.linkTypes['Sitegeist.Archaeopteryx:Node'],
+            startingPoint:
+                (editorOptions.linkTypes['Sitegeist.Archaeopteryx:Node'] as any).startingPoint
+                ?? props.inlineEditorOptions.linking.startingPoint
+        };
+    }
+
     const handleLinkButtonClick = React.useCallback(async () => {
         const link = (() => {
             if (props.formattingUnderCursor.link) {
@@ -45,7 +66,7 @@ export const LinkButton: React.FC<Props> = props => {
             return null;
         })();
 
-        const result = await tx.editLink(link, true);
+        const result = await tx.editLink(link, true, editorOptions);
 
         if (result.change) {
             if (result.value === null) {
@@ -68,7 +89,7 @@ export const LinkButton: React.FC<Props> = props => {
             props.executeCommand('undo', undefined, true);
             props.executeCommand('redo', undefined, true);
         }
-    }, [props.executeCommand, props.formattingUnderCursor.link, tx]);
+    }, [props.executeCommand, props.formattingUnderCursor.link, tx, editorOptions]);
 
     return (
         <IconButton

@@ -25332,10 +25332,10 @@ var DialogWithEmptyValue = function DialogWithEmptyValue() {
         return React.createElement(presentation_1.Tabs, { lazy: true, from: linkTypes, activeItemKey: input.value, getKey: function getKey(linkType) {
                 return linkType.id;
             }, renderHeader: function renderHeader(_a) {
-                var _b;
+                var _b, _c;
                 var id = _a.id,
                     TabHeader = _a.TabHeader;
-                return React.createElement(TabHeader, { options: (_b = editorOptions[id]) !== null && _b !== void 0 ? _b : {} });
+                return React.createElement(TabHeader, { options: (_c = (_b = editorOptions.linkTypes) === null || _b === void 0 ? void 0 : _b[id]) !== null && _c !== void 0 ? _c : {} });
             }, renderPanel: function renderPanel(linkType) {
                 return React.createElement("div", { style: { display: 'grid', gap: '16px' } }, React.createElement(LinkEditor_1.LinkEditor, { key: linkType.id, link: null, linkType: linkType }), enableOptions && linkType.enableLinkOptionsWhenPossible ? React.createElement(Settings_1.Settings, null) : null);
             }, onSwitchTab: input.onChange });
@@ -25353,21 +25353,20 @@ var DialogWithValue = function DialogWithValue(props) {
     var Preview = linkType.Preview;
     var state = form.getState();
     var model = state.valid ? (_a = state.values.linkTypeProps) === null || _a === void 0 ? void 0 : _a[linkType.id.split('.').join('_')] : result;
-    console.log(editorOptions);
     return React.createElement(domain_1.Field, { name: "linkTypeId", initialValue: linkType.id }, function () {
         return React.createElement(presentation_1.Tabs, { lazy: true, from: [linkType], activeItemKey: linkType.id, getKey: function getKey(linkType) {
                 return linkType.id;
             }, renderHeader: function renderHeader(_a) {
-                var _b;
+                var _b, _c;
                 var id = _a.id,
                     TabHeader = _a.TabHeader;
-                return React.createElement(TabHeader, { options: (_b = editorOptions[id]) !== null && _b !== void 0 ? _b : {} });
+                return React.createElement(TabHeader, { options: (_c = (_b = editorOptions.linkTypes) === null || _b === void 0 ? void 0 : _b[id]) !== null && _c !== void 0 ? _c : {} });
             }, renderPanel: function renderPanel(linkType) {
-                var _a;
+                var _a, _b;
                 return React.createElement("div", { style: { display: 'grid', gap: '16px' } }, model ? React.createElement(presentation_1.Deletable, { onDelete: function onDelete() {
                         unset();
                         form.change('linkTypeProps', null);
-                    } }, React.createElement(Preview, { model: model, options: (_a = editorOptions[linkType.id]) !== null && _a !== void 0 ? _a : {}, link: props.value })) : null, React.createElement(LinkEditor_1.LinkEditor, { key: linkType.id, link: props.value, linkType: linkType }), enableOptions && linkType.enableLinkOptionsWhenPossible ? React.createElement(Settings_1.Settings, { initialValue: props.value.options }) : null);
+                    } }, React.createElement(Preview, { model: model, options: (_b = (_a = editorOptions.linkTypes) === null || _a === void 0 ? void 0 : _a[linkType.id]) !== null && _b !== void 0 ? _b : {}, link: props.value })) : null, React.createElement(LinkEditor_1.LinkEditor, { key: linkType.id, link: props.value, linkType: linkType }), enableOptions && linkType.enableLinkOptionsWhenPossible ? React.createElement(Settings_1.Settings, { initialValue: props.value.options }) : null);
             } });
     });
 };
@@ -25427,29 +25426,29 @@ var LinkEditor = function LinkEditor(props) {
 };
 exports.LinkEditor = LinkEditor;
 var LinkEditorWithoutValue = function LinkEditorWithoutValue(props) {
-    var _a;
+    var _a, _b;
     var editorOptions = domain_1.useEditorState().editorOptions;
     var Editor = props.linkType.Editor;
     var prefix = "linkTypeProps." + props.linkType.id.split('.').join('_');
-    return React.createElement(domain_1.FieldGroup, { prefix: prefix }, React.createElement(Editor, { model: null, options: (_a = editorOptions[props.linkType.id]) !== null && _a !== void 0 ? _a : {}, link: null }));
+    return React.createElement(domain_1.FieldGroup, { prefix: prefix }, React.createElement(Editor, { model: null, options: (_b = (_a = editorOptions.linkTypes) === null || _a === void 0 ? void 0 : _a[props.linkType.id]) !== null && _b !== void 0 ? _b : {}, link: null }));
 };
 var LinkEditorWithValue = function LinkEditorWithValue(props) {
-    var _a, _b, _c;
+    var _a, _b, _c, _d, _e;
     var editorOptions = domain_1.useEditorState().editorOptions;
-    var _d = props.linkType.useResolvedModel(props.link),
-        busy = _d.busy,
-        error = _d.error,
-        result = _d.result;
+    var _f = props.linkType.useResolvedModel(props.link),
+        busy = _f.busy,
+        error = _f.error,
+        result = _f.result;
     var model = useLastNonNull(result);
-    var _e = props.linkType,
-        Editor = _e.Editor,
-        LoadingEditor = _e.LoadingEditor;
+    var _g = props.linkType,
+        Editor = _g.Editor,
+        LoadingEditor = _g.LoadingEditor;
     if (error) {
         throw error;
     } else if (busy && !model) {
-        return React.createElement(LoadingEditor, { link: (_a = props.link) !== null && _a !== void 0 ? _a : undefined, options: (_b = editorOptions[props.linkType.id]) !== null && _b !== void 0 ? _b : {} });
+        return React.createElement(LoadingEditor, { link: (_a = props.link) !== null && _a !== void 0 ? _a : undefined, options: (_c = (_b = editorOptions.linkTypes) === null || _b === void 0 ? void 0 : _b[props.linkType.id]) !== null && _c !== void 0 ? _c : {} });
     } else {
-        return React.createElement(domain_1.FieldGroup, { prefix: "linkTypeProps." + props.linkType.id.split('.').join('_') }, React.createElement(Editor, { model: model, options: (_c = editorOptions[props.linkType.id]) !== null && _c !== void 0 ? _c : {}, link: props.link }));
+        return React.createElement(domain_1.FieldGroup, { prefix: "linkTypeProps." + props.linkType.id.split('.').join('_') }, React.createElement(Editor, { model: model, options: (_e = (_d = editorOptions.linkTypes) === null || _d === void 0 ? void 0 : _d[props.linkType.id]) !== null && _e !== void 0 ? _e : {}, link: props.link }));
     }
 };
 //# sourceMappingURL=LinkEditor.js.map
@@ -26147,7 +26146,6 @@ exports.Node = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Node', function (_
             var _b, _c;
             var model = _a.model,
                 options = _a.options;
-            console.log('LinkType Node :: options', options);
             var i18n = archaeopteryx_neos_bridge_1.useI18n();
             var siteNodeContextPath = archaeopteryx_neos_bridge_1.useSiteNodeContextPath();
             var documentNodeContextPath = archaeopteryx_neos_bridge_1.useDocumentNodeContextPath();
@@ -26575,7 +26573,8 @@ function createEditor() {
     var dispatch = function dispatch(action) {
         return actions$.next(action);
     };
-    var state$ = actions$.pipe(operators_1.scan(editorReducer, initialState), operators_1.shareReplay(1));
+    var state$ = new rxjs_1.BehaviorSubject(initialState);
+    actions$.pipe(operators_1.scan(editorReducer, initialState), operators_1.shareReplay(1)).subscribe(state$);
     var open = function open(value, enableOptions, editorOptions) {
         if (enableOptions === void 0) {
             enableOptions = false;
@@ -26630,18 +26629,16 @@ function createEditor() {
 exports.createEditor = createEditor;
 exports.EditorContext = React.createContext(createEditor());
 function useEditorState() {
-    var _a = React.useContext(exports.EditorContext),
-        state$ = _a.state$,
-        initialState = _a.initialState;
-    var _b = __read(React.useState(initialState), 2),
-        state = _b[0],
-        setState = _b[1];
+    var state$ = React.useContext(exports.EditorContext).state$;
+    var _a = __read(React.useState(state$.getValue()), 2),
+        state = _a[0],
+        setState = _a[1];
     React.useEffect(function () {
         var subscription = state$.subscribe(setState);
         return function () {
             return subscription.unsubscribe();
         };
-    }, [state$, initialState]);
+    }, [state$]);
     return state;
 }
 exports.useEditorState = useEditorState;
@@ -29107,15 +29104,15 @@ var InspectorEditor = function InspectorEditor(props) {
     var editLink = React.useCallback(function () {
         return __awaiter(void 0, void 0, void 0, function () {
             var result;
-            var _a, _b, _c;
-            return __generator(this, function (_d) {
-                switch (_d.label) {
+            var _a, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0:
-                        return [4, tx.editLink(value === undefined ? null : { href: value }, false, (_b = (_a = props.options) === null || _a === void 0 ? void 0 : _a.linkTypes) !== null && _b !== void 0 ? _b : {})];
+                        return [4, tx.editLink(value === undefined ? null : { href: value }, false, (_a = props.options) !== null && _a !== void 0 ? _a : {})];
                     case 1:
-                        result = _d.sent();
+                        result = _c.sent();
                         if (result.change) {
-                            props.commit((_c = result.value) === null || _c === void 0 ? void 0 : _c.href);
+                            props.commit((_b = result.value) === null || _b === void 0 ? void 0 : _b.href);
                         }
                         return [2];
                 }
@@ -29225,6 +29222,18 @@ exports.registerInspectorEditor = registerInspectorEditor;
 "use strict";
 
 
+var __assign = undefined && undefined.__assign || function () {
+    __assign = Object.assign || function (t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) {
+                if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+            }
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     Object.defineProperty(o, k2, { enumerable: true, get: function get() {
@@ -29359,8 +29368,13 @@ var react_ui_components_1 = __webpack_require__(/*! @neos-project/react-ui-compo
 var archaeopteryx_core_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-core */ "../core/lib/index.js");
 var archaeopteryx_neos_bridge_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-neos-bridge */ "../neos-bridge/lib/index.js");
 var LinkButton = function LinkButton(props) {
+    var _a, _b, _c, _d, _e, _f, _g, _h;
     var i18n = archaeopteryx_neos_bridge_1.useI18n();
     var tx = archaeopteryx_core_1.useEditorTransactions();
+    var editorOptions = __assign(__assign({}, (_b = (_a = props.inlineEditorOptions) === null || _a === void 0 ? void 0 : _a.linking) === null || _b === void 0 ? void 0 : _b['Sitegeist.Archaeopteryx']), { linkTypes: __assign({}, (_e = (_d = (_c = props.inlineEditorOptions) === null || _c === void 0 ? void 0 : _c.linking) === null || _d === void 0 ? void 0 : _d['Sitegeist.Archaeopteryx']) === null || _e === void 0 ? void 0 : _e.linkTypes) });
+    if ((_g = (_f = props.inlineEditorOptions) === null || _f === void 0 ? void 0 : _f.linking) === null || _g === void 0 ? void 0 : _g.startingPoint) {
+        editorOptions.linkTypes['Sitegeist.Archaeopteryx:Node'] = __assign(__assign({}, editorOptions.linkTypes['Sitegeist.Archaeopteryx:Node']), { startingPoint: (_h = editorOptions.linkTypes['Sitegeist.Archaeopteryx:Node'].startingPoint) !== null && _h !== void 0 ? _h : props.inlineEditorOptions.linking.startingPoint });
+    }
     var handleLinkButtonClick = React.useCallback(function () {
         return __awaiter(void 0, void 0, void 0, function () {
             var link, result;
@@ -29385,7 +29399,7 @@ var LinkButton = function LinkButton(props) {
                             }
                             return null;
                         }();
-                        return [4, tx.editLink(link, true)];
+                        return [4, tx.editLink(link, true, editorOptions)];
                     case 1:
                         result = _h.sent();
                         if (result.change) {
@@ -29412,7 +29426,7 @@ var LinkButton = function LinkButton(props) {
                 }
             });
         });
-    }, [props.executeCommand, props.formattingUnderCursor.link, tx]);
+    }, [props.executeCommand, props.formattingUnderCursor.link, tx, editorOptions]);
     return React.createElement(react_ui_components_1.IconButton, { title: i18n('Sitegeist.Archaeopteryx:Main:linkButton.title'), isActive: Boolean(props.formattingUnderCursor.link), icon: Boolean(props.formattingUnderCursor.link) ? 'unlink' : 'link', onClick: handleLinkButtonClick });
 };
 exports.LinkButton = LinkButton;

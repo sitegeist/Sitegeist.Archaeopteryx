@@ -16,7 +16,9 @@ interface Props {
     id: string
     label: string
     editor: string
-    options: any
+    options: {
+        linkTypes?: Record<string, unknown>
+    }
     helpMessage: string
     helpThumbnail: string
     highlight: boolean
@@ -36,7 +38,7 @@ export const InspectorEditor: React.FC<Props> = props => {
         const result = await tx.editLink(
             value === undefined ? null : {href: value},
             false,
-            props.options?.linkTypes ?? {}
+            props.options ?? {}
         );
 
         if (result.change) {

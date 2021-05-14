@@ -90,7 +90,7 @@ const DialogWithEmptyValue: React.FC = () => {
                 getKey={linkType => linkType.id}
                 renderHeader={({id, TabHeader}) => (
                     <TabHeader
-                        options={editorOptions[id] as any ?? {}}
+                        options={editorOptions.linkTypes?.[id] as any ?? {}}
                     />
                 )}
                 renderPanel={linkType => (
@@ -126,8 +126,6 @@ const DialogWithValue: React.FC<{
         ? state.values.linkTypeProps?.[linkType.id.split('.').join('_')]
         : result;
 
-    console.log(editorOptions);
-
     return (
         <Field name="linkTypeId" initialValue={linkType.id}>{() => (
             <Tabs
@@ -137,7 +135,7 @@ const DialogWithValue: React.FC<{
                 getKey={linkType => linkType.id}
                 renderHeader={({id, TabHeader}) => (
                     <TabHeader
-                        options={editorOptions[id] as any ?? {}}
+                        options={editorOptions.linkTypes?.[id] as any ?? {}}
                     />
                 )}
                 renderPanel={linkType => (
@@ -151,7 +149,7 @@ const DialogWithValue: React.FC<{
                             >
                                 <Preview
                                     model={model}
-                                    options={editorOptions[linkType.id] as any ?? {}}
+                                    options={editorOptions.linkTypes?.[linkType.id] as any ?? {}}
                                     link={props.value}
                                 />
                             </Deletable>

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {ActionType, getType} from 'typesafe-actions';
-import {Subject} from 'rxjs';
+import {BehaviorSubject, Subject} from 'rxjs';
 import {scan, shareReplay} from 'rxjs/operators';
 
 import {ILink} from '../Link';
@@ -8,7 +8,9 @@ import * as actions from './EditorAction';
 
 export interface IEditorState {
     enableOptions: boolean
-    editorOptions: Record<string, unknown>
+    editorOptions: {
+        linkTypes?: Record<string, unknown>
+    }
     isOpen: boolean
     value: {
         persistent: null | ILink
@@ -111,10 +113,12 @@ export function editorReducer(
 export function createEditor() {
     const actions$ = new Subject<ActionType<typeof actions>>();
     const dispatch = (action: ActionType<typeof actions>) => actions$.next(action);
-    const state$ = actions$.pipe(
+    const state$ = new BehaviorSubject(initialState);
+
+    actions$.pipe(
         scan(editorReducer, initialState),
         shareReplay(1)
-    );
+    ).subscribe(state$);
 
     const open = (
         value: null | ILink,
@@ -161,13 +165,13 @@ export type IEditor = ReturnType<typeof createEditor>;
 export const EditorContext = React.createContext(createEditor());
 
 export function useEditorState() {
-    const {state$, initialState} = React.useContext(EditorContext);
-    const [state, setState] = React.useState(initialState);
+    const {state$} = React.useContext(EditorContext);
+    const [state, setState] = React.useState(state$.getValue());
 
     React.useEffect(() => {
         const subscription = state$.subscribe(setState);
         return () => subscription.unsubscribe();
-    }, [state$, initialState]);
+    }, [state$]);
 
     return state;
 }
