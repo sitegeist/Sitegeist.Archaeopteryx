@@ -10,7 +10,8 @@ import {
     useConfiguration,
     useNodeSummary,
     useNodeType,
-    useI18n
+    useI18n,
+    useSelector
 } from '@sitegeist/archaeopteryx-neos-bridge';
 import {NodeTree} from '@sitegeist/archaeopteryx-custom-node-tree';
 
@@ -96,6 +97,8 @@ export const Node = makeLinkType<{
         const documentNodeContextPath = useDocumentNodeContextPath();
         const baseNodeTypeName = useConfiguration(c => c.nodeTree?.presets?.default?.baseNodeType) ?? NodeTypeName('Neos.Neos:Document');
         const loadingDepth = useConfiguration(c => c.nodeTree?.loadingDepth) ?? 4;
+        const initialSearchTerm = useSelector(state => state.ui?.pageTree?.query) ?? '';
+        const initialNodeTypeFilter = useSelector(state => state.ui?.pageTree?.filterNodeType) ?? '';
 
         if (!siteNodeContextPath) {
             throw createError('Could not load node tree, because siteNodeContextPath could not be determined.');
@@ -127,6 +130,8 @@ export const Node = makeLinkType<{
                             enableSearch: true,
                             enableNodeTypeFilter: true
                         }}
+                        initialSearchTerm={initialSearchTerm}
+                        initialNodeTypeFilter={initialNodeTypeFilter}
                         onSelect={node =>{
                             const cacheIdentifier = `${node.identifier}@${siteNodeContextPath.context}`;
                             nodeCache.set(cacheIdentifier, node);

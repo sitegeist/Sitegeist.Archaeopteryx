@@ -52,13 +52,11 @@ export const NodeTypeFilter: React.FC<Props> = props => {
     }, [presets, nodeTypesRegistry]);
 
     React.useEffect(() => {
-        if (nodeTypesRegistry) {
-            filterNodesByNodeTypeInNodeTree(
-                {state: props.state, dispatch: props.dispatch},
-                nodeTypesRegistry,
-                value ? NodeTypeName(value) : null
-            )
-        }
+        filterNodesByNodeTypeInNodeTree(
+            {state: props.state, dispatch: props.dispatch},
+            nodeTypesRegistry,
+            value ? NodeTypeName(value) : null
+        );
     }, [value, nodeTypesRegistry]);
 
     return (

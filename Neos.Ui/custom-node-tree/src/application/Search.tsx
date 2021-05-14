@@ -31,13 +31,11 @@ export const Search: React.FC<Props> = props => {
 
     useDebounce(() => {
         if (componentWasInitializedRef.current && !valueWasClearedRef.current) {
-            if (nodeTypesRegistry) {
-                searchForNodesInNodeTree(
-                    {state: props.state, dispatch: props.dispatch},
-                    nodeTypesRegistry,
-                    value || null
-                );
-            }
+            searchForNodesInNodeTree(
+                {state: props.state, dispatch: props.dispatch},
+                nodeTypesRegistry,
+                value || null
+            );
         } else {
             componentWasInitializedRef.current = true;
             valueWasClearedRef.current = false;

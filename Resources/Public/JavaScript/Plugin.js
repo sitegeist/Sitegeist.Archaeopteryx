@@ -26143,7 +26143,7 @@ exports.Node = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Node', function (_
             return React.createElement(presentation_1.IconCard, { icon: (_d = (_c = nodeType === null || nodeType === void 0 ? void 0 : nodeType.ui) === null || _c === void 0 ? void 0 : _c.icon) !== null && _d !== void 0 ? _d : 'square', title: (_f = (_e = nodeSummary.value) === null || _e === void 0 ? void 0 : _e.label) !== null && _f !== void 0 ? _f : node.label, subTitle: (_h = (_g = nodeSummary.value) === null || _g === void 0 ? void 0 : _g.breadcrumb) !== null && _h !== void 0 ? _h : "node://" + node.identifier });
         },
         Editor: function Editor(_a) {
-            var _b, _c;
+            var _b, _c, _d, _e;
             var model = _a.model,
                 options = _a.options;
             var i18n = archaeopteryx_neos_bridge_1.useI18n();
@@ -26155,6 +26155,12 @@ exports.Node = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Node', function (_
             var loadingDepth = (_c = archaeopteryx_neos_bridge_1.useConfiguration(function (c) {
                 var _a;return (_a = c.nodeTree) === null || _a === void 0 ? void 0 : _a.loadingDepth;
             })) !== null && _c !== void 0 ? _c : 4;
+            var initialSearchTerm = (_d = archaeopteryx_neos_bridge_1.useSelector(function (state) {
+                var _a, _b;return (_b = (_a = state.ui) === null || _a === void 0 ? void 0 : _a.pageTree) === null || _b === void 0 ? void 0 : _b.query;
+            })) !== null && _d !== void 0 ? _d : '';
+            var initialNodeTypeFilter = (_e = archaeopteryx_neos_bridge_1.useSelector(function (state) {
+                var _a, _b;return (_b = (_a = state.ui) === null || _a === void 0 ? void 0 : _a.pageTree) === null || _b === void 0 ? void 0 : _b.filterNodeType;
+            })) !== null && _e !== void 0 ? _e : '';
             if (!siteNodeContextPath) {
                 throw createError('Could not load node tree, because siteNodeContextPath could not be determined.');
             } else if (!documentNodeContextPath) {
@@ -26176,7 +26182,7 @@ exports.Node = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Node', function (_
                         }, options: {
                             enableSearch: true,
                             enableNodeTypeFilter: true
-                        }, onSelect: function onSelect(node) {
+                        }, initialSearchTerm: initialSearchTerm, initialNodeTypeFilter: initialNodeTypeFilter, onSelect: function onSelect(node) {
                             var cacheIdentifier = node.identifier + "@" + siteNodeContextPath.context;
                             nodeCache.set(cacheIdentifier, node);
                             input.onChange(node);
@@ -27887,34 +27893,46 @@ function useCanBeLoadedFromUiState(configuration) {
     return hasSelectedNode && siteNodeContextPath && configuration.rootNodeContextPath.equals(siteNodeContextPath) && documentNodeContextPath && configuration.documentNodeContextPath.equals(documentNodeContextPath) && configuration.baseNodeTypeName === baseNodeTypeName && configuration.loadingDepth === loadingDepth;
 }
 var NodeTree = function NodeTree(props) {
-    var _a, _b;
+    var _a, _b, _c, _d;
     var neos = archaeopteryx_neos_bridge_1.useNeos();
     var nodeTypesRegistry = archaeopteryx_neos_bridge_1.useNodeTypesRegistry();
-    var _c = __read(React.useReducer(domain_1.nodeTreeReducer, domain_1.initialNodeTreeState), 2),
-        state = _c[0],
-        dispatch = _c[1];
+    var _e = __read(React.useReducer(domain_1.nodeTreeReducer, domain_1.initialNodeTreeState), 2),
+        state = _e[0],
+        dispatch = _e[1];
+    var stateRef = React.useRef(state);
+    stateRef.current = state;
     var canbeLoadedFromUiState = useCanBeLoadedFromUiState(props.configuration);
     var initialize = react_use_1.useAsync(function () {
         return __awaiter(void 0, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
                         if (!canbeLoadedFromUiState) return [3, 2];
                         return [4, domain_1.loadNodeTreeFromUiState({ state: state, dispatch: dispatch }, nodeTypesRegistry, neos, props.configuration)];
                     case 1:
-                        _a.sent();
+                        _b.sent();
                         return [3, 4];
                     case 2:
                         return [4, domain_1.loadNodeTree({ state: state, dispatch: dispatch }, nodeTypesRegistry, props.configuration)];
                     case 3:
-                        _a.sent();
-                        _a.label = 4;
+                        _b.sent();
+                        _b.label = 4;
                     case 4:
+                        if (!(props.initialSearchTerm || props.initialNodeTypeFilter)) return [3, 6];
+                        return [4, domain_1.filterNodesInNodeTree({ state: stateRef.current, dispatch: dispatch }, nodeTypesRegistry, {
+                            searchTerm: (_a = props.initialSearchTerm) !== null && _a !== void 0 ? _a : null,
+                            nodeTypeFilter: props.initialNodeTypeFilter ? archaeopteryx_neos_bridge_1.NodeTypeName(props.initialNodeTypeFilter) : null
+                        })];
+                    case 5:
+                        _b.sent();
+                        _b.label = 6;
+                    case 6:
                         return [2];
                 }
             });
         });
-    }, [neos, canbeLoadedFromUiState, props.configuration.baseNodeTypeName, props.configuration.rootNodeContextPath]);
+    }, [neos, canbeLoadedFromUiState, props.configuration.baseNodeTypeName, props.configuration.rootNodeContextPath, props.initialSearchTerm, props.initialNodeTypeFilter]);
     var selectedNode = React.useMemo(function () {
         return props.configuration.selectedNodeContextPath ? domain_1.findNodeByContextPath(state, props.configuration.selectedNodeContextPath) : null;
     }, [props.configuration, state.nodesByContextPath]);
@@ -27938,11 +27956,11 @@ var NodeTree = function NodeTree(props) {
     }
     var search = null;
     if ((_a = props.options) === null || _a === void 0 ? void 0 : _a.enableSearch) {
-        search = React.createElement(Search_1.Search, { state: state, dispatch: dispatch, initialValue: "" });
+        search = React.createElement(Search_1.Search, { state: state, dispatch: dispatch, initialValue: (_b = props.initialSearchTerm) !== null && _b !== void 0 ? _b : '' });
     }
     var nodeTypeFilter = null;
-    if ((_b = props.options) === null || _b === void 0 ? void 0 : _b.enableNodeTypeFilter) {
-        nodeTypeFilter = React.createElement(NodeTypeFilter_1.NodeTypeFilter, { state: state, dispatch: dispatch, initialValue: "" });
+    if ((_c = props.options) === null || _c === void 0 ? void 0 : _c.enableNodeTypeFilter) {
+        nodeTypeFilter = React.createElement(NodeTypeFilter_1.NodeTypeFilter, { state: state, dispatch: dispatch, initialValue: (_d = props.initialNodeTypeFilter) !== null && _d !== void 0 ? _d : '' });
     }
     return React.createElement("div", { style: {
             display: 'grid',
@@ -28153,9 +28171,7 @@ var NodeTypeFilter = function NodeTypeFilter(props) {
         return options;
     }, [presets, nodeTypesRegistry]);
     React.useEffect(function () {
-        if (nodeTypesRegistry) {
-            domain_1.filterNodesByNodeTypeInNodeTree({ state: props.state, dispatch: props.dispatch }, nodeTypesRegistry, value ? archaeopteryx_neos_bridge_1.NodeTypeName(value) : null);
-        }
+        domain_1.filterNodesByNodeTypeInNodeTree({ state: props.state, dispatch: props.dispatch }, nodeTypesRegistry, value ? archaeopteryx_neos_bridge_1.NodeTypeName(value) : null);
     }, [value, nodeTypesRegistry]);
     return React.createElement(react_ui_components_1.SelectBox, { placeholder: i18n('Neos.Neos:Main:filter'), placeholderIcon: 'filter', onValueChange: setValue, allowEmpty: true, value: value, options: searchOptions(filterTerm, options), displaySearchBox: true, searchTerm: filterTerm, onSearchTermChange: setFilterTerm, threshold: 0, noMatchesFoundLabel: i18n('Neos.Neos:Main:noMatchesFound'), searchBoxLeftToTypeLabel: i18n('Neos.Neos:Main:searchBoxLeftToType') });
 };
@@ -28241,9 +28257,7 @@ var Search = function Search(props) {
     }, [setValue, nodeTypesRegistry]);
     react_use_1.useDebounce(function () {
         if (componentWasInitializedRef.current && !valueWasClearedRef.current) {
-            if (nodeTypesRegistry) {
-                domain_1.searchForNodesInNodeTree({ state: props.state, dispatch: props.dispatch }, nodeTypesRegistry, value || null);
-            }
+            domain_1.searchForNodesInNodeTree({ state: props.state, dispatch: props.dispatch }, nodeTypesRegistry, value || null);
         } else {
             componentWasInitializedRef.current = true;
             valueWasClearedRef.current = false;
@@ -30528,7 +30542,7 @@ exports.useI18n = useI18n;
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.useI18n = exports.useNeos = exports.NeosContext = exports.useRoutes = exports.useConfiguration = exports.useGlobalRegistry = void 0;
+exports.useI18n = exports.useSelector = exports.useNeos = exports.NeosContext = exports.useRoutes = exports.useConfiguration = exports.useGlobalRegistry = void 0;
 var GlobalRegistry_1 = __webpack_require__(/*! ./GlobalRegistry */ "../neos-bridge/lib/domain/Extensibility/GlobalRegistry.js");
 Object.defineProperty(exports, "useGlobalRegistry", { enumerable: true, get: function get() {
     return GlobalRegistry_1.useGlobalRegistry;
@@ -30547,6 +30561,10 @@ Object.defineProperty(exports, "NeosContext", { enumerable: true, get: function 
   } });
 Object.defineProperty(exports, "useNeos", { enumerable: true, get: function get() {
     return NeosContext_1.useNeos;
+  } });
+var Store_1 = __webpack_require__(/*! ./Store */ "../neos-bridge/lib/domain/Extensibility/Store.js");
+Object.defineProperty(exports, "useSelector", { enumerable: true, get: function get() {
+    return Store_1.useSelector;
   } });
 var Translation_1 = __webpack_require__(/*! ./Translation */ "../neos-bridge/lib/domain/Extensibility/Translation.js");
 Object.defineProperty(exports, "useI18n", { enumerable: true, get: function get() {
@@ -30706,7 +30724,7 @@ Object.defineProperty(exports, "useAssetSummary", { enumerable: true, get: funct
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.useAssetSummary = exports.useI18n = exports.useRoutes = exports.useConfiguration = exports.useGlobalRegistry = exports.useNeos = exports.NeosContext = exports.useNodeTypesRegistry = exports.useNodeTypes = exports.useNodeType = exports.useHasNode = exports.useNodeSummary = exports.useDocumentNodeContextPath = exports.useSiteNodeContextPath = exports.NodeTypeName = exports.ContextPath = void 0;
+exports.useAssetSummary = exports.useI18n = exports.useSelector = exports.useRoutes = exports.useConfiguration = exports.useGlobalRegistry = exports.useNeos = exports.NeosContext = exports.useNodeTypesRegistry = exports.useNodeTypes = exports.useNodeType = exports.useHasNode = exports.useNodeSummary = exports.useDocumentNodeContextPath = exports.useSiteNodeContextPath = exports.NodeTypeName = exports.ContextPath = void 0;
 var ContentRepository_1 = __webpack_require__(/*! ./ContentRepository */ "../neos-bridge/lib/domain/ContentRepository/index.js");
 Object.defineProperty(exports, "ContextPath", { enumerable: true, get: function get() {
     return ContentRepository_1.ContextPath;
@@ -30751,6 +30769,9 @@ Object.defineProperty(exports, "useConfiguration", { enumerable: true, get: func
 Object.defineProperty(exports, "useRoutes", { enumerable: true, get: function get() {
     return Extensibility_1.useRoutes;
   } });
+Object.defineProperty(exports, "useSelector", { enumerable: true, get: function get() {
+    return Extensibility_1.useSelector;
+  } });
 Object.defineProperty(exports, "useI18n", { enumerable: true, get: function get() {
     return Extensibility_1.useI18n;
   } });
@@ -30773,7 +30794,7 @@ Object.defineProperty(exports, "useAssetSummary", { enumerable: true, get: funct
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.useNeos = exports.useI18n = exports.useRoutes = exports.useConfiguration = exports.useGlobalRegistry = exports.useNodeTypesRegistry = exports.useNodeTypes = exports.useNodeType = exports.useHasNode = exports.useNodeSummary = exports.useAssetSummary = exports.useDocumentNodeContextPath = exports.useSiteNodeContextPath = exports.NodeTypeName = exports.ContextPath = exports.NeosContext = exports.q = void 0;
+exports.useNeos = exports.useI18n = exports.useSelector = exports.useRoutes = exports.useConfiguration = exports.useGlobalRegistry = exports.useNodeTypesRegistry = exports.useNodeTypes = exports.useNodeType = exports.useHasNode = exports.useNodeSummary = exports.useAssetSummary = exports.useDocumentNodeContextPath = exports.useSiteNodeContextPath = exports.NodeTypeName = exports.ContextPath = exports.NeosContext = exports.q = void 0;
 var application_1 = __webpack_require__(/*! ./application */ "../neos-bridge/lib/application/index.js");
 Object.defineProperty(exports, "q", { enumerable: true, get: function get() {
     return application_1.q;
@@ -30820,6 +30841,9 @@ Object.defineProperty(exports, "useConfiguration", { enumerable: true, get: func
   } });
 Object.defineProperty(exports, "useRoutes", { enumerable: true, get: function get() {
     return domain_1.useRoutes;
+  } });
+Object.defineProperty(exports, "useSelector", { enumerable: true, get: function get() {
+    return domain_1.useSelector;
   } });
 Object.defineProperty(exports, "useI18n", { enumerable: true, get: function get() {
     return domain_1.useI18n;

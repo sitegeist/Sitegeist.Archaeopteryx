@@ -18,6 +18,7 @@ export {
     useGlobalRegistry,
     useConfiguration,
     useRoutes,
+    useSelector,
     useI18n
 } from './Extensibility';
 

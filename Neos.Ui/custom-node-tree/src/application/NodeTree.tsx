@@ -14,7 +14,15 @@ import {
     useNeos
 } from '@sitegeist/archaeopteryx-neos-bridge';
 
-import {findNodeByContextPath, initialNodeTreeState, loadNodeTreeFromUiState, loadNodeTree, nodeTreeReducer, toggleNodeInNodeTree} from '../domain';
+import {
+    findNodeByContextPath,
+    initialNodeTreeState,
+    loadNodeTreeFromUiState,
+    loadNodeTree,
+    filterNodesInNodeTree,
+    nodeTreeReducer,
+    toggleNodeInNodeTree
+} from '../domain';
 
 import {NodeTreeNode} from './NodeTreeNode';
 import {Search} from './Search';
@@ -26,6 +34,8 @@ interface Props {
         enableSearch?: boolean
         enableNodeTypeFilter?: boolean
     }
+    initialSearchTerm?: string
+    initialNodeTypeFilter?: string
     onSelect(node: INodePartialForTree): void
 }
 
@@ -61,6 +71,9 @@ export const NodeTree: React.FC<Props> = props => {
         nodeTreeReducer,
         initialNodeTreeState
     );
+    const stateRef = React.useRef(state);
+    stateRef.current = state;
+
     const canbeLoadedFromUiState = useCanBeLoadedFromUiState(props.configuration);
     const initialize = useAsync(
         async () => {
@@ -69,12 +82,21 @@ export const NodeTree: React.FC<Props> = props => {
             } else {
                 await loadNodeTree({state, dispatch}, nodeTypesRegistry, props.configuration);
             }
+
+            if (props.initialSearchTerm || props.initialNodeTypeFilter) {
+                await filterNodesInNodeTree({state: stateRef.current, dispatch}, nodeTypesRegistry, {
+                    searchTerm: props.initialSearchTerm ?? null,
+                    nodeTypeFilter: props.initialNodeTypeFilter ? NodeTypeName(props.initialNodeTypeFilter) : null
+                });
+            }
         },
         [
             neos,
             canbeLoadedFromUiState,
             props.configuration.baseNodeTypeName,
-            props.configuration.rootNodeContextPath
+            props.configuration.rootNodeContextPath,
+            props.initialSearchTerm,
+            props.initialNodeTypeFilter
         ]
     );
     const selectedNode = React.useMemo(
@@ -122,7 +144,7 @@ export const NodeTree: React.FC<Props> = props => {
             <Search
                 state={state}
                 dispatch={dispatch}
-                initialValue=""
+                initialValue={props.initialSearchTerm ?? ''}
             />
         );
     }
@@ -133,7 +155,7 @@ export const NodeTree: React.FC<Props> = props => {
             <NodeTypeFilter
                 state={state}
                 dispatch={dispatch}
-                initialValue=""
+                initialValue={props.initialNodeTypeFilter ?? ''}
             />
         );
     }

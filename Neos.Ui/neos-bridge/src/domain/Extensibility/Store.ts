@@ -12,6 +12,12 @@ export interface IState {
             }
         }
     }
+    ui?: {
+        pageTree?: {
+            query?: string
+            filterNodeType?: string
+        }
+    }
 }
 
 export interface IStore {
