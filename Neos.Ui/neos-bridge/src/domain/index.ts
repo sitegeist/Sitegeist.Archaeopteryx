@@ -1,10 +1,11 @@
-export type {INodePartialForTree, INodeType, INodeTypesRegistry} from './ContentRepository';
+export type {INode, INodePartialForTree, INodeType, INodeTypesRegistry} from './ContentRepository';
 export {
     ContextPath,
     NodeTypeName,
     useSiteNodeContextPath,
     useDocumentNodeContextPath,
     useNodeSummary,
+    useHasNode,
     useNodeType,
     useNodeTypes,
     useNodeTypesRegistry
@@ -13,6 +14,7 @@ export {
 export type {INeosContextProperties, IGlobalRegistry} from './Extensibility'
 export {
     NeosContext,
+    useNeos,
     useGlobalRegistry,
     useConfiguration,
     useRoutes,

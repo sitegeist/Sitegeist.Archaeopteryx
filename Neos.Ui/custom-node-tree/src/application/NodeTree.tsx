@@ -2,22 +2,26 @@ import * as React from 'react';
 import {useAsync} from 'react-use';
 
 import {Tree} from '@neos-project/react-ui-components';
-import {INodePartialForTree, NodeTypeName, ContextPath, useNodeTypesRegistry} from '@sitegeist/archaeopteryx-neos-bridge';
+import {
+    INodePartialForTree,
+    NodeTypeName,
+    ContextPath,
+    useHasNode,
+    useNodeTypesRegistry,
+    useDocumentNodeContextPath,
+    useSiteNodeContextPath,
+    useConfiguration,
+    useNeos
+} from '@sitegeist/archaeopteryx-neos-bridge';
 
-import {findNodeByContextPath, initialNodeTreeState, loadNodeTree, nodeTreeReducer, toggleNodeInNodeTree} from '../domain';
+import {findNodeByContextPath, initialNodeTreeState, loadNodeTreeFromUiState, loadNodeTree, nodeTreeReducer, toggleNodeInNodeTree} from '../domain';
 
 import {NodeTreeNode} from './NodeTreeNode';
 import {Search} from './Search';
 import {NodeTypeFilter} from './NodeTypeFilter';
 
 interface Props {
-    configuration: {
-        rootNodeContextPath: ContextPath,
-        baseNodeTypeName: NodeTypeName,
-        loadingDepth: number,
-        documentNodeContextPath: ContextPath,
-        selectedNodeContextPath?: ContextPath
-    }
+    configuration: Configuration
     options?: {
         enableSearch?: boolean
         enableNodeTypeFilter?: boolean
@@ -25,17 +29,50 @@ interface Props {
     onSelect(node: INodePartialForTree): void
 }
 
+interface Configuration {
+    rootNodeContextPath: ContextPath
+    baseNodeTypeName: NodeTypeName
+    loadingDepth: number
+    documentNodeContextPath: ContextPath
+    selectedNodeContextPath?: ContextPath
+}
+
+function useCanBeLoadedFromUiState(configuration: Configuration) {
+    const siteNodeContextPath = useSiteNodeContextPath();
+    const documentNodeContextPath = useDocumentNodeContextPath();
+    const baseNodeTypeName = useConfiguration(c => c.nodeTree?.presets?.default?.baseNodeType);
+    const loadingDepth = useConfiguration(c => c.nodeTree?.loadingDepth);
+    const hasSelectedNode = useHasNode(configuration.selectedNodeContextPath);
+
+    return hasSelectedNode
+        && siteNodeContextPath
+        && configuration.rootNodeContextPath.equals(siteNodeContextPath)
+        && documentNodeContextPath
+        && configuration.documentNodeContextPath.equals(documentNodeContextPath)
+        && configuration.baseNodeTypeName === baseNodeTypeName
+        && configuration.loadingDepth === loadingDepth
+    ;
+}
+
 export const NodeTree: React.FC<Props> = props => {
+    const neos = useNeos();
     const nodeTypesRegistry = useNodeTypesRegistry();
     const [state, dispatch] = React.useReducer(
         nodeTreeReducer,
         initialNodeTreeState
     );
+    const canbeLoadedFromUiState = useCanBeLoadedFromUiState(props.configuration);
     const initialize = useAsync(
         async () => {
-            await loadNodeTree({state, dispatch}, nodeTypesRegistry, props.configuration);
+            if (canbeLoadedFromUiState) {
+                await loadNodeTreeFromUiState({state, dispatch}, nodeTypesRegistry, neos, props.configuration);
+            } else {
+                await loadNodeTree({state, dispatch}, nodeTypesRegistry, props.configuration);
+            }
         },
         [
+            neos,
+            canbeLoadedFromUiState,
             props.configuration.baseNodeTypeName,
             props.configuration.rootNodeContextPath
         ]

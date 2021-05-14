@@ -3,6 +3,6 @@ export {useConfiguration} from './Configuration';
 export {useRoutes} from './Routes';
 
 export type {INeosContextProperties} from './NeosContext';
-export {NeosContext} from './NeosContext';
+export {NeosContext, useNeos} from './NeosContext';
 
 export {useI18n} from './Translation';

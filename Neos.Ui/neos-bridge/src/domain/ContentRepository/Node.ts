@@ -4,10 +4,10 @@ import {useAsync} from 'react-use';
 import {selectors} from '@neos-project/neos-ui-redux-store';
 
 import {endpoints} from '../Backend';
+import {useSelector} from '../Extensibility/Store';
 
 import {ContextPath} from './ContextPath';
 import {NodeTypeName} from './NodeType';
-import { useSelector } from '../Extensibility/Store';
 
 
 type NodeAggregateIdentifier = Any.Type<string, 'NodeAggregateIdentifier'>;
@@ -66,4 +66,9 @@ export function useNodeSummary(identifier: NodeAggregateIdentifier) {
 
         return null;
     }, [identifier]);
+}
+
+export function useHasNode(contextPath?: ContextPath) {
+    const node: any = useSelector(selectors.CR.Nodes.byContextPathSelector(contextPath?.toString() ?? ''));
+    return Boolean(node);
 }

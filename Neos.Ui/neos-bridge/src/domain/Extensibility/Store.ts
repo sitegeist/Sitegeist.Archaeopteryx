@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {INode} from '../ContentRepository/Node';
 import {useNeos} from './NeosContext';
 
 export interface IState {
@@ -6,6 +7,9 @@ export interface IState {
         nodes?: {
             siteNode?: string
             documentNode?: string
+            byContextPath?: {
+                [key: string]: INode
+            }
         }
     }
 }

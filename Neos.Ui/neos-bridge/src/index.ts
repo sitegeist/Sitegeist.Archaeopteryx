@@ -3,6 +3,7 @@ export {q} from './application';
 export type {
     INeosContextProperties,
     IGlobalRegistry,
+    INode,
     INodePartialForTree,
     INodeType,
     INodeTypesRegistry
@@ -15,11 +16,13 @@ export {
     useDocumentNodeContextPath,
     useAssetSummary,
     useNodeSummary,
+    useHasNode,
     useNodeType,
     useNodeTypes,
     useNodeTypesRegistry,
     useGlobalRegistry,
     useConfiguration,
     useRoutes,
-    useI18n
+    useI18n,
+    useNeos
 } from './domain';

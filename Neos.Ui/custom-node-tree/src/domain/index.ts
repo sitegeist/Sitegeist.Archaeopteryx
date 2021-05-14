@@ -5,6 +5,7 @@ export {
 } from './NodeTreeState';
 
 export {
+    loadNodeTreeFromUiState,
     loadNodeTree,
     toggleNodeInNodeTree,
     filterNodesInNodeTree,

@@ -1,6 +1,6 @@
 import {ActionType} from 'typesafe-actions';
 
-import {q, INodePartialForTree, INodeTypesRegistry, NodeTypeName, ContextPath} from '@sitegeist/archaeopteryx-neos-bridge';
+import {q, INode, INodePartialForTree, INodeTypesRegistry, NodeTypeName, ContextPath, INeosContextProperties} from '@sitegeist/archaeopteryx-neos-bridge';
 
 import * as actions from './NodeTreeAction';
 import {INodeTreeState} from './NodeTreeState';
@@ -9,6 +9,57 @@ import {isNodeFullyLoaded} from './NodeTreeQuery';
 interface Store {
     state: INodeTreeState
     dispatch(action: ActionType<typeof actions>): void
+}
+
+export async function loadNodeTreeFromUiState(
+    {dispatch}: Store,
+    nodeTypesRegistry: INodeTypesRegistry,
+    neos: INeosContextProperties,
+    nodeTreeConfiguration: {
+        rootNodeContextPath: ContextPath,
+        baseNodeTypeName: NodeTypeName,
+        loadingDepth: number,
+        documentNodeContextPath: ContextPath,
+        selectedNodeContextPath?: ContextPath
+    }
+) {
+    const leafNodeContextPath = nodeTreeConfiguration.selectedNodeContextPath
+        ?? nodeTreeConfiguration.documentNodeContextPath;
+    const toggledNodeContextPaths = nodeTreeConfiguration.rootNodeContextPath
+        .getIntermediateContextPaths(leafNodeContextPath);
+    const nodes = Object.values(neos.store.getState().cr?.nodes?.byContextPath ?? {})
+        .map(node => ({
+            ...node,
+            contextPath: ContextPath.fromString(node.contextPath as any),
+            children: node.children.filter(({nodeType: nodeTypeName}) => {
+                return Boolean(nodeTypesRegistry?.isOfType(
+                    nodeTypeName,
+                    nodeTreeConfiguration.baseNodeTypeName
+                ));
+            })
+        })).filter(node => {
+            return node.contextPath && Boolean(nodeTypesRegistry?.isOfType(
+                node.nodeType,
+                nodeTreeConfiguration.baseNodeTypeName
+            ));
+        }) as INode[];
+
+    const rootNode = nodes.find(
+        n => n.contextPath.equals(nodeTreeConfiguration.rootNodeContextPath)
+    );
+    if (!rootNode) {
+        throw new Error(`Could not find root node: ${nodeTreeConfiguration.rootNodeContextPath}`);
+    }
+
+    dispatch(actions.NodesWereLoaded(
+        rootNode,
+        nodeTreeConfiguration.baseNodeTypeName,
+        nodes,
+        nodes.filter(node => false
+            || toggledNodeContextPaths.some(cp => node.contextPath.equals(cp))
+            || node.depth - rootNode.depth < nodeTreeConfiguration.loadingDepth
+        )
+    ));
 }
 
 export async function loadNodeTree(
