@@ -27597,7 +27597,7 @@ var StyledOverlay = styled_components_1.default.div(templateObject_3 || (templat
 var StyledModal = styled_components_1.default.div(templateObject_4 || (templateObject_4 = __makeTemplateObject(["\n    position: absolute;\n    top: 50%;\n    left: 50%;\n    transform: translateX(-50%) translateY(-50%) scale(1);\n    background: #1a1a1a;\n    box-shadow: 0 20px 40px rgba(0, 0, 0, .4);\n    opacity: 1;\n    animation: ", " .5s ease-in-out;\n    border: 2px solid #3f3f3f;\n"], ["\n    position: absolute;\n    top: 50%;\n    left: 50%;\n    transform: translateX(-50%) translateY(-50%) scale(1);\n    background: #1a1a1a;\n    box-shadow: 0 20px 40px rgba(0, 0, 0, .4);\n    opacity: 1;\n    animation: ", " .5s ease-in-out;\n    border: 2px solid #3f3f3f;\n"])), modalAppear);
 var StyledDialogTitle = styled_components_1.default.div(templateObject_5 || (templateObject_5 = __makeTemplateObject(["\n    font-size: 20px;\n    line-height: 1.2;\n    padding: 16px;\n    padding-right: 40px;\n"], ["\n    font-size: 20px;\n    line-height: 1.2;\n    padding: 16px;\n    padding-right: 40px;\n"])));
 var Modal = function Modal(props) {
-    return ReactDOM.createPortal(React.createElement(StyledOverlay, null, React.createElement(StyledModal, null, React.createElement(StyledDialogTitle, null, props.renderTitle()), props.renderBody())), document.body);
+    return ReactDOM.createPortal(React.createElement(StyledOverlay, { "data-ignore_click_outside": "true" }, React.createElement(StyledModal, null, React.createElement(StyledDialogTitle, null, props.renderTitle()), props.renderBody())), document.body);
 };
 exports.Modal = Modal;
 var templateObject_1, templateObject_2, templateObject_3, templateObject_4, templateObject_5;

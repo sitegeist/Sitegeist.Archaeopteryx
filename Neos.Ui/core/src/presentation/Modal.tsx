@@ -49,7 +49,7 @@ export const Modal: React.FC<{
     renderTitle(): React.ReactNode
     renderBody(): React.ReactNode
 }> = props => ReactDOM.createPortal(
-    <StyledOverlay>
+    <StyledOverlay data-ignore_click_outside="true">
         <StyledModal>
             <StyledDialogTitle>
                 {props.renderTitle()}
