@@ -5,4 +5,10 @@ export const Grid = styled.div`
     gap: 16px;
     grid-template-columns: repeat(auto-fill, minmax(max(160px, calc(50% - 8px)), calc(33.3333% - 8px)));
     min-width: 600px;
+
+    ul, li {
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+    }
 `;

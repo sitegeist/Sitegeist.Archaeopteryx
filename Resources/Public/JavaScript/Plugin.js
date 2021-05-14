@@ -1202,6 +1202,26 @@ exports.fetchWithErrorHandling = fetchWithErrorHandling;
 
 /***/ }),
 
+/***/ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/neos-ui-editors/index.js":
+/*!***************************************************************************************************************************************************************************************************************************!*\
+  !*** /home/wbehncke/Workspaces/Neos/neos-contributions/instances/sitegeist-archaeopteryx/sitegeist-archaeopteryx/node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/neos-ui-editors/index.js ***!
+  \***************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _readFromConsumerApi = __webpack_require__(/*! ../../../../dist/readFromConsumerApi */ "../../node_modules/@neos-project/neos-ui-extensibility/dist/readFromConsumerApi.js");
+
+var _readFromConsumerApi2 = _interopRequireDefault(_readFromConsumerApi);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+module.exports = (0, _readFromConsumerApi2.default)('NeosProjectPackages')().NeosUiEditors;
+
+/***/ }),
+
 /***/ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/neos-ui-redux-store/index.js":
 /*!*******************************************************************************************************************************************************************************************************************************!*\
   !*** /home/wbehncke/Workspaces/Neos/neos-contributions/instances/sitegeist-archaeopteryx/sitegeist-archaeopteryx/node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/neos-ui-redux-store/index.js ***!
@@ -25776,18 +25796,6 @@ Object.defineProperty(exports, "Asset", { enumerable: true, get: function get() 
 "use strict";
 
 
-var __assign = undefined && undefined.__assign || function () {
-    __assign = Object.assign || function (t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) {
-                if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
-            }
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     Object.defineProperty(o, k2, { enumerable: true, get: function get() {
@@ -25813,7 +25821,7 @@ var __importStar = undefined && undefined.__importStar || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MailTo = void 0;
 var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
-var react_ui_components_1 = __webpack_require__(/*! @neos-project/react-ui-components */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/react-ui-components/index.js");
+var neos_ui_editors_1 = __webpack_require__(/*! @neos-project/neos-ui-editors */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/neos-ui-editors/index.js");
 var archaeopteryx_neos_bridge_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-neos-bridge */ "../neos-bridge/lib/index.js");
 var domain_1 = __webpack_require__(/*! ../../../domain */ "../core/lib/domain/index.js");
 var presentation_1 = __webpack_require__(/*! ../../../presentation */ "../core/lib/presentation/index.js");
@@ -25874,11 +25882,11 @@ exports.MailTo = domain_1.makeLinkType('Sitegeist.Archaeopteryx:MailTo', functio
                 } }, function (_a) {
                 var input = _a.input,
                     meta = _a.meta;
-                return React.createElement("div", { style: { gridColumn: '1 / -1' } }, React.createElement("label", null, i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:recipient.label'), ":", React.createElement(react_ui_components_1.TextInput, __assign({ type: "text", placeholder: i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:recipient.placeholder') }, input))), meta.error);
+                return React.createElement("div", { style: { gridColumn: '1 / -1' } }, React.createElement(neos_ui_editors_1.EditorEnvelope, { identifier: "Sitegeist-Archaeopteryx-Mailto-" + input.name, label: i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:recipient.label'), editor: 'Neos.Neos/Inspector/Editors/TextFieldEditor', validationErrors: meta.dirty && meta.error ? [meta.error] : [], value: input.value, commit: input.onChange }));
             }), ((_b = options.enabledFields) === null || _b === void 0 ? void 0 : _b.subject) !== false ? React.createElement(domain_1.Field, { name: "subject", initialValue: email === null || email === void 0 ? void 0 : email.subject }, function (_a) {
                 var input = _a.input,
                     meta = _a.meta;
-                return React.createElement("div", { style: { gridColumn: '1 / -1' } }, React.createElement("label", null, i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:subject.label'), ":", React.createElement(react_ui_components_1.TextInput, __assign({ type: "text" }, input))), meta.error);
+                return React.createElement("div", { style: { gridColumn: '1 / -1' } }, React.createElement(neos_ui_editors_1.EditorEnvelope, { identifier: "Sitegeist-Archaeopteryx-Mailto-" + input.name, label: i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:subject.label'), editor: 'Neos.Neos/Inspector/Editors/TextFieldEditor', validationErrors: meta.dirty && meta.error ? [meta.error] : [], value: input.value, commit: input.onChange }));
             }) : null, ((_c = options.enabledFields) === null || _c === void 0 ? void 0 : _c.cc) !== false ? React.createElement(domain_1.Field, { name: "cc", initialValue: email === null || email === void 0 ? void 0 : email.cc, validate: function validate(value) {
                     if (value !== undefined && value !== null) {
                         if (!value.split(',').every(function (value) {
@@ -25890,7 +25898,9 @@ exports.MailTo = domain_1.makeLinkType('Sitegeist.Archaeopteryx:MailTo', functio
                 } }, function (_a) {
                 var input = _a.input,
                     meta = _a.meta;
-                return React.createElement("div", { style: { gridColumn: '1 / -1' } }, React.createElement("label", null, i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:cc.label'), ":", React.createElement(react_ui_components_1.TextInput, __assign({ type: "text", placeholder: i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:cc.placeholder') }, input))), meta.error);
+                return React.createElement("div", { style: { gridColumn: '1 / -1' } }, React.createElement(neos_ui_editors_1.EditorEnvelope, { identifier: "Sitegeist-Archaeopteryx-Mailto-" + input.name, label: i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:cc.label'), editor: 'Neos.Neos/Inspector/Editors/TextFieldEditor', options: {
+                        placeholder: i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:cc.placeholder')
+                    }, validationErrors: meta.dirty && meta.error ? [meta.error] : [], value: input.value, commit: input.onChange }));
             }) : null, ((_d = options.enabledFields) === null || _d === void 0 ? void 0 : _d.bcc) !== false ? React.createElement(domain_1.Field, { name: "bcc", initialValue: email === null || email === void 0 ? void 0 : email.bcc, validate: function validate(value) {
                     if (value !== undefined && value !== null) {
                         if (!value.split(',').every(function (value) {
@@ -25902,11 +25912,13 @@ exports.MailTo = domain_1.makeLinkType('Sitegeist.Archaeopteryx:MailTo', functio
                 } }, function (_a) {
                 var input = _a.input,
                     meta = _a.meta;
-                return React.createElement("div", { style: { gridColumn: '1 / -1' } }, React.createElement("label", null, i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:bcc.label'), ":", React.createElement(react_ui_components_1.TextInput, __assign({ type: "text", placeholder: i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:bcc.placeholder') }, input))), meta.error);
+                return React.createElement("div", { style: { gridColumn: '1 / -1' } }, React.createElement(neos_ui_editors_1.EditorEnvelope, { identifier: "Sitegeist-Archaeopteryx-Mailto-" + input.name, label: i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:bcc.label'), editor: 'Neos.Neos/Inspector/Editors/TextFieldEditor', options: {
+                        placeholder: i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:bcc.placeholder')
+                    }, validationErrors: meta.dirty && meta.error ? [meta.error] : [], value: input.value, commit: input.onChange }));
             }) : null, ((_e = options.enabledFields) === null || _e === void 0 ? void 0 : _e.body) !== false ? React.createElement(domain_1.Field, { name: "body", initialValue: email === null || email === void 0 ? void 0 : email.body }, function (_a) {
                 var input = _a.input,
                     meta = _a.meta;
-                return React.createElement("div", { style: { gridColumn: '1 / -1' } }, React.createElement("label", null, i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:body.label'), ":", React.createElement(react_ui_components_1.TextArea, __assign({}, input))), meta.error);
+                return React.createElement("div", { style: { gridColumn: '1 / -1' } }, React.createElement(neos_ui_editors_1.EditorEnvelope, { identifier: "Sitegeist-Archaeopteryx-Mailto-" + input.name, label: i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:body.label'), editor: 'Neos.Neos/Inspector/Editors/TextAreaEditor', validationErrors: meta.dirty && meta.error ? [meta.error] : [], value: input.value, commit: input.onChange }));
             }) : null);
         }
     };
@@ -27363,7 +27375,7 @@ var __importDefault = undefined && undefined.__importDefault || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Grid = void 0;
 var styled_components_1 = __importDefault(__webpack_require__(/*! styled-components */ "../../node_modules/styled-components/dist/styled-components.browser.esm.js"));
-exports.Grid = styled_components_1.default.div(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n    display: grid;\n    gap: 16px;\n    grid-template-columns: repeat(auto-fill, minmax(max(160px, calc(50% - 8px)), calc(33.3333% - 8px)));\n    min-width: 600px;\n"], ["\n    display: grid;\n    gap: 16px;\n    grid-template-columns: repeat(auto-fill, minmax(max(160px, calc(50% - 8px)), calc(33.3333% - 8px)));\n    min-width: 600px;\n"])));
+exports.Grid = styled_components_1.default.div(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n    display: grid;\n    gap: 16px;\n    grid-template-columns: repeat(auto-fill, minmax(max(160px, calc(50% - 8px)), calc(33.3333% - 8px)));\n    min-width: 600px;\n\n    ul, li {\n        margin: 0;\n        padding: 0;\n        list-style-type: none;\n    }\n"], ["\n    display: grid;\n    gap: 16px;\n    grid-template-columns: repeat(auto-fill, minmax(max(160px, calc(50% - 8px)), calc(33.3333% - 8px)));\n    min-width: 600px;\n\n    ul, li {\n        margin: 0;\n        padding: 0;\n        list-style-type: none;\n    }\n"])));
 var templateObject_1;
 //# sourceMappingURL=Grid.js.map
 
