@@ -16,10 +16,12 @@ import {Settings} from './Settings';
 export const Dialog: React.FC = () => {
     const i18n = useI18n();
     const linkTypes = useLinkTypes();
-    const {dismiss, apply} = useEditorTransactions();
+    const {dismiss, apply, unset} = useEditorTransactions();
     const {isOpen, initialValue} = useEditorState();
+    const [valueWasDeleted, setValueWasDeleted] = React.useState(false);
     const handleSubmit = React.useCallback((values: any) => {
         const linkType = linkTypes.find(linkType => linkType.id === values.linkTypeId);
+
         if (linkType) {
             const props = values.linkTypeProps?.[linkType.id.split('.').join('_')];
 
@@ -29,9 +31,13 @@ export const Dialog: React.FC = () => {
                     options: values.options
                 };
                 apply(link);
+                setValueWasDeleted(false);
             }
+        } else if(valueWasDeleted) {
+            unset();
+            setValueWasDeleted(false);
         }
-    }, [linkTypes]);
+    }, [linkTypes, valueWasDeleted]);
 
     useKey('Escape', dismiss);
 
@@ -45,11 +51,12 @@ export const Dialog: React.FC = () => {
                     <Form<ILinkOptions> onSubmit={handleSubmit}>
                         {({handleSubmit, valid, dirty}) => (
                             <StyledForm
-                                renderBody={() => initialValue === null ? (
+                                renderBody={() => initialValue === null || valueWasDeleted ? (
                                     <DialogWithEmptyValue />
                                 ) : (
                                     <DialogWithValue
                                         value={initialValue}
+                                        onDelete={() => setValueWasDeleted(true)}
                                     />
                                 )}
                                 renderActions={() => (
@@ -57,13 +64,23 @@ export const Dialog: React.FC = () => {
                                         <Button onClick={dismiss}>
                                             {i18n('Sitegeist.Archaeopteryx:Main:dialog.action.cancel')}
                                         </Button>
-                                        <Button
-                                            style="success"
-                                            type="submit"
-                                            disabled={!valid || !dirty}
-                                        >
-                                            {i18n('Sitegeist.Archaeopteryx:Main:dialog.action.apply')}
-                                        </Button>
+                                        {!valid && valueWasDeleted ? (
+                                            <Button
+                                                style="success"
+                                                type="button"
+                                                onClick={unset}
+                                            >
+                                                {i18n('Sitegeist.Archaeopteryx:Main:dialog.action.apply')}
+                                            </Button>
+                                        ) : (
+                                            <Button
+                                                style="success"
+                                                type="submit"
+                                                disabled={!valid || !dirty}
+                                            >
+                                                {i18n('Sitegeist.Archaeopteryx:Main:dialog.action.apply')}
+                                            </Button>
+                                        )}
                                     </>
                                 )}
                                 onSubmit={handleSubmit}
@@ -115,9 +132,9 @@ const DialogWithEmptyValue: React.FC = () => {
 
 const DialogWithValue: React.FC<{
     value: ILink
+    onDelete: () => void
 }> = props => {
     const form = useForm();
-    const {unset} = useEditorTransactions();
     const {enabledLinkOptions, editorOptions} = useEditorState();
     const linkType = useLinkTypeForHref(props.value.href)!;
     const {result} = linkType.useResolvedModel(props.value);
@@ -144,7 +161,7 @@ const DialogWithValue: React.FC<{
                         {model ? (
                             <Deletable
                                 onDelete={() => {
-                                    unset();
+                                    props.onDelete();
                                     form.change('linkTypeProps', null);
                                 }}
                             >

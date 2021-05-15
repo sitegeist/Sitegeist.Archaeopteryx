@@ -25289,6 +25289,28 @@ var __importStar = undefined && undefined.__importStar || function (mod) {
     }__setModuleDefault(result, mod);
     return result;
 };
+var __read = undefined && undefined.__read || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o),
+        r,
+        ar = [],
+        e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) {
+            ar.push(r.value);
+        }
+    } catch (error) {
+        e = { error: error };
+    } finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        } finally {
+            if (e) throw e.error;
+        }
+    }
+    return ar;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Dialog = void 0;
 var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
@@ -25306,10 +25328,14 @@ var Dialog = function Dialog() {
     var linkTypes = domain_1.useLinkTypes();
     var _a = domain_1.useEditorTransactions(),
         dismiss = _a.dismiss,
-        apply = _a.apply;
+        apply = _a.apply,
+        unset = _a.unset;
     var _b = domain_1.useEditorState(),
         isOpen = _b.isOpen,
         initialValue = _b.initialValue;
+    var _c = __read(React.useState(false), 2),
+        valueWasDeleted = _c[0],
+        setValueWasDeleted = _c[1];
     var handleSubmit = React.useCallback(function (values) {
         var _a;
         var linkType = linkTypes.find(function (linkType) {
@@ -25320,9 +25346,13 @@ var Dialog = function Dialog() {
             if (props) {
                 var link = __assign(__assign({}, linkType.convertModelToLink(props)), { options: values.options });
                 apply(link);
+                setValueWasDeleted(false);
             }
+        } else if (valueWasDeleted) {
+            unset();
+            setValueWasDeleted(false);
         }
-    }, [linkTypes]);
+    }, [linkTypes, valueWasDeleted]);
     react_use_1.useKey('Escape', dismiss);
     if (isOpen) {
         return React.createElement(presentation_1.Modal, { renderTitle: function renderTitle() {
@@ -25333,9 +25363,11 @@ var Dialog = function Dialog() {
                         valid = _a.valid,
                         dirty = _a.dirty;
                     return React.createElement(presentation_1.Form, { renderBody: function renderBody() {
-                            return initialValue === null ? React.createElement(DialogWithEmptyValue, null) : React.createElement(DialogWithValue, { value: initialValue });
+                            return initialValue === null || valueWasDeleted ? React.createElement(DialogWithEmptyValue, null) : React.createElement(DialogWithValue, { value: initialValue, onDelete: function onDelete() {
+                                    return setValueWasDeleted(true);
+                                } });
                         }, renderActions: function renderActions() {
-                            return React.createElement(React.Fragment, null, React.createElement(react_ui_components_1.Button, { onClick: dismiss }, i18n('Sitegeist.Archaeopteryx:Main:dialog.action.cancel')), React.createElement(react_ui_components_1.Button, { style: "success", type: "submit", disabled: !valid || !dirty }, i18n('Sitegeist.Archaeopteryx:Main:dialog.action.apply')));
+                            return React.createElement(React.Fragment, null, React.createElement(react_ui_components_1.Button, { onClick: dismiss }, i18n('Sitegeist.Archaeopteryx:Main:dialog.action.cancel')), !valid && valueWasDeleted ? React.createElement(react_ui_components_1.Button, { style: "success", type: "button", onClick: unset }, i18n('Sitegeist.Archaeopteryx:Main:dialog.action.apply')) : React.createElement(react_ui_components_1.Button, { style: "success", type: "submit", disabled: !valid || !dirty }, i18n('Sitegeist.Archaeopteryx:Main:dialog.action.apply')));
                         }, onSubmit: handleSubmit });
                 });
             } });
@@ -25365,7 +25397,6 @@ var DialogWithEmptyValue = function DialogWithEmptyValue() {
 var DialogWithValue = function DialogWithValue(props) {
     var _a;
     var form = react_final_form_1.useForm();
-    var unset = domain_1.useEditorTransactions().unset;
     var _b = domain_1.useEditorState(),
         enabledLinkOptions = _b.enabledLinkOptions,
         editorOptions = _b.editorOptions;
@@ -25385,7 +25416,7 @@ var DialogWithValue = function DialogWithValue(props) {
             }, renderPanel: function renderPanel(linkType) {
                 var _a, _b;
                 return React.createElement("div", { style: { display: 'grid', gap: '16px' } }, model ? React.createElement(presentation_1.Deletable, { onDelete: function onDelete() {
-                        unset();
+                        props.onDelete();
                         form.change('linkTypeProps', null);
                     } }, React.createElement(Preview, { model: model, options: (_b = (_a = editorOptions.linkTypes) === null || _a === void 0 ? void 0 : _a[linkType.id]) !== null && _b !== void 0 ? _b : {}, link: props.value })) : null, React.createElement(LinkEditor_1.LinkEditor, { key: linkType.id, link: props.value, linkType: linkType }), enabledLinkOptions.length && linkType.enableLinkOptionsWhenPossible ? React.createElement(Settings_1.Settings, { initialValue: props.value.options }) : null);
             } });
@@ -27091,7 +27122,7 @@ Object.defineProperty(exports, "FieldGroup", { enumerable: true, get: function g
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.useEditorTransactions = exports.useEditorState = exports.EditorContext = exports.createEditor = exports.useLinkTypeForHref = exports.makeLinkType = exports.registerDialog = exports.registerLinkTypes = void 0;
+exports.Deletable = exports.useEditorTransactions = exports.useEditorState = exports.EditorContext = exports.createEditor = exports.useLinkTypeForHref = exports.makeLinkType = exports.registerDialog = exports.registerLinkTypes = void 0;
 var application_1 = __webpack_require__(/*! ./application */ "../core/lib/application/index.js");
 Object.defineProperty(exports, "registerLinkTypes", { enumerable: true, get: function get() {
     return application_1.registerLinkTypes;
@@ -27117,6 +27148,10 @@ Object.defineProperty(exports, "useEditorState", { enumerable: true, get: functi
   } });
 Object.defineProperty(exports, "useEditorTransactions", { enumerable: true, get: function get() {
     return domain_1.useEditorTransactions;
+  } });
+var presentation_1 = __webpack_require__(/*! ./presentation */ "../core/lib/presentation/index.js");
+Object.defineProperty(exports, "Deletable", { enumerable: true, get: function get() {
+    return presentation_1.Deletable;
   } });
 //# sourceMappingURL=index.js.map
 
@@ -29138,23 +29173,23 @@ var InspectorEditor = function InspectorEditor(props) {
     var editLink = React.useCallback(function () {
         return __awaiter(void 0, void 0, void 0, function () {
             var result;
-            var _a, _b;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
+            var _a, _b, _c;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
                     case 0:
                         return [4, tx.editLink(value === undefined ? null : { href: value }, [], (_a = props.options) !== null && _a !== void 0 ? _a : {})];
                     case 1:
-                        result = _c.sent();
+                        result = _d.sent();
                         if (result.change) {
-                            props.commit((_b = result.value) === null || _b === void 0 ? void 0 : _b.href);
+                            props.commit((_c = (_b = result.value) === null || _b === void 0 ? void 0 : _b.href) !== null && _c !== void 0 ? _c : '');
                         }
                         return [2];
                 }
             });
         });
-    }, [value, tx.editLink, props.options]);
+    }, [value, tx.editLink, props.options, props.commit]);
     if (linkType) {
-        return React.createElement(InspectorEditorWithLinkType, { value: value, linkType: linkType, options: (_c = (_b = (_a = props.options) === null || _a === void 0 ? void 0 : _a.linkTypes) === null || _b === void 0 ? void 0 : _b[linkType.id]) !== null && _c !== void 0 ? _c : {}, editLink: editLink });
+        return React.createElement(InspectorEditorWithLinkType, { value: value, linkType: linkType, options: (_c = (_b = (_a = props.options) === null || _a === void 0 ? void 0 : _a.linkTypes) === null || _b === void 0 ? void 0 : _b[linkType.id]) !== null && _c !== void 0 ? _c : {}, editLink: editLink, commit: props.commit });
     } else if (Boolean(value) === false) {
         return React.createElement(react_ui_components_1.Button, { onClick: editLink }, i18n('Sitegeist.Archaeopteryx:Main:inspector.create'));
     } else {
@@ -29177,7 +29212,9 @@ var InspectorEditorWithLinkType = function InspectorEditorWithLinkType(props) {
     if (error) {
         throw error;
     }
-    return React.createElement("div", null, busy ? React.createElement(LoadingPreview, { link: link, options: props.options }) : React.createElement(Preview, { model: model, link: link, options: props.options }), React.createElement(react_ui_components_1.Button, { onClick: props.editLink }, i18n('Sitegeist.Archaeopteryx:Main:inspector.edit')));
+    return React.createElement("div", null, busy ? React.createElement(LoadingPreview, { link: link, options: props.options }) : React.createElement(archaeopteryx_core_1.Deletable, { onDelete: function onDelete() {
+            return props.commit('');
+        } }, React.createElement(Preview, { model: model, link: link, options: props.options })), React.createElement(react_ui_components_1.Button, { onClick: props.editLink }, i18n('Sitegeist.Archaeopteryx:Main:inspector.edit')));
 };
 //# sourceMappingURL=InspectorEditor.js.map
 

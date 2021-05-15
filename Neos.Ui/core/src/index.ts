@@ -9,3 +9,5 @@ export {
     useEditorState,
     useEditorTransactions
 } from './domain';
+
+export {Deletable} from './presentation';
