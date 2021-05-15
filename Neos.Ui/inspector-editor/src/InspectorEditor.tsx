@@ -1,4 +1,5 @@
 import * as React from 'react';
+import styled from 'styled-components';
 
 import {Button} from '@neos-project/react-ui-components';
 
@@ -74,6 +75,34 @@ export const InspectorEditor: React.FC<Props> = props => {
     }
 };
 
+const SeamlessButton = styled.button`
+    display: block;
+    border: none;
+    margin: 0;
+    padding: 0;
+    width: auto;
+    overflow: visible;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    line-height: normal;
+    -webkit-font-smoothing: inherit;
+    -moz-osx-font-smoothing: inherit;
+    -webkit-appearance: none;
+    cursor: pointer;
+    filter: brightness(1);
+    transition: filter .2s;
+
+    &:hover {
+        filter: brightness(2) drop-shadow(0 0 1px #aaa);
+    }
+
+    &::-moz-focus-inner {
+        border: 0;
+        padding: 0;
+    }
+`;
+
 const InspectorEditorWithLinkType: React.FC<{
     value: string
     linkType: ILinkType
@@ -91,24 +120,25 @@ const InspectorEditorWithLinkType: React.FC<{
     }
 
     return (
-        <div>
-            {busy ? (
-                <LoadingPreview
-                    link={link}
-                    options={props.options}
-                />
-            ) : (
-                <Deletable onDelete={() => props.commit('')}>
+        <Deletable onDelete={() => props.commit('')}>
+            <SeamlessButton
+                title={i18n('Sitegeist.Archaeopteryx:Main:inspector.edit')}
+                type="button"
+                onClick={props.editLink}
+            >
+                {busy ? (
+                    <LoadingPreview
+                        link={link}
+                        options={props.options}
+                    />
+                ) : (
                     <Preview
                         model={model}
                         link={link}
                         options={props.options}
                     />
-                </Deletable>
-            )}
-            <Button onClick={props.editLink}>
-                {i18n('Sitegeist.Archaeopteryx:Main:inspector.edit')}
-            </Button>
-        </div>
+                )}
+            </SeamlessButton>
+        </Deletable>
     );
 };

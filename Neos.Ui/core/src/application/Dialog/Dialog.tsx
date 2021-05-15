@@ -92,6 +92,10 @@ export const Dialog: React.FC = () => {
         )
     }
 
+    if (valueWasDeleted) {
+        setValueWasDeleted(false);
+    }
+
     return null;
 };
 

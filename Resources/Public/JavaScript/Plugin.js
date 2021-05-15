@@ -25372,6 +25372,9 @@ var Dialog = function Dialog() {
                 });
             } });
     }
+    if (valueWasDeleted) {
+        setValueWasDeleted(false);
+    }
     return null;
 };
 exports.Dialog = Dialog;
@@ -27270,7 +27273,7 @@ var react_ui_components_1 = __webpack_require__(/*! @neos-project/react-ui-compo
 var Container = styled_components_1.default.div(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n    display: grid;\n    grid-template-columns: 1fr 40px;\n    justify-content: stretch;\n    border: 1px solid #3f3f3f;\n    max-width: 420px;\n"], ["\n    display: grid;\n    grid-template-columns: 1fr 40px;\n    justify-content: stretch;\n    border: 1px solid #3f3f3f;\n    max-width: 420px;\n"])));
 var StyledIconButton = styled_components_1.default(react_ui_components_1.IconButton)(templateObject_2 || (templateObject_2 = __makeTemplateObject(["\n    height: 100%;\n"], ["\n    height: 100%;\n"])));
 var Deletable = function Deletable(props) {
-    return React.createElement(Container, null, React.createElement("div", null, props.children), React.createElement(StyledIconButton, { icon: "times", onClick: props.onDelete }));
+    return React.createElement(Container, null, React.createElement("div", null, props.children), React.createElement(StyledIconButton, { icon: "times", hoverStyle: "error", onClick: props.onDelete }));
 };
 exports.Deletable = Deletable;
 var templateObject_1, templateObject_2;
@@ -29053,6 +29056,14 @@ Object.defineProperty(exports, "SearchInput", { enumerable: true, get: function 
 "use strict";
 
 
+var __makeTemplateObject = undefined && undefined.__makeTemplateObject || function (cooked, raw) {
+    if (Object.defineProperty) {
+        Object.defineProperty(cooked, "raw", { value: raw });
+    } else {
+        cooked.raw = raw;
+    }
+    return cooked;
+};
 var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     Object.defineProperty(o, k2, { enumerable: true, get: function get() {
@@ -29158,9 +29169,13 @@ var __generator = undefined && undefined.__generator || function (thisArg, body)
         }if (op[0] & 5) throw op[1];return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = undefined && undefined.__importDefault || function (mod) {
+    return mod && mod.__esModule ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.InspectorEditor = void 0;
 var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
+var styled_components_1 = __importDefault(__webpack_require__(/*! styled-components */ "../../node_modules/styled-components/dist/styled-components.browser.esm.js"));
 var react_ui_components_1 = __webpack_require__(/*! @neos-project/react-ui-components */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/react-ui-components/index.js");
 var archaeopteryx_neos_bridge_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-neos-bridge */ "../neos-bridge/lib/index.js");
 var archaeopteryx_core_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-core */ "../core/lib/index.js");
@@ -29199,6 +29214,7 @@ var InspectorEditor = function InspectorEditor(props) {
     }
 };
 exports.InspectorEditor = InspectorEditor;
+var SeamlessButton = styled_components_1.default.button(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n    display: block;\n    border: none;\n    margin: 0;\n    padding: 0;\n    width: auto;\n    overflow: visible;\n    background: transparent;\n    color: inherit;\n    font: inherit;\n    line-height: normal;\n    -webkit-font-smoothing: inherit;\n    -moz-osx-font-smoothing: inherit;\n    -webkit-appearance: none;\n    cursor: pointer;\n    filter: brightness(1);\n    transition: filter .2s;\n\n    &:hover {\n        filter: brightness(2) drop-shadow(0 0 1px #aaa);\n    }\n\n    &::-moz-focus-inner {\n        border: 0;\n        padding: 0;\n    }\n"], ["\n    display: block;\n    border: none;\n    margin: 0;\n    padding: 0;\n    width: auto;\n    overflow: visible;\n    background: transparent;\n    color: inherit;\n    font: inherit;\n    line-height: normal;\n    -webkit-font-smoothing: inherit;\n    -moz-osx-font-smoothing: inherit;\n    -webkit-appearance: none;\n    cursor: pointer;\n    filter: brightness(1);\n    transition: filter .2s;\n\n    &:hover {\n        filter: brightness(2) drop-shadow(0 0 1px #aaa);\n    }\n\n    &::-moz-focus-inner {\n        border: 0;\n        padding: 0;\n    }\n"])));
 var InspectorEditorWithLinkType = function InspectorEditorWithLinkType(props) {
     var i18n = archaeopteryx_neos_bridge_1.useI18n();
     var link = { href: props.value };
@@ -29212,10 +29228,11 @@ var InspectorEditorWithLinkType = function InspectorEditorWithLinkType(props) {
     if (error) {
         throw error;
     }
-    return React.createElement("div", null, busy ? React.createElement(LoadingPreview, { link: link, options: props.options }) : React.createElement(archaeopteryx_core_1.Deletable, { onDelete: function onDelete() {
+    return React.createElement(archaeopteryx_core_1.Deletable, { onDelete: function onDelete() {
             return props.commit('');
-        } }, React.createElement(Preview, { model: model, link: link, options: props.options })), React.createElement(react_ui_components_1.Button, { onClick: props.editLink }, i18n('Sitegeist.Archaeopteryx:Main:inspector.edit')));
+        } }, React.createElement(SeamlessButton, { title: i18n('Sitegeist.Archaeopteryx:Main:inspector.edit'), type: "button", onClick: props.editLink }, busy ? React.createElement(LoadingPreview, { link: link, options: props.options }) : React.createElement(Preview, { model: model, link: link, options: props.options })));
 };
+var templateObject_1;
 //# sourceMappingURL=InspectorEditor.js.map
 
 /***/ }),
