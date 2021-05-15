@@ -25565,7 +25565,7 @@ var archaeopteryx_neos_bridge_1 = __webpack_require__(/*! @sitegeist/archaeopter
 var Settings = function Settings(props) {
     var _a, _b, _c, _d;
     var i18n = archaeopteryx_neos_bridge_1.useI18n();
-    return React.createElement(presentation_1.Grid, null, React.createElement(react_final_form_1.Field, { name: "options.anchor", initialValue: (_a = props.initialValue) === null || _a === void 0 ? void 0 : _a.anchor }, function (_a) {
+    return React.createElement(presentation_1.Layout.Columns, null, React.createElement(react_final_form_1.Field, { name: "options.anchor", initialValue: (_a = props.initialValue) === null || _a === void 0 ? void 0 : _a.anchor }, function (_a) {
         var input = _a.input;
         return React.createElement("label", null, i18n('Sitegeist.Archaeopteryx:Main:options.label.anchor'), ":", React.createElement(react_ui_components_1.TextInput, __assign({ type: "text" }, input)));
     }), React.createElement(react_final_form_1.Field, { name: "options.title", initialValue: (_b = props.initialValue) === null || _b === void 0 ? void 0 : _b.title }, function (_a) {
@@ -25858,7 +25858,6 @@ var __importStar = undefined && undefined.__importStar || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MailTo = void 0;
 var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
-var neos_ui_editors_1 = __webpack_require__(/*! @neos-project/neos-ui-editors */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/neos-ui-editors/index.js");
 var archaeopteryx_neos_bridge_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-neos-bridge */ "../neos-bridge/lib/index.js");
 var framework_1 = __webpack_require__(/*! ../../../framework */ "../core/lib/framework/index.js");
 var domain_1 = __webpack_require__(/*! ../../../domain */ "../core/lib/domain/index.js");
@@ -25910,7 +25909,7 @@ exports.MailTo = domain_1.makeLinkType('Sitegeist.Archaeopteryx:MailTo', functio
             var email = _a.model,
                 options = _a.options;
             var i18n = archaeopteryx_neos_bridge_1.useI18n();
-            return React.createElement(presentation_1.Grid, null, React.createElement(framework_1.Field, { name: "recipient", initialValue: email === null || email === void 0 ? void 0 : email.recipient, validate: function validate(value) {
+            return React.createElement(presentation_1.Layout.Columns, null, React.createElement(framework_1.Field, { name: "recipient", initialValue: email === null || email === void 0 ? void 0 : email.recipient, validate: function validate(value) {
                     if (!value) {
                         return i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:recipient.validation.required');
                     }
@@ -25920,11 +25919,11 @@ exports.MailTo = domain_1.makeLinkType('Sitegeist.Archaeopteryx:MailTo', functio
                 } }, function (_a) {
                 var input = _a.input,
                     meta = _a.meta;
-                return React.createElement("div", { style: { gridColumn: '1 / -1' } }, React.createElement(neos_ui_editors_1.EditorEnvelope, { identifier: "Sitegeist-Archaeopteryx-Mailto-" + input.name, label: i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:recipient.label'), editor: 'Neos.Neos/Inspector/Editors/TextFieldEditor', validationErrors: meta.dirty && meta.error ? [meta.error] : [], value: input.value, commit: input.onChange }));
+                return React.createElement("div", { style: { gridColumn: '1 / -1' } }, React.createElement(framework_1.EditorEnvelope, { label: i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:recipient.label'), editor: 'Neos.Neos/Inspector/Editors/TextFieldEditor', input: input, meta: meta }));
             }), ((_b = options.enabledFields) === null || _b === void 0 ? void 0 : _b.subject) !== false ? React.createElement(framework_1.Field, { name: "subject", initialValue: email === null || email === void 0 ? void 0 : email.subject }, function (_a) {
                 var input = _a.input,
                     meta = _a.meta;
-                return React.createElement("div", { style: { gridColumn: '1 / -1' } }, React.createElement(neos_ui_editors_1.EditorEnvelope, { identifier: "Sitegeist-Archaeopteryx-Mailto-" + input.name, label: i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:subject.label'), editor: 'Neos.Neos/Inspector/Editors/TextFieldEditor', validationErrors: meta.dirty && meta.error ? [meta.error] : [], value: input.value, commit: input.onChange }));
+                return React.createElement("div", { style: { gridColumn: '1 / -1' } }, React.createElement(framework_1.EditorEnvelope, { label: i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:subject.label'), editor: 'Neos.Neos/Inspector/Editors/TextFieldEditor', input: input, meta: meta }));
             }) : null, ((_c = options.enabledFields) === null || _c === void 0 ? void 0 : _c.cc) !== false ? React.createElement(framework_1.Field, { name: "cc", initialValue: email === null || email === void 0 ? void 0 : email.cc, validate: function validate(value) {
                     if (value !== undefined && value !== null) {
                         if (!value.split(',').every(function (value) {
@@ -25936,9 +25935,9 @@ exports.MailTo = domain_1.makeLinkType('Sitegeist.Archaeopteryx:MailTo', functio
                 } }, function (_a) {
                 var input = _a.input,
                     meta = _a.meta;
-                return React.createElement("div", { style: { gridColumn: '1 / -1' } }, React.createElement(neos_ui_editors_1.EditorEnvelope, { identifier: "Sitegeist-Archaeopteryx-Mailto-" + input.name, label: i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:cc.label'), editor: 'Neos.Neos/Inspector/Editors/TextFieldEditor', options: {
+                return React.createElement("div", { style: { gridColumn: '1 / -1' } }, React.createElement(framework_1.EditorEnvelope, { label: i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:cc.label'), editor: 'Neos.Neos/Inspector/Editors/TextFieldEditor', editorOptions: {
                         placeholder: i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:cc.placeholder')
-                    }, validationErrors: meta.dirty && meta.error ? [meta.error] : [], value: input.value, commit: input.onChange }));
+                    }, input: input, meta: meta }));
             }) : null, ((_d = options.enabledFields) === null || _d === void 0 ? void 0 : _d.bcc) !== false ? React.createElement(framework_1.Field, { name: "bcc", initialValue: email === null || email === void 0 ? void 0 : email.bcc, validate: function validate(value) {
                     if (value !== undefined && value !== null) {
                         if (!value.split(',').every(function (value) {
@@ -25950,13 +25949,13 @@ exports.MailTo = domain_1.makeLinkType('Sitegeist.Archaeopteryx:MailTo', functio
                 } }, function (_a) {
                 var input = _a.input,
                     meta = _a.meta;
-                return React.createElement("div", { style: { gridColumn: '1 / -1' } }, React.createElement(neos_ui_editors_1.EditorEnvelope, { identifier: "Sitegeist-Archaeopteryx-Mailto-" + input.name, label: i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:bcc.label'), editor: 'Neos.Neos/Inspector/Editors/TextFieldEditor', options: {
+                return React.createElement("div", { style: { gridColumn: '1 / -1' } }, React.createElement(framework_1.EditorEnvelope, { label: i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:bcc.label'), editor: 'Neos.Neos/Inspector/Editors/TextFieldEditor', editorOptions: {
                         placeholder: i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:bcc.placeholder')
-                    }, validationErrors: meta.dirty && meta.error ? [meta.error] : [], value: input.value, commit: input.onChange }));
+                    }, input: input, meta: meta }));
             }) : null, ((_e = options.enabledFields) === null || _e === void 0 ? void 0 : _e.body) !== false ? React.createElement(framework_1.Field, { name: "body", initialValue: email === null || email === void 0 ? void 0 : email.body }, function (_a) {
                 var input = _a.input,
                     meta = _a.meta;
-                return React.createElement("div", { style: { gridColumn: '1 / -1' } }, React.createElement(neos_ui_editors_1.EditorEnvelope, { identifier: "Sitegeist-Archaeopteryx-Mailto-" + input.name, label: i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:body.label'), editor: 'Neos.Neos/Inspector/Editors/TextAreaEditor', validationErrors: meta.dirty && meta.error ? [meta.error] : [], value: input.value, commit: input.onChange }));
+                return React.createElement("div", { style: { gridColumn: '1 / -1' } }, React.createElement(framework_1.EditorEnvelope, { label: i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:body.label'), editor: 'Neos.Neos/Inspector/Editors/TextAreaEditor', input: input, meta: meta }));
             }) : null);
         }
     };
@@ -26923,6 +26922,64 @@ Object.defineProperty(exports, "useEditorTransactions", { enumerable: true, get:
 
 /***/ }),
 
+/***/ "../core/lib/framework/Form/EditorEnvelope.js":
+/*!****************************************************!*\
+  !*** ../core/lib/framework/Form/EditorEnvelope.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __makeTemplateObject = undefined && undefined.__makeTemplateObject || function (cooked, raw) {
+    if (Object.defineProperty) {
+        Object.defineProperty(cooked, "raw", { value: raw });
+    } else {
+        cooked.raw = raw;
+    }
+    return cooked;
+};
+var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function get() {
+            return m[k];
+        } });
+} : function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+var __setModuleDefault = undefined && undefined.__setModuleDefault || (Object.create ? function (o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+} : function (o, v) {
+    o["default"] = v;
+});
+var __importStar = undefined && undefined.__importStar || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) {
+        if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    }__setModuleDefault(result, mod);
+    return result;
+};
+var __importDefault = undefined && undefined.__importDefault || function (mod) {
+    return mod && mod.__esModule ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.EditorEnvelope = void 0;
+var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
+var styled_components_1 = __importDefault(__webpack_require__(/*! styled-components */ "../../node_modules/styled-components/dist/styled-components.browser.esm.js"));
+var neos_ui_editors_1 = __webpack_require__(/*! @neos-project/neos-ui-editors */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/neos-ui-editors/index.js");
+var IsolationLayer = styled_components_1.default.div(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n    ul, li {\n        margin: 0;\n        padding: 0;\n        list-style-type: none;\n    }\n"], ["\n    ul, li {\n        margin: 0;\n        padding: 0;\n        list-style-type: none;\n    }\n"])));
+var EditorEnvelope = function EditorEnvelope(props) {
+    return React.createElement(IsolationLayer, null, React.createElement(neos_ui_editors_1.EditorEnvelope, { identifier: "Sitegeist-Archaeopteryx-Mailto-" + props.input.name, label: props.label, editor: props.editor, options: props.editorOptions, validationErrors: props.meta.dirty && props.meta.error ? [props.meta.error] : [], value: props.input.value, commit: props.input.onChange }));
+};
+exports.EditorEnvelope = EditorEnvelope;
+var templateObject_1;
+//# sourceMappingURL=EditorEnvelope.js.map
+
+/***/ }),
+
 /***/ "../core/lib/framework/Form/Field.js":
 /*!*******************************************!*\
   !*** ../core/lib/framework/Form/Field.js ***!
@@ -26998,13 +27055,17 @@ exports.FieldGroup = FieldGroup;
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.FieldGroup = exports.Field = void 0;
+exports.EditorEnvelope = exports.FieldGroup = exports.Field = void 0;
 var Field_1 = __webpack_require__(/*! ./Field */ "../core/lib/framework/Form/Field.js");
 Object.defineProperty(exports, "Field", { enumerable: true, get: function get() {
     return Field_1.Field;
   } });
 Object.defineProperty(exports, "FieldGroup", { enumerable: true, get: function get() {
     return Field_1.FieldGroup;
+  } });
+var EditorEnvelope_1 = __webpack_require__(/*! ./EditorEnvelope */ "../core/lib/framework/Form/EditorEnvelope.js");
+Object.defineProperty(exports, "EditorEnvelope", { enumerable: true, get: function get() {
+    return EditorEnvelope_1.EditorEnvelope;
   } });
 //# sourceMappingURL=index.js.map
 
@@ -27098,7 +27159,7 @@ exports.Process = __importStar(__webpack_require__(/*! ./Process */ "../core/lib
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.FieldGroup = exports.Field = exports.Process = void 0;
+exports.EditorEnvelope = exports.FieldGroup = exports.Field = exports.Process = void 0;
 var Process_1 = __webpack_require__(/*! ./Process */ "../core/lib/framework/Process/index.js");
 Object.defineProperty(exports, "Process", { enumerable: true, get: function get() {
     return Process_1.Process;
@@ -27109,6 +27170,9 @@ Object.defineProperty(exports, "Field", { enumerable: true, get: function get() 
   } });
 Object.defineProperty(exports, "FieldGroup", { enumerable: true, get: function get() {
     return Form_1.FieldGroup;
+  } });
+Object.defineProperty(exports, "EditorEnvelope", { enumerable: true, get: function get() {
+    return Form_1.EditorEnvelope;
   } });
 //# sourceMappingURL=index.js.map
 
@@ -27340,36 +27404,6 @@ var templateObject_1, templateObject_2, templateObject_3;
 
 /***/ }),
 
-/***/ "../core/lib/presentation/Grid.js":
-/*!****************************************!*\
-  !*** ../core/lib/presentation/Grid.js ***!
-  \****************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var __makeTemplateObject = undefined && undefined.__makeTemplateObject || function (cooked, raw) {
-    if (Object.defineProperty) {
-        Object.defineProperty(cooked, "raw", { value: raw });
-    } else {
-        cooked.raw = raw;
-    }
-    return cooked;
-};
-var __importDefault = undefined && undefined.__importDefault || function (mod) {
-    return mod && mod.__esModule ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Grid = void 0;
-var styled_components_1 = __importDefault(__webpack_require__(/*! styled-components */ "../../node_modules/styled-components/dist/styled-components.browser.esm.js"));
-exports.Grid = styled_components_1.default.div(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n    display: grid;\n    gap: 16px;\n    grid-template-columns: repeat(auto-fill, minmax(max(160px, calc(50% - 8px)), calc(33.3333% - 8px)));\n    min-width: 600px;\n\n    ul, li {\n        margin: 0;\n        padding: 0;\n        list-style-type: none;\n    }\n"], ["\n    display: grid;\n    gap: 16px;\n    grid-template-columns: repeat(auto-fill, minmax(max(160px, calc(50% - 8px)), calc(33.3333% - 8px)));\n    min-width: 600px;\n\n    ul, li {\n        margin: 0;\n        padding: 0;\n        list-style-type: none;\n    }\n"])));
-var templateObject_1;
-//# sourceMappingURL=Grid.js.map
-
-/***/ }),
-
 /***/ "../core/lib/presentation/IconCard.js":
 /*!********************************************!*\
   !*** ../core/lib/presentation/IconCard.js ***!
@@ -27550,6 +27584,38 @@ var templateObject_1, templateObject_2;
 
 /***/ }),
 
+/***/ "../core/lib/presentation/Layout.js":
+/*!******************************************!*\
+  !*** ../core/lib/presentation/Layout.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __makeTemplateObject = undefined && undefined.__makeTemplateObject || function (cooked, raw) {
+    if (Object.defineProperty) {
+        Object.defineProperty(cooked, "raw", { value: raw });
+    } else {
+        cooked.raw = raw;
+    }
+    return cooked;
+};
+var __importDefault = undefined && undefined.__importDefault || function (mod) {
+    return mod && mod.__esModule ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Columns = exports.Stack = exports.Container = void 0;
+var styled_components_1 = __importDefault(__webpack_require__(/*! styled-components */ "../../node_modules/styled-components/dist/styled-components.browser.esm.js"));
+exports.Container = styled_components_1.default.div(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n    padding: 16px;\n"], ["\n    padding: 16px;\n"])));
+exports.Stack = styled_components_1.default.div(templateObject_2 || (templateObject_2 = __makeTemplateObject(["\n    > * + * {\n        margin-top: 16px;\n    }\n"], ["\n    > * + * {\n        margin-top: 16px;\n    }\n"])));
+exports.Columns = styled_components_1.default.div(templateObject_3 || (templateObject_3 = __makeTemplateObject(["\n    display: grid;\n    gap: 16px;\n    grid-template-columns: repeat(auto-fill, minmax(max(160px, calc(50% - 8px)), calc(33.3333% - 8px)));\n    min-width: 600px;\n"], ["\n    display: grid;\n    gap: 16px;\n    grid-template-columns: repeat(auto-fill, minmax(max(160px, calc(50% - 8px)), calc(33.3333% - 8px)));\n    min-width: 600px;\n"])));
+var templateObject_1, templateObject_2, templateObject_3;
+//# sourceMappingURL=Layout.js.map
+
+/***/ }),
+
 /***/ "../core/lib/presentation/Modal.js":
 /*!*****************************************!*\
   !*** ../core/lib/presentation/Modal.js ***!
@@ -27696,40 +27762,59 @@ var templateObject_1, templateObject_2, templateObject_3, templateObject_4, temp
 "use strict";
 
 
+var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function get() {
+            return m[k];
+        } });
+} : function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+var __setModuleDefault = undefined && undefined.__setModuleDefault || (Object.create ? function (o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+} : function (o, v) {
+    o["default"] = v;
+});
+var __importStar = undefined && undefined.__importStar || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) {
+        if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    }__setModuleDefault(result, mod);
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.IconLabel = exports.Grid = exports.Deletable = exports.Modal = exports.Form = exports.Tabs = exports.ImageCard = exports.IconCard = void 0;
+exports.Layout = exports.IconLabel = exports.Deletable = exports.Modal = exports.Form = exports.Tabs = exports.ImageCard = exports.IconCard = void 0;
 var IconCard_1 = __webpack_require__(/*! ./IconCard */ "../core/lib/presentation/IconCard.js");
 Object.defineProperty(exports, "IconCard", { enumerable: true, get: function get() {
-    return IconCard_1.IconCard;
-  } });
+        return IconCard_1.IconCard;
+    } });
 var ImageCard_1 = __webpack_require__(/*! ./ImageCard */ "../core/lib/presentation/ImageCard.js");
 Object.defineProperty(exports, "ImageCard", { enumerable: true, get: function get() {
-    return ImageCard_1.ImageCard;
-  } });
+        return ImageCard_1.ImageCard;
+    } });
 var Tabs_1 = __webpack_require__(/*! ./Tabs */ "../core/lib/presentation/Tabs.js");
 Object.defineProperty(exports, "Tabs", { enumerable: true, get: function get() {
-    return Tabs_1.Tabs;
-  } });
+        return Tabs_1.Tabs;
+    } });
 var Form_1 = __webpack_require__(/*! ./Form */ "../core/lib/presentation/Form.js");
 Object.defineProperty(exports, "Form", { enumerable: true, get: function get() {
-    return Form_1.Form;
-  } });
+        return Form_1.Form;
+    } });
 var Modal_1 = __webpack_require__(/*! ./Modal */ "../core/lib/presentation/Modal.js");
 Object.defineProperty(exports, "Modal", { enumerable: true, get: function get() {
-    return Modal_1.Modal;
-  } });
+        return Modal_1.Modal;
+    } });
 var Deletable_1 = __webpack_require__(/*! ./Deletable */ "../core/lib/presentation/Deletable.js");
 Object.defineProperty(exports, "Deletable", { enumerable: true, get: function get() {
-    return Deletable_1.Deletable;
-  } });
-var Grid_1 = __webpack_require__(/*! ./Grid */ "../core/lib/presentation/Grid.js");
-Object.defineProperty(exports, "Grid", { enumerable: true, get: function get() {
-    return Grid_1.Grid;
-  } });
+        return Deletable_1.Deletable;
+    } });
 var IconLabel_1 = __webpack_require__(/*! ./IconLabel */ "../core/lib/presentation/IconLabel.js");
 Object.defineProperty(exports, "IconLabel", { enumerable: true, get: function get() {
-    return IconLabel_1.IconLabel;
-  } });
+        return IconLabel_1.IconLabel;
+    } });
+exports.Layout = __importStar(__webpack_require__(/*! ./Layout */ "../core/lib/presentation/Layout.js"));
 //# sourceMappingURL=index.js.map
 
 /***/ }),
@@ -29214,7 +29299,7 @@ var InspectorEditor = function InspectorEditor(props) {
     }
 };
 exports.InspectorEditor = InspectorEditor;
-var SeamlessButton = styled_components_1.default.button(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n    display: block;\n    border: none;\n    margin: 0;\n    padding: 0;\n    width: auto;\n    overflow: visible;\n    background: transparent;\n    color: inherit;\n    font: inherit;\n    line-height: normal;\n    -webkit-font-smoothing: inherit;\n    -moz-osx-font-smoothing: inherit;\n    -webkit-appearance: none;\n    cursor: pointer;\n    filter: brightness(1);\n    transition: filter .2s;\n\n    &:hover {\n        filter: brightness(2) drop-shadow(0 0 1px #aaa);\n    }\n\n    &::-moz-focus-inner {\n        border: 0;\n        padding: 0;\n    }\n"], ["\n    display: block;\n    border: none;\n    margin: 0;\n    padding: 0;\n    width: auto;\n    overflow: visible;\n    background: transparent;\n    color: inherit;\n    font: inherit;\n    line-height: normal;\n    -webkit-font-smoothing: inherit;\n    -moz-osx-font-smoothing: inherit;\n    -webkit-appearance: none;\n    cursor: pointer;\n    filter: brightness(1);\n    transition: filter .2s;\n\n    &:hover {\n        filter: brightness(2) drop-shadow(0 0 1px #aaa);\n    }\n\n    &::-moz-focus-inner {\n        border: 0;\n        padding: 0;\n    }\n"])));
+var SeamlessButton = styled_components_1.default.button(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n    display: block;\n    border: none;\n    margin: 0;\n    padding: 0;\n    width: 100%;\n    overflow: visible;\n    background: transparent;\n    color: inherit;\n    font: inherit;\n    line-height: normal;\n    -webkit-font-smoothing: inherit;\n    -moz-osx-font-smoothing: inherit;\n    -webkit-appearance: none;\n    cursor: pointer;\n    filter: brightness(1);\n    transition: filter .2s;\n\n    &:hover {\n        filter: brightness(2) drop-shadow(0 0 1px #aaa);\n    }\n\n    &::-moz-focus-inner {\n        border: 0;\n        padding: 0;\n    }\n"], ["\n    display: block;\n    border: none;\n    margin: 0;\n    padding: 0;\n    width: 100%;\n    overflow: visible;\n    background: transparent;\n    color: inherit;\n    font: inherit;\n    line-height: normal;\n    -webkit-font-smoothing: inherit;\n    -moz-osx-font-smoothing: inherit;\n    -webkit-appearance: none;\n    cursor: pointer;\n    filter: brightness(1);\n    transition: filter .2s;\n\n    &:hover {\n        filter: brightness(2) drop-shadow(0 0 1px #aaa);\n    }\n\n    &::-moz-focus-inner {\n        border: 0;\n        padding: 0;\n    }\n"])));
 var InspectorEditorWithLinkType = function InspectorEditorWithLinkType(props) {
     var i18n = archaeopteryx_neos_bridge_1.useI18n();
     var link = { href: props.value };

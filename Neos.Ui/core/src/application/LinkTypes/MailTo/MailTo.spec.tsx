@@ -4,6 +4,7 @@ jest.mock('@neos-project/neos-ui-redux-store', () => ({}), { virtual: true });
 jest.mock('@neos-project/neos-ui-editors', () => ({}), { virtual: true });
 
 jest.mock('../../../presentation', () => ({}));
+jest.mock('../../../framework', () => ({}));
 
 import '@testing-library/jest-dom/extend-expect';
 

@@ -1,3 +1,3 @@
 export {IProcess, Process} from './Process';
 
-export {Field, FieldGroup} from './Form';
+export {Field, FieldGroup, EditorEnvelope} from './Form';

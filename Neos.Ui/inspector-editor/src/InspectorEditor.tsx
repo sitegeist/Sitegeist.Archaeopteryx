@@ -82,7 +82,7 @@ const SeamlessButton = styled.button`
     border: none;
     margin: 0;
     padding: 0;
-    width: auto;
+    width: 100%;
     overflow: visible;
     background: transparent;
     color: inherit;

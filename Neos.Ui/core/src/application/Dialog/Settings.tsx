@@ -3,7 +3,7 @@ import {Field} from 'react-final-form';
 
 import {TextInput, CheckBox} from '@neos-project/react-ui-components';
 
-import {Grid} from '../../presentation';
+import {Layout} from '../../presentation';
 import {useI18n} from '@sitegeist/archaeopteryx-neos-bridge';
 
 interface Props {
@@ -19,7 +19,7 @@ export const Settings: React.FC<Props> = props => {
     const i18n = useI18n();
 
     return (
-        <Grid>
+        <Layout.Columns>
             <Field<string>
                 name="options.anchor"
                 initialValue={props.initialValue?.anchor}
@@ -66,6 +66,6 @@ export const Settings: React.FC<Props> = props => {
                     </label>
                 )}
             </Field>
-        </Grid>
+        </Layout.Columns>
     );
 }

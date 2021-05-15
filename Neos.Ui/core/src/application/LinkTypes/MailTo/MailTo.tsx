@@ -1,12 +1,10 @@
 import * as React from 'react';
 
-import {EditorEnvelope} from '@neos-project/neos-ui-editors';
-
 import {useI18n} from '@sitegeist/archaeopteryx-neos-bridge';
 
-import {Process, Field} from '../../../framework';
+import {Process, Field, EditorEnvelope} from '../../../framework';
 import {makeLinkType} from '../../../domain';
-import {IconCard, Grid, IconLabel} from '../../../presentation';
+import {IconCard, Layout, IconLabel} from '../../../presentation';
 
 const simpleEmailRegex = /^[^\s@]+@[^\s@]+$/;
 
@@ -86,7 +84,7 @@ export const MailTo = makeLinkType<{
         const i18n = useI18n();
 
         return (
-            <Grid>
+            <Layout.Columns>
                 <Field<string>
                     name="recipient"
                     initialValue={email?.recipient}
@@ -102,12 +100,10 @@ export const MailTo = makeLinkType<{
                 >{({input, meta}) => (
                         <div style={{ gridColumn: '1 / -1' }}>
                             <EditorEnvelope
-                                identifier={`Sitegeist-Archaeopteryx-Mailto-${input.name}`}
                                 label={i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:recipient.label')}
                                 editor={'Neos.Neos/Inspector/Editors/TextFieldEditor'}
-                                validationErrors={meta.dirty && meta.error ? [meta.error] : []}
-                                value={input.value}
-                                commit={input.onChange}
+                                input={input}
+                                meta={meta}
                             />
                         </div>
                 )}</Field>
@@ -118,12 +114,10 @@ export const MailTo = makeLinkType<{
                     >{({input, meta}) => (
                         <div style={{ gridColumn: '1 / -1' }}>
                             <EditorEnvelope
-                                identifier={`Sitegeist-Archaeopteryx-Mailto-${input.name}`}
                                 label={i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:subject.label')}
                                 editor={'Neos.Neos/Inspector/Editors/TextFieldEditor'}
-                                validationErrors={meta.dirty && meta.error ? [meta.error] : []}
-                                value={input.value}
-                                commit={input.onChange}
+                                input={input}
+                                meta={meta}
                             />
                         </div>
                     )}</Field>
@@ -142,15 +136,13 @@ export const MailTo = makeLinkType<{
                     >{({input, meta}) => (
                         <div style={{ gridColumn: '1 / -1' }}>
                             <EditorEnvelope
-                                identifier={`Sitegeist-Archaeopteryx-Mailto-${input.name}`}
                                 label={i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:cc.label')}
                                 editor={'Neos.Neos/Inspector/Editors/TextFieldEditor'}
-                                options={{
+                                editorOptions={{
                                     placeholder: i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:cc.placeholder')
                                 }}
-                                validationErrors={meta.dirty && meta.error ? [meta.error] : []}
-                                value={input.value}
-                                commit={input.onChange}
+                                input={input}
+                                meta={meta}
                             />
                         </div>
                     )}</Field>
@@ -169,15 +161,13 @@ export const MailTo = makeLinkType<{
                     >{({input, meta}) => (
                         <div style={{ gridColumn: '1 / -1' }}>
                             <EditorEnvelope
-                                identifier={`Sitegeist-Archaeopteryx-Mailto-${input.name}`}
                                 label={i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:bcc.label')}
                                 editor={'Neos.Neos/Inspector/Editors/TextFieldEditor'}
-                                options={{
+                                editorOptions={{
                                     placeholder: i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:bcc.placeholder')
                                 }}
-                                validationErrors={meta.dirty && meta.error ? [meta.error] : []}
-                                value={input.value}
-                                commit={input.onChange}
+                                input={input}
+                                meta={meta}
                             />
                         </div>
                     )}</Field>
@@ -189,17 +179,15 @@ export const MailTo = makeLinkType<{
                     >{({input, meta}) => (
                         <div style={{ gridColumn: '1 / -1' }}>
                             <EditorEnvelope
-                                identifier={`Sitegeist-Archaeopteryx-Mailto-${input.name}`}
                                 label={i18n('Sitegeist.Archaeopteryx:LinkTypes.MailTo:body.label')}
                                 editor={'Neos.Neos/Inspector/Editors/TextAreaEditor'}
-                                validationErrors={meta.dirty && meta.error ? [meta.error] : []}
-                                value={input.value}
-                                commit={input.onChange}
+                                input={input}
+                                meta={meta}
                             />
                         </div>
                     )}</Field>
                 ) : null}
-            </Grid>
+            </Layout.Columns>
         );
     }
 }));

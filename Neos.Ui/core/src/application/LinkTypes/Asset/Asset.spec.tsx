@@ -1,6 +1,7 @@
 jest.mock('@neos-project/neos-ui-backend-connector', () => ({}), { virtual: true });
 jest.mock('@neos-project/react-ui-components', () => ({}));
 jest.mock('@neos-project/neos-ui-redux-store', () => ({}), { virtual: true });
+jest.mock('@neos-project/neos-ui-editors', () => ({}), { virtual: true });
 
 jest.mock('../../../presentation', () => ({}));
 
