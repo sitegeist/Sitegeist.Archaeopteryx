@@ -1,10 +1,11 @@
+import * as React from 'react';
 import {useGlobalRegistry} from './GlobalRegistry';
 
 export function useI18n() {
     const globalRegistry = useGlobalRegistry();
     const i18nRegistry = globalRegistry.get('i18n');
 
-    return (
+    return React.useMemo(() => (
         idOrig: string,
         fallbackOrig?: string,
         params: Record<string, string> = {},
@@ -18,5 +19,5 @@ export function useI18n() {
         packageKeyOrig,
         sourceNameOrig,
         quantity
-    );
+    ), [i18nRegistry]);
 }

@@ -11,6 +11,8 @@ import {MediaBrowser} from './MediaBrowser';
 export const Asset = makeLinkType<{
     identifier: string
 }>('Sitegeist.Archaeopteryx:Asset', ({createError}) => ({
+    supportedLinkOptions: ['title', 'targetBlank', 'relNofollow'],
+
     isSuitableFor: link => link.href.startsWith('asset://'),
 
     useResolvedModel: link => {

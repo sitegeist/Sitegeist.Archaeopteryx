@@ -5,7 +5,7 @@ import {useGlobalRegistry} from '@sitegeist/archaeopteryx-neos-bridge';
 
 import {IProcess} from '../../framework';
 
-import {ILink} from './Link';
+import {ILink, ILinkOptions} from './Link';
 
 interface LinkTypeStaticProps<OptionsType extends object = {}> {
     link?: ILink
@@ -19,7 +19,7 @@ interface LinkTypeProps<ModelType = any, OptionsType extends object = {}> {
 
 export interface ILinkType<ModelType = any, OptionsType extends object = {}> {
     id: string
-    enableLinkOptionsWhenPossible: boolean
+    supportedLinkOptions: (keyof ILinkOptions)[]
     isSuitableFor: (link: ILink) => boolean
 
     useResolvedModel: (link: ILink) => IProcess<ModelType>
@@ -40,7 +40,7 @@ export function makeLinkType<ModelType = any, OptionsType extends object = {}>(
     id: string,
     createOptions: (factoryApi: ILinkTypeFactoryApi) => Object.Optional<
         Omit<ILinkType<ModelType, OptionsType>, 'id'>,
-        'enableLinkOptionsWhenPossible' | 'Icon' | 'Title' | 'LoadingPreview' | 'LoadingEditor'
+        'supportedLinkOptions' | 'Icon' | 'Title' | 'LoadingPreview' | 'LoadingEditor'
     >
 ): ILinkType<ModelType, OptionsType> {
     const createError = (message: string) => new Error(`[${id}]: ${message}`);
@@ -48,7 +48,7 @@ export function makeLinkType<ModelType = any, OptionsType extends object = {}>(
 
     return {
         id,
-        enableLinkOptionsWhenPossible: false,
+        supportedLinkOptions: [],
         ...options,
         LoadingPreview: options.LoadingPreview ?? (() => React.createElement(
             'div',

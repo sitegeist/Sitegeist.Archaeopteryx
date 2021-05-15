@@ -39,7 +39,7 @@
             <trans-unit id="options.label.targetBlank" xml:space="preserve" approved="yes">
                 <source>Open in new window</source>
             </trans-unit>
-            <trans-unit id="options.label.noFollow" xml:space="preserve" approved="yes">
+            <trans-unit id="options.label.relNofollow" xml:space="preserve" approved="yes">
                 <source>rel="nofollow"</source>
             </trans-unit>
         </body>

@@ -28,6 +28,8 @@ export const Node = makeLinkType<{
     baseNodeType: NodeTypeName
     loadingDepth: number
 }>('Sitegeist.Archaeopteryx:Node', ({createError}) => ({
+    supportedLinkOptions: ['title', 'targetBlank', 'relNofollow'],
+
     isSuitableFor: link => link.href.startsWith('node://'),
 
     useResolvedModel: link => {
@@ -100,9 +102,14 @@ export const Node = makeLinkType<{
         const loadingDepth = useConfiguration(c => c.nodeTree?.loadingDepth) ?? 4;
         const initialSearchTerm = useSelector(state => state.ui?.pageTree?.query) ?? '';
         const initialNodeTypeFilter = useSelector(state => state.ui?.pageTree?.filterNodeType) ?? '';
+        const rootNodeContextPath = React.useMemo(() => {
+            return options.startingPoint
+                ? siteNodeContextPath?.adopt(options.startingPoint) ?? siteNodeContextPath
+                : siteNodeContextPath;
+        }, [options.startingPoint, siteNodeContextPath]);
 
-        if (!siteNodeContextPath) {
-            throw createError('Could not load node tree, because siteNodeContextPath could not be determined.');
+        if (!rootNodeContextPath) {
+            throw createError('Could not load node tree, because rootNodeContextPath could not be determined.');
         } else if (!documentNodeContextPath) {
             throw createError('Could not load node tree, because documentNodeContextPath could not be determined.');
         } else {
@@ -120,9 +127,7 @@ export const Node = makeLinkType<{
                         configuration={{
                             baseNodeTypeName:
                                 options.baseNodeType as NodeTypeName ?? baseNodeTypeName,
-                            rootNodeContextPath: options.startingPoint
-                                ? siteNodeContextPath.adopt(options.startingPoint) ?? siteNodeContextPath
-                                : siteNodeContextPath,
+                            rootNodeContextPath,
                             documentNodeContextPath,
                             selectedNodeContextPath: input.value?.contextPath,
                             loadingDepth: options.loadingDepth ?? loadingDepth
@@ -134,7 +139,7 @@ export const Node = makeLinkType<{
                         initialSearchTerm={initialSearchTerm}
                         initialNodeTypeFilter={initialNodeTypeFilter}
                         onSelect={node =>{
-                            const cacheIdentifier = `${node.identifier}@${siteNodeContextPath.context}`;
+                            const cacheIdentifier = `${node.identifier}@${rootNodeContextPath.context}`;
                             nodeCache.set(cacheIdentifier, node);
                             input.onChange(node);
                         }}

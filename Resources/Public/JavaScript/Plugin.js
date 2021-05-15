@@ -25393,7 +25393,9 @@ var DialogWithEmptyValue = function DialogWithEmptyValue() {
                     TabHeader = _a.TabHeader;
                 return React.createElement(TabHeader, { options: (_c = (_b = editorOptions.linkTypes) === null || _b === void 0 ? void 0 : _b[id]) !== null && _c !== void 0 ? _c : {} });
             }, renderPanel: function renderPanel(linkType) {
-                return React.createElement("div", { style: { display: 'grid', gap: '16px' } }, React.createElement(LinkEditor_1.LinkEditor, { key: linkType.id, link: null, linkType: linkType }), enabledLinkOptions.length && linkType.enableLinkOptionsWhenPossible ? React.createElement(Settings_1.Settings, null) : null);
+                return React.createElement("div", { style: { display: 'grid', gap: '16px' } }, React.createElement(LinkEditor_1.LinkEditor, { key: linkType.id, link: null, linkType: linkType }), enabledLinkOptions.length && linkType.supportedLinkOptions.length ? React.createElement(Settings_1.Settings, { enabledLinkOptions: enabledLinkOptions.filter(function (option) {
+                        return linkType.supportedLinkOptions.includes(option);
+                    }) }) : null);
             }, onSwitchTab: input.onChange });
     });
 };
@@ -25421,7 +25423,9 @@ var DialogWithValue = function DialogWithValue(props) {
                 return React.createElement("div", { style: { display: 'grid', gap: '16px' } }, model ? React.createElement(presentation_1.Deletable, { onDelete: function onDelete() {
                         props.onDelete();
                         form.change('linkTypeProps', null);
-                    } }, React.createElement(Preview, { model: model, options: (_b = (_a = editorOptions.linkTypes) === null || _a === void 0 ? void 0 : _a[linkType.id]) !== null && _b !== void 0 ? _b : {}, link: props.value })) : null, React.createElement(LinkEditor_1.LinkEditor, { key: linkType.id, link: props.value, linkType: linkType }), enabledLinkOptions.length && linkType.enableLinkOptionsWhenPossible ? React.createElement(Settings_1.Settings, { initialValue: props.value.options }) : null);
+                    } }, React.createElement(Preview, { model: model, options: (_b = (_a = editorOptions.linkTypes) === null || _a === void 0 ? void 0 : _a[linkType.id]) !== null && _b !== void 0 ? _b : {}, link: props.value })) : null, React.createElement(LinkEditor_1.LinkEditor, { key: linkType.id, link: props.value, linkType: linkType }), enabledLinkOptions.length && linkType.supportedLinkOptions.length ? React.createElement(Settings_1.Settings, { initialValue: props.value.options, enabledLinkOptions: enabledLinkOptions.filter(function (option) {
+                        return linkType.supportedLinkOptions.includes(option);
+                    }) }) : null);
             } });
     });
 };
@@ -25565,19 +25569,19 @@ var archaeopteryx_neos_bridge_1 = __webpack_require__(/*! @sitegeist/archaeopter
 var Settings = function Settings(props) {
     var _a, _b, _c, _d;
     var i18n = archaeopteryx_neos_bridge_1.useI18n();
-    return React.createElement(presentation_1.Layout.Columns, null, React.createElement(react_final_form_1.Field, { name: "options.anchor", initialValue: (_a = props.initialValue) === null || _a === void 0 ? void 0 : _a.anchor }, function (_a) {
+    return React.createElement(presentation_1.Layout.Stack, null, props.enabledLinkOptions.includes('anchor') || props.enabledLinkOptions.includes('title') ? React.createElement(presentation_1.Layout.Columns, null, props.enabledLinkOptions.includes('anchor') ? React.createElement(react_final_form_1.Field, { name: "options.anchor", initialValue: (_a = props.initialValue) === null || _a === void 0 ? void 0 : _a.anchor }, function (_a) {
         var input = _a.input;
         return React.createElement("label", null, i18n('Sitegeist.Archaeopteryx:Main:options.label.anchor'), ":", React.createElement(react_ui_components_1.TextInput, __assign({ type: "text" }, input)));
-    }), React.createElement(react_final_form_1.Field, { name: "options.title", initialValue: (_b = props.initialValue) === null || _b === void 0 ? void 0 : _b.title }, function (_a) {
+    }) : null, props.enabledLinkOptions.includes('title') ? React.createElement(react_final_form_1.Field, { name: "options.title", initialValue: (_b = props.initialValue) === null || _b === void 0 ? void 0 : _b.title }, function (_a) {
         var input = _a.input;
         return React.createElement("label", null, i18n('Sitegeist.Archaeopteryx:Main:options.label.title'), ":", React.createElement(react_ui_components_1.TextInput, __assign({ type: "text" }, input)));
-    }), React.createElement(react_final_form_1.Field, { type: "checkbox", name: "options.targetBlank", initialValue: Boolean((_c = props.initialValue) === null || _c === void 0 ? void 0 : _c.targetBlank) }, function (_a) {
+    }) : null) : null, props.enabledLinkOptions.includes('targetBlank') || props.enabledLinkOptions.includes('relNofollow') ? React.createElement(presentation_1.Layout.Columns, null, props.enabledLinkOptions.includes('targetBlank') ? React.createElement(react_final_form_1.Field, { type: "checkbox", name: "options.targetBlank", initialValue: Boolean((_c = props.initialValue) === null || _c === void 0 ? void 0 : _c.targetBlank) }, function (_a) {
         var input = _a.input;
         return React.createElement("label", null, React.createElement(react_ui_components_1.CheckBox, { onChange: input.onChange, isChecked: input.checked }), i18n('Sitegeist.Archaeopteryx:Main:options.label.targetBlank'));
-    }), React.createElement(react_final_form_1.Field, { type: "checkbox", name: "options.relNoFollow", initialValue: Boolean((_d = props.initialValue) === null || _d === void 0 ? void 0 : _d.relNoFollow) }, function (_a) {
+    }) : null, props.enabledLinkOptions.includes('relNofollow') ? React.createElement(react_final_form_1.Field, { type: "checkbox", name: "options.relNoFollow", initialValue: Boolean((_d = props.initialValue) === null || _d === void 0 ? void 0 : _d.relNoFollow) }, function (_a) {
         var input = _a.input;
-        return React.createElement("label", null, React.createElement(react_ui_components_1.CheckBox, { onChange: input.onChange, isChecked: input.checked }), i18n('Sitegeist.Archaeopteryx:Main:options.label.noFollow'));
-    }));
+        return React.createElement("label", null, React.createElement(react_ui_components_1.CheckBox, { onChange: input.onChange, isChecked: input.checked }), i18n('Sitegeist.Archaeopteryx:Main:options.label.relNofollow'));
+    }) : null) : null);
 };
 exports.Settings = Settings;
 //# sourceMappingURL=Settings.js.map
@@ -25677,6 +25681,7 @@ var MediaBrowser_1 = __webpack_require__(/*! ./MediaBrowser */ "../core/lib/appl
 exports.Asset = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Asset', function (_a) {
     var createError = _a.createError;
     return {
+        supportedLinkOptions: ['title', 'targetBlank', 'relNofollow'],
         isSuitableFor: function isSuitableFor(link) {
             return link.href.startsWith('asset://');
         },
@@ -26125,6 +26130,7 @@ var nodeCache = new Map();
 exports.Node = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Node', function (_a) {
     var createError = _a.createError;
     return {
+        supportedLinkOptions: ['title', 'targetBlank', 'relNofollow'],
         isSuitableFor: function isSuitableFor(link) {
             return link.href.startsWith('node://');
         },
@@ -26211,8 +26217,12 @@ exports.Node = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Node', function (_
             var initialNodeTypeFilter = (_e = archaeopteryx_neos_bridge_1.useSelector(function (state) {
                 var _a, _b;return (_b = (_a = state.ui) === null || _a === void 0 ? void 0 : _a.pageTree) === null || _b === void 0 ? void 0 : _b.filterNodeType;
             })) !== null && _e !== void 0 ? _e : '';
-            if (!siteNodeContextPath) {
-                throw createError('Could not load node tree, because siteNodeContextPath could not be determined.');
+            var rootNodeContextPath = React.useMemo(function () {
+                var _a;
+                return options.startingPoint ? (_a = siteNodeContextPath === null || siteNodeContextPath === void 0 ? void 0 : siteNodeContextPath.adopt(options.startingPoint)) !== null && _a !== void 0 ? _a : siteNodeContextPath : siteNodeContextPath;
+            }, [options.startingPoint, siteNodeContextPath]);
+            if (!rootNodeContextPath) {
+                throw createError('Could not load node tree, because rootNodeContextPath could not be determined.');
             } else if (!documentNodeContextPath) {
                 throw createError('Could not load node tree, because documentNodeContextPath could not be determined.');
             } else {
@@ -26221,19 +26231,19 @@ exports.Node = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Node', function (_
                             return i18n('Sitegeist.Archaeopteryx:LinkTypes.Node:node.validation.required');
                         }
                     } }, function (_a) {
-                    var _b, _c, _d, _e;
+                    var _b, _c, _d;
                     var input = _a.input;
                     return React.createElement(archaeopteryx_custom_node_tree_1.NodeTree, { configuration: {
                             baseNodeTypeName: (_b = options.baseNodeType) !== null && _b !== void 0 ? _b : baseNodeTypeName,
-                            rootNodeContextPath: options.startingPoint ? (_c = siteNodeContextPath.adopt(options.startingPoint)) !== null && _c !== void 0 ? _c : siteNodeContextPath : siteNodeContextPath,
+                            rootNodeContextPath: rootNodeContextPath,
                             documentNodeContextPath: documentNodeContextPath,
-                            selectedNodeContextPath: (_d = input.value) === null || _d === void 0 ? void 0 : _d.contextPath,
-                            loadingDepth: (_e = options.loadingDepth) !== null && _e !== void 0 ? _e : loadingDepth
+                            selectedNodeContextPath: (_c = input.value) === null || _c === void 0 ? void 0 : _c.contextPath,
+                            loadingDepth: (_d = options.loadingDepth) !== null && _d !== void 0 ? _d : loadingDepth
                         }, options: {
                             enableSearch: true,
                             enableNodeTypeFilter: true
                         }, initialSearchTerm: initialSearchTerm, initialNodeTypeFilter: initialNodeTypeFilter, onSelect: function onSelect(node) {
-                            var cacheIdentifier = node.identifier + "@" + siteNodeContextPath.context;
+                            var cacheIdentifier = node.identifier + "@" + rootNodeContextPath.context;
                             nodeCache.set(cacheIdentifier, node);
                             input.onChange(node);
                         } });
@@ -26344,7 +26354,7 @@ var presentation_1 = __webpack_require__(/*! ../../../presentation */ "../core/l
 exports.Web = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Web', function (_a) {
     var createError = _a.createError;
     return {
-        enableLinkOptionsWhenPossible: true,
+        supportedLinkOptions: ['anchor', 'title', 'targetBlank', 'relNofollow'],
         isSuitableFor: function isSuitableFor(link) {
             var isHttp = link.href.startsWith('http://');
             var isHttps = link.href.startsWith('https://');
@@ -26812,7 +26822,7 @@ function makeLinkType(id, createOptions) {
         return new Error("[" + id + "]: " + message);
     };
     var options = createOptions({ createError: createError });
-    return __assign(__assign({ id: id, enableLinkOptionsWhenPossible: false }, options), { LoadingPreview: (_a = options.LoadingPreview) !== null && _a !== void 0 ? _a : function () {
+    return __assign(__assign({ id: id, supportedLinkOptions: [] }, options), { LoadingPreview: (_a = options.LoadingPreview) !== null && _a !== void 0 ? _a : function () {
             return React.createElement('div', {}, 'Loading...');
         }, LoadingEditor: (_b = options.LoadingEditor) !== null && _b !== void 0 ? _b : function () {
             return React.createElement('div', {}, 'Loading...');
@@ -30623,27 +30633,52 @@ exports.useSelector = useSelector;
 "use strict";
 
 
+var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function get() {
+            return m[k];
+        } });
+} : function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+var __setModuleDefault = undefined && undefined.__setModuleDefault || (Object.create ? function (o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+} : function (o, v) {
+    o["default"] = v;
+});
+var __importStar = undefined && undefined.__importStar || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) {
+        if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    }__setModuleDefault(result, mod);
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.useI18n = void 0;
+var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
 var GlobalRegistry_1 = __webpack_require__(/*! ./GlobalRegistry */ "../neos-bridge/lib/domain/Extensibility/GlobalRegistry.js");
 function useI18n() {
     var globalRegistry = GlobalRegistry_1.useGlobalRegistry();
     var i18nRegistry = globalRegistry.get('i18n');
-    return function (idOrig, fallbackOrig, params, packageKeyOrig, sourceNameOrig, quantity) {
-        if (params === void 0) {
-            params = {};
-        }
-        if (packageKeyOrig === void 0) {
-            packageKeyOrig = 'Neos.Neos';
-        }
-        if (sourceNameOrig === void 0) {
-            sourceNameOrig = 'Main';
-        }
-        if (quantity === void 0) {
-            quantity = 0;
-        }
-        return i18nRegistry.translate(idOrig, fallbackOrig, params, packageKeyOrig, sourceNameOrig, quantity);
-    };
+    return React.useMemo(function () {
+        return function (idOrig, fallbackOrig, params, packageKeyOrig, sourceNameOrig, quantity) {
+            if (params === void 0) {
+                params = {};
+            }
+            if (packageKeyOrig === void 0) {
+                packageKeyOrig = 'Neos.Neos';
+            }
+            if (sourceNameOrig === void 0) {
+                sourceNameOrig = 'Main';
+            }
+            if (quantity === void 0) {
+                quantity = 0;
+            }
+            return i18nRegistry.translate(idOrig, fallbackOrig, params, packageKeyOrig, sourceNameOrig, quantity);
+        };
+    }, [i18nRegistry]);
 }
 exports.useI18n = useI18n;
 //# sourceMappingURL=Translation.js.map

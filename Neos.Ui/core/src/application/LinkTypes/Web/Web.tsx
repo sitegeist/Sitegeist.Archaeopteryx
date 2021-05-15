@@ -13,7 +13,7 @@ export const Web = makeLinkType<{
     protocol: 'http' | 'https'
     urlWithoutProtocol: string
 }>('Sitegeist.Archaeopteryx:Web', ({createError}) => ({
-    enableLinkOptionsWhenPossible: true,
+    supportedLinkOptions: ['anchor', 'title', 'targetBlank', 'relNofollow'],
 
     isSuitableFor: link => {
         const isHttp = link.href.startsWith('http://');

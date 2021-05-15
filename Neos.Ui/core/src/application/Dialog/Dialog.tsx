@@ -123,8 +123,12 @@ const DialogWithEmptyValue: React.FC = () => {
                             linkType={linkType}
                         />
 
-                        {enabledLinkOptions.length && linkType.enableLinkOptionsWhenPossible ? (
-                            <Settings/>
+                        {enabledLinkOptions.length && linkType.supportedLinkOptions.length ? (
+                            <Settings
+                                enabledLinkOptions={enabledLinkOptions.filter(
+                                    option => linkType.supportedLinkOptions.includes(option)
+                                )}
+                            />
                         ) : null}
                     </div>
                 )}
@@ -183,8 +187,13 @@ const DialogWithValue: React.FC<{
                             linkType={linkType}
                         />
 
-                        {enabledLinkOptions.length && linkType.enableLinkOptionsWhenPossible ? (
-                            <Settings initialValue={props.value.options}/>
+                        {enabledLinkOptions.length && linkType.supportedLinkOptions.length ? (
+                            <Settings
+                                initialValue={props.value.options}
+                                enabledLinkOptions={enabledLinkOptions.filter(
+                                    option => linkType.supportedLinkOptions.includes(option)
+                                )}
+                            />
                         ) : null}
                     </div>
                 )}
