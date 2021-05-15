@@ -29206,7 +29206,7 @@ var InspectorEditor = function InspectorEditor(props) {
     if (linkType) {
         return React.createElement(InspectorEditorWithLinkType, { value: value, linkType: linkType, options: (_c = (_b = (_a = props.options) === null || _a === void 0 ? void 0 : _a.linkTypes) === null || _b === void 0 ? void 0 : _b[linkType.id]) !== null && _c !== void 0 ? _c : {}, editLink: editLink, commit: props.commit });
     } else if (Boolean(value) === false) {
-        return React.createElement(react_ui_components_1.Button, { onClick: editLink }, i18n('Sitegeist.Archaeopteryx:Main:inspector.create'));
+        return React.createElement(react_ui_components_1.Button, { onClick: editLink }, React.createElement(react_ui_components_1.Icon, { icon: "plus" }), "\xA0\xA0\xA0\xA0", i18n('Sitegeist.Archaeopteryx:Main:inspector.create'));
     } else {
         return React.createElement("div", null, i18n('Sitegeist.Archaeopteryx:Main:inspector.notfound', undefined, {
             href: JSON.stringify(value)

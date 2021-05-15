@@ -34,7 +34,7 @@
                 <source>e.g.: recipient1@example.com, recipient2@example.com, ...</source>
             </trans-unit>
             <trans-unit id="cc.validation.emaillist" xml:space="preserve" approved="yes">
-                <source>CC should be a comma-separated list of valid E-Mail Address</source>
+                <source>CC should be a comma-separated list of valid E-Mail Addresses</source>
             </trans-unit>
 
             <!-- BCC -->
@@ -45,7 +45,7 @@
                 <source>e.g.: recipient1@example.com, recipient2@example.com, ...</source>
             </trans-unit>
             <trans-unit id="bcc.validation.emaillist" xml:space="preserve" approved="yes">
-                <source>BCC should be a comma-separated list of valid E-Mail Address</source>
+                <source>BCC should be a comma-separated list of valid E-Mail Addresses</source>
             </trans-unit>
 
             <!-- Body -->

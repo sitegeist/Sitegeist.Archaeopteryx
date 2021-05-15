@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
-import {Button} from '@neos-project/react-ui-components';
+import {Button, Icon} from '@neos-project/react-ui-components';
 
 import {useI18n} from '@sitegeist/archaeopteryx-neos-bridge';
 import {ILinkType, useLinkTypeForHref, useEditorTransactions, Deletable} from '@sitegeist/archaeopteryx-core';
@@ -61,6 +61,8 @@ export const InspectorEditor: React.FC<Props> = props => {
     } else if (Boolean(value) === false) {
         return (
             <Button onClick={editLink}>
+                <Icon icon="plus"/>
+                &nbsp;&nbsp;&nbsp;&nbsp;
                 {i18n('Sitegeist.Archaeopteryx:Main:inspector.create')}
             </Button>
         );
