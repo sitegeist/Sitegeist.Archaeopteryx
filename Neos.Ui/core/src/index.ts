@@ -7,6 +7,5 @@ export {
     createEditor,
     EditorContext,
     useEditorState,
-    useEditorValue,
     useEditorTransactions
 } from './domain';

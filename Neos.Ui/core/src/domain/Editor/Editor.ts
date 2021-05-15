@@ -3,19 +3,17 @@ import {ActionType, getType} from 'typesafe-actions';
 import {BehaviorSubject, Subject} from 'rxjs';
 import {scan, shareReplay} from 'rxjs/operators';
 
-import {ILink} from '../Link';
+import {ILink, ILinkOptions} from '../Link';
+
 import * as actions from './EditorAction';
 
 export interface IEditorState {
-    enableOptions: boolean
+    enabledLinkOptions: (keyof ILinkOptions)[]
     editorOptions: {
         linkTypes?: Record<string, unknown>
     }
     isOpen: boolean
-    value: {
-        persistent: null | ILink
-        transient: null | ILink
-    }
+    initialValue:  null | ILink
 }
 
 type IEditorResult =
@@ -24,13 +22,10 @@ type IEditorResult =
 ;
 
 const initialState: IEditorState = {
-    enableOptions: false,
+    enabledLinkOptions: [],
     editorOptions: {},
     isOpen: false,
-    value: {
-        persistent: null,
-        transient: null
-    }
+    initialValue: null
 };
 
 export function editorReducer(
@@ -40,71 +35,13 @@ export function editorReducer(
     switch (action.type) {
         case getType(actions.EditorWasOpened):
             return {
-                enableOptions: action.payload.enableOptions,
-                editorOptions: action.payload.editorOptions,
-                isOpen: true,
-                value: {
-                    transient: action.payload.value,
-                    persistent: action.payload.value
-                }
+                ...action.payload,
+                isOpen: true
             };
         case getType(actions.EditorWasDismissed):
-            return {
-                ...state,
-                isOpen: false,
-                value: {
-                    transient: null,
-                    persistent: null
-                }
-            };
-        case getType(actions.ValueWasUpdated): {
-            const href = action.payload.href ?? state.value.transient?.href;
-            if (href) {
-                return {
-                    ...state,
-                    isOpen: true,
-                    value: {
-                        ...state.value,
-                        transient: {
-                            href,
-                            ...state.value.transient,
-                            ...action.payload
-                        }
-                    }
-                };
-            } else {
-                console.warn('[Sitegeist.Archaeopteryx]: Attempted value update without href');
-                return state;
-            }
-        }
-        case getType(actions.ValueWasUnset): {
-            return {
-                ...state,
-                isOpen: true,
-                value: {
-                    ...state.value,
-                    transient: null
-                }
-            };
-        }
-        case getType(actions.ValueWasReset):
-            return {
-                ...state,
-                isOpen: true,
-                value: {
-                    ...state.value,
-                    transient: state.value.persistent
-                }
-            };
+        case getType(actions.ValueWasUnset):
         case getType(actions.ValueWasApplied):
-            return {
-                ...state,
-                isOpen: false,
-                value: {
-                    transient: null,
-                    persistent: null
-                }
-            };
+            return initialState;
         default:
             return state;
     }
@@ -120,30 +57,25 @@ export function createEditor() {
         shareReplay(1)
     ).subscribe(state$);
 
-    const open = (
-        value: null | ILink,
-        enableOptions: boolean = false,
-        editorOptions: Record<string, unknown> = {}
-    ) => dispatch(
-        actions.EditorWasOpened(value, enableOptions, editorOptions)
-    );
     const dismiss = () => dispatch(actions.EditorWasDismissed());
-    const update = (value: Partial<ILink>) => dispatch(actions.ValueWasUpdated(value));
-    const reset = () => dispatch(actions.ValueWasReset());
     const unset = () => dispatch(actions.ValueWasUnset());
-    const apply = (value: null | ILink) => dispatch(actions.ValueWasApplied(value));
+    const apply = (value: ILink) => dispatch(actions.ValueWasApplied(value));
     const editLink = (
-        link: null | ILink,
-        enableOptions: boolean = false,
+        initialValue: null | ILink,
+        enabledLinkOptions: (keyof ILinkOptions)[] = [],
         editorOptions: Record<string, unknown> = {}
     ) => new Promise<IEditorResult>(
         resolve => {
-            open(link, enableOptions, editorOptions);
+            dispatch(
+                actions.EditorWasOpened(initialValue, enabledLinkOptions, editorOptions)
+            );
 
             actions$.subscribe(action => {
                 switch (action.type) {
                     case getType(actions.EditorWasDismissed):
                         return resolve({change: false});
+                    case getType(actions.ValueWasUnset):
+                        return resolve({change: true, value: null});
                     case getType(actions.ValueWasApplied):
                         return resolve({change: true, value: action.payload});
                     default:
@@ -155,7 +87,7 @@ export function createEditor() {
 
     return {
         state$,
-        tx: {dismiss, update, unset, reset, apply, editLink},
+        tx: {dismiss, unset, apply, editLink},
         initialState
     };
 }
@@ -174,13 +106,6 @@ export function useEditorState() {
     }, [state$]);
 
     return state;
-}
-
-export function useEditorValue() {
-    const {value: {persistent, transient}} = useEditorState();
-    const isDirty = persistent !== transient;
-
-    return {value: transient, isDirty};
 }
 
 export function useEditorTransactions() {

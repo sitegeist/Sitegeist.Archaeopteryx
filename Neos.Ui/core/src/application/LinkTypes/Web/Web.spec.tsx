@@ -2,10 +2,9 @@ jest.mock('@neos-project/neos-ui-backend-connector', () => ({}), { virtual: true
 jest.mock('@neos-project/react-ui-components', () => ({}));
 jest.mock('@neos-project/neos-ui-redux-store', () => ({}), { virtual: true });
 
-import '@testing-library/jest-dom/extend-expect';
+jest.mock('../../../presentation', () => ({}));
 
-import * as React from 'react';
-import {render, screen} from '@testing-library/react';
+import '@testing-library/jest-dom/extend-expect';
 
 import {Web} from './Web';
 

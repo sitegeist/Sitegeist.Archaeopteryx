@@ -37,7 +37,7 @@ export const InspectorEditor: React.FC<Props> = props => {
     const editLink = React.useCallback(async () => {
         const result = await tx.editLink(
             value === undefined ? null : {href: value},
-            false,
+            [],
             props.options ?? {}
         );
 

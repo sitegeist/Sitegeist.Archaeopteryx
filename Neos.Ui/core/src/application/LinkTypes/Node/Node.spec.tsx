@@ -3,6 +3,8 @@ jest.mock('@neos-project/react-ui-components', () => ({}));
 jest.mock('@sitegeist/archaeopteryx-custom-node-tree', () => ({}));
 jest.mock('@neos-project/neos-ui-redux-store', () => ({}), { virtual: true });
 
+jest.mock('../../../presentation', () => ({}));
+
 import '@testing-library/jest-dom/extend-expect';
 
 import {Node} from './Node';

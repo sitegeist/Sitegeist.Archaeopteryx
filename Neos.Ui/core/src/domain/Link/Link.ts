@@ -7,5 +7,5 @@ export interface ILinkOptions {
     anchor?: string
     title?: string
     targetBlank?: boolean
-    relNoFollow?: boolean
+    relNofollow?: boolean
 }

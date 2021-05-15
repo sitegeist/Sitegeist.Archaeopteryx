@@ -4,6 +4,7 @@ import {IconButton} from '@neos-project/react-ui-components';
 
 import {useEditorTransactions} from '@sitegeist/archaeopteryx-core';
 import {useI18n} from '@sitegeist/archaeopteryx-neos-bridge';
+import { ILinkOptions } from '@sitegeist/archaeopteryx-core/lib/domain';
 
 interface Props {
     inlineEditorOptions?: {
@@ -58,15 +59,36 @@ export const LinkButton: React.FC<Props> = props => {
                         anchor,
                         title: props.formattingUnderCursor.linkTitle,
                         targetBlank: props.formattingUnderCursor.linkTargetBlank,
-                        relNoFollow: props.formattingUnderCursor.linkRelNofollow
+                        relNofollow: props.formattingUnderCursor.linkRelNofollow
                     }
                 };
             }
 
             return null;
         })();
+        const enabledLinkOptions = (() => {
+            const enabledLinkOptions: (keyof ILinkOptions)[] = [];
 
-        const result = await tx.editLink(link, true, editorOptions);
+            if (props.inlineEditorOptions?.linking?.anchor) {
+                enabledLinkOptions.push('anchor');
+            }
+
+            if (props.inlineEditorOptions?.linking?.title) {
+                enabledLinkOptions.push('title');
+            }
+
+            if (props.inlineEditorOptions?.linking?.relNofollow) {
+                enabledLinkOptions.push('relNofollow');
+            }
+
+            if (props.inlineEditorOptions?.linking?.targetBlank) {
+                enabledLinkOptions.push('targetBlank');
+            }
+
+            return enabledLinkOptions;
+        })();
+
+        const result = await tx.editLink(link, enabledLinkOptions, editorOptions);
 
         if (result.change) {
             if (result.value === null) {
@@ -77,7 +99,7 @@ export const LinkButton: React.FC<Props> = props => {
             } else {
                 props.executeCommand('linkTitle', result.value.options?.title || false, false);
                 props.executeCommand('linkTargetBlank', result.value.options?.targetBlank ?? false, false);
-                props.executeCommand('linkRelNofollow', result.value.options?.relNoFollow ?? false, false);
+                props.executeCommand('linkRelNofollow', result.value.options?.relNofollow ?? false, false);
 
                 if (result.value.options?.anchor) {
                     props.executeCommand('link', `${result.value.href}#${result.value.options?.anchor}`, true);

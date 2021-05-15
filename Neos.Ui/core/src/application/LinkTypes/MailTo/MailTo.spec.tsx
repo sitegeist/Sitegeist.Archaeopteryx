@@ -3,6 +3,8 @@ jest.mock('@neos-project/react-ui-components', () => ({}));
 jest.mock('@neos-project/neos-ui-redux-store', () => ({}), { virtual: true });
 jest.mock('@neos-project/neos-ui-editors', () => ({}), { virtual: true });
 
+jest.mock('../../../presentation', () => ({}));
+
 import '@testing-library/jest-dom/extend-expect';
 
 import {MailTo} from './MailTo';

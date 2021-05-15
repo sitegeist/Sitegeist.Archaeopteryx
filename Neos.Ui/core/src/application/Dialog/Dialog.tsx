@@ -17,7 +17,7 @@ export const Dialog: React.FC = () => {
     const i18n = useI18n();
     const linkTypes = useLinkTypes();
     const {dismiss, apply} = useEditorTransactions();
-    const {isOpen, value} = useEditorState();
+    const {isOpen, initialValue} = useEditorState();
     const handleSubmit = React.useCallback((values: any) => {
         const linkType = linkTypes.find(linkType => linkType.id === values.linkTypeId);
         if (linkType) {
@@ -45,11 +45,11 @@ export const Dialog: React.FC = () => {
                     <Form<ILinkOptions> onSubmit={handleSubmit}>
                         {({handleSubmit, valid, dirty}) => (
                             <StyledForm
-                                renderBody={() => value.transient === null ? (
+                                renderBody={() => initialValue === null ? (
                                     <DialogWithEmptyValue />
                                 ) : (
                                     <DialogWithValue
-                                        value={value.transient!}
+                                        value={initialValue}
                                     />
                                 )}
                                 renderActions={() => (
@@ -80,7 +80,7 @@ export const Dialog: React.FC = () => {
 
 const DialogWithEmptyValue: React.FC = () => {
     const linkTypes = useLinkTypes();
-    const {enableOptions, editorOptions} = useEditorState();
+    const {enabledLinkOptions, editorOptions} = useEditorState();
 
     return (
         <Field name="linkTypeId" initialValue={linkTypes[0].id}>{({input}) => (
@@ -102,7 +102,7 @@ const DialogWithEmptyValue: React.FC = () => {
                             linkType={linkType}
                         />
 
-                        {enableOptions && linkType.enableLinkOptionsWhenPossible ? (
+                        {enabledLinkOptions.length && linkType.enableLinkOptionsWhenPossible ? (
                             <Settings/>
                         ) : null}
                     </div>
@@ -118,7 +118,7 @@ const DialogWithValue: React.FC<{
 }> = props => {
     const form = useForm();
     const {unset} = useEditorTransactions();
-    const {enableOptions, editorOptions} = useEditorState();
+    const {enabledLinkOptions, editorOptions} = useEditorState();
     const linkType = useLinkTypeForHref(props.value.href)!;
     const {result} = linkType.useResolvedModel(props.value);
     const {Preview} = linkType;
@@ -162,7 +162,7 @@ const DialogWithValue: React.FC<{
                             linkType={linkType}
                         />
 
-                        {enableOptions && linkType.enableLinkOptionsWhenPossible ? (
+                        {enabledLinkOptions.length && linkType.enableLinkOptionsWhenPossible ? (
                             <Settings initialValue={props.value.options}/>
                         ) : null}
                     </div>
