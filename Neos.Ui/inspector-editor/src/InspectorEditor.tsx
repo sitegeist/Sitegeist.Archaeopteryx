@@ -5,6 +5,7 @@ import {Button, Icon} from '@neos-project/react-ui-components';
 
 import {useI18n} from '@sitegeist/archaeopteryx-neos-bridge';
 import {ILinkType, useLinkTypeForHref, useEditorTransactions, Deletable} from '@sitegeist/archaeopteryx-core';
+import {ErrorBoundary} from '@sitegeist/archaeopteryx-error-handling';
 
 interface Props {
     neos: unknown
@@ -50,13 +51,16 @@ export const InspectorEditor: React.FC<Props> = props => {
 
     if (linkType) {
         return (
-            <InspectorEditorWithLinkType
-                value={value!}
-                linkType={linkType}
-                options={props.options?.linkTypes?.[linkType.id] ?? {}}
-                editLink={editLink}
-                commit={props.commit}
-            />
+            <ErrorBoundary>
+                <InspectorEditorWithLinkType
+                    key={linkType.id}
+                    value={value!}
+                    linkType={linkType}
+                    options={props.options?.linkTypes?.[linkType.id] ?? {}}
+                    editLink={editLink}
+                    commit={props.commit}
+                />
+            </ErrorBoundary>
         );
     } else if (Boolean(value) === false) {
         return (
@@ -72,6 +76,13 @@ export const InspectorEditor: React.FC<Props> = props => {
                 {i18n('Sitegeist.Archaeopteryx:Main:inspector.notfound', undefined, {
                     href: JSON.stringify(value)
                 })}
+                <br/>
+                <br/>
+                <Button onClick={editLink}>
+                    <Icon icon="plus"/>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    {i18n('Sitegeist.Archaeopteryx:Main:inspector.create')}
+                </Button>
             </div>
         );
     }

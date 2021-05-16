@@ -4,11 +4,12 @@ import {useKey} from 'react-use';
 
 import {Button} from '@neos-project/react-ui-components';
 
-import {useI18n} from '@sitegeist/archaeopteryx-neos-bridge';
+import {useI18n, useSelector} from '@sitegeist/archaeopteryx-neos-bridge';
+import {ErrorBoundary} from '@sitegeist/archaeopteryx-error-handling';
 
 import {Field} from '../../framework';
 import {ILink, ILinkOptions, useEditorState, useEditorTransactions, useLinkTypes, useLinkTypeForHref} from '../../domain';
-import {Form as StyledForm, Modal, Tabs, Deletable} from '../../presentation';
+import {Layout, Form as StyledForm, Modal, Tabs, Deletable} from '../../presentation';
 
 import {LinkEditor} from './LinkEditor';
 import {Settings} from './Settings';
@@ -16,6 +17,7 @@ import {Settings} from './Settings';
 export const Dialog: React.FC = () => {
     const i18n = useI18n();
     const linkTypes = useLinkTypes();
+    const isAuthenticated = useSelector(state => !state.system?.authenticationTimeout);
     const {dismiss, apply, unset} = useEditorTransactions();
     const {isOpen, initialValue} = useEditorState();
     const [valueWasDeleted, setValueWasDeleted] = React.useState(false);
@@ -28,7 +30,12 @@ export const Dialog: React.FC = () => {
             if (props) {
                 const link = {
                     ...linkType.convertModelToLink(props),
-                    options: values.options
+                    options: (Object.keys(values.options as ILinkOptions) as (keyof ILinkOptions)[])
+                        .filter(key => linkType.supportedLinkOptions.includes(key))
+                        .reduce((obj: ILinkOptions, key) => {
+                            obj[key] = values.options[key];
+                            return obj;
+                        }, {} as ILinkOptions)
                 };
                 apply(link);
                 setValueWasDeleted(false);
@@ -41,7 +48,7 @@ export const Dialog: React.FC = () => {
 
     useKey('Escape', dismiss);
 
-    if (isOpen) {
+    if (isOpen && isAuthenticated) {
         return (
             <Modal
                 renderTitle={() => (
@@ -49,42 +56,47 @@ export const Dialog: React.FC = () => {
                 )}
                 renderBody={() => (
                     <Form<ILinkOptions> onSubmit={handleSubmit}>
-                        {({handleSubmit, valid, dirty}) => (
-                            <StyledForm
-                                renderBody={() => initialValue === null || valueWasDeleted ? (
-                                    <DialogWithEmptyValue />
-                                ) : (
-                                    <DialogWithValue
-                                        value={initialValue}
-                                        onDelete={() => setValueWasDeleted(true)}
-                                    />
-                                )}
-                                renderActions={() => (
-                                    <>
-                                        <Button onClick={dismiss}>
-                                            {i18n('Sitegeist.Archaeopteryx:Main:dialog.action.cancel')}
-                                        </Button>
-                                        {!valid && valueWasDeleted ? (
-                                            <Button
-                                                style="success"
-                                                type="button"
-                                                onClick={unset}
-                                            >
-                                                {i18n('Sitegeist.Archaeopteryx:Main:dialog.action.apply')}
+                        {({handleSubmit, valid, dirty, values}) => (
+                            <ErrorBoundary>
+                                <StyledForm
+                                    renderBody={() => initialValue === null || valueWasDeleted ? (
+                                        <DialogWithEmptyValue
+                                            valid={valid}
+                                            onDelete={() => setValueWasDeleted(true)}
+                                        />
+                                    ) : (
+                                        <DialogWithValue
+                                            value={initialValue}
+                                            onDelete={() => setValueWasDeleted(true)}
+                                        />
+                                    )}
+                                    renderActions={() => (
+                                        <>
+                                            <Button onClick={dismiss}>
+                                                {i18n('Sitegeist.Archaeopteryx:Main:dialog.action.cancel')}
                                             </Button>
-                                        ) : (
-                                            <Button
-                                                style="success"
-                                                type="submit"
-                                                disabled={!valid || !dirty}
-                                            >
-                                                {i18n('Sitegeist.Archaeopteryx:Main:dialog.action.apply')}
-                                            </Button>
-                                        )}
-                                    </>
-                                )}
-                                onSubmit={handleSubmit}
-                            />
+                                            {(!valid || !dirty) && valueWasDeleted ? (
+                                                <Button
+                                                    style="success"
+                                                    type="button"
+                                                    onClick={unset}
+                                                >
+                                                    {i18n('Sitegeist.Archaeopteryx:Main:dialog.action.apply')}
+                                                </Button>
+                                            ) : (
+                                                <Button
+                                                    style="success"
+                                                    type="submit"
+                                                    disabled={!valid || !dirty}
+                                                >
+                                                    {i18n('Sitegeist.Archaeopteryx:Main:dialog.action.apply')}
+                                                </Button>
+                                            )}
+                                        </>
+                                    )}
+                                    onSubmit={handleSubmit}
+                                />
+                            </ErrorBoundary>
                         )}
                     </Form>
                 )}
@@ -99,7 +111,11 @@ export const Dialog: React.FC = () => {
     return null;
 };
 
-const DialogWithEmptyValue: React.FC = () => {
+const DialogWithEmptyValue: React.FC<{
+    valid: boolean
+    onDelete: () => void
+}> = props => {
+    const form = useForm();
     const linkTypes = useLinkTypes();
     const {enabledLinkOptions, editorOptions} = useEditorState();
 
@@ -115,23 +131,45 @@ const DialogWithEmptyValue: React.FC = () => {
                         options={editorOptions.linkTypes?.[id] as any ?? {}}
                     />
                 )}
-                renderPanel={linkType => (
-                    <div style={{ display: 'grid', gap: '16px' }}>
-                        <LinkEditor
-                            key={linkType.id}
-                            link={null}
-                            linkType={linkType}
-                        />
+                renderPanel={linkType => {
+                    const {Preview} = linkType;
+                    const model = form.getState().values.linkTypeProps?.[linkType.id.split('.').join('_')];
 
-                        {enabledLinkOptions.length && linkType.supportedLinkOptions.length ? (
-                            <Settings
-                                enabledLinkOptions={enabledLinkOptions.filter(
-                                    option => linkType.supportedLinkOptions.includes(option)
-                                )}
+                    return (
+                        <Layout.Stack>
+                            {props.valid && model ? (
+                                <Deletable
+                                    onDelete={() => {
+                                        props.onDelete();
+                                        form.change('linkTypeProps', null);
+                                    }}
+                                >
+                                    <ErrorBoundary>
+                                        <Preview
+                                            model={form.getState().values.linkTypeProps?.[linkType.id.split('.').join('_')]}
+                                            options={editorOptions.linkTypes?.[linkType.id] as any ?? {}}
+                                            link={{href: ''}}
+                                        />
+                                    </ErrorBoundary>
+                                </Deletable>
+                            ) : null}
+
+                            <LinkEditor
+                                key={linkType.id}
+                                link={null}
+                                linkType={linkType}
                             />
-                        ) : null}
-                    </div>
-                )}
+
+                            {enabledLinkOptions.length && linkType.supportedLinkOptions.length ? (
+                                <Settings
+                                    enabledLinkOptions={enabledLinkOptions.filter(
+                                        option => linkType.supportedLinkOptions.includes(option)
+                                    )}
+                                />
+                            ) : null}
+                        </Layout.Stack>
+                    )
+                }}
                 onSwitchTab={input.onChange}
             />
         )}</Field>
@@ -148,9 +186,9 @@ const DialogWithValue: React.FC<{
     const {result} = linkType.useResolvedModel(props.value);
     const {Preview} = linkType;
     const state = form.getState();
-    const model = state.valid
+    const model = (state.valid
         ? state.values.linkTypeProps?.[linkType.id.split('.').join('_')]
-        : result;
+        : result) ?? result;
 
     return (
         <Field name="linkTypeId" initialValue={linkType.id}>{() => (
@@ -165,7 +203,7 @@ const DialogWithValue: React.FC<{
                     />
                 )}
                 renderPanel={linkType => (
-                    <div style={{ display: 'grid', gap: '16px' }}>
+                    <Layout.Stack>
                         {model ? (
                             <Deletable
                                 onDelete={() => {
@@ -173,11 +211,13 @@ const DialogWithValue: React.FC<{
                                     form.change('linkTypeProps', null);
                                 }}
                             >
-                                <Preview
-                                    model={model}
-                                    options={editorOptions.linkTypes?.[linkType.id] as any ?? {}}
-                                    link={props.value}
-                                />
+                                <ErrorBoundary>
+                                    <Preview
+                                        model={model}
+                                        options={editorOptions.linkTypes?.[linkType.id] as any ?? {}}
+                                        link={props.value}
+                                    />
+                                </ErrorBoundary>
                             </Deletable>
                         ) : null}
 
@@ -195,7 +235,7 @@ const DialogWithValue: React.FC<{
                                 )}
                             />
                         ) : null}
-                    </div>
+                    </Layout.Stack>
                 )}
             />
         )}</Field>

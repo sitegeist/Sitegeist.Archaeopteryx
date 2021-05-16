@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {useAsync} from 'react-use';
+import {VError} from 'verror';
 
 import {Tree} from '@neos-project/react-ui-components';
 import {
@@ -13,6 +14,7 @@ import {
     useConfiguration,
     useNeos
 } from '@sitegeist/archaeopteryx-neos-bridge';
+import {ErrorBoundary} from '@sitegeist/archaeopteryx-error-handling';
 
 import {
     findNodeByContextPath,
@@ -64,7 +66,13 @@ function useCanBeLoadedFromUiState(configuration: Configuration) {
     ;
 }
 
-export const NodeTree: React.FC<Props> = props => {
+export const NodeTree: React.FC<Props> = props => (
+    <ErrorBoundary>
+        <NodeTreeWithoutErrorHandling {...props}/>
+    </ErrorBoundary>
+);
+
+const NodeTreeWithoutErrorHandling: React.FC<Props> = props => {
     const neos = useNeos();
     const nodeTypesRegistry = useNodeTypesRegistry();
     const [state, dispatch] = React.useReducer(
@@ -117,9 +125,7 @@ export const NodeTree: React.FC<Props> = props => {
 
     let main;
     if (initialize.error) {
-        console.warn('[Sitegeist.Archaeopteryx]: Could not load node tree, because:');
-        console.error(initialize.error);
-        main = (<div>An error occurred :(</div>);
+        throw new VError(initialize.error, 'NodeTree could not be loaded.');
     } else if (initialize.loading || !state.rootNode) {
         main = (<div>Loading...</div>);
     } else {

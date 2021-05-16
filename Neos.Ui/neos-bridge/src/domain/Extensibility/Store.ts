@@ -18,6 +18,9 @@ export interface IState {
             filterNodeType?: string
         }
     }
+    system?: {
+        authenticationTimeout?: boolean
+    }
 }
 
 export interface IStore {

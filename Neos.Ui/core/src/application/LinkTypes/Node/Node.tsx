@@ -28,7 +28,7 @@ export const Node = makeLinkType<{
     baseNodeType: NodeTypeName
     loadingDepth: number
 }>('Sitegeist.Archaeopteryx:Node', ({createError}) => ({
-    supportedLinkOptions: ['title', 'targetBlank', 'relNofollow'],
+    supportedLinkOptions: ['anchor', 'title', 'targetBlank', 'relNofollow'],
 
     isSuitableFor: link => link.href.startsWith('node://'),
 

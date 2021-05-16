@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import {ErrorBoundary} from '@sitegeist/archaeopteryx-error-handling';
+
 import {FieldGroup} from '../../framework';
 import {ILink, ILinkType, useEditorState} from '../../domain';
 
@@ -16,22 +18,20 @@ function useLastNonNull<V>(value: null | V) {
 export const LinkEditor: React.FC<{
     link: null | ILink
     linkType: ILinkType
-}> = props => {
-    if (props.link === null) {
-        return (
+}> = props => (
+    <ErrorBoundary>
+        {props.link === null ? (
             <LinkEditorWithoutValue
                 linkType={props.linkType}
             />
-        );
-    } else {
-        return (
+        ) : (
             <LinkEditorWithValue
                 link={props.link}
                 linkType={props.linkType}
             />
-        );
-    }
-};
+        )}
+    </ErrorBoundary>
+);
 
 const LinkEditorWithoutValue: React.FC<{
     linkType: ILinkType

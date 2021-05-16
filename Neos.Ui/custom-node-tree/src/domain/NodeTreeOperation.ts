@@ -1,4 +1,5 @@
 import {ActionType} from 'typesafe-actions';
+import {VError} from 'verror';
 
 import {q, INode, INodePartialForTree, INodeTypesRegistry, NodeTypeName, ContextPath, INeosContextProperties} from '@sitegeist/archaeopteryx-neos-bridge';
 
@@ -102,7 +103,7 @@ export async function loadNodeTree(
         n => n.contextPath.equals(nodeTreeConfiguration.rootNodeContextPath)
     );
     if (!rootNode) {
-        throw new Error(`Could not find root node: ${nodeTreeConfiguration.rootNodeContextPath}`);
+        throw new VError(`Could not find root node: ${nodeTreeConfiguration.rootNodeContextPath}`);
     }
 
     dispatch(actions.NodesWereLoaded(

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {Object} from 'ts-toolbelt';
+import {VError} from 'verror';
 
 import {useGlobalRegistry} from '@sitegeist/archaeopteryx-neos-bridge';
 
@@ -33,7 +34,7 @@ export interface ILinkType<ModelType = any, OptionsType extends object = {}> {
 }
 
 export interface ILinkTypeFactoryApi {
-    createError: (message: string) => Error
+    createError: (message: string, cause?: Error) => Error
 }
 
 export function makeLinkType<ModelType = any, OptionsType extends object = {}>(
@@ -43,7 +44,10 @@ export function makeLinkType<ModelType = any, OptionsType extends object = {}>(
         'supportedLinkOptions' | 'Icon' | 'Title' | 'LoadingPreview' | 'LoadingEditor'
     >
 ): ILinkType<ModelType, OptionsType> {
-    const createError = (message: string) => new Error(`[${id}]: ${message}`);
+    const createError = (message: string, cause?: Error) => cause
+        ? new VError(cause, `[${id}]: ${message}`)
+        : new VError(`[${id}]: ${message}`)
+    ;
     const options = createOptions({createError});
 
     return {
