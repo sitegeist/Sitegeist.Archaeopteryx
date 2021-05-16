@@ -20,6 +20,6 @@ export const Deletable: React.FC<{
 }> = props => (
     <Container>
         <div>{props.children}</div>
-        <StyledIconButton icon="times" hoverStyle="error" onClick={props.onDelete}/>
+        <StyledIconButton icon="trash" hoverStyle="error" onClick={props.onDelete}/>
     </Container>
 )

@@ -27252,13 +27252,41 @@ var __makeTemplateObject = undefined && undefined.__makeTemplateObject || functi
     }
     return cooked;
 };
+var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function get() {
+            return m[k];
+        } });
+} : function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+var __setModuleDefault = undefined && undefined.__setModuleDefault || (Object.create ? function (o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+} : function (o, v) {
+    o["default"] = v;
+});
+var __importStar = undefined && undefined.__importStar || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) {
+        if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    }__setModuleDefault(result, mod);
+    return result;
+};
 var __importDefault = undefined && undefined.__importDefault || function (mod) {
     return mod && mod.__esModule ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CardSubTitle = void 0;
+var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
 var styled_components_1 = __importDefault(__webpack_require__(/*! styled-components */ "../../node_modules/styled-components/dist/styled-components.browser.esm.js"));
-exports.CardSubTitle = styled_components_1.default.span(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n    display: flex;\n    align-items: center;\n    overflow: hidden;\n    white-space: nowrap;\n    text-overflow: ellipsis;\n    line-height: 1;\n    font-size: 12px;\n    color: #999;\n    grid-column: 1 / span 2;\n    grid-row: 2 / span 1;\n"], ["\n    display: flex;\n    align-items: center;\n    overflow: hidden;\n    white-space: nowrap;\n    text-overflow: ellipsis;\n    line-height: 1;\n    font-size: 12px;\n    color: #999;\n    grid-column: 1 / span 2;\n    grid-row: 2 / span 1;\n"])));
+var Ellipsis_1 = __webpack_require__(/*! ./Ellipsis */ "../core/lib/presentation/Ellipsis.js");
+var Container = styled_components_1.default.span(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n    display: flex;\n    align-items: center;\n    line-height: 1;\n    font-size: 12px;\n    color: #999;\n    grid-column: 1 / span 2;\n    grid-row: 2 / span 1;\n    min-width: 0;\n"], ["\n    display: flex;\n    align-items: center;\n    line-height: 1;\n    font-size: 12px;\n    color: #999;\n    grid-column: 1 / span 2;\n    grid-row: 2 / span 1;\n    min-width: 0;\n"])));
+var CardSubTitle = function CardSubTitle(props) {
+    return React.createElement(Container, null, React.createElement(Ellipsis_1.Ellipsis, null, props.children));
+};
+exports.CardSubTitle = CardSubTitle;
 var templateObject_1;
 //# sourceMappingURL=CardSubTitle.js.map
 
@@ -27282,15 +27310,43 @@ var __makeTemplateObject = undefined && undefined.__makeTemplateObject || functi
     }
     return cooked;
 };
+var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function get() {
+            return m[k];
+        } });
+} : function (o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+});
+var __setModuleDefault = undefined && undefined.__setModuleDefault || (Object.create ? function (o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+} : function (o, v) {
+    o["default"] = v;
+});
+var __importStar = undefined && undefined.__importStar || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) {
+        if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    }__setModuleDefault(result, mod);
+    return result;
+};
 var __importDefault = undefined && undefined.__importDefault || function (mod) {
     return mod && mod.__esModule ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CardTitle = void 0;
+var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
 var styled_components_1 = __importDefault(__webpack_require__(/*! styled-components */ "../../node_modules/styled-components/dist/styled-components.browser.esm.js"));
-exports.CardTitle = styled_components_1.default.span(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n    display: flex;\n    align-items: center;\n    overflow: hidden;\n    white-space: nowrap;\n    text-overflow: ellipsis;\n    line-height: 1;\n    grid-column: 2 / span 1;\n    grid-row: 1 / span ", ";\n    font-size: 14px;\n    color: #FFF;\n"], ["\n    display: flex;\n    align-items: center;\n    overflow: hidden;\n    white-space: nowrap;\n    text-overflow: ellipsis;\n    line-height: 1;\n    grid-column: 2 / span 1;\n    grid-row: 1 / span ", ";\n    font-size: 14px;\n    color: #FFF;\n"])), function (props) {
+var Ellipsis_1 = __webpack_require__(/*! ./Ellipsis */ "../core/lib/presentation/Ellipsis.js");
+var Container = styled_components_1.default.span(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n    display: flex;\n    align-items: center;\n    line-height: 1;\n    grid-column: 2 / span 1;\n    grid-row: 1 / span ", ";\n    font-size: 14px;\n    color: #FFF;\n    min-width: 0;\n"], ["\n    display: flex;\n    align-items: center;\n    line-height: 1;\n    grid-column: 2 / span 1;\n    grid-row: 1 / span ", ";\n    font-size: 14px;\n    color: #FFF;\n    min-width: 0;\n"])), function (props) {
     return props.span;
 });
+var CardTitle = function CardTitle(props) {
+    return React.createElement(Container, { span: props.span }, React.createElement(Ellipsis_1.Ellipsis, null, props.children));
+};
+exports.CardTitle = CardTitle;
 var templateObject_1;
 //# sourceMappingURL=CardTitle.js.map
 
@@ -27347,11 +27403,41 @@ var react_ui_components_1 = __webpack_require__(/*! @neos-project/react-ui-compo
 var Container = styled_components_1.default.div(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n    display: grid;\n    grid-template-columns: 1fr 40px;\n    justify-content: stretch;\n    border: 1px solid #3f3f3f;\n    max-width: 420px;\n"], ["\n    display: grid;\n    grid-template-columns: 1fr 40px;\n    justify-content: stretch;\n    border: 1px solid #3f3f3f;\n    max-width: 420px;\n"])));
 var StyledIconButton = styled_components_1.default(react_ui_components_1.IconButton)(templateObject_2 || (templateObject_2 = __makeTemplateObject(["\n    height: 100%;\n"], ["\n    height: 100%;\n"])));
 var Deletable = function Deletable(props) {
-    return React.createElement(Container, null, React.createElement("div", null, props.children), React.createElement(StyledIconButton, { icon: "times", hoverStyle: "error", onClick: props.onDelete }));
+    return React.createElement(Container, null, React.createElement("div", null, props.children), React.createElement(StyledIconButton, { icon: "trash", hoverStyle: "error", onClick: props.onDelete }));
 };
 exports.Deletable = Deletable;
 var templateObject_1, templateObject_2;
 //# sourceMappingURL=Deletable.js.map
+
+/***/ }),
+
+/***/ "../core/lib/presentation/Ellipsis.js":
+/*!********************************************!*\
+  !*** ../core/lib/presentation/Ellipsis.js ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __makeTemplateObject = undefined && undefined.__makeTemplateObject || function (cooked, raw) {
+    if (Object.defineProperty) {
+        Object.defineProperty(cooked, "raw", { value: raw });
+    } else {
+        cooked.raw = raw;
+    }
+    return cooked;
+};
+var __importDefault = undefined && undefined.__importDefault || function (mod) {
+    return mod && mod.__esModule ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Ellipsis = void 0;
+var styled_components_1 = __importDefault(__webpack_require__(/*! styled-components */ "../../node_modules/styled-components/dist/styled-components.browser.esm.js"));
+exports.Ellipsis = styled_components_1.default.span(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n    display: block;\n    overflow: hidden;\n    white-space: nowrap;\n    text-overflow: ellipsis;\n"], ["\n    display: block;\n    overflow: hidden;\n    white-space: nowrap;\n    text-overflow: ellipsis;\n"])));
+var templateObject_1;
+//# sourceMappingURL=Ellipsis.js.map
 
 /***/ }),
 
