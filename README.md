@@ -6,9 +6,27 @@
   <img width="290" height="240" src="./archaeopteryx.svg">
 </p>
 
+<p align="center">
+  <img src="./Docs/Demo.gif">
+</p>
+
 ## ⚠⚠⚠ Still under development ⚠⚠⚠
 
 This package is still under development. This message will disappear once the package is ready for testing.
+
+### Authors & Sponsors
+
+* Wilhelm Behncke - behncke@sitegeist.de
+* Martin Ficzel - ficzel@sitegeist.de
+
+*The development and the public-releases of this package was generously sponsored
+by our customer https://www.cornelsen.de and our employer https://www.sitegeist.de.*
+
+## Installation
+
+```
+composer require sitegeist/archaeopteryx
+```
 
 ## Links in Rich Text
 
