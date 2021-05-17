@@ -10,9 +10,9 @@
   <img src="./Docs/Demo.gif">
 </p>
 
-## ⚠⚠⚠ Still under development ⚠⚠⚠
+## ⚠⚠⚠ Currently in alpha ⚠⚠⚠
 
-This package is still under development. This message will disappear once the package is ready for testing.
+This package is currently being tested. Do not use it in production yet! This message will disappear once the package is ready for release.
 
 ### Authors & Sponsors
 
@@ -257,6 +257,11 @@ To enable or disable certain Link Options generally, you can use the `linking` s
               relNofollow: true
               targetBlank: true
 ```
+
+
+## Contribution
+
+We will gladly accept contributions. Please send us pull requests.
 
 ## LICENSE
 
