@@ -1,1 +1,1 @@
-export {ErrorBoundary} from './application';
+export {ErrorBoundary, decodeError} from './application';

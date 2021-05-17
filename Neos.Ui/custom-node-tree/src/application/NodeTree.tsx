@@ -14,7 +14,7 @@ import {
     useConfiguration,
     useNeos
 } from '@sitegeist/archaeopteryx-neos-bridge';
-import {ErrorBoundary} from '@sitegeist/archaeopteryx-error-handling';
+import {ErrorBoundary, decodeError} from '@sitegeist/archaeopteryx-error-handling';
 
 import {
     findNodeByContextPath,
@@ -125,7 +125,10 @@ const NodeTreeWithoutErrorHandling: React.FC<Props> = props => {
 
     let main;
     if (initialize.error) {
-        throw new VError(initialize.error, 'NodeTree could not be loaded.');
+        throw new VError(
+            decodeError(initialize.error),
+            'NodeTree could not be loaded.'
+        );
     } else if (initialize.loading || !state.rootNode) {
         main = (<div>Loading...</div>);
     } else {

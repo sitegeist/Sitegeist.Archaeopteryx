@@ -30,12 +30,14 @@ export const Dialog: React.FC = () => {
             if (props) {
                 const link = {
                     ...linkType.convertModelToLink(props),
-                    options: (Object.keys(values.options as ILinkOptions) as (keyof ILinkOptions)[])
-                        .filter(key => linkType.supportedLinkOptions.includes(key))
-                        .reduce((obj: ILinkOptions, key) => {
-                            obj[key] = values.options[key];
-                            return obj;
-                        }, {} as ILinkOptions)
+                    options: values.options
+                        ? (Object.keys(values.options as ILinkOptions) as (keyof ILinkOptions)[])
+                            .filter(key => linkType.supportedLinkOptions.includes(key))
+                            .reduce((obj: ILinkOptions, key) => {
+                                obj[key] = values.options[key];
+                                return obj;
+                            }, {} as ILinkOptions)
+                        : {}
                 };
                 apply(link);
                 setValueWasDeleted(false);

@@ -5,7 +5,7 @@ import {Button, Icon} from '@neos-project/react-ui-components';
 
 import {useI18n} from '@sitegeist/archaeopteryx-neos-bridge';
 import {ILinkType, useLinkTypeForHref, useEditorTransactions, Deletable} from '@sitegeist/archaeopteryx-core';
-import {ErrorBoundary} from '@sitegeist/archaeopteryx-error-handling';
+import {ErrorBoundary, decodeError} from '@sitegeist/archaeopteryx-error-handling';
 
 interface Props {
     neos: unknown
@@ -129,7 +129,7 @@ const InspectorEditorWithLinkType: React.FC<{
     const {Preview, LoadingPreview} = props.linkType;
 
     if (error) {
-        throw error;
+        throw decodeError(error);
     }
 
     return (
