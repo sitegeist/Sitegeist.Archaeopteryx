@@ -28,25 +28,23 @@ Sitegeist.Archaeopteryx is fully backwards-compatible. You don't have to worry a
 
 ## Link in Inspector properties
 
-<p align="center">
-  <table>
-    <tbody>
-      <tr>
-        <td rowspan="2">
-          <img src="Docs/Inspector%20-%20empty.png">
-        </td>
-        <td>
-          <img src="Docs/Inspector%20-%20document.png">
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <img src="Docs/Inspector%20-%20asset.png">
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</p>
+<table align="center">
+  <tbody>
+    <tr>
+      <td rowspan="2">
+        <img src="Docs/Inspector%20-%20empty.png">
+      </td>
+      <td>
+        <img src="Docs/Inspector%20-%20document.png">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <img src="Docs/Inspector%20-%20asset.png">
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 Besides the integration with the Rich Text editor toolbar, Sitegeist.Archaeopteryx also provides an Inspector Editor that can be used as a replacement for `Neos.Neos/Inspector/Editors/LinkEditor`.
 
