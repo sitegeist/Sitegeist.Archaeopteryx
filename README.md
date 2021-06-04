@@ -24,8 +24,8 @@ by our customer https://www.cornelsen.de and our employer https://www.sitegeist.
 
 ## Installation
 
-```
-composer require sitegeist/archaeopteryx
+```bash
+composer require sitegeist/archaeopteryx:dev-main
 ```
 
 ## Links in Rich Text
