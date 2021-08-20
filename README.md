@@ -10,10 +10,6 @@
   <img src="./Docs/Demo.gif">
 </p>
 
-## ⚠⚠⚠ Currently in alpha ⚠⚠⚠
-
-This package is currently being tested. Do not use it in production yet! This message will disappear once the package is ready for release.
-
 ### Authors & Sponsors
 
 * Wilhelm Behncke - behncke@sitegeist.de
@@ -25,7 +21,7 @@ by our customer https://www.cornelsen.de and our employer https://www.sitegeist.
 ## Installation
 
 ```bash
-composer require sitegeist/archaeopteryx:dev-main
+composer require sitegeist/archaeopteryx
 ```
 
 ## Links in Rich Text
