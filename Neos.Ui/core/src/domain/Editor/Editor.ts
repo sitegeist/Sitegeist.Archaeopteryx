@@ -10,7 +10,7 @@ import * as actions from './EditorAction';
 export interface IEditorState {
     enabledLinkOptions: (keyof ILinkOptions)[]
     editorOptions: {
-        linkTypes?: Record<string, unknown>
+        linkTypes?: Record<string, any | unknown>
     }
     isOpen: boolean
     initialValue:  null | ILink
