@@ -63,4 +63,13 @@ describe('LinkType: Asset', () => {
         expect(Asset.isSuitableFor(link))
             .toBe(false);
     });
+
+    it('is not satisfied by tel: links', () => {
+        const link = {
+            href: 'tel:+491258795857'
+        };
+
+        expect(Asset.isSuitableFor(link))
+            .toBe(false);
+    });
 });

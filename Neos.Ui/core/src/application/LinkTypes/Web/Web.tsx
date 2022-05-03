@@ -6,23 +6,26 @@ import {SelectBox, TextInput} from '@neos-project/react-ui-components';
 import {useI18n} from '@sitegeist/archaeopteryx-neos-bridge';
 
 import {Process, Field} from '../../../framework';
-import {makeLinkType} from '../../../domain';
+import {ILink, makeLinkType} from '../../../domain';
 import {IconCard, IconLabel} from '../../../presentation';
+import { Nullable } from 'ts-toolbelt/out/Union/Nullable';
 
-export const Web = makeLinkType<{
+type WebLinkModel = {
     protocol: 'http' | 'https'
     urlWithoutProtocol: string
-}>('Sitegeist.Archaeopteryx:Web', ({createError}) => ({
+}
+
+export const Web = makeLinkType<WebLinkModel>('Sitegeist.Archaeopteryx:Web', ({createError}) => ({
     supportedLinkOptions: ['anchor', 'title', 'targetBlank', 'relNofollow'],
 
-    isSuitableFor: link => {
+    isSuitableFor: (link: ILink) => {
         const isHttp = link.href.startsWith('http://');
         const isHttps = link.href.startsWith('https://');
 
         return isHttp || isHttps;
     },
 
-    useResolvedModel: link => {
+    useResolvedModel: (link: ILink) => {
         const matches = link.href.match(/^(https?):\/\/(.*)$/);
         if (matches) {
             const [, protocol, urlWithoutProtocol] = matches;
@@ -38,7 +41,7 @@ export const Web = makeLinkType<{
         );
     },
 
-    convertModelToLink: model => ({
+    convertModelToLink:(model: WebLinkModel) => ({
         href: `${model.protocol}://${model.urlWithoutProtocol}`
     }),
 
@@ -52,14 +55,14 @@ export const Web = makeLinkType<{
         );
     },
 
-    Preview: ({model}) => (
+    Preview: ({model}: {model: WebLinkModel}) => (
         <IconCard
             icon="external-link"
             title={`${model.protocol}://${model.urlWithoutProtocol}`}
         />
     ),
 
-    Editor: ({model}) => {
+    Editor: ({model}: {model: Nullable<WebLinkModel>}) => {
         const i18n = useI18n();
         const form = useForm();
         const prefix = `linkTypeProps.Sitegeist_Archaeopteryx:Web`;

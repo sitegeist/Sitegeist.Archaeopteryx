@@ -5,6 +5,7 @@ import {Web} from './Web';
 import {Node} from './Node';
 import {Asset} from './Asset';
 import {MailTo} from './MailTo';
+import { PhoneNumber } from './PhoneNumber';
 
 export function registerLinkTypes(globalRegistry: IGlobalRegistry): void {
     const linkTypeRegistry = new SynchronousRegistry(`
@@ -15,6 +16,7 @@ export function registerLinkTypes(globalRegistry: IGlobalRegistry): void {
     linkTypeRegistry.set(Node.id, Node);
     linkTypeRegistry.set(Asset.id, Asset);
     linkTypeRegistry.set(MailTo.id, MailTo);
+    linkTypeRegistry.set(PhoneNumber.id, PhoneNumber);
 
     globalRegistry.set('@sitegeist/archaeopteryx/link-types', linkTypeRegistry);
 }

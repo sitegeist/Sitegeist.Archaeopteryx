@@ -3,28 +3,34 @@ import * as React from 'react';
 import {useI18n} from '@sitegeist/archaeopteryx-neos-bridge';
 
 import {Process, Field, EditorEnvelope} from '../../../framework';
-import {makeLinkType} from '../../../domain';
+import {ILink, makeLinkType} from '../../../domain';
 import {IconCard, Layout, IconLabel} from '../../../presentation';
+import { OptionalDeep } from 'ts-toolbelt/out/Object/Optional';
+import { Nullable } from 'ts-toolbelt/out/Union/Nullable';
 
 const simpleEmailRegex = /^[^\s@]+@[^\s@]+$/;
 
-export const MailTo = makeLinkType<{
+type MailToLinkModel = {
     recipient: string
     subject?: string
     cc?: string
     bcc?: string
     body?: string
-}, {
+}
+
+type MailToOptions = {
     enabledFields: {
         subject: boolean
         cc: boolean
         bcc: boolean
         body: boolean
     }
-}>('Sitegeist.Archaeopteryx:MailTo', () => ({
-    isSuitableFor: link => link.href.startsWith('mailto:'),
+}
 
-    useResolvedModel: link => {
+export const MailTo = makeLinkType<MailToLinkModel, MailToOptions>('Sitegeist.Archaeopteryx:MailTo', () => ({
+    isSuitableFor: (link: ILink) => link.href.startsWith('mailto:'),
+
+    useResolvedModel:  (link: ILink) => {
         const url = new URL(link.href);
 
         return Process.success({
@@ -36,7 +42,7 @@ export const MailTo = makeLinkType<{
         });
     },
 
-    convertModelToLink: email => {
+    convertModelToLink: (email:MailToLinkModel) => {
         const url = new URL(`mailto:${email.recipient}`);
 
         if (email.subject) {
@@ -68,7 +74,7 @@ export const MailTo = makeLinkType<{
         );
     },
 
-    Preview: ({model: email}) => (
+    Preview: ({model: email}: {model: MailToLinkModel}) => (
         <IconCard
             icon="envelope"
             title={email.recipient}
@@ -80,7 +86,7 @@ export const MailTo = makeLinkType<{
         />
     ),
 
-    Editor: ({model: email, options}) => {
+    Editor: ({model: email, options}: {model: Nullable<MailToLinkModel>, options: OptionalDeep<MailToOptions>}) => {
         const i18n = useI18n();
 
         return (
