@@ -255,6 +255,48 @@ To enable or disable certain Link Options generally, you can use the `linking` s
 ```
 
 
+## Disabling Link Type Editors
+
+It is possible to disable one or more link type editors via the configuration for the inspector as well as for inline editable content elements. To achieve this, you use the `enabled` key for the specific link type editor in the `linkTypes` section. The default for this key is `true`.
+
+### RTE Configuration
+
+```yaml
+'Vendor.Site:MyAwesomeNodeTypeWithSomeRichText':
+  # ...
+  properties:
+    text:
+      type: string
+      ui:
+        inlineEditable: true
+        inline:
+          editorOptions:
+            # ..
+            linking:
+              'Sitegeist.Archaeopteryx':
+                linkTypes:
+                  'Sitegeist.Archaeopteryx:MailTo':
+                    enabled: false
+```
+
+### Inspector Editor Configuration
+
+```yaml
+'Vendor.Site:MyAwesomeNodeTypeWithALinkProperty':
+  # ...
+  properties:
+    link:
+      type: string
+      ui:
+        inspector:
+          # ...
+          editor: 'Sitegeist.Archaeopteryx/Inspector/Editors/LinkEditor'
+          editorOptions:
+            linkTypes:
+              'Sitegeist.Archaeopteryx:MailTo':
+                enabled: false
+```
+
 ## Contribution
 
 We will gladly accept contributions. Please send us pull requests.

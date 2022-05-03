@@ -120,12 +120,13 @@ const DialogWithEmptyValue: React.FC<{
     const form = useForm();
     const linkTypes = useLinkTypes();
     const {enabledLinkOptions, editorOptions} = useEditorState();
+    const filteredLinkTypes = linkTypes.filter(linkType => editorOptions.linkTypes?.[linkType.id] && Object.keys(editorOptions.linkTypes?.[linkType.id]).includes('enabled') ? editorOptions.linkTypes?.[linkType.id].enabled : true);
 
     return (
         <Field name="linkTypeId" initialValue={linkTypes[0].id}>{({input}) => (
             <Tabs
                 lazy
-                from={linkTypes}
+                from={filteredLinkTypes}
                 activeItemKey={input.value}
                 getKey={linkType => linkType.id}
                 renderHeader={({id, TabHeader}) => (

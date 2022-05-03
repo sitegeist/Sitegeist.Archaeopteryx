@@ -1,8 +1,9 @@
 {
     "name": "@sitegeist/archaeopteryx-neos-bridge",
-    "license": "GNU GPLv3",
+    "license": "GPL-3.0-or-later",
     "version": "0.0.0",
     "main": "./lib/index.js",
+    "types": "./lib/index.d.ts",
     "scripts": {
         "build": "rm -rf lib && tsc -p tsconfig.build.json",
         "watch": "tsc -w -p tsconfig.build.json"
