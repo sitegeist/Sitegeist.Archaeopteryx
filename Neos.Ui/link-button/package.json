@@ -3,6 +3,7 @@
     "license": "MIT",
     "version": "0.0.0",
     "main": "./lib/index.js",
+    "types": "./lib/index.d.ts",
     "scripts": {
         "build": "rm -rf lib && tsc -p tsconfig.build.json",
         "watch": "tsc -w -p tsconfig.build.json"
