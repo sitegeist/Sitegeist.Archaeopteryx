@@ -212,6 +212,14 @@ The `Mail To` Link Type can be configured as follows:
                   body: true
 ```
 
+### Phone Number
+
+<p align="center">
+  <img src="./Docs/Phone Number.png" width="700">
+</p>
+
+The `Phone Number` link type handles phone links, wich start with `tel:` and allow to start a call. In the editor one selects the country calling code and add the rest of the phone number via an input field. To make it easier to check the added phone number, it is auto formatted  in the preview according to the selected country.
+
 ## Link Options
 
 <p align="center">
