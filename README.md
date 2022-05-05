@@ -238,13 +238,13 @@ The `Phone Number` link type handles phone links, which start with `tel:` and al
             linking:
               'Sitegeist.Archaeopteryx':
                 linkTypes:
-              'Sitegeist.Archaeopteryx:PhoneNumber':
-                defaultCountry: FR
-                favoredCountries:
-                  - DE
-                  - AT
-                  - CH
-                  - FR
+                  'Sitegeist.Archaeopteryx:PhoneNumber':
+                    defaultCountry: FR
+                    favoredCountries:
+                      - DE
+                      - AT
+                      - CH
+                      - FR
 ```
 
 ```yaml
