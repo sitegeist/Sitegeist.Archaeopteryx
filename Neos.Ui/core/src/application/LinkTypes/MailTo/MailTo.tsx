@@ -27,10 +27,15 @@ type MailToOptions = {
     }
 }
 
-export const MailTo = makeLinkType<MailToLinkModel, MailToOptions>('Sitegeist.Archaeopteryx:MailTo', () => ({
+export const MailTo = makeLinkType<MailToLinkModel, MailToOptions>('Sitegeist.Archaeopteryx:MailTo', ({createError}) => ({
     isSuitableFor: (link: ILink) => link.href.startsWith('mailto:'),
 
     useResolvedModel:  (link: ILink) => {
+        if (!link.href.startsWith('mailto:')) {
+            return Process.error(
+                createError(`Cannot handle href "${link.href}".`)
+            );
+        }
         const url = new URL(link.href);
 
         return Process.success({
