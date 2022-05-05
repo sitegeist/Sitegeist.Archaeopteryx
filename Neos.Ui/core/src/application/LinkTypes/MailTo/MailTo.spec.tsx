@@ -64,4 +64,13 @@ describe('LinkType: MailTo', () => {
         expect(MailTo.isSuitableFor(link))
             .toBe(false);
     });
+
+    it('is not satisfied by tel: links', () => {
+        const link = {
+            href: 'tel:+491258795857'
+        };
+
+        expect(MailTo.isSuitableFor(link))
+            .toBe(false);
+    });
 });

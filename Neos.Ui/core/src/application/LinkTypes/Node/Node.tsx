@@ -16,23 +16,28 @@ import {
 import {NodeTree} from '@sitegeist/archaeopteryx-custom-node-tree';
 
 import {Process, Field} from '../../../framework';
-import {makeLinkType} from '../../../domain';
+import {ILink, makeLinkType} from '../../../domain';
 import {IconCard, IconLabel} from '../../../presentation';
+import { Nullable } from 'ts-toolbelt/out/Union/Nullable';
+import { OptionalDeep } from 'ts-toolbelt/out/Object/Optional';
 
 const nodeCache = new Map<string, INodePartialForTree>();
 
-export const Node = makeLinkType<{
+type NodeLinkModel = {
     node: INodePartialForTree
-}, {
+}
+type NodeLinkOptions = {
     startingPoint: string
     baseNodeType: NodeTypeName
     loadingDepth: number
-}>('Sitegeist.Archaeopteryx:Node', ({createError}) => ({
+}
+
+export const Node = makeLinkType<NodeLinkModel, NodeLinkOptions>('Sitegeist.Archaeopteryx:Node', ({createError}) => ({
     supportedLinkOptions: ['anchor', 'title', 'targetBlank', 'relNofollow'],
 
-    isSuitableFor: link => link.href.startsWith('node://'),
+    isSuitableFor: (link: ILink) => link.href.startsWith('node://'),
 
-    useResolvedModel: link => {
+    useResolvedModel: (link: ILink) => {
         const siteNodeContextPath = useSiteNodeContextPath();
         const asyncState = useAsync(async () => {
             if (!siteNodeContextPath) {
@@ -67,7 +72,7 @@ export const Node = makeLinkType<{
         return Process.fromAsyncState(asyncState);
     },
 
-    convertModelToLink: ({node}) => ({
+    convertModelToLink: ({node}: NodeLinkModel) => ({
         href: `node://${node.identifier}`
     }),
 
@@ -81,7 +86,7 @@ export const Node = makeLinkType<{
         );
     },
 
-    Preview: ({model: {node}}) =>  {
+    Preview: ({model: {node}}: {model: NodeLinkModel}) =>  {
         const nodeSummary = useNodeSummary(node.identifier!);
         const nodeType = useNodeType(node.nodeType ?? NodeTypeName('Neos.Neos:Document'));
 
@@ -94,7 +99,7 @@ export const Node = makeLinkType<{
         );
     },
 
-    Editor: ({model, options}) => {
+    Editor: ({model, options}: {model: Nullable<NodeLinkModel>, options: OptionalDeep<NodeLinkOptions>}) => {
         const i18n = useI18n();
         const siteNodeContextPath = useSiteNodeContextPath();
         const documentNodeContextPath = useDocumentNodeContextPath();

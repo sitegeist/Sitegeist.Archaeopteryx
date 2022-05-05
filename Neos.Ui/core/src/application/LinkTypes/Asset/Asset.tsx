@@ -3,19 +3,22 @@ import * as React from 'react';
 import {useAssetSummary, useI18n} from '@sitegeist/archaeopteryx-neos-bridge';
 
 import {Process, Field} from '../../../framework';
-import {makeLinkType} from '../../../domain';
+import {ILink, makeLinkType} from '../../../domain';
 import {ImageCard, IconLabel} from '../../../presentation';
 
 import {MediaBrowser} from './MediaBrowser';
+import { Nullable } from 'ts-toolbelt/out/Union/Nullable';
 
-export const Asset = makeLinkType<{
+type AssetLinkModel = {
     identifier: string
-}>('Sitegeist.Archaeopteryx:Asset', ({createError}) => ({
+}
+
+export const Asset = makeLinkType<AssetLinkModel>('Sitegeist.Archaeopteryx:Asset', ({createError}) => ({
     supportedLinkOptions: ['title', 'targetBlank', 'relNofollow'],
 
-    isSuitableFor: link => link.href.startsWith('asset://'),
+    isSuitableFor: (link: ILink) => link.href.startsWith('asset://'),
 
-    useResolvedModel: link => {
+    useResolvedModel: (link: ILink) => {
         const match = /asset:\/\/(.*)/.exec(link.href);
 
         if (match) {
@@ -27,7 +30,7 @@ export const Asset = makeLinkType<{
         );
     },
 
-    convertModelToLink: asset => ({
+    convertModelToLink: (asset: AssetLinkModel) => ({
         href: `asset://${asset.identifier}`
     }),
 
@@ -41,8 +44,8 @@ export const Asset = makeLinkType<{
         );
     },
 
-    Preview: props => {
-        const asset = useAssetSummary(props.model.identifier);
+    Preview: ({model}: {model: AssetLinkModel}) => {
+        const asset = useAssetSummary(model.identifier);
 
         if (!asset.value) {
             return null;
@@ -56,13 +59,13 @@ export const Asset = makeLinkType<{
         );
     },
 
-    Editor: props => {
+    Editor: ({model}: {model: Nullable<AssetLinkModel>}) => {
         const i18n = useI18n();
 
         return (
             <Field
                 name="identifier"
-                initialValue={props.model?.identifier}
+                initialValue={model?.identifier}
                 validate={value => {
                     if (!value) {
                         return i18n('Sitegeist.Archaeopteryx:LinkTypes.Asset:identifier.validation.required');

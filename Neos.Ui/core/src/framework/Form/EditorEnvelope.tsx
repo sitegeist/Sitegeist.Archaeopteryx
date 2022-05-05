@@ -21,7 +21,7 @@ export const EditorEnvelope: React.FC<{
 }> = props => (
     <IsolationLayer>
         <NeosEditorEnvelope
-            identifier={`Sitegeist-Archaeopteryx-Mailto-${props.input.name}`}
+            identifier={`Sitegeist-Archaeopteryx-${props.input.name}`}
             label={props.label}
             editor={props.editor}
             options={props.editorOptions}
