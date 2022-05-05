@@ -1,6 +1,6 @@
 {
     "name": "@sitegeist/archaeopteryx-core",
-    "license": "GNU GPLv3",
+    "license": "GPL-3.0-or-later",
     "version": "0.0.0",
     "main": "./lib/index.js",
     "scripts": {

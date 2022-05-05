@@ -16,7 +16,7 @@
 * Martin Ficzel - ficzel@sitegeist.de
 
 *The development and the public-releases of this package was generously sponsored
-by our customer https://www.cornelsen.de and our employer https://www.sitegeist.de.*
+by our customer [https://www.cornelsen.de](https://www.cornelsen.de) and our employer [https://www.sitegeist.de](https://www.sitegeist.de).*
 
 ## Installation
 
@@ -99,6 +99,7 @@ The `Document` Link Type handles internal links. The editor offers you a documen
 The `Document` Link Type can be configured as follows:
 
 **RTE Configuration:**
+
 ```yaml
 'Vendor.Site:MyAwesomeNodeTypeWithSomeRichText':
   # ...
@@ -130,6 +131,7 @@ The `Document` Link Type can be configured as follows:
 ```
 
 **Inspector Editor Configuration:**
+
 ```yaml
 'Vendor.Site:MyAwesomeNodeTypeWithALinkProperty':
   # ...
@@ -169,6 +171,7 @@ The editor for the `Mail To` Link Type will offer all of those fields. Each fiel
 The `Mail To` Link Type can be configured as follows:
 
 **RTE Configuration:**
+
 ```yaml
 'Vendor.Site:MyAwesomeNodeTypeWithSomeRichText':
   # ...
@@ -192,6 +195,7 @@ The `Mail To` Link Type can be configured as follows:
 ```
 
 **Inspector Editor Configuration:**
+
 ```yaml
 'Vendor.Site:MyAwesomeNodeTypeWithALinkProperty':
   # ...
@@ -218,7 +222,51 @@ The `Mail To` Link Type can be configured as follows:
   <img src="./Docs/Phone Number.png" width="700">
 </p>
 
-The `Phone Number` link type handles phone links, wich start with `tel:` and allow to start a call. In the editor one selects the country calling code and add the rest of the phone number via an input field. To make it easier to check the added phone number, it is auto formatted  in the preview according to the selected country.
+The `Phone Number` link type handles phone links, which start with `tel:` and allow to start a call. In the editor one selects the country calling code and add the rest of the phone number via an input field. To make it easier to check the added phone number, it is auto formatted  in the preview according to the selected country. Via the the node type configuration you can define a `defaultCountry` and an array of `favoredCountries`. The `defaultCountry` is used to prefill the country calling code for new links. The values from the `favoredCountries` array are used to define a list of preferred countries, which will be placed at the top of the selectable country calling codes in the editor. The used values are ISO 3166-1 alpha-2 ([wikipedia](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)) country codes. Both configuration settings are placed in the `linking` respectively `linkTypes` section of the `editorOptions`:
+
+```yaml
+'Vendor.Site:MyAwesomeNodeTypeWithSomeRichText':
+  # ...
+  properties:
+    text:
+      type: string
+      ui:
+        inlineEditable: true
+        inline:
+          editorOptions:
+            # ..
+            linking:
+              'Sitegeist.Archaeopteryx':
+                linkTypes:
+              'Sitegeist.Archaeopteryx:PhoneNumber':
+                defaultCountry: FR
+                favoredCountries:
+                  - DE
+                  - AT
+                  - CH
+                  - FR
+```
+
+```yaml
+'Vendor.Site:MyAwesomeNodeTypeWithALinkProperty':
+  # ...
+  properties:
+    link:
+      type: string
+      ui:
+        inspector:
+          # ...
+          editor: 'Sitegeist.Archaeopteryx/Inspector/Editors/LinkEditor'
+          editorOptions:
+            linkTypes:
+              'Sitegeist.Archaeopteryx:PhoneNumber':
+                defaultCountry: FR
+                favoredCountries:
+                  - DE
+                  - AT
+                  - CH
+                  - FR
+```
 
 ## Link Options
 
@@ -261,7 +309,6 @@ To enable or disable certain Link Options generally, you can use the `linking` s
               relNofollow: true
               targetBlank: true
 ```
-
 
 ## Disabling Link Type Editors
 
