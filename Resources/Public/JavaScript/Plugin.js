@@ -42589,7 +42589,7 @@ var DialogWithValue = function DialogWithValue(props) {
                 var modelFromState = (_a = form.getState().values.linkTypeProps) === null || _a === void 0 ? void 0 : _a[linkType.id.split('.').join('_')];
                 var Preview = linkType.Preview;
                 var model = modelFromState;
-                if (!modelFromState || linkType.id === 'Sitegeist.Archaeopteryx:Web' && !(modelFromState === null || modelFromState === void 0 ? void 0 : modelFromState.urlWithoutProtocol)) {
+                if (!modelFromState || linkType.id === 'Sitegeist.Archaeopteryx:Web' && !(modelFromState === null || modelFromState === void 0 ? void 0 : modelFromState.urlWithoutProtocol) || linkType.id === 'Sitegeist.Archaeopteryx:PhoneNumber' && !(modelFromState === null || modelFromState === void 0 ? void 0 : modelFromState.phoneNumber)) {
                     Preview = exitingPreview;
                     model = existingModel;
                 }
