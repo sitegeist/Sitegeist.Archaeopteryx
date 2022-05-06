@@ -9,7 +9,7 @@ import {ErrorBoundary} from '@sitegeist/archaeopteryx-error-handling';
 
 import {Field} from '../../framework';
 import {ILink, ILinkOptions, useEditorState, useEditorTransactions, useLinkTypes, useLinkTypeForHref} from '../../domain';
-import {Layout, Form as StyledForm, Modal, Tabs, Deletable} from '../../presentation';
+import {Layout, Form as StyledForm, Modal, Tabs, Deletable as Deletable} from '../../presentation';
 
 import {LinkEditor} from './LinkEditor';
 import {Settings} from './Settings';
@@ -187,59 +187,71 @@ const DialogWithValue: React.FC<{
     const {enabledLinkOptions, editorOptions} = useEditorState();
     const linkType = useLinkTypeForHref(props.value.href)!;
     const {result} = linkType.useResolvedModel(props.value);
-    const {Preview} = linkType;
+    const exitingPreview = linkType.Preview;
     const state = form.getState();
-    const model = (state.valid
+    const existingModel = (state.valid
         ? state.values.linkTypeProps?.[linkType.id.split('.').join('_')]
         : result) ?? result;
+    const linkTypes = useLinkTypes();
+    const filteredLinkTypes = linkTypes.filter(linkType => editorOptions.linkTypes?.[linkType.id] && Object.keys(editorOptions.linkTypes?.[linkType.id]).includes('enabled') ? editorOptions.linkTypes?.[linkType.id].enabled : true);
 
     return (
-        <Field name="linkTypeId" initialValue={linkType.id}>{() => (
+        <Field name="linkTypeId" initialValue={linkType.id}>{({input}) => (
             <Tabs
                 lazy
-                from={[linkType]}
-                activeItemKey={linkType.id}
+                from={filteredLinkTypes}
+                activeItemKey={input.value || linkType.id}
                 getKey={linkType => linkType.id}
                 renderHeader={({id, TabHeader}) => (
                     <TabHeader
                         options={editorOptions.linkTypes?.[id] as any ?? {}}
                     />
                 )}
-                renderPanel={linkType => (
-                    <Layout.Stack>
-                        {model ? (
-                            <Deletable
-                                onDelete={() => {
-                                    props.onDelete();
-                                    form.change('linkTypeProps', null);
-                                }}
-                            >
-                                <ErrorBoundary>
-                                    <Preview
-                                        model={model}
-                                        options={editorOptions.linkTypes?.[linkType.id] as any ?? {}}
-                                        link={props.value}
-                                    />
-                                </ErrorBoundary>
-                            </Deletable>
-                        ) : null}
+                renderPanel={linkType => {
+                    const modelFromState = form.getState().values.linkTypeProps?.[linkType.id.split('.').join('_')]
+                    let Preview = linkType.Preview;
+                    let model = modelFromState;
+                    if (!modelFromState || (linkType.id === 'Sitegeist.Archaeopteryx:Web' && !modelFromState?.urlWithoutProtocol) || (linkType.id === 'Sitegeist.Archaeopteryx:PhoneNumber' && !modelFromState?.phoneNumber)) {
+                        Preview = exitingPreview;
+                        model = existingModel;
+                    }
 
-                        <LinkEditor
-                            key={linkType.id}
-                            link={props.value}
-                            linkType={linkType}
-                        />
+                    return (
+                        <Layout.Stack>
+                            {model ? (
+                                <Deletable
+                                    onDelete={() => {
+                                        props.onDelete();
+                                        form.change('linkTypeProps', null);
+                                    }}
+                                >
+                                    <ErrorBoundary>
+                                        <Preview
+                                            model={model}
+                                            options={editorOptions.linkTypes?.[linkType.id] as any ?? {}}
+                                            link={props.value}
+                                        />
+                                    </ErrorBoundary>
+                                </Deletable>
+                            ) : null}
 
-                        {enabledLinkOptions.length && linkType.supportedLinkOptions.length ? (
-                            <Settings
-                                initialValue={props.value.options}
-                                enabledLinkOptions={enabledLinkOptions.filter(
-                                    option => linkType.supportedLinkOptions.includes(option)
-                                )}
+                            <LinkEditor
+                                key={linkType.id}
+                                link={linkType.isSuitableFor(props.value) ? props.value : null}
+                                linkType={linkType}
                             />
-                        ) : null}
-                    </Layout.Stack>
-                )}
+
+                            {enabledLinkOptions.length && linkType.supportedLinkOptions.length ? (
+                                <Settings
+                                    initialValue={props.value.options}
+                                    enabledLinkOptions={enabledLinkOptions.filter(
+                                        option => linkType.supportedLinkOptions.includes(option)
+                                    )}
+                                />
+                            ) : null}
+                        </Layout.Stack>
+                )}}
+                onSwitchTab={input.onChange}
             />
         )}</Field>
     );
