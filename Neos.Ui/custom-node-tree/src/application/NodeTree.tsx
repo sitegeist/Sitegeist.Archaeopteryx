@@ -44,6 +44,7 @@ interface Props {
 interface Configuration {
     rootNodeContextPath: ContextPath
     baseNodeTypeName: NodeTypeName
+    allowedNodeTypes: NodeTypeName[]
     loadingDepth: number
     documentNodeContextPath: ContextPath
     selectedNodeContextPath?: ContextPath
@@ -104,7 +105,8 @@ const NodeTreeWithoutErrorHandling: React.FC<Props> = props => {
             props.configuration.baseNodeTypeName,
             props.configuration.rootNodeContextPath,
             props.initialSearchTerm,
-            props.initialNodeTypeFilter
+            props.initialNodeTypeFilter,
+            props.configuration.allowedNodeTypes
         ]
     );
     const selectedNode = React.useMemo(
@@ -122,7 +124,6 @@ const NodeTreeWithoutErrorHandling: React.FC<Props> = props => {
         [state.nodesByContextPath, state.nodesByState.uncollapsed, nodeTypesRegistry, dispatch]
     );
     const handleClick = (node: INodePartialForTree) => props.onSelect(node);
-
     let main;
     if (initialize.error) {
         throw new VError(
@@ -142,6 +143,7 @@ const NodeTreeWithoutErrorHandling: React.FC<Props> = props => {
                     level={1}
                     onToggle={handleToggle}
                     onClick={handleClick}
+                    allowedNodeTypes={props.configuration.allowedNodeTypes}
                 />
             </Tree>
         );

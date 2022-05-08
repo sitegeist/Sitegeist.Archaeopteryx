@@ -128,6 +128,7 @@ The `Document` Link Type can be configured as follows:
                     startingPoint: '/sites/vendor-site/node-40up2e13w4fd9' # Default: current site node
                     baseNodeType: 'Vendor.Site' # default: Neos.Neos:Document
                     loadingDepth: 8 # default: 4
+                    allowedNodeTypes: ['Vendor.Site:Mixin.ReferenceableDocument'] # a list of allowed linkable node types or super types
 ```
 
 **Inspector Editor Configuration:**
@@ -148,6 +149,7 @@ The `Document` Link Type can be configured as follows:
                 startingPoint: '/sites/vendor-site/node-40up2e13w4fd9' # Default: current site node
                 baseNodeType: 'Vendor.Site' # default: Neos.Neos:Document
                 loadingDepth: 8 # default: 4
+                allowedNodeTypes: ['Vendor.Site:Mixin.ReferenceableDocument',] # a list of allowed linkable node types or super types
 ```
 
 ### Asset
