@@ -40,7 +40,7 @@ export const NodeTreeNode: React.FC<Props> = props => {
         [props.node, props.selectedNode]
     );
 
-    const notSelectable = !props.allowedNodeTypes.reduce((acc, current) => acc || nodeTypesRegistry?.isOfType(props.node.nodeType, current), false);
+    const notSelectable = props.allowedNodeTypes && !props.allowedNodeTypes.reduce((acc, current) => acc || nodeTypesRegistry?.isOfType(props.node.nodeType, current), false);
 
     return (
         <Tree.Node>

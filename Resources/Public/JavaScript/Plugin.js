@@ -45595,7 +45595,7 @@ var NodeTreeNode = function NodeTreeNode(props) {
     var isSelected = React.useMemo(function () {
         return props.selectedNode && props.node.contextPath.equals(props.selectedNode.contextPath);
     }, [props.node, props.selectedNode]);
-    var notSelectable = !props.allowedNodeTypes.reduce(function (acc, current) {
+    var notSelectable = props.allowedNodeTypes && !props.allowedNodeTypes.reduce(function (acc, current) {
         return acc || (nodeTypesRegistry === null || nodeTypesRegistry === void 0 ? void 0 : nodeTypesRegistry.isOfType(props.node.nodeType, current));
     }, false);
     return React.createElement(react_ui_components_1.Tree.Node, null, React.createElement(react_ui_components_1.Tree.Node.Header, { labelIdentifier: 'labelIdentifier', id: props.node.contextPath, hasChildren: props.node.children.length > 0, isLastChild: true, isCollapsed: isCollapsed, isActive: isSelected, isFocused: isSelected, isLoading: isLoading, isDirty: false, isHidden: props.node.properties._hidden, isHiddenInIndex: props.node.properties._hiddenInIndex, isDragging: false, hasError: false, label: props.node.label, icon: notSelectable ? 'fas fa-unlink' : (_a = nodeType === null || nodeType === void 0 ? void 0 : nodeType.ui) === null || _a === void 0 ? void 0 : _a.icon, iconLabel: nodeType === null || nodeType === void 0 ? void 0 : nodeType.label, level: props.level, onToggle: handleNodeToggle, onClick: notSelectable ? function () {} : handleNodeClick, dragForbidden: true, title: props.node.label }), isCollapsed ? null : domain_1.findChildNodesForNode(props.state, props.node).map(function (childNode) {
