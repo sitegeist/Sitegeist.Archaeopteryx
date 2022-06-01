@@ -41,7 +41,7 @@ export async function loadNodeTreeFromUiState(
         })).filter(node => {
             return node.contextPath && Boolean(nodeTypesRegistry?.isOfType(
                 node.nodeType,
-                nodeTreeConfiguration.baseNodeTypeName
+                nodeTreeConfiguration.baseNodeTypeName,
             ));
         }) as INode[];
 

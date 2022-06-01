@@ -43298,9 +43298,9 @@ var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@n
 var react_use_1 = __webpack_require__(/*! react-use */ "../../node_modules/react-use/esm/index.js");
 var archaeopteryx_neos_bridge_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-neos-bridge */ "../neos-bridge/lib/index.js");
 var archaeopteryx_custom_node_tree_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-custom-node-tree */ "../custom-node-tree/lib/index.js");
-var framework_1 = __webpack_require__(/*! ../../../framework */ "../core/lib/framework/index.js");
 var domain_1 = __webpack_require__(/*! ../../../domain */ "../core/lib/domain/index.js");
 var presentation_1 = __webpack_require__(/*! ../../../presentation */ "../core/lib/presentation/index.js");
+var framework_1 = __webpack_require__(/*! ../../../framework */ "../core/lib/framework/index.js");
 var nodeCache = new Map();
 exports.Node = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Node', function (_a) {
     var createError = _a.createError;
@@ -43358,9 +43358,7 @@ exports.Node = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Node', function (_
         },
         convertModelToLink: function convertModelToLink(_a) {
             var node = _a.node;
-            return {
-                href: "node://" + node.identifier
-            };
+            return { href: "node://" + node.identifier };
         },
         TabHeader: function TabHeader() {
             var i18n = archaeopteryx_neos_bridge_1.useI18n();
@@ -43410,6 +43408,7 @@ exports.Node = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Node', function (_
                     var input = _a.input;
                     return React.createElement(archaeopteryx_custom_node_tree_1.NodeTree, { configuration: {
                             baseNodeTypeName: (_b = options.baseNodeType) !== null && _b !== void 0 ? _b : baseNodeTypeName,
+                            allowedNodeTypes: options.allowedNodeTypes,
                             rootNodeContextPath: rootNodeContextPath,
                             documentNodeContextPath: documentNodeContextPath,
                             selectedNodeContextPath: (_c = input.value) === null || _c === void 0 ? void 0 : _c.contextPath,
@@ -45473,7 +45472,7 @@ var NodeTreeWithoutErrorHandling = function NodeTreeWithoutErrorHandling(props) 
                 }
             });
         });
-    }, [neos, canbeLoadedFromUiState, props.configuration.baseNodeTypeName, props.configuration.rootNodeContextPath, props.initialSearchTerm, props.initialNodeTypeFilter]);
+    }, [neos, canbeLoadedFromUiState, props.configuration.baseNodeTypeName, props.configuration.rootNodeContextPath, props.initialSearchTerm, props.initialNodeTypeFilter, props.configuration.allowedNodeTypes]);
     var selectedNode = React.useMemo(function () {
         return props.configuration.selectedNodeContextPath ? domain_1.findNodeByContextPath(state, props.configuration.selectedNodeContextPath) : null;
     }, [props.configuration, state.nodesByContextPath]);
@@ -45491,7 +45490,7 @@ var NodeTreeWithoutErrorHandling = function NodeTreeWithoutErrorHandling(props) 
     } else if (initialize.loading || !state.rootNode) {
         main = React.createElement("div", null, "Loading...");
     } else {
-        main = React.createElement(react_ui_components_1.Tree, null, React.createElement(NodeTreeNode_1.NodeTreeNode, { state: state, dispatch: dispatch, node: state.rootNode, selectedNode: selectedNode, level: 1, onToggle: handleToggle, onClick: handleClick }));
+        main = React.createElement(react_ui_components_1.Tree, null, React.createElement(NodeTreeNode_1.NodeTreeNode, { state: state, dispatch: dispatch, node: state.rootNode, selectedNode: selectedNode, level: 1, onToggle: handleToggle, onClick: handleClick, allowedNodeTypes: props.configuration.allowedNodeTypes }));
     }
     var search = null;
     if ((_a = props.options) === null || _a === void 0 ? void 0 : _a.enableSearch) {
@@ -45575,6 +45574,7 @@ var archaeopteryx_neos_bridge_1 = __webpack_require__(/*! @sitegeist/archaeopter
 var domain_1 = __webpack_require__(/*! ../domain */ "../custom-node-tree/lib/domain/index.js");
 var NodeTreeNode = function NodeTreeNode(props) {
     var _a;
+    var nodeTypesRegistry = archaeopteryx_neos_bridge_1.useNodeTypesRegistry();
     var nodeType = archaeopteryx_neos_bridge_1.useNodeType(props.node.nodeType);
     var handleNodeToggle = React.useMemo(function () {
         return function () {
@@ -45595,8 +45595,11 @@ var NodeTreeNode = function NodeTreeNode(props) {
     var isSelected = React.useMemo(function () {
         return props.selectedNode && props.node.contextPath.equals(props.selectedNode.contextPath);
     }, [props.node, props.selectedNode]);
-    return React.createElement(react_ui_components_1.Tree.Node, null, React.createElement(react_ui_components_1.Tree.Node.Header, { labelIdentifier: 'labelIdentifier', id: props.node.contextPath, hasChildren: props.node.children.length > 0, isLastChild: true, isCollapsed: isCollapsed, isActive: isSelected, isFocused: isSelected, isLoading: isLoading, isDirty: false, isHidden: props.node.properties._hidden, isHiddenInIndex: props.node.properties._hiddenInIndex, isDragging: false, hasError: false, label: props.node.label, icon: (_a = nodeType === null || nodeType === void 0 ? void 0 : nodeType.ui) === null || _a === void 0 ? void 0 : _a.icon, iconLabel: nodeType === null || nodeType === void 0 ? void 0 : nodeType.label, level: props.level, onToggle: handleNodeToggle, onClick: handleNodeClick, dragForbidden: true, title: props.node.label }), isCollapsed ? null : domain_1.findChildNodesForNode(props.state, props.node).map(function (childNode) {
-        return React.createElement(exports.NodeTreeNode, __assign({}, props, { node: childNode, level: props.level + 1 }));
+    var notSelectable = props.allowedNodeTypes && !props.allowedNodeTypes.reduce(function (acc, current) {
+        return acc || (nodeTypesRegistry === null || nodeTypesRegistry === void 0 ? void 0 : nodeTypesRegistry.isOfType(props.node.nodeType, current));
+    }, false);
+    return React.createElement(react_ui_components_1.Tree.Node, null, React.createElement(react_ui_components_1.Tree.Node.Header, { labelIdentifier: 'labelIdentifier', id: props.node.contextPath, hasChildren: props.node.children.length > 0, isLastChild: true, isCollapsed: isCollapsed, isActive: isSelected, isFocused: isSelected, isLoading: isLoading, isDirty: false, isHidden: props.node.properties._hidden, isHiddenInIndex: props.node.properties._hiddenInIndex, isDragging: false, hasError: false, label: props.node.label, icon: notSelectable ? 'fas fa-unlink' : (_a = nodeType === null || nodeType === void 0 ? void 0 : nodeType.ui) === null || _a === void 0 ? void 0 : _a.icon, iconLabel: nodeType === null || nodeType === void 0 ? void 0 : nodeType.label, level: props.level, onToggle: handleNodeToggle, onClick: notSelectable ? function () {} : handleNodeClick, dragForbidden: true, title: props.node.label }), isCollapsed ? null : domain_1.findChildNodesForNode(props.state, props.node).map(function (childNode) {
+        return React.createElement(exports.NodeTreeNode, __assign({}, props, { node: childNode, level: props.level + 1, allowedNodeTypes: props.allowedNodeTypes }));
     }));
 };
 exports.NodeTreeNode = NodeTreeNode;

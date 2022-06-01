@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import {Tree} from '@neos-project/react-ui-components';
-import {INodePartialForTree, useNodeType} from '@sitegeist/archaeopteryx-neos-bridge';
+import {INodePartialForTree, NodeTypeName, useNodeType, useNodeTypesRegistry} from '@sitegeist/archaeopteryx-neos-bridge';
 
 import {INodeTreeState, isNodeCollapsed, isNodeLoading, findChildNodesForNode, NodeTreeDispatch} from '../domain';
 
@@ -13,9 +13,11 @@ interface Props {
     level: number
     onToggle: (node: INodePartialForTree) => any
     onClick: (node: INodePartialForTree) => any
+    allowedNodeTypes: NodeTypeName[]
 }
 
 export const NodeTreeNode: React.FC<Props> = props => {
+    const nodeTypesRegistry = useNodeTypesRegistry();
     const nodeType = useNodeType(props.node.nodeType);
     const handleNodeToggle = React.useMemo(
         () => () => props.onToggle(props.node),
@@ -38,6 +40,8 @@ export const NodeTreeNode: React.FC<Props> = props => {
         [props.node, props.selectedNode]
     );
 
+    const notSelectable = props.allowedNodeTypes && !props.allowedNodeTypes.reduce((acc, current) => acc || nodeTypesRegistry?.isOfType(props.node.nodeType, current), false);
+
     return (
         <Tree.Node>
             <Tree.Node.Header
@@ -55,11 +59,11 @@ export const NodeTreeNode: React.FC<Props> = props => {
                 isDragging={false}
                 hasError={false}
                 label={props.node.label}
-                icon={nodeType?.ui?.icon}
+                icon={notSelectable ? 'fas fa-unlink' : nodeType?.ui?.icon}
                 iconLabel={nodeType?.label}
                 level={props.level}
                 onToggle={handleNodeToggle}
-                onClick={handleNodeClick}
+                onClick={notSelectable ? () => {} : handleNodeClick}
                 dragForbidden={true}
                 title={props.node.label}
             />
@@ -70,6 +74,7 @@ export const NodeTreeNode: React.FC<Props> = props => {
                         {...props}
                         node={childNode}
                         level={props.level + 1}
+                        allowedNodeTypes={props.allowedNodeTypes}
                     />
                 ))
             }
