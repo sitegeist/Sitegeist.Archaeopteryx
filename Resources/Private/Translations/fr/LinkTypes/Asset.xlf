@@ -5,14 +5,14 @@
             <!-- Common -->
             <trans-unit id="title" xml:space="preserve" approved="yes">
                 <source>Asset</source>
-                <target>actif</target>
+                <target>date des médias</target>
 
             </trans-unit>
 
             <!-- Identifier -->
             <trans-unit id="identifier.validation.required" xml:space="preserve" approved="yes">
                 <source>Asset is required</source>
-                <target>L'actif est nécessaire</target>
+                <target>fichier média est nécessaire</target>
 
             </trans-unit>
         </body>

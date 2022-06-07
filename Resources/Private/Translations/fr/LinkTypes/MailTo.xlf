@@ -29,7 +29,7 @@
             <!-- Subject -->
             <trans-unit id="subject.label" xml:space="preserve" approved="yes">
                 <source>Subject (optional)</source>
-                <target>Sujet (facultatif)</target>
+                <target>Matière (facultatif)</target>
             </trans-unit>
 
             <!-- CC -->
@@ -49,7 +49,7 @@
             <!-- BCC -->
             <trans-unit id="bcc.label" xml:space="preserve" approved="yes">
                 <source>BCC (optional)</source>
-                <target>BB (facultatif)</target>
+                <target>BCC (facultatif)</target>
             </trans-unit>
             <trans-unit id="bcc.placeholder" xml:space="preserve" approved="yes">
                 <source>e.g.: recipient1@example.com, recipient2@example.com, ...</source>
@@ -63,7 +63,7 @@
             <!-- Body -->
             <trans-unit id="body.label" xml:space="preserve" approved="yes">
                 <source>Body (optional)</source>
-                <target>Corps (facultatif)</target>
+                <target>Contenu (facultatif)</target>
             </trans-unit>
         </body>
     </file>

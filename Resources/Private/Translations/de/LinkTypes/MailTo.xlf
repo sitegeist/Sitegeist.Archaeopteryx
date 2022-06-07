@@ -29,7 +29,7 @@
             <!-- Subject -->
             <trans-unit id="subject.label" xml:space="preserve" approved="yes">
                 <source>Subject (optional)</source>
-                <target>Thema (optional)</target>
+                <target>Betreff (optional)</target>
             </trans-unit>
 
             <!-- CC -->
@@ -63,7 +63,7 @@
             <!-- Body -->
             <trans-unit id="body.label" xml:space="preserve" approved="yes">
                 <source>Body (optional)</source>
-                <target>Body (optional)</target>
+                <target>Inhalt (optional)</target>
             </trans-unit>
         </body>
     </file>
