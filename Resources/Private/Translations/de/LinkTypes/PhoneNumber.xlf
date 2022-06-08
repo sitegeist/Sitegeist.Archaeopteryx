@@ -8,7 +8,7 @@
             </trans-unit>
             <trans-unit id="phoneNumber.label" xml:space="preserve" approved="yes">
                 <source>Phone Number:</source>
-                <target>Telefonnummer</target>
+                <target>Telefonnummer:</target>
             </trans-unit>
             <trans-unit id="phoneNumber.placeholder" xml:space="preserve" approved="yes">
                 <source>your phone number without area code</source>

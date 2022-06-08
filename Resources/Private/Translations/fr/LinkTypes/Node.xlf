@@ -12,7 +12,7 @@
             <!-- Identifier -->
             <trans-unit id="node.validation.required" xml:space="preserve" approved="yes">
                 <source>Node is required</source>
-                <target>Le nœud est nécessaire</target>
+                <target>Le document est nécessaire</target>
             </trans-unit>
         </body>
     </file>

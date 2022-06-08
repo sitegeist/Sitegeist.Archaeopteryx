@@ -13,7 +13,6 @@
             <trans-unit id="identifier.validation.required" xml:space="preserve" approved="yes">
                 <source>Asset is required</source>
                 <target>fichier média est nécessaire</target>
-
             </trans-unit>
         </body>
     </file>

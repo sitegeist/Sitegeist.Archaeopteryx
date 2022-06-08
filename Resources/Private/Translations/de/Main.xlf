@@ -33,13 +33,13 @@
             </trans-unit>
             <trans-unit id="dialog.action.apply" xml:space="preserve" approved="yes">
                 <source>Apply</source>
-                <target>Bewerbung</target>
+                <target>Anwenden</target>
             </trans-unit>
 
             <!-- Link Options -->
             <trans-unit id="options.label.anchor" xml:space="preserve" approved="yes">
                 <source>Anchor</source>
-                <target>Anker</target>
+                <target>Anchor</target>
             </trans-unit>
             <trans-unit id="options.label.title" xml:space="preserve" approved="yes">
                 <source>Title</source>
@@ -51,7 +51,7 @@
             </trans-unit>
             <trans-unit id="options.label.relNofollow" xml:space="preserve" approved="yes">
                 <source>rel="nofollow"</source>
-                <target>rel="nicht folgen"</target>
+                <target>rel="nofollow"</target>
             </trans-unit>
         </body>
     </file>

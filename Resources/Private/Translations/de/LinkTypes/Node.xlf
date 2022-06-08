@@ -11,7 +11,7 @@
             <!-- Identifier -->
             <trans-unit id="node.validation.required" xml:space="preserve" approved="yes">
                 <source>Node is required</source>
-                <target>Knoten ist erforderlich</target>
+                <target>Eine Seite ist erforderlich</target>
             </trans-unit>
         </body>
     </file>

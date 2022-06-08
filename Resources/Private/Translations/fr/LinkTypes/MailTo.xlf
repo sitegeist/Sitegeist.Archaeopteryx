@@ -19,11 +19,11 @@
             </trans-unit>
             <trans-unit id="recipient.validation.required" xml:space="preserve" approved="yes">
                 <source>Recipient is required</source>
-                <target>Le destinataire est tenu</target>
+                <target>Le bénéficiaire est tenu</target>
             </trans-unit>
             <trans-unit id="recipient.validation.email" xml:space="preserve" approved="yes">
                 <source>Recipient should be a valid E-Mail Address</source>
-                <target>Le destinataire doit être une adresse électronique valide</target>
+                <target>Le bénéficiaire doit être une adresse électronique valide</target>
             </trans-unit>
 
             <!-- Subject -->

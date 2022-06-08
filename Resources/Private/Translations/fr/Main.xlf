@@ -51,7 +51,7 @@
             </trans-unit>
             <trans-unit id="options.label.relNofollow" xml:space="preserve" approved="yes">
                 <source>rel="nofollow"</source>
-                <target>rel="pas de suivi"</target>
+                <target>rel="nofollow"</target>
             </trans-unit>
         </body>
     </file>

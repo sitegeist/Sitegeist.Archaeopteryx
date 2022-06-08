@@ -21,7 +21,7 @@
             <!-- URL -->
             <trans-unit id="urlWithoutProtocol.placeholder" xml:space="preserve" approved="yes">
                 <source>e.g. www.example.com</source>
-                <target>z. B. www.example.com</target>
+                <target>z.B. www.example.com</target>
             </trans-unit>
             <trans-unit id="urlWithoutProtocol.validation.required" xml:space="preserve" approved="yes">
                 <source>URL is required</source>
