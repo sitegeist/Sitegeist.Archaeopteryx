@@ -15,7 +15,7 @@
             </trans-unit>
             <trans-unit id="inspector.edit" xml:space="preserve" approved="yes">
                 <source>Edit Link</source>
-                <target>Lien d'édition</target>
+                <target>Modifier le lien</target>
             </trans-unit>
             <trans-unit id="inspector.notfound" xml:space="preserve" approved="yes">
                 <source>Could not find an editor suitable for {href}</source>
@@ -25,7 +25,7 @@
             <!-- Dialog -->
             <trans-unit id="dialog.title" xml:space="preserve" approved="yes">
                 <source>Edit Link</source>
-                <target>Lien d'édition</target>
+                <target>Modifier le lien</target>
             </trans-unit>
             <trans-unit id="dialog.action.cancel" xml:space="preserve" approved="yes">
                 <source>Cancel</source>
