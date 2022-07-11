@@ -15,6 +15,10 @@ type WebLinkModel = {
     urlWithoutProtocol: string
 }
 
+function removeHttp(url: string) {
+    return url.replace(/^https?:\/\//, '');
+}
+
 export const Web = makeLinkType<WebLinkModel>('Sitegeist.Archaeopteryx:Web', ({createError}) => ({
     supportedLinkOptions: ['anchor', 'title', 'targetBlank', 'relNofollow'],
 
@@ -42,7 +46,7 @@ export const Web = makeLinkType<WebLinkModel>('Sitegeist.Archaeopteryx:Web', ({c
     },
 
     convertModelToLink:(model: WebLinkModel) => ({
-        href: `${model.protocol}://${model.urlWithoutProtocol}`
+        href: `${model.protocol}://${removeHttp(model.urlWithoutProtocol)}`
     }),
 
     TabHeader: () => {
@@ -58,7 +62,7 @@ export const Web = makeLinkType<WebLinkModel>('Sitegeist.Archaeopteryx:Web', ({c
     Preview: ({model}: {model: WebLinkModel}) => (
         <IconCard
             icon="external-link"
-            title={`${model.protocol}://${model.urlWithoutProtocol}`}
+            title={`${model.protocol}://${removeHttp(model.urlWithoutProtocol)}`}
         />
     ),
 
