@@ -1333,6 +1333,11 @@
   resolved "https://registry.yarnpkg.com/@neos-project/positional-array-sorter/-/positional-array-sorter-5.2.5.tgz#4647842d99414c598479d752f9625a0fff5f4c97"
   integrity sha512-dhcXB/o6hzDHAl01XmtpT42LbU3Z9tOFhE9ZlxlJOHu8Z9Lsg8sbxNLbnTnIzaODwdJiA1UlJGLZXQqMUg6IBg==
 
+"@neos-project/positional-array-sorter@^8.0.1":
+  version "8.0.1"
+  resolved "https://registry.yarnpkg.com/@neos-project/positional-array-sorter/-/positional-array-sorter-8.0.1.tgz#ae2c053c3a3cb03fc8ef99165b4d3dbcc72346ad"
+  integrity sha512-CBD9zJyjgOtGoYC1ZXb1t0fWNSfZd5Y6FMfMlhtU/Qs4IdszHTd1pEk+jCBatQnmstKcq3AbYW4DOLziNdybYw==
+
 "@neos-project/react-ui-components@^7.0.2":
   version "7.0.2"
   resolved "https://registry.yarnpkg.com/@neos-project/react-ui-components/-/react-ui-components-7.0.2.tgz#9c33181e3d9ef3e7578231f42844777cfcbdee32"

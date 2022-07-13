@@ -1,12 +1,14 @@
 import * as React from 'react';
 import {Object} from 'ts-toolbelt';
 import {VError} from 'verror';
+import positionalArraySorter from '@neos-project/positional-array-sorter';
 
 import {useGlobalRegistry} from '@sitegeist/archaeopteryx-neos-bridge';
 
 import {IProcess} from '../../framework';
 
 import {ILink, ILinkOptions} from './Link';
+import {useEditorState} from '../Editor';
 
 interface LinkTypeStaticProps<OptionsType extends object = {}> {
     link?: ILink
@@ -89,4 +91,30 @@ export function useLinkTypeForHref(href: null | string): null | ILinkType {
     }, [linkTypes, href]);
 
     return result;
+}
+
+export function useSortedAndFilteredLinkTypes(): ILinkType[] {
+    const linkTypes = useLinkTypes();
+    const {editorOptions} = useEditorState();
+
+    const linkTypesAndEditorOptions = linkTypes.map(
+        (linkType) => ({
+            linkType,
+            options: editorOptions.linkTypes?.[linkType.id]
+        })
+    )
+
+    const sortedLinkTypesViaEditorOptionsPosition = positionalArraySorter(
+        linkTypesAndEditorOptions,
+        // badly typed
+        ({options}) => options?.position
+    )
+
+    const filteredLinkTypes = sortedLinkTypesViaEditorOptionsPosition.filter(
+        ({options}) => (options && "enabled" in options) ? options.enabled : true
+    )
+    
+    return filteredLinkTypes.map(
+        ({linkType}) => linkType
+    );
 }

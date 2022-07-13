@@ -8,7 +8,7 @@ import {useI18n, useSelector} from '@sitegeist/archaeopteryx-neos-bridge';
 import {ErrorBoundary} from '@sitegeist/archaeopteryx-error-handling';
 
 import {Field} from '../../framework';
-import {ILink, ILinkOptions, useEditorState, useEditorTransactions, useLinkTypes, useLinkTypeForHref} from '../../domain';
+import {ILink, ILinkOptions, useEditorState, useEditorTransactions, useLinkTypes, useLinkTypeForHref, useSortedAndFilteredLinkTypes} from '../../domain';
 import {Layout, Form as StyledForm, Modal, Tabs, Deletable as Deletable} from '../../presentation';
 
 import {LinkEditor} from './LinkEditor';
@@ -118,15 +118,14 @@ const DialogWithEmptyValue: React.FC<{
     onDelete: () => void
 }> = props => {
     const form = useForm();
-    const linkTypes = useLinkTypes();
     const {enabledLinkOptions, editorOptions} = useEditorState();
-    const filteredLinkTypes = linkTypes.filter(linkType => editorOptions.linkTypes?.[linkType.id] && Object.keys(editorOptions.linkTypes?.[linkType.id]).includes('enabled') ? editorOptions.linkTypes?.[linkType.id].enabled : true);
+    const sortedAndFilteredLinkTypes = useSortedAndFilteredLinkTypes();
 
     return (
-        <Field name="linkTypeId" initialValue={linkTypes[0].id}>{({input}) => (
+        <Field name="linkTypeId" initialValue={sortedAndFilteredLinkTypes[0]?.id}>{({input}) => (
             <Tabs
                 lazy
-                from={filteredLinkTypes}
+                from={sortedAndFilteredLinkTypes}
                 activeItemKey={input.value}
                 getKey={linkType => linkType.id}
                 renderHeader={({id, TabHeader}) => (
@@ -192,14 +191,13 @@ const DialogWithValue: React.FC<{
     const existingModel = (state.valid
         ? state.values.linkTypeProps?.[linkType.id.split('.').join('_')]
         : result) ?? result;
-    const linkTypes = useLinkTypes();
-    const filteredLinkTypes = linkTypes.filter(linkType => editorOptions.linkTypes?.[linkType.id] && Object.keys(editorOptions.linkTypes?.[linkType.id]).includes('enabled') ? editorOptions.linkTypes?.[linkType.id].enabled : true);
+    const sortedAndFilteredLinkTypes = useSortedAndFilteredLinkTypes();
 
     return (
-        <Field name="linkTypeId" initialValue={linkType.id}>{({input}) => (
+        <Field name="linkTypeId" initialValue={sortedAndFilteredLinkTypes[0]?.id}>{({input}) => (
             <Tabs
                 lazy
-                from={filteredLinkTypes}
+                from={sortedAndFilteredLinkTypes}
                 activeItemKey={input.value || linkType.id}
                 getKey={linkType => linkType.id}
                 renderHeader={({id, TabHeader}) => (

@@ -9,6 +9,7 @@
         "test": "jest"
     },
     "dependencies": {
+        "@neos-project/positional-array-sorter": "^8.0.1",
         "@neos-project/react-ui-components": "^7.0.2",
         "@sitegeist/archaeopteryx-custom-node-tree": "^0.0.0",
         "@sitegeist/archaeopteryx-error-handling": "^0.0.0",
