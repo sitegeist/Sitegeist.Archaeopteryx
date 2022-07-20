@@ -11,8 +11,8 @@
                 <target>Numéro de téléphone:</target>
             </trans-unit>
             <trans-unit id="phoneNumber.placeholder" xml:space="preserve" approved="yes">
-                <source>your phone number without area code</source>
-                <target>votre numéro de téléphone sans l'indicatif régional</target>
+                <source>your phone number without country code</source>
+                <target>votre numéro de téléphone sans l'indicatif du pays</target>
             </trans-unit>
             <trans-unit id="phoneNumber.validation.required" xml:space="preserve" approved="yes">
                 <source>A phone number is required</source>
