@@ -43688,6 +43688,9 @@ var archaeopteryx_neos_bridge_1 = __webpack_require__(/*! @sitegeist/archaeopter
 var framework_1 = __webpack_require__(/*! ../../../framework */ "../core/lib/framework/index.js");
 var domain_1 = __webpack_require__(/*! ../../../domain */ "../core/lib/domain/index.js");
 var presentation_1 = __webpack_require__(/*! ../../../presentation */ "../core/lib/presentation/index.js");
+function removeHttp(url) {
+    return url.replace(/^https?:\/\//, '');
+}
 exports.Web = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Web', function (_a) {
     var createError = _a.createError;
     return {
@@ -43712,7 +43715,7 @@ exports.Web = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Web', function (_a)
         },
         convertModelToLink: function convertModelToLink(model) {
             return {
-                href: model.protocol + "://" + model.urlWithoutProtocol
+                href: model.protocol + "://" + removeHttp(model.urlWithoutProtocol)
             };
         },
         TabHeader: function TabHeader() {
@@ -43721,7 +43724,7 @@ exports.Web = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Web', function (_a)
         },
         Preview: function Preview(_a) {
             var model = _a.model;
-            return React.createElement(presentation_1.IconCard, { icon: "external-link", title: model.protocol + "://" + model.urlWithoutProtocol });
+            return React.createElement(presentation_1.IconCard, { icon: "external-link", title: model.protocol + "://" + removeHttp(model.urlWithoutProtocol) });
         },
         Editor: function Editor(_a) {
             var _b;
