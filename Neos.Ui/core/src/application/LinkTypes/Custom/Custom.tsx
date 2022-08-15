@@ -8,7 +8,6 @@ import {ILink, makeLinkType} from "../../../domain";
 import {Process, Field} from '../../../framework';
 import {IconCard, IconLabel} from "../../../presentation";
 import {Nullable} from 'ts-toolbelt/out/Union/Nullable';
-import {parsePhoneNumber} from "libphonenumber-js/max";
 
 type CustomLinkModel = {
     custom: string,
