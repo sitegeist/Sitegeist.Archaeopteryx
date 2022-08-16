@@ -48,25 +48,31 @@ export const MailTo = makeLinkType<MailToLinkModel, MailToOptions>('Sitegeist.Ar
     },
 
     convertModelToLink: (email:MailToLinkModel) => {
-        const url = new URL(`mailto:${email.recipient}`);
+        let href = `mailto:${email.recipient}?`
 
         if (email.subject) {
-            url.searchParams.set('subject', email.subject)
+            href += `subject=${email.subject}`
         }
 
-        if (email.cc) {
-            url.searchParams.set('cc', email.cc)
+        if (email.cc && !email.subject) {
+            href += `cc=${email.cc}`
+        } else if (email.cc) {
+            href += `&cc=${email.cc}`
         }
 
-        if (email.bcc) {
-            url.searchParams.set('bcc', email.bcc)
+        if (email.bcc && !email.subject && !email.cc) {
+            href += `bcc=${email.bcc}`
+        } else if (email.bcc) {
+            href += `&bcc=${email.bcc}`
         }
 
-        if (email.body) {
-            url.searchParams.set('body', email.body)
+        if (email.body && !email.subject && !email.cc && !email.bcc) {
+            href += `body=${email.body}`
+        } else if (email.body) {
+            href += `&body=${email.body}`
         }
 
-        return {href: url.toString()};
+        return {href};
     },
 
     TabHeader: () => {
