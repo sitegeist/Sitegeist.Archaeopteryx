@@ -52,7 +52,7 @@ export const Custom = makeLinkType<CustomLinkModel>('Sitegeist.Archaeopteryx:Cus
 
         return (
             <div>
-                <label htmlFor="linkTypeProps.Sitegeist_Archaeopteryx:PhoneNumber.phoneNumber">
+                <label>
                     {i18n('Sitegeist.Archaeopteryx:LinkTypes.Custom:custom.label')}
                 </label>
                 <div style={{display: 'grid', gridTemplateColumns: '400px 1fr', minWidth: '600px'}}>
