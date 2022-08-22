@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState } from 'react';
 import {useForm} from 'react-final-form';
 
 import {SelectBox, TextInput} from '@neos-project/react-ui-components';
@@ -67,6 +68,8 @@ export const Web = makeLinkType<WebLinkModel>('Sitegeist.Archaeopteryx:Web', ({c
     ),
 
     Editor: ({model}: {model: Nullable<WebLinkModel>}) => {
+        const [protocol, setProtocol] = useState<string>("");
+
         const i18n = useI18n();
         const form = useForm();
         const prefix = `linkTypeProps.Sitegeist_Archaeopteryx:Web`;
@@ -79,6 +82,12 @@ export const Web = makeLinkType<WebLinkModel>('Sitegeist.Archaeopteryx:Web', ({c
                 <div style={{ display: 'grid', gridTemplateColumns: '160px 1fr', minWidth: '600px' }}>
                     <Field<string>
                         name="protocol"
+                        format={value => {
+                            if(value === undefined){
+                                form.change(`${prefix}.protocol`, protocol);
+                            }
+                            return value;
+                        }}
                         initialValue={model?.protocol ?? 'https'}
                         validate={value => {
                             if (!value) {
@@ -86,33 +95,26 @@ export const Web = makeLinkType<WebLinkModel>('Sitegeist.Archaeopteryx:Web', ({c
                             }
                         }}
                     >{({input}) => (
-                        <SelectBox
-                            onValueChange={input.onChange}
-                            allowEmpty={false}
-                            value={input.value}
-                            options={[{
-                                value: 'https',
-                                label: 'HTTPS',
-                                icon: 'lock'
-                            }, {
-                                value: 'http',
-                                label: 'HTTP',
-                                icon: 'unlock'
-                            }]}
-                        />
+                        <>
+                            <SelectBox
+                                onValueChange={input.onChange}
+                                allowEmpty={false}
+                                value={input.value}
+                                options={[{
+                                    value: 'https',
+                                    label: 'HTTPS',
+                                    icon: 'lock'
+                                }, {
+                                    value: 'http',
+                                    label: 'HTTP',
+                                    icon: 'unlock'
+                                }]}
+                            />
+                            {input.value !== undefined && setProtocol(input.value)}
+                        </>
                     )}</Field>
                     <Field<string>
                         name="urlWithoutProtocol"
-                        format={value => {
-                            const matches = value?.match(/^(https?):\/\/(.*)$/);
-                            if (matches) {
-                                const [, protocol, urlWithoutProtocol] = matches;
-                                form.change(`${prefix}.protocol`, protocol);
-                                return urlWithoutProtocol;
-                            }
-
-                            return value;
-                        }}
                         initialValue={model?.urlWithoutProtocol}
                         validate={value => {
                             if (!value) {
