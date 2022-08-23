@@ -12,7 +12,7 @@
             </trans-unit>
             <trans-unit id="custom.placeholder" xml:space="preserve" approved="yes">
                 <source>Enter your text here</source>
-                <target>Hier Text eingeben</target>
+                <target>Hier ihren Text eingeben</target>
             </trans-unit>
             <trans-unit id="validation.required" xml:space="preserve" approved="yes">
                 <source>this field is required</source>
