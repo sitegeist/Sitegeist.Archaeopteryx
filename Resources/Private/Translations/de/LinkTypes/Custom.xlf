@@ -8,7 +8,7 @@
             </trans-unit>
             <trans-unit id="custom.label" xml:space="preserve" approved="yes">
                 <source>Custom Link:</source>
-                <target>Beliebige Link:</target>
+                <target>Beliebiger Link:</target>
             </trans-unit>
             <trans-unit id="custom.placeholder" xml:space="preserve" approved="yes">
                 <source>enter text here</source>
