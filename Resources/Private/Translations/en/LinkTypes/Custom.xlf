@@ -9,7 +9,7 @@
                 <source>Custom Link:</source>
             </trans-unit>
             <trans-unit id="custom.placeholder" xml:space="preserve" approved="yes">
-                <source>enter text here</source>
+                <source>Enter your text here</source>
             </trans-unit>
             <trans-unit id="validation.required" xml:space="preserve" approved="yes">
                 <source>this field is required</source>
