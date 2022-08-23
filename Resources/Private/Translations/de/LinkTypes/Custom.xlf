@@ -15,7 +15,7 @@
                 <target>Hier ihren Text eingeben</target>
             </trans-unit>
             <trans-unit id="validation.required" xml:space="preserve" approved="yes">
-                <source>this field is required</source>
+                <source>This field is required</source>
                 <target>Dieses Feld ist erforderlich</target>
             </trans-unit>
         </body>
