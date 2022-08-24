@@ -64,11 +64,10 @@ export const PhoneNumber = makeLinkType<PhoneNumberLinkModel, PhoneNumberLinkOpt
     },
 
     Editor: ({model, options}: {model: Nullable<PhoneNumberLinkModel>, options: OptionalDeep<PhoneNumberLinkOptions>}) => {
-        const [codeArea, setCodeArea] = useState<string>(model?.countryCallingCode || (options?.defaultCountry ? `+${getCountryCallingCode(options?.defaultCountry).toString()}` : `+${getCountryCallingCode(getCountries()[0]).toString()}`));
+        const defaultCountryCallingCode : string = model?.countryCallingCode || (options?.defaultCountry ? `+${getCountryCallingCode(options?.defaultCountry).toString()}` : `+${getCountryCallingCode(getCountries()[0]).toString()}`)
+        const [areaCode, setAreaCode] = useState<string>(defaultCountryCallingCode);
         
         const i18n = useI18n();
-        const form = useForm();
-        const prefix = `linkTypeProps.Sitegeist_Archaeopteryx:PhoneNumber`;
 
         const countryCallingCodes = {} as {[key:string]: {value:string, label:string}};
         options.favoredCountries?.map((country) => {
@@ -107,13 +106,15 @@ export const PhoneNumber = makeLinkType<PhoneNumberLinkModel, PhoneNumberLinkOpt
                     <Field<string>
                         name='countryCallingCode'
                         format={value => {
-                            (value !== undefined || value !== '') && setCodeArea(value)
+                            if(value !== undefined || value !== ''){
+                                setAreaCode(value)
+                            }
                             if(value === '' || value === undefined){
-                                form.change(`${prefix}.countryCallingCode`, codeArea);
+                                useForm().change('linkTypeProps.Sitegeist_Archaeopteryx:PhoneNumber.countryCallingCode', areaCode);
                             }
                             return value;
                         }}
-                        initialValue={model?.countryCallingCode || (options?.defaultCountry ? `+${getCountryCallingCode(options?.defaultCountry).toString()}` : `+${getCountryCallingCode(getCountries()[0]).toString()}`)}
+                        initialValue={defaultCountryCallingCode}
                         validate={
                             (value)=> {
                                 if (!value) {
