@@ -71,8 +71,6 @@ export const Web = makeLinkType<WebLinkModel>('Sitegeist.Archaeopteryx:Web', ({c
         const [protocol, setProtocol] = useState<string>("");
 
         const i18n = useI18n();
-        const form = useForm();
-        const prefix = `linkTypeProps.Sitegeist_Archaeopteryx:Web`;
 
         return (
             <div>
@@ -83,8 +81,12 @@ export const Web = makeLinkType<WebLinkModel>('Sitegeist.Archaeopteryx:Web', ({c
                     <Field<string>
                         name="protocol"
                         format={value => {
+                            if(value !== undefined || value !== ''){
+                                setProtocol(value)
+                            }
+
                             if(value === undefined){
-                                form.change(`${prefix}.protocol`, protocol);
+                                useForm().change('linkTypeProps.Sitegeist_Archaeopteryx:Web.protocol', protocol);
                             }
                             return value;
                         }}
@@ -110,7 +112,6 @@ export const Web = makeLinkType<WebLinkModel>('Sitegeist.Archaeopteryx:Web', ({c
                                     icon: 'unlock'
                                 }]}
                             />
-                            {input.value !== undefined && setProtocol(input.value)}
                         </>
                     )}</Field>
                     <Field<string>
