@@ -1,16 +1,16 @@
 import * as React from 'react';
-import { useState } from 'react';
-import { useForm } from 'react-final-form';
+import {useState} from 'react';
+import {useForm} from 'react-final-form';
 
-import { SelectBox } from '@neos-project/react-ui-components';
-import { useI18n } from "@sitegeist/archaeopteryx-neos-bridge";
-import { getCountries, getCountryCallingCode, parsePhoneNumber , AsYouType, CountryCode } from 'libphonenumber-js/max'
+import {SelectBox} from '@neos-project/react-ui-components';
+import {useI18n} from "@sitegeist/archaeopteryx-neos-bridge";
+import {getCountries, getCountryCallingCode, parsePhoneNumber, AsYouType, CountryCode} from 'libphonenumber-js/max'
 
-import { ILink, makeLinkType } from "../../../domain";
-import { Process, Field, EditorEnvelope } from '../../../framework';
-import { IconCard, IconLabel } from "../../../presentation";
-import { Nullable } from 'ts-toolbelt/out/Union/Nullable';
-import { OptionalDeep } from 'ts-toolbelt/out/Object/Optional';
+import {ILink, makeLinkType} from "../../../domain";
+import {Process, Field, EditorEnvelope} from '../../../framework';
+import {IconCard, IconLabel} from "../../../presentation";
+import {Nullable} from 'ts-toolbelt/out/Union/Nullable';
+import {OptionalDeep} from 'ts-toolbelt/out/Object/Optional';
 
 type PhoneNumberLinkModel = {
     phoneNumber: string,
@@ -28,7 +28,7 @@ export const PhoneNumber = makeLinkType<PhoneNumberLinkModel, PhoneNumberLinkOpt
 
     useResolvedModel: (link: ILink) => {
         const phoneNumber = parsePhoneNumber(link.href.replace('tel:', ''));
-        if(phoneNumber) {
+        if (phoneNumber) {
             return Process.success({
                 phoneNumber: phoneNumber.number.replace(`+${phoneNumber.countryCallingCode}`, ''),
                 countryCallingCode: `+${phoneNumber.countryCallingCode.toString()}`,
@@ -40,7 +40,7 @@ export const PhoneNumber = makeLinkType<PhoneNumberLinkModel, PhoneNumberLinkOpt
         );
     },
 
-    convertModelToLink: (model: PhoneNumberLinkModel)  => {
+    convertModelToLink: (model: PhoneNumberLinkModel) => {
         return {href: `tel:${model.countryCallingCode}${model.phoneNumber}`};
     },
 
@@ -54,7 +54,7 @@ export const PhoneNumber = makeLinkType<PhoneNumberLinkModel, PhoneNumberLinkOpt
         );
     },
 
-    Preview: ({model}: {model: PhoneNumberLinkModel}) => {
+    Preview: ({model}: { model: PhoneNumberLinkModel }) => {
         return (
             <IconCard
                 icon="phone-alt"
@@ -63,16 +63,22 @@ export const PhoneNumber = makeLinkType<PhoneNumberLinkModel, PhoneNumberLinkOpt
         )
     },
 
-    Editor: ({model, options}: {model: Nullable<PhoneNumberLinkModel>, options: OptionalDeep<PhoneNumberLinkOptions>}) => {
-        const defaultCountryCallingCode : string = model?.countryCallingCode || (options?.defaultCountry ? `+${getCountryCallingCode(options?.defaultCountry).toString()}` : `+${getCountryCallingCode(getCountries()[0]).toString()}`)
+    Editor: ({
+                 model,
+                 options
+             }: { model: Nullable<PhoneNumberLinkModel>, options: OptionalDeep<PhoneNumberLinkOptions> }) => {
+        const defaultCountryCallingCode: string = model?.countryCallingCode || (options?.defaultCountry ? `+${getCountryCallingCode(options?.defaultCountry).toString()}` : `+${getCountryCallingCode(getCountries()[0]).toString()}`)
         const [areaCode, setAreaCode] = useState<string>(defaultCountryCallingCode);
-        
+
         const i18n = useI18n();
 
-        const countryCallingCodes = {} as {[key:string]: {value:string, label:string}};
+        const countryCallingCodes = {} as { [key: string]: { value: string, label: string } };
         options.favoredCountries?.map((country) => {
-            if(!countryCallingCodes[`+${getCountryCallingCode(country as CountryCode)}`]) {
-                countryCallingCodes[`+${getCountryCallingCode(country as CountryCode)}`] = {value: `+${getCountryCallingCode(country as CountryCode)}`, label: `${country} +${getCountryCallingCode(country as CountryCode)}`};
+            if (!countryCallingCodes[`+${getCountryCallingCode(country as CountryCode)}`]) {
+                countryCallingCodes[`+${getCountryCallingCode(country as CountryCode)}`] = {
+                    value: `+${getCountryCallingCode(country as CountryCode)}`,
+                    label: `${country} +${getCountryCallingCode(country as CountryCode)}`
+                };
             } else {
                 countryCallingCodes[`+${getCountryCallingCode(country as CountryCode)}`] = {
                     value: `+${getCountryCallingCode(country as CountryCode)}`,
@@ -86,8 +92,11 @@ export const PhoneNumber = makeLinkType<PhoneNumberLinkModel, PhoneNumberLinkOpt
                 return;
             }
 
-            if(!countryCallingCodes[`+${getCountryCallingCode(country)}`]) {
-                countryCallingCodes[`+${getCountryCallingCode(country)}`] = {value: `+${getCountryCallingCode(country)}`, label: `${country} +${getCountryCallingCode(country)}`};
+            if (!countryCallingCodes[`+${getCountryCallingCode(country)}`]) {
+                countryCallingCodes[`+${getCountryCallingCode(country)}`] = {
+                    value: `+${getCountryCallingCode(country)}`,
+                    label: `${country} +${getCountryCallingCode(country)}`
+                };
             } else {
                 countryCallingCodes[`+${getCountryCallingCode(country)}`] = {
                     value: `+${getCountryCallingCode(country)}`,
@@ -102,21 +111,21 @@ export const PhoneNumber = makeLinkType<PhoneNumberLinkModel, PhoneNumberLinkOpt
                 <label htmlFor="linkTypeProps.Sitegeist_Archaeopteryx:PhoneNumber.phoneNumber">
                     {i18n('Sitegeist.Archaeopteryx:LinkTypes.PhoneNumber:phoneNumber.label')}
                 </label>
-                <div style={{ display: 'grid', gridTemplateColumns: '160px 1fr', minWidth: '600px' }}>
+                <div style={{display: 'grid', gridTemplateColumns: '160px 1fr', minWidth: '600px'}}>
                     <Field<string>
                         name='countryCallingCode'
                         format={value => {
-                            if(value !== undefined || value !== ''){
+                            if (value !== undefined || value !== '') {
                                 setAreaCode(value)
                             }
-                            if(value === '' || value === undefined){
+                            if (value === '' || value === undefined) {
                                 useForm().change('linkTypeProps.Sitegeist_Archaeopteryx:PhoneNumber.countryCallingCode', areaCode);
                             }
                             return value;
                         }}
                         initialValue={defaultCountryCallingCode}
                         validate={
-                            (value)=> {
+                            (value) => {
                                 if (!value) {
                                     return i18n('Sitegeist.Archaeopteryx:LinkTypes.PhoneNumber:countryCallingCode.validation.required');
                                 }
@@ -129,7 +138,7 @@ export const PhoneNumber = makeLinkType<PhoneNumberLinkModel, PhoneNumberLinkOpt
                                 options={Object.values(countryCallingCodes)}
                                 onValueChange={input.onChange}
                                 value={input.value}
-                                />
+                            />
                         </div>
                     )}</Field>
                     <Field<string>
@@ -143,17 +152,17 @@ export const PhoneNumber = makeLinkType<PhoneNumberLinkModel, PhoneNumberLinkOpt
                                 return i18n('Sitegeist.Archaeopteryx:LinkTypes.PhoneNumber:phoneNumber.validation.numbersOnly');
                             }
                         }}
-                        >{({input, meta}) => (
-                            <EditorEnvelope
-                                label={''}
-                                editor={'Neos.Neos/Inspector/Editors/TextFieldEditor'}
-                                editorOptions={{
-                                    placeholder: i18n('Sitegeist.Archaeopteryx:LinkTypes.PhoneNumber:phoneNumber.placeholder')
-                                }}
-                                input={input}
-                                meta={meta}
-                            />
-                     )}</Field>
+                    >{({input, meta}) => (
+                        <EditorEnvelope
+                            label={''}
+                            editor={'Neos.Neos/Inspector/Editors/TextFieldEditor'}
+                            editorOptions={{
+                                placeholder: i18n('Sitegeist.Archaeopteryx:LinkTypes.PhoneNumber:phoneNumber.placeholder')
+                            }}
+                            input={input}
+                            meta={meta}
+                        />
+                    )}</Field>
                 </div>
             </div>
         );
