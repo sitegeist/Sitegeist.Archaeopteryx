@@ -10,7 +10,7 @@ import {IconCard, IconLabel} from "../../../presentation";
 import {Nullable} from 'ts-toolbelt/out/Union/Nullable';
 
 type CustomLinkModel = {
-    custom: string,
+    customLink: string,
 }
 
 export const Custom = makeLinkType<CustomLinkModel>('Sitegeist.Archaeopteryx:Custom', ({createError}) => ({
@@ -20,12 +20,12 @@ export const Custom = makeLinkType<CustomLinkModel>('Sitegeist.Archaeopteryx:Cus
 
     useResolvedModel: (link: ILink) => {
         return Process.success({
-            custom: link.href,
+            customLink: link.href,
         });
     },
 
     convertModelToLink: (model: CustomLinkModel) => {
-        return {href: `${model.custom}`};
+        return {href: `${model.customLink}`};
     },
 
     TabHeader: () => {
@@ -42,7 +42,7 @@ export const Custom = makeLinkType<CustomLinkModel>('Sitegeist.Archaeopteryx:Cus
         return (
             <IconCard
                 icon=""
-                title={`<a href="${model.custom}">...</a>`}
+                title={`<a href="${model.customLink}">...</a>`}
             />
         )
     },
@@ -57,8 +57,8 @@ export const Custom = makeLinkType<CustomLinkModel>('Sitegeist.Archaeopteryx:Cus
                 </label>
                 <div style={{display: 'grid', gridTemplateColumns: '400px 1fr', minWidth: '600px'}}>
                     <Field<string>
-                        name="custom"
-                        initialValue={model?.custom}
+                        name="customLink"
+                        initialValue={model?.customLink}
                         validate={
                             (value) => {
                                 if (!value) {
@@ -79,6 +79,4 @@ export const Custom = makeLinkType<CustomLinkModel>('Sitegeist.Archaeopteryx:Cus
         );
     }
 }));
-
-
 
