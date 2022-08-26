@@ -68,6 +68,7 @@ export const PhoneNumber = makeLinkType<PhoneNumberLinkModel, PhoneNumberLinkOpt
                  options
              }: { model: Nullable<PhoneNumberLinkModel>, options: OptionalDeep<PhoneNumberLinkOptions> }) => {
         const defaultCountryCallingCode: string = model?.countryCallingCode || (options?.defaultCountry ? `+${getCountryCallingCode(options?.defaultCountry).toString()}` : `+${getCountryCallingCode(getCountries()[0]).toString()}`)
+
         const [areaCode, setAreaCode] = useState<string>(defaultCountryCallingCode);
 
         const i18n = useI18n();
@@ -123,7 +124,7 @@ export const PhoneNumber = makeLinkType<PhoneNumberLinkModel, PhoneNumberLinkOpt
                             }
                             return value;
                         }}
-                        initialValue={defaultCountryCallingCode}
+                        initialValue={areaCode || defaultCountryCallingCode}
                         validate={
                             (value) => {
                                 if (!value) {
@@ -136,7 +137,7 @@ export const PhoneNumber = makeLinkType<PhoneNumberLinkModel, PhoneNumberLinkOpt
                             <SelectBox
                                 allowEmpty={false}
                                 options={Object.values(countryCallingCodes)}
-                                onValueChange={input.onChange}
+                                onValueChange={(newValue: string) => {setAreaCode(newValue); input.onChange(newValue);}}
                                 value={input.value}
                             />
                         </div>
