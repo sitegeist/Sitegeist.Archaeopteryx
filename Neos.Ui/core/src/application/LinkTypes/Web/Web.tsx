@@ -97,26 +97,35 @@ export const Web = makeLinkType<WebLinkModel>('Sitegeist.Archaeopteryx:Web', ({c
                             }
                         }}
                     >{({input}) => (
-                        <>
-                            <SelectBox
-                                onValueChange={input.onChange}
-                                allowEmpty={false}
-                                value={input.value}
-                                options={[{
-                                    value: 'https',
-                                    label: 'HTTPS',
-                                    icon: 'lock'
-                                }, {
-                                    value: 'http',
-                                    label: 'HTTP',
-                                    icon: 'unlock'
-                                }]}
-                            />
-                        </>
+                        <SelectBox
+                            onValueChange={input.onChange}
+                            allowEmpty={false}
+                            value={input.value}
+                            options={[{
+                                value: 'https',
+                                label: 'HTTPS',
+                                icon: 'lock'
+                            }, {
+                                value: 'http',
+                                label: 'HTTP',
+                                icon: 'unlock'
+                            }]}
+                        />
                     )}</Field>
                     <Field<string>
                         name="urlWithoutProtocol"
                         initialValue={model?.urlWithoutProtocol}
+                        format={value => {
+                            const matches = value?.match(/^(https?):\/\/(.*)$/);
+                            if (matches) {
+                                const [, protocol, urlWithoutProtocol] = matches;
+
+                                useForm().change('linkTypeProps.Sitegeist_Archaeopteryx:Web.protocol', protocol);
+                                return urlWithoutProtocol;
+                            }
+
+                            return value;
+                        }}
                         validate={value => {
                             if (!value) {
                                 return i18n('Sitegeist.Archaeopteryx:LinkTypes.Web:urlWithoutProtocol.validation.required');
