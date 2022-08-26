@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState } from 'react';
 import {useForm} from 'react-final-form';
 
 import {SelectBox, TextInput} from '@neos-project/react-ui-components';
@@ -67,9 +68,9 @@ export const Web = makeLinkType<WebLinkModel>('Sitegeist.Archaeopteryx:Web', ({c
     ),
 
     Editor: ({model}: {model: Nullable<WebLinkModel>}) => {
+        const [protocol, setProtocol] = useState<string>("");
+
         const i18n = useI18n();
-        const form = useForm();
-        const prefix = `linkTypeProps.Sitegeist_Archaeopteryx:Web`;
 
         return (
             <div>
@@ -79,6 +80,16 @@ export const Web = makeLinkType<WebLinkModel>('Sitegeist.Archaeopteryx:Web', ({c
                 <div style={{ display: 'grid', gridTemplateColumns: '160px 1fr', minWidth: '600px' }}>
                     <Field<string>
                         name="protocol"
+                        format={value => {
+                            if(value !== undefined || value !== ''){
+                                setProtocol(value)
+                            }
+
+                            if(value === undefined){
+                                useForm().change('linkTypeProps.Sitegeist_Archaeopteryx:Web.protocol', protocol);
+                            }
+                            return value;
+                        }}
                         initialValue={model?.protocol ?? 'https'}
                         validate={value => {
                             if (!value) {
@@ -103,17 +114,18 @@ export const Web = makeLinkType<WebLinkModel>('Sitegeist.Archaeopteryx:Web', ({c
                     )}</Field>
                     <Field<string>
                         name="urlWithoutProtocol"
+                        initialValue={model?.urlWithoutProtocol}
                         format={value => {
                             const matches = value?.match(/^(https?):\/\/(.*)$/);
                             if (matches) {
                                 const [, protocol, urlWithoutProtocol] = matches;
-                                form.change(`${prefix}.protocol`, protocol);
+
+                                useForm().change('linkTypeProps.Sitegeist_Archaeopteryx:Web.protocol', protocol);
                                 return urlWithoutProtocol;
                             }
 
                             return value;
                         }}
-                        initialValue={model?.urlWithoutProtocol}
                         validate={value => {
                             if (!value) {
                                 return i18n('Sitegeist.Archaeopteryx:LinkTypes.Web:urlWithoutProtocol.validation.required');

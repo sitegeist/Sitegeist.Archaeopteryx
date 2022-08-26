@@ -43682,6 +43682,7 @@ var __read = undefined && undefined.__read || function (o, n) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Web = void 0;
 var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
+var react_1 = __webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js");
 var react_final_form_1 = __webpack_require__(/*! react-final-form */ "../../node_modules/react-final-form/dist/react-final-form.es.js");
 var react_ui_components_1 = __webpack_require__(/*! @neos-project/react-ui-components */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/react-ui-components/index.js");
 var archaeopteryx_neos_bridge_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-neos-bridge */ "../neos-bridge/lib/index.js");
@@ -43729,10 +43730,19 @@ exports.Web = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Web', function (_a)
         Editor: function Editor(_a) {
             var _b;
             var model = _a.model;
+            var _c = __read(react_1.useState(""), 2),
+                protocol = _c[0],
+                setProtocol = _c[1];
             var i18n = archaeopteryx_neos_bridge_1.useI18n();
-            var form = react_final_form_1.useForm();
-            var prefix = "linkTypeProps.Sitegeist_Archaeopteryx:Web";
-            return React.createElement("div", null, React.createElement("label", { htmlFor: "linkTypeProps.Sitegeist_Archaeopteryx:Web.urlWithoutProtocol" }, i18n('Sitegeist.Archaeopteryx:LinkTypes.Web:label.link'), ":"), React.createElement("div", { style: { display: 'grid', gridTemplateColumns: '160px 1fr', minWidth: '600px' } }, React.createElement(framework_1.Field, { name: "protocol", initialValue: (_b = model === null || model === void 0 ? void 0 : model.protocol) !== null && _b !== void 0 ? _b : 'https', validate: function validate(value) {
+            return React.createElement("div", null, React.createElement("label", { htmlFor: "linkTypeProps.Sitegeist_Archaeopteryx:Web.urlWithoutProtocol" }, i18n('Sitegeist.Archaeopteryx:LinkTypes.Web:label.link'), ":"), React.createElement("div", { style: { display: 'grid', gridTemplateColumns: '160px 1fr', minWidth: '600px' } }, React.createElement(framework_1.Field, { name: "protocol", format: function format(value) {
+                    if (value !== undefined || value !== '') {
+                        setProtocol(value);
+                    }
+                    if (value === undefined) {
+                        react_final_form_1.useForm().change('linkTypeProps.Sitegeist_Archaeopteryx:Web.protocol', protocol);
+                    }
+                    return value;
+                }, initialValue: (_b = model === null || model === void 0 ? void 0 : model.protocol) !== null && _b !== void 0 ? _b : 'https', validate: function validate(value) {
                     if (!value) {
                         return i18n('Sitegeist.Archaeopteryx:LinkTypes.Web:protocol.validation.required');
                     }
@@ -43747,17 +43757,17 @@ exports.Web = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Web', function (_a)
                         label: 'HTTP',
                         icon: 'unlock'
                     }] });
-            }), React.createElement(framework_1.Field, { name: "urlWithoutProtocol", format: function format(value) {
+            }), React.createElement(framework_1.Field, { name: "urlWithoutProtocol", initialValue: model === null || model === void 0 ? void 0 : model.urlWithoutProtocol, format: function format(value) {
                     var matches = value === null || value === void 0 ? void 0 : value.match(/^(https?):\/\/(.*)$/);
                     if (matches) {
                         var _a = __read(matches, 3),
-                            protocol = _a[1],
+                            protocol_1 = _a[1],
                             urlWithoutProtocol = _a[2];
-                        form.change(prefix + ".protocol", protocol);
+                        react_final_form_1.useForm().change('linkTypeProps.Sitegeist_Archaeopteryx:Web.protocol', protocol_1);
                         return urlWithoutProtocol;
                     }
                     return value;
-                }, initialValue: model === null || model === void 0 ? void 0 : model.urlWithoutProtocol, validate: function validate(value) {
+                }, validate: function validate(value) {
                     if (!value) {
                         return i18n('Sitegeist.Archaeopteryx:LinkTypes.Web:urlWithoutProtocol.validation.required');
                     }
