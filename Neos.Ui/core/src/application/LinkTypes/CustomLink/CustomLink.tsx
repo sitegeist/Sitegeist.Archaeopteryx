@@ -13,7 +13,7 @@ type CustomLinkModel = {
     customLink: string,
 }
 
-export const Custom = makeLinkType<CustomLinkModel>('Sitegeist.Archaeopteryx:Custom', ({createError}) => ({
+export const CustomLink = makeLinkType<CustomLinkModel>('Sitegeist.Archaeopteryx:CustomLink', ({createError}) => ({
     isSuitableFor: (link: ILink) => !link.href.startsWith('asset://') && !link.href.startsWith('mailto:')
         && !link.href.startsWith('node://') && !link.href.startsWith('tel:')
         && !link.href.startsWith('http://') && !link.href.startsWith('https://'),
@@ -33,7 +33,7 @@ export const Custom = makeLinkType<CustomLinkModel>('Sitegeist.Archaeopteryx:Cus
 
         return (
             <IconLabel icon="">
-                {i18n('Sitegeist.Archaeopteryx:LinkTypes.Custom:title')}
+                {i18n('Sitegeist.Archaeopteryx:LinkTypes.CustomLink:title')}
             </IconLabel>
         );
     },
@@ -53,7 +53,7 @@ export const Custom = makeLinkType<CustomLinkModel>('Sitegeist.Archaeopteryx:Cus
         return (
             <div>
                 <label>
-                    {i18n('Sitegeist.Archaeopteryx:LinkTypes.Custom:custom.label')}
+                    {i18n('Sitegeist.Archaeopteryx:LinkTypes.CustomLink:customLink.label')}
                 </label>
                 <div style={{display: 'grid', gridTemplateColumns: '400px 1fr', minWidth: '600px'}}>
                     <Field<string>
@@ -62,7 +62,7 @@ export const Custom = makeLinkType<CustomLinkModel>('Sitegeist.Archaeopteryx:Cus
                         validate={
                             (value) => {
                                 if (!value) {
-                                    return i18n('Sitegeist.Archaeopteryx:LinkTypes.Custom:validation.required');
+                                    return i18n('Sitegeist.Archaeopteryx:LinkTypes.CustomLink:validation.required');
                                 }
                             }
                         }
@@ -70,7 +70,7 @@ export const Custom = makeLinkType<CustomLinkModel>('Sitegeist.Archaeopteryx:Cus
                         <TextInput
                             id={input.name}
                             type="text"
-                            placeHolder={i18n('Sitegeist.Archaeopteryx:LinkTypes.Custom:custom.placeholder')}
+                            placeHolder={i18n('Sitegeist.Archaeopteryx:LinkTypes.CustomLink:customLink.placeholder')}
                             {...input}
                         />
                     )}</Field>
