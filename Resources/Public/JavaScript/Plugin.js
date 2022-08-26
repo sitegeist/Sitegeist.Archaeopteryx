@@ -43460,18 +43460,6 @@ Object.defineProperty(exports, "Node", { enumerable: true, get: function get() {
 "use strict";
 
 
-var __assign = undefined && undefined.__assign || function () {
-    __assign = Object.assign || function (t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) {
-                if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
-            }
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __createBinding = undefined && undefined.__createBinding || (Object.create ? function (o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     Object.defineProperty(o, k2, { enumerable: true, get: function get() {
@@ -43494,9 +43482,33 @@ var __importStar = undefined && undefined.__importStar || function (mod) {
     }__setModuleDefault(result, mod);
     return result;
 };
+var __read = undefined && undefined.__read || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o),
+        r,
+        ar = [],
+        e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) {
+            ar.push(r.value);
+        }
+    } catch (error) {
+        e = { error: error };
+    } finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        } finally {
+            if (e) throw e.error;
+        }
+    }
+    return ar;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PhoneNumber = void 0;
 var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
+var react_1 = __webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js");
+var react_final_form_1 = __webpack_require__(/*! react-final-form */ "../../node_modules/react-final-form/dist/react-final-form.es.js");
 var react_ui_components_1 = __webpack_require__(/*! @neos-project/react-ui-components */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/react-ui-components/index.js");
 var archaeopteryx_neos_bridge_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-neos-bridge */ "../neos-bridge/lib/index.js");
 var max_1 = __webpack_require__(/*! libphonenumber-js/max */ "../../node_modules/libphonenumber-js/max/index.js");
@@ -43534,11 +43546,18 @@ exports.PhoneNumber = domain_1.makeLinkType('Sitegeist.Archaeopteryx:PhoneNumber
             var _b;
             var model = _a.model,
                 options = _a.options;
+            var defaultCountryCallingCode = (model === null || model === void 0 ? void 0 : model.countryCallingCode) || ((options === null || options === void 0 ? void 0 : options.defaultCountry) ? "+" + max_1.getCountryCallingCode(options === null || options === void 0 ? void 0 : options.defaultCountry).toString() : "+" + max_1.getCountryCallingCode(max_1.getCountries()[0]).toString());
+            var _c = __read(react_1.useState(defaultCountryCallingCode), 2),
+                areaCode = _c[0],
+                setAreaCode = _c[1];
             var i18n = archaeopteryx_neos_bridge_1.useI18n();
             var countryCallingCodes = {};
             (_b = options.favoredCountries) === null || _b === void 0 ? void 0 : _b.map(function (country) {
                 if (!countryCallingCodes["+" + max_1.getCountryCallingCode(country)]) {
-                    countryCallingCodes["+" + max_1.getCountryCallingCode(country)] = { value: "+" + max_1.getCountryCallingCode(country), label: country + " +" + max_1.getCountryCallingCode(country) };
+                    countryCallingCodes["+" + max_1.getCountryCallingCode(country)] = {
+                        value: "+" + max_1.getCountryCallingCode(country),
+                        label: country + " +" + max_1.getCountryCallingCode(country)
+                    };
                 } else {
                     countryCallingCodes["+" + max_1.getCountryCallingCode(country)] = {
                         value: "+" + max_1.getCountryCallingCode(country),
@@ -43552,7 +43571,10 @@ exports.PhoneNumber = domain_1.makeLinkType('Sitegeist.Archaeopteryx:PhoneNumber
                     return;
                 }
                 if (!countryCallingCodes["+" + max_1.getCountryCallingCode(country)]) {
-                    countryCallingCodes["+" + max_1.getCountryCallingCode(country)] = { value: "+" + max_1.getCountryCallingCode(country), label: country + " +" + max_1.getCountryCallingCode(country) };
+                    countryCallingCodes["+" + max_1.getCountryCallingCode(country)] = {
+                        value: "+" + max_1.getCountryCallingCode(country),
+                        label: country + " +" + max_1.getCountryCallingCode(country)
+                    };
                 } else {
                     countryCallingCodes["+" + max_1.getCountryCallingCode(country)] = {
                         value: "+" + max_1.getCountryCallingCode(country),
@@ -43561,13 +43583,23 @@ exports.PhoneNumber = domain_1.makeLinkType('Sitegeist.Archaeopteryx:PhoneNumber
                 }
             });
             var checkRegex = /^[1-9][0-9]*$/;
-            return React.createElement("div", null, React.createElement("label", { htmlFor: "linkTypeProps.Sitegeist_Archaeopteryx:PhoneNumber.phoneNumber" }, i18n('Sitegeist.Archaeopteryx:LinkTypes.PhoneNumber:phoneNumber.label')), React.createElement("div", { style: { display: 'grid', gridTemplateColumns: '160px 1fr', minWidth: '600px' } }, React.createElement(framework_1.Field, { name: 'countryCallingCode', initialValue: (model === null || model === void 0 ? void 0 : model.countryCallingCode) || ((options === null || options === void 0 ? void 0 : options.defaultCountry) ? "+" + max_1.getCountryCallingCode(options === null || options === void 0 ? void 0 : options.defaultCountry).toString() : "+" + max_1.getCountryCallingCode(max_1.getCountries()[0]).toString()), validate: function validate(value) {
+            return React.createElement("div", null, React.createElement("label", { htmlFor: "linkTypeProps.Sitegeist_Archaeopteryx:PhoneNumber.phoneNumber" }, i18n('Sitegeist.Archaeopteryx:LinkTypes.PhoneNumber:phoneNumber.label')), React.createElement("div", { style: { display: 'grid', gridTemplateColumns: '160px 1fr', minWidth: '600px' } }, React.createElement(framework_1.Field, { name: 'countryCallingCode', format: function format(value) {
+                    if (value !== undefined || value !== '') {
+                        setAreaCode(value);
+                    }
+                    if (value === '' || value === undefined) {
+                        react_final_form_1.useForm().change('linkTypeProps.Sitegeist_Archaeopteryx:PhoneNumber.countryCallingCode', areaCode);
+                    }
+                    return value;
+                }, initialValue: areaCode || defaultCountryCallingCode, validate: function validate(value) {
                     if (!value) {
                         return i18n('Sitegeist.Archaeopteryx:LinkTypes.PhoneNumber:countryCallingCode.validation.required');
                     }
                 } }, function (_a) {
                 var input = _a.input;
-                return React.createElement(react_ui_components_1.SelectBox, { allowEmpty: false, options: Object.values(countryCallingCodes), onValueChange: input.onChange, value: input.value });
+                return React.createElement("div", { style: { margin: '0.25rem 0 0 0' } }, React.createElement(react_ui_components_1.SelectBox, { allowEmpty: false, options: Object.values(countryCallingCodes), onValueChange: function onValueChange(newValue) {
+                        setAreaCode(newValue);input.onChange(newValue);
+                    }, value: input.value }));
             }), React.createElement(framework_1.Field, { name: "phoneNumber", initialValue: model === null || model === void 0 ? void 0 : model.phoneNumber, validate: function validate(value) {
                     if (!value) {
                         return i18n('Sitegeist.Archaeopteryx:LinkTypes.PhoneNumber:phoneNumber.validation.required');
@@ -43576,15 +43608,11 @@ exports.PhoneNumber = domain_1.makeLinkType('Sitegeist.Archaeopteryx:PhoneNumber
                         return i18n('Sitegeist.Archaeopteryx:LinkTypes.PhoneNumber:phoneNumber.validation.numbersOnly');
                     }
                 } }, function (_a) {
-                var input = _a.input;
-                return React.createElement(react_ui_components_1.TextInput, __assign({ id: input.name, type: "text", placeHolder: i18n('Sitegeist.Archaeopteryx:LinkTypes.PhoneNumber:phoneNumber.placeholder') }, input, { onChange: function onChange(event) {
-                        if ("" + event === '') {
-                            input.onChange(event);
-                        }
-                        if (checkRegex.test("" + event)) {
-                            input.onChange(event);
-                        }
-                    } }));
+                var input = _a.input,
+                    meta = _a.meta;
+                return React.createElement(framework_1.EditorEnvelope, { label: '', editor: 'Neos.Neos/Inspector/Editors/TextFieldEditor', editorOptions: {
+                        placeholder: i18n('Sitegeist.Archaeopteryx:LinkTypes.PhoneNumber:phoneNumber.placeholder')
+                    }, input: input, meta: meta });
             })));
         }
     };
