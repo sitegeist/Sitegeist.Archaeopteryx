@@ -211,7 +211,7 @@ const DialogWithValue: React.FC<{
                     const modelFromState = form.getState().values.linkTypeProps?.[linkType.id.split('.').join('_')]
                     let Preview = linkType.Preview;
                     let model = modelFromState;
-                    if (!modelFromState || (linkType.id === 'Sitegeist.Archaeopteryx:Web' && !modelFromState?.urlWithoutProtocol) || (linkType.id === 'Sitegeist.Archaeopteryx:PhoneNumber' && !modelFromState?.phoneNumber)) {
+                    if (!modelFromState || (linkType.id === 'Sitegeist.Archaeopteryx:Web' && !modelFromState?.urlWithoutProtocol) || (linkType.id === 'Sitegeist.Archaeopteryx:PhoneNumber' && !modelFromState?.phoneNumber) || (linkType.id === 'Sitegeist.Archaeopteryx:CustomLink' && !modelFromState?.CustomLink)) {
                         Preview = exitingPreview;
                         model = existingModel;
                     }
