@@ -42589,7 +42589,7 @@ var DialogWithValue = function DialogWithValue(props) {
                 var modelFromState = (_a = form.getState().values.linkTypeProps) === null || _a === void 0 ? void 0 : _a[linkType.id.split('.').join('_')];
                 var Preview = linkType.Preview;
                 var model = modelFromState;
-                if (!modelFromState || linkType.id === 'Sitegeist.Archaeopteryx:Web' && !(modelFromState === null || modelFromState === void 0 ? void 0 : modelFromState.urlWithoutProtocol) || linkType.id === 'Sitegeist.Archaeopteryx:PhoneNumber' && !(modelFromState === null || modelFromState === void 0 ? void 0 : modelFromState.phoneNumber) || linkType.id === 'Sitegeist.Archaeopteryx:Custom' && !(modelFromState === null || modelFromState === void 0 ? void 0 : modelFromState.Custom)) {
+                if (!modelFromState || linkType.id === 'Sitegeist.Archaeopteryx:Web' && !(modelFromState === null || modelFromState === void 0 ? void 0 : modelFromState.urlWithoutProtocol) || linkType.id === 'Sitegeist.Archaeopteryx:PhoneNumber' && !(modelFromState === null || modelFromState === void 0 ? void 0 : modelFromState.phoneNumber) || linkType.id === 'Sitegeist.Archaeopteryx:CustomLink' && !(modelFromState === null || modelFromState === void 0 ? void 0 : modelFromState.CustomLink)) {
                     Preview = exitingPreview;
                     model = existingModel;
                 }
@@ -42999,10 +42999,10 @@ Object.defineProperty(exports, "Asset", { enumerable: true, get: function get() 
 
 /***/ }),
 
-/***/ "../core/lib/application/LinkTypes/Custom/Custom.js":
-/*!**********************************************************!*\
-  !*** ../core/lib/application/LinkTypes/Custom/Custom.js ***!
-  \**********************************************************/
+/***/ "../core/lib/application/LinkTypes/CustomLink/CustomLink.js":
+/*!******************************************************************!*\
+  !*** ../core/lib/application/LinkTypes/CustomLink/CustomLink.js ***!
+  \******************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -43044,14 +43044,14 @@ var __importStar = undefined && undefined.__importStar || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Custom = void 0;
+exports.CustomLink = void 0;
 var React = __importStar(__webpack_require__(/*! react */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js"));
 var archaeopteryx_neos_bridge_1 = __webpack_require__(/*! @sitegeist/archaeopteryx-neos-bridge */ "../neos-bridge/lib/index.js");
 var react_ui_components_1 = __webpack_require__(/*! @neos-project/react-ui-components */ "../../node_modules/@neos-project/neos-ui-extensibility/src/shims/neosProjectPackages/react-ui-components/index.js");
 var domain_1 = __webpack_require__(/*! ../../../domain */ "../core/lib/domain/index.js");
 var framework_1 = __webpack_require__(/*! ../../../framework */ "../core/lib/framework/index.js");
 var presentation_1 = __webpack_require__(/*! ../../../presentation */ "../core/lib/presentation/index.js");
-exports.Custom = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Custom', function (_a) {
+exports.CustomLink = domain_1.makeLinkType('Sitegeist.Archaeopteryx:CustomLink', function (_a) {
     var createError = _a.createError;
     return {
         isSuitableFor: function isSuitableFor(link) {
@@ -43067,7 +43067,7 @@ exports.Custom = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Custom', functio
         },
         TabHeader: function TabHeader() {
             var i18n = archaeopteryx_neos_bridge_1.useI18n();
-            return React.createElement(presentation_1.IconLabel, { icon: "" }, i18n('Sitegeist.Archaeopteryx:LinkTypes.Custom:title'));
+            return React.createElement(presentation_1.IconLabel, { icon: "" }, i18n('Sitegeist.Archaeopteryx:LinkTypes.CustomLink:title'));
         },
         Preview: function Preview(_a) {
             var model = _a.model;
@@ -43076,25 +43076,25 @@ exports.Custom = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Custom', functio
         Editor: function Editor(_a) {
             var model = _a.model;
             var i18n = archaeopteryx_neos_bridge_1.useI18n();
-            return React.createElement("div", null, React.createElement("label", null, i18n('Sitegeist.Archaeopteryx:LinkTypes.Custom:custom.label')), React.createElement("div", { style: { display: 'grid', gridTemplateColumns: '400px 1fr', minWidth: '600px' } }, React.createElement(framework_1.Field, { name: "customLink", initialValue: model === null || model === void 0 ? void 0 : model.customLink, validate: function validate(value) {
+            return React.createElement("div", null, React.createElement("label", null, i18n('Sitegeist.Archaeopteryx:LinkTypes.CustomLink:customLink.label')), React.createElement("div", { style: { display: 'grid', gridTemplateColumns: '400px 1fr', minWidth: '600px' } }, React.createElement(framework_1.Field, { name: "customLink", initialValue: model === null || model === void 0 ? void 0 : model.customLink, validate: function validate(value) {
                     if (!value) {
-                        return i18n('Sitegeist.Archaeopteryx:LinkTypes.Custom:validation.required');
+                        return i18n('Sitegeist.Archaeopteryx:LinkTypes.CustomLink:validation.required');
                     }
                 } }, function (_a) {
                 var input = _a.input;
-                return React.createElement(react_ui_components_1.TextInput, __assign({ id: input.name, type: "text", placeHolder: i18n('Sitegeist.Archaeopteryx:LinkTypes.Custom:custom.placeholder') }, input));
+                return React.createElement(react_ui_components_1.TextInput, __assign({ id: input.name, type: "text", placeHolder: i18n('Sitegeist.Archaeopteryx:LinkTypes.CustomLink:customLink.placeholder') }, input));
             })));
         }
     };
 });
-//# sourceMappingURL=Custom.js.map
+//# sourceMappingURL=CustomLink.js.map
 
 /***/ }),
 
-/***/ "../core/lib/application/LinkTypes/Custom/index.js":
-/*!*********************************************************!*\
-  !*** ../core/lib/application/LinkTypes/Custom/index.js ***!
-  \*********************************************************/
+/***/ "../core/lib/application/LinkTypes/CustomLink/index.js":
+/*!*************************************************************!*\
+  !*** ../core/lib/application/LinkTypes/CustomLink/index.js ***!
+  \*************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -43102,10 +43102,10 @@ exports.Custom = domain_1.makeLinkType('Sitegeist.Archaeopteryx:Custom', functio
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Custom = void 0;
-var Custom_1 = __webpack_require__(/*! ./Custom */ "../core/lib/application/LinkTypes/Custom/Custom.js");
-Object.defineProperty(exports, "Custom", { enumerable: true, get: function get() {
-    return Custom_1.Custom;
+exports.CustomLink = void 0;
+var CustomLink_1 = __webpack_require__(/*! ./CustomLink */ "../core/lib/application/LinkTypes/CustomLink/CustomLink.js");
+Object.defineProperty(exports, "CustomLink", { enumerable: true, get: function get() {
+    return CustomLink_1.CustomLink;
   } });
 //# sourceMappingURL=index.js.map
 
@@ -43922,7 +43922,7 @@ var Node_1 = __webpack_require__(/*! ./Node */ "../core/lib/application/LinkType
 var Asset_1 = __webpack_require__(/*! ./Asset */ "../core/lib/application/LinkTypes/Asset/index.js");
 var MailTo_1 = __webpack_require__(/*! ./MailTo */ "../core/lib/application/LinkTypes/MailTo/index.js");
 var PhoneNumber_1 = __webpack_require__(/*! ./PhoneNumber */ "../core/lib/application/LinkTypes/PhoneNumber/index.js");
-var Custom_1 = __webpack_require__(/*! ./Custom */ "../core/lib/application/LinkTypes/Custom/index.js");
+var CustomLink_1 = __webpack_require__(/*! ./CustomLink */ "../core/lib/application/LinkTypes/CustomLink/index.js");
 function registerLinkTypes(globalRegistry) {
     var linkTypeRegistry = new neos_ui_extensibility_1.SynchronousRegistry("\n        # Sitegeist.Archaeopteryx LinkType Registry\n    ");
     linkTypeRegistry.set(Node_1.Node.id, Node_1.Node);
@@ -43930,7 +43930,7 @@ function registerLinkTypes(globalRegistry) {
     linkTypeRegistry.set(Web_1.Web.id, Web_1.Web);
     linkTypeRegistry.set(MailTo_1.MailTo.id, MailTo_1.MailTo);
     linkTypeRegistry.set(PhoneNumber_1.PhoneNumber.id, PhoneNumber_1.PhoneNumber);
-    linkTypeRegistry.set(Custom_1.Custom.id, Custom_1.Custom);
+    linkTypeRegistry.set(CustomLink_1.CustomLink.id, CustomLink_1.CustomLink);
     globalRegistry.set('@sitegeist/archaeopteryx/link-types', linkTypeRegistry);
 }
 exports.registerLinkTypes = registerLinkTypes;
