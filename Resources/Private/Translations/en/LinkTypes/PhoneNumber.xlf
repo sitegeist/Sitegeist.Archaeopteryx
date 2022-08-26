@@ -18,7 +18,7 @@
                 <source>Please select a valid country calling code</source>
             </trans-unit>
             <trans-unit id="phoneNumber.validation.numbersOnly" xml:space="preserve" approved="yes">
-                <source>Please enter only number values</source>
+                <source>Please enter only number values without a leading 0</source>
             </trans-unit>
         </body>
     </file>
