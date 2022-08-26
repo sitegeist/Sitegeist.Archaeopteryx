@@ -43060,20 +43060,26 @@ exports.MailTo = domain_1.makeLinkType('Sitegeist.Archaeopteryx:MailTo', functio
             });
         },
         convertModelToLink: function convertModelToLink(email) {
-            var url = new URL("mailto:" + email.recipient);
+            var href = "mailto:" + email.recipient + "?";
             if (email.subject) {
-                url.searchParams.set('subject', email.subject);
+                href += "subject=" + email.subject;
             }
-            if (email.cc) {
-                url.searchParams.set('cc', email.cc);
+            if (email.cc && !email.subject) {
+                href += "cc=" + email.cc;
+            } else if (email.cc) {
+                href += "&cc=" + email.cc;
             }
-            if (email.bcc) {
-                url.searchParams.set('bcc', email.bcc);
+            if (email.bcc && !email.subject && !email.cc) {
+                href += "bcc=" + email.bcc;
+            } else if (email.bcc) {
+                href += "&bcc=" + email.bcc;
             }
-            if (email.body) {
-                url.searchParams.set('body', email.body);
+            if (email.body && !email.subject && !email.cc && !email.bcc) {
+                href += "body=" + email.body;
+            } else if (email.body) {
+                href += "&body=" + email.body;
             }
-            return { href: url.toString() };
+            return { href: href };
         },
         TabHeader: function TabHeader() {
             var i18n = archaeopteryx_neos_bridge_1.useI18n();
