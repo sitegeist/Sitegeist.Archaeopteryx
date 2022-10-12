@@ -53,10 +53,6 @@ export function findChildNodesForNode(
     state: INodeTreeState,
     node: INodePartialForTree
 ): INodePartialForTree[] {
-    if (!isNodeFullyLoaded(state, node)) {
-        return [];
-    }
-
     return node.children.map(
         child => findNodeByContextPath(state, child.contextPath)
     ).filter(result => result !== null) as INodePartialForTree[];
