@@ -46384,9 +46384,6 @@ function findNodeByContextPath(state, contextPath) {
 }
 exports.findNodeByContextPath = findNodeByContextPath;
 function findChildNodesForNode(state, node) {
-    if (!isNodeFullyLoaded(state, node)) {
-        return [];
-    }
     return node.children.map(function (child) {
         return findNodeByContextPath(state, child.contextPath);
     }).filter(function (result) {
