@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState } from 'react';
 import {useForm} from 'react-final-form';
 
 import {SelectBox, TextInput} from '@neos-project/react-ui-components';
@@ -13,6 +14,10 @@ import { Nullable } from 'ts-toolbelt/out/Union/Nullable';
 type WebLinkModel = {
     protocol: 'http' | 'https'
     urlWithoutProtocol: string
+}
+
+function removeHttp(url: string) {
+    return url.replace(/^https?:\/\//, '');
 }
 
 export const Web = makeLinkType<WebLinkModel>('Sitegeist.Archaeopteryx:Web', ({createError}) => ({
@@ -42,7 +47,7 @@ export const Web = makeLinkType<WebLinkModel>('Sitegeist.Archaeopteryx:Web', ({c
     },
 
     convertModelToLink:(model: WebLinkModel) => ({
-        href: `${model.protocol}://${model.urlWithoutProtocol}`
+        href: `${model.protocol}://${removeHttp(model.urlWithoutProtocol)}`
     }),
 
     TabHeader: () => {
@@ -58,14 +63,14 @@ export const Web = makeLinkType<WebLinkModel>('Sitegeist.Archaeopteryx:Web', ({c
     Preview: ({model}: {model: WebLinkModel}) => (
         <IconCard
             icon="external-link"
-            title={`${model.protocol}://${model.urlWithoutProtocol}`}
+            title={`${model.protocol}://${removeHttp(model.urlWithoutProtocol)}`}
         />
     ),
 
     Editor: ({model}: {model: Nullable<WebLinkModel>}) => {
+        const [protocol, setProtocol] = useState<string>("");
+
         const i18n = useI18n();
-        const form = useForm();
-        const prefix = `linkTypeProps.Sitegeist_Archaeopteryx:Web`;
 
         return (
             <div>
@@ -75,6 +80,16 @@ export const Web = makeLinkType<WebLinkModel>('Sitegeist.Archaeopteryx:Web', ({c
                 <div style={{ display: 'grid', gridTemplateColumns: '160px 1fr', minWidth: '600px' }}>
                     <Field<string>
                         name="protocol"
+                        format={value => {
+                            if(value !== undefined || value !== ''){
+                                setProtocol(value)
+                            }
+
+                            if(value === undefined){
+                                useForm().change('linkTypeProps.Sitegeist_Archaeopteryx:Web.protocol', protocol);
+                            }
+                            return value;
+                        }}
                         initialValue={model?.protocol ?? 'https'}
                         validate={value => {
                             if (!value) {
@@ -99,6 +114,7 @@ export const Web = makeLinkType<WebLinkModel>('Sitegeist.Archaeopteryx:Web', ({c
                     )}</Field>
                     <Field<string>
                         name="urlWithoutProtocol"
+                        initialValue={model?.urlWithoutProtocol}
                         format={value => {
                             const matches = value?.match(/^(https?):\/\/(.*)$/);
                             if (matches) {
@@ -111,12 +127,12 @@ export const Web = makeLinkType<WebLinkModel>('Sitegeist.Archaeopteryx:Web', ({c
                             const matches = value?.match(/^(https?):\/\/(.*)$/);
                             if (matches) {
                                 const [, protocol, urlWithoutProtocol] = matches;
-                                form.change(`${prefix}.protocol`, protocol);
+
+                                useForm().change('linkTypeProps.Sitegeist_Archaeopteryx:Web.protocol', protocol);
                                 return urlWithoutProtocol;
                             }
                             return value;
                         }}
-                        initialValue={model?.urlWithoutProtocol}
                         validate={value => {
                             if (!value) {
                                 return i18n('Sitegeist.Archaeopteryx:LinkTypes.Web:urlWithoutProtocol.validation.required');
