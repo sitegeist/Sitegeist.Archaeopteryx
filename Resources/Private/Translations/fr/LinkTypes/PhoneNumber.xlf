@@ -23,8 +23,8 @@
                 <target>Veuillez sélectionner un code d'appel de pays valide</target>
             </trans-unit>
             <trans-unit id="phoneNumber.validation.numbersOnly" xml:space="preserve" approved="yes">
-                <source>Please enter only number values</source>
-                <target>Veuillez saisir uniquement des valeurs numériques</target>
+                <source>Please enter only number values without a leading 0</source>
+                <target>Veuillez saisir uniquement les valeurs numériques sans le premier 0</target>
             </trans-unit>
         </body>
     </file>
