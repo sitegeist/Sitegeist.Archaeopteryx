@@ -3,7 +3,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "build": "lerna run --stream build",
+    "build": "NODE_ENV=production lerna run --stream build",
+    "build-dev": "lerna run --stream build",
     "watch": "lerna run --stream --parallel watch",
     "test": "lerna run --stream test"
   },
