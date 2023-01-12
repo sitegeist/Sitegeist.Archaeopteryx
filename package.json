@@ -3,9 +3,11 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "build": "lerna run --stream build",
+    "build": "NODE_ENV=production lerna run --stream build",
+    "build-dev": "lerna run --stream build",
     "watch": "lerna run --stream --parallel watch",
-    "test": "lerna run --stream test"
+    "test": "lerna run --stream test",
+    "postinstall": "patch-package"
   },
   "workspaces": [
     "Neos.Ui/*"
@@ -24,6 +26,7 @@
     "lerna": "^4.0.0",
     "ts-jest": "^26.5.5",
     "ts-node": "^9.1.1",
-    "typescript": "^4.2.4"
+    "typescript": "^4.2.4",
+    "patch-package": "^6.5.1"
   }
 }

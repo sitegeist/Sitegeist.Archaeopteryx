@@ -102,11 +102,18 @@ export const Web = makeLinkType<WebLinkModel>('Sitegeist.Archaeopteryx:Web', ({c
                         format={value => {
                             const matches = value?.match(/^(https?):\/\/(.*)$/);
                             if (matches) {
+                                const [, , urlWithoutProtocol] = matches;
+                                return urlWithoutProtocol;
+                            }
+                            return value;
+                        }}
+                        parse={value => {
+                            const matches = value?.match(/^(https?):\/\/(.*)$/);
+                            if (matches) {
                                 const [, protocol, urlWithoutProtocol] = matches;
                                 form.change(`${prefix}.protocol`, protocol);
                                 return urlWithoutProtocol;
                             }
-
                             return value;
                         }}
                         initialValue={model?.urlWithoutProtocol}
