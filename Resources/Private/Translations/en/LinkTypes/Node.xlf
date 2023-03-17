@@ -7,6 +7,10 @@
                 <source>Document</source>
             </trans-unit>
 
+            <trans-unit id="labelOfNonExistingNode" xml:space="preserve" approved="yes">
+                <source>Deleted Node</source>
+            </trans-unit>
+
             <!-- Identifier -->
             <trans-unit id="node.validation.required" xml:space="preserve" approved="yes">
                 <source>Node is required</source>
