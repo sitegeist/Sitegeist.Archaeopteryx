@@ -24,7 +24,9 @@ import { Process, Field } from '../../../framework';
 const nodeCache = new Map<string, INodePartialForTree>();
 
 type NodeLinkModel = {
-    node: INodePartialForTree
+    identifier: string
+    // might be not be set if the node was deleted
+    node?: INodePartialForTree
 };
 type NodeLinkOptions = {
     startingPoint: string
@@ -32,6 +34,19 @@ type NodeLinkOptions = {
     loadingDepth: number
     allowedNodeTypes: NodeTypeName[]
 };
+
+const NodePreview = ({ node }: { node: INodePartialForTree }) => {
+    const nodeSummary = useNodeSummary(node.identifier!);
+    const nodeType = useNodeType(node.nodeType ?? NodeTypeName('Neos.Neos:Document'));
+
+    return (
+        <IconCard
+            icon={nodeType?.ui?.icon ?? 'square'}
+            title={nodeSummary.value?.label ?? node.label}
+            subTitle={nodeSummary.value?.breadcrumb ?? `node://${node.identifier}`}
+        />
+    );
+}
 
 export const Node = makeLinkType<NodeLinkModel, NodeLinkOptions>('Sitegeist.Archaeopteryx:Node', ({ createError }) => ({
     supportedLinkOptions: ['anchor', 'title', 'targetBlank', 'relNofollow'],
@@ -55,7 +70,7 @@ export const Node = makeLinkType<NodeLinkModel, NodeLinkOptions>('Sitegeist.Arch
             const cacheIdentifier = `${identifier}@${siteNodeContextPath.context}`;
 
             if (nodeCache.has(cacheIdentifier)) {
-                return { node: nodeCache.get(cacheIdentifier)! };
+                return { node: nodeCache.get(cacheIdentifier)!, identifier };
             }
 
             const result = await q(siteNodeContextPath).find(`#${identifier}`)
@@ -63,18 +78,22 @@ export const Node = makeLinkType<NodeLinkModel, NodeLinkOptions>('Sitegeist.Arch
 
             // eslint-disable-next-line no-restricted-syntax
             for (const node of result) {
-                const model = { node };
+                const model = { node, identifier };
                 nodeCache.set(cacheIdentifier, model.node);
                 return model;
             }
 
-            throw createError(`Could not find node for identifier "${identifier}".`);
+            // node might have been deleted
+            return {
+                node: undefined,
+                identifier
+            }
         }, [link.href, siteNodeContextPath]);
 
         return Process.fromAsyncState(asyncState);
     },
 
-    convertModelToLink: ({ node }: NodeLinkModel) => ({ href: `node://${node.identifier}` }),
+    convertModelToLink: ({ node }: NodeLinkModel) => ({ href: `node://${node?.identifier}` }),
 
     TabHeader: () => {
         const i18n = useI18n();
@@ -86,17 +105,20 @@ export const Node = makeLinkType<NodeLinkModel, NodeLinkOptions>('Sitegeist.Arch
         );
     },
 
-    Preview: ({ model: { node } }: { model: NodeLinkModel }) => {
-        const nodeSummary = useNodeSummary(node.identifier!);
-        const nodeType = useNodeType(node.nodeType ?? NodeTypeName('Neos.Neos:Document'));
+    Preview: ({ model: { node, identifier } }: { model: NodeLinkModel }) => {
+        const i18n = useI18n();
 
-        return (
-            <IconCard
-                icon={nodeType?.ui?.icon ?? 'square'}
-                title={nodeSummary.value?.label ?? node.label}
-                subTitle={nodeSummary.value?.breadcrumb ?? `node://${node.identifier}`}
-            />
-        );
+        if (!node) {
+            return (
+                <IconCard
+                    icon='ban'
+                    title={`[${i18n('Sitegeist.Archaeopteryx:LinkTypes.Node:labelOfNonExistingNode')}]`}
+                    subTitle={`node://${identifier}`}
+                />
+            );
+        }
+
+        return <NodePreview node={node} />
     },
 
     // eslint-disable-next-line max-len
