@@ -7,12 +7,19 @@ export function NodeTypeName(name: string): NodeTypeName {
     return name as NodeTypeName;
 }
 
+interface PropertyConfiguration {
+    type?: string;
+}
+
 export interface INodeType {
     name: NodeTypeName
     label: string
     ui?: {
         icon?: string
     }
+    properties?: {
+        [propName: string]: PropertyConfiguration | undefined;
+    };
 }
 
 export function useNodeType(nodeTypeName: NodeTypeName): null | INodeType {
