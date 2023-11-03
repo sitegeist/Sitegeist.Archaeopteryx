@@ -1,62 +1,47 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import styled, {keyframes} from 'styled-components';
+import styled from 'styled-components';
 
-const overlayAppear = keyframes`
-    from {
-        opacity: 0;
+import {Dialog} from '@neos-project/react-ui-components';
+
+//
+// Dear Reader:
+// The styled component below this comment is a desparate hack
+// to let the native Neos UI Dialog position in center,
+// calculate its width by its contents and allow for more height,
+// which is behavior that the Dialog does not anticipate.
+//
+// This is a **VERY FRAGILE** hack, so please do not copy it. A
+// fix for the native Dialog in Neos UI will follow soon.
+//
+const StyledDialog = styled(Dialog)`
+    [class*="_dialog__contentsPosition "],
+    [class$="_dialog__contentsPosition"] {
+        top: 50%;
+        transform: translateY(-50%)translateX(-50%)scale(1);
+    }
+    [class*="_dialog__contents "],
+    [class$="_dialog__contents"] {
+        width: auto;
+        max-width: calc(100vw - 40px * 2);
+    }
+    [class*="_dialog__body "],
+    [class$="_dialog__body"] {
+        max-height: 80vh;
     }
 `;
-
-const modalAppear = keyframes`
-    from {
-        opacity: 0;
-        transform: translateX(-50%) translateY(-50%) scale(.94);
-    }
-`;
-
-const StyledOverlay = styled.div`
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, .9);
-    animation: ${overlayAppear} .5s ease-in-out;
-    z-index: 4;
-`;
-
-const StyledModal = styled.div`
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translateX(-50%) translateY(-50%) scale(1);
-    background: #1a1a1a;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, .4);
-    opacity: 1;
-    animation: ${modalAppear} .5s ease-in-out;
-    border: 2px solid #3f3f3f;
-`;
-
-const StyledDialogTitle = styled.div`
-    font-size: 20px;
-    line-height: 1.2;
-    padding: 16px;
-    padding-right: 40px;
-`
 
 export const Modal: React.FC<{
     renderTitle(): React.ReactNode
     renderBody(): React.ReactNode
 }> = props => ReactDOM.createPortal(
-    <StyledOverlay data-ignore_click_outside="true">
-        <StyledModal>
-            <StyledDialogTitle>
-                {props.renderTitle()}
-            </StyledDialogTitle>
-
-            {props.renderBody()}
-        </StyledModal>
-    </StyledOverlay>,
+    <StyledDialog
+        isOpen={true}
+        title={props.renderTitle()}
+        onRequestClose={() => {}}
+        preventClosing
+        >
+        {props.renderBody()}
+    </StyledDialog>,
     document.body
 );

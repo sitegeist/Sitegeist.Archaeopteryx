@@ -10,3 +10,4 @@ composer.lock
 .phpunit.result.cache
 .idea
 lerna-debug.log
+Resources/Public/JavaScript/Plugin.js.map
