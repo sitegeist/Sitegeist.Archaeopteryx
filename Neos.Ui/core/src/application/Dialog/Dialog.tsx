@@ -156,6 +156,7 @@ const DialogWithEmptyValue: React.FC<{
                                 </Deletable>
                             ) : null}
 
+                            <div style={{ overflow: "auto" }}>
                             <LinkEditor
                                 key={linkType.id}
                                 link={null}
@@ -169,6 +170,7 @@ const DialogWithEmptyValue: React.FC<{
                                     )}
                                 />
                             ) : null}
+                            </div>
                         </Layout.Stack>
                     )
                 }}
