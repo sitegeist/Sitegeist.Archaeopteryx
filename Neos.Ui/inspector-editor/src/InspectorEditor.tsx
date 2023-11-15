@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import {Button, Icon} from '@neos-project/react-ui-components';
-import {useI18n} from '@sitegeist/archaeopteryx-neos-bridge';
+import {INodeType, useI18n} from '@sitegeist/archaeopteryx-neos-bridge';
 import {ILinkType, useLinkTypeForHref, useEditorTransactions, Deletable} from '@sitegeist/archaeopteryx-core';
 import {ErrorBoundary, decodeError} from '@sitegeist/archaeopteryx-error-handling';
 import {ILink} from '@sitegeist/archaeopteryx-core/lib/domain';
@@ -10,6 +10,9 @@ import {useCurrentlyFocusedNode} from '@sitegeist/archaeopteryx-neos-bridge/lib/
 import {EditorProps} from './EditorProps';
 import {ILinkOptions} from '@sitegeist/archaeopteryx-core/lib/domain';
 
+/**
+ * Translates to php's {@see \Sitegeist\Archaeopteryx\Link}
+ */
 type LinkValueObject = {
     href: string;
     title?: string;
@@ -22,36 +25,67 @@ enum LinkDataType {
     valueObject
 }
 
+/**
+ * These are the possible formats from {@see LinkDataType} to store the link in the Node.
+ *  The string is the default
+ *  The valueObject is on php side this vo: {@see \Sitegeist\Archaeopteryx\Link}
+ */
 type SerializeableLink = {
-    type: LinkDataType.valueObject,
+    dataType: LinkDataType.valueObject,
     value: LinkValueObject | null
 } | {
-    type: LinkDataType.string,
+    dataType: LinkDataType.string,
     value: string | null
 }
 
-const resolveSerializedLink = (value: any, linkDataType: LinkDataType): SerializeableLink => {
+/**
+ * Determine based on the property type of the schema how to interpret the property value
+ */
+const resolveCurrentSerializedLink = (value: any, propertyName: string, nodeType: INodeType): SerializeableLink => {
+    const linkDataType = nodeType.properties?.[propertyName]?.type === "Sitegeist\\Archaeopteryx\\Link"
+        ? LinkDataType.valueObject
+        : LinkDataType.string;
+
     if (linkDataType === LinkDataType.valueObject) {
         // @ts-ignore
         const linkArray = (typeof value === "object" && value !== null && "href" in value && typeof value.href === "string") ? value as LinkValueObject : null;
         return {
-            type: linkDataType,
+            dataType: linkDataType,
             value: linkArray
         }
     }
     return {
-        type: linkDataType,
+        dataType: linkDataType,
         value: value || null
     }
 }
 
+/**
+ * Convert the {@see SerializeableLink} to the editor representation.
+ * For example the anchor field is in the value object encoded into the href, but for editing treated separately.
+ *
+ * Counterpart of {@see convertILinkToSerializedLinkValue}
+ */
 const serializedLinkToILink = (serializedLink: SerializeableLink): ILink | null => {
     if (serializedLink.value === null) {
         return null;
     }
-    switch (serializedLink.type) {
+    switch (serializedLink.dataType) {
         case LinkDataType.valueObject:
-            return downcastFromLinkValueObject(serializedLink.value);
+            // downcastFromLinkValueObject
+            const linkValueObject = serializedLink.value;
+
+            const [baseHref, hash] = linkValueObject.href.split('#', 2);
+
+            return {
+                href: baseHref,
+                options: {
+                    anchor: hash || undefined,
+                    title: linkValueObject.title || undefined,
+                    targetBlank: linkValueObject.target ? linkValueObject.target === '_blank' : undefined,
+                    relNofollow: linkValueObject.rel.includes('nofollow'),
+                }
+            };
         case LinkDataType.string:
             return {
                 href: serializedLink.value
@@ -59,60 +93,54 @@ const serializedLinkToILink = (serializedLink: SerializeableLink): ILink | null 
     }
 }
 
-const upcastToLinkValueObject = (link: ILink): LinkValueObject => {
-    const href = link.options?.anchor
-        ? `${link.href}#${link.options.anchor}`
-        : link.href;
+/**
+ * Convert the editor representation of the link to the {@see SerializeableLink.value}
+ * For example the anchor field is for editing treated separately but in the value object encoded into the href.
+ *
+ * Counterpart of {@see serializedLinkToILink}
+ */
+const convertILinkToSerializedLinkValue = (link: ILink, dataType: LinkDataType): any => {
+    switch (dataType) {
+        case LinkDataType.valueObject:
+            // upcastToLinkValueObject
+            const href = link.options?.anchor
+                ? `${link.href}#${link.options.anchor}`
+                : link.href;
 
-    return {
-        href: href.toString(),
-        title: link.options?.title,
-        target: link.options?.targetBlank ? '_blank' : undefined,
-        rel: link.options?.relNofollow ? ['nofollow'] : [],
-    };
-};
-
-const downcastFromLinkValueObject = (linkValueObject: LinkValueObject): ILink => {
-    const [baseHref, hash] = linkValueObject.href.split('#', 2);
-
-    return {
-        href: baseHref,
-        options: {
-            anchor: hash || undefined,
-            title: linkValueObject.title || undefined,
-            targetBlank: linkValueObject.target ? linkValueObject.target === '_blank' : undefined,
-            relNofollow: linkValueObject.rel.includes('nofollow'),
-        }
-    };
-};
+            return {
+                href: href.toString(),
+                title: link.options?.title,
+                target: link.options?.targetBlank ? '_blank' : undefined,
+                rel: link.options?.relNofollow ? ['nofollow'] : [],
+            };
+        case LinkDataType.string:
+            return link.href;
+    }
+}
 
 export const InspectorEditor: React.FC<EditorProps<any, any>> = props => {
 
     const reset = () => props.commit('');
 
-    const linkDataType = (() => {
-        const nodeType = useNodeType(
-            useCurrentlyFocusedNode()!.nodeType
-        )!;
-        return nodeType.properties?.[props.identifier]?.type === "Sitegeist\\Archaeopteryx\\Link"
-            ? LinkDataType.valueObject
-            : LinkDataType.string;
-    })();
+    const nodeType = useNodeType(
+        useCurrentlyFocusedNode()!.nodeType
+    )!;
 
     const i18n = useI18n();
     const tx = useEditorTransactions();
 
-    const serializedLink = resolveSerializedLink(props.value, linkDataType);
+    const serializedLink = resolveCurrentSerializedLink(props.value, props.identifier, nodeType);
 
     const linkType = useLinkTypeForHref(
-        (serializedLink.type === LinkDataType.valueObject ? serializedLink.value?.href : serializedLink.value) ?? null
+        (serializedLink.dataType === LinkDataType.valueObject ? serializedLink.value?.href : serializedLink.value) ?? null
     );
 
     const editLink = React.useCallback(async () => {
         const enabledLinkOptions = (() => {
             const enabledLinkOptions: (keyof ILinkOptions)[] = [];
 
-            if (serializedLink.type === LinkDataType.string) {
+            if (serializedLink.dataType === LinkDataType.string) {
+                // the simple type doesn't allow any options, as they cannot be encoded.
                 return enabledLinkOptions;
             }
 
@@ -147,15 +175,9 @@ export const InspectorEditor: React.FC<EditorProps<any, any>> = props => {
                 return;
             }
 
-            switch (serializedLink.type) {
-                case LinkDataType.valueObject:
-                    const linkValueObject = upcastToLinkValueObject(result.value);
-                    props.commit(linkValueObject);
-                    return;
-                case LinkDataType.string:
-                    props.commit(result.value.href);
-                    return;
-            }
+            props.commit(
+                convertILinkToSerializedLinkValue(result.value, serializedLink.dataType)
+            );
         }
     }, [serializedLink, tx.editLink, props.options, props.commit, reset]);
 
