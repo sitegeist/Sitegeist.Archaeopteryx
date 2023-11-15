@@ -72,3 +72,8 @@ export function useHasNode(contextPath?: ContextPath) {
     const node: any = useSelector(selectors.CR.Nodes.byContextPathSelector(contextPath?.toString() ?? ''));
     return Boolean(node);
 }
+
+export function useCurrentlyFocusedNode(): INode | null {
+    const node = useSelector(selectors.CR.Nodes.focusedSelector) as INode | undefined | null;
+    return node ?? null;
+}

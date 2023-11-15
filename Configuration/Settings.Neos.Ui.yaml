@@ -1,5 +1,13 @@
 Neos:
   Neos:
+    userInterface:
+      inspector:
+        dataTypes:
+          Sitegeist\Archaeopteryx\Link:
+            # the option `typeConverter` must not be specified here.
+            # from array|string to Link the Neos\Flow\Property\TypeConverter\DenormalizingObjectConverter is used
+            # for Link to array the Sitegeist\Archaeopteryx\LinkToArrayForNeosUiConverter is used
+            editor: Sitegeist.Archaeopteryx/Inspector/Editors/LinkEditor
     Ui:
       resources:
         javascript:
