@@ -338,6 +338,8 @@ It is possible to disable one or more link type editors via the configuration fo
 
 ### Inspector Editor Configuration
 
+Using the basic `string` type:
+
 ```yaml
 'Vendor.Site:MyAwesomeNodeTypeWithALinkProperty':
   # ...
@@ -352,6 +354,38 @@ It is possible to disable one or more link type editors via the configuration fo
             linkTypes:
               'Sitegeist.Archaeopteryx:MailTo':
                 enabled: false
+```
+
+Advanced usage with `Sitegeist\Archaeopteryx\Link` value object type:
+
+```yaml
+'Vendor.Site:MyAwesomeNodeTypeWithALinkValueObjectProperty':
+  # ...
+  properties:
+    link:
+      type: Sitegeist\Archaeopteryx\Link
+      ui:
+        inspector:
+          # ...
+          editorOptions:
+            # optionally enable link options, which will be encoded into the value object.
+            anchor: true
+            title: true
+            relNofollow: true
+            targetBlank: true
+```
+
+As the value object can serialize more than just the `href` we can also edit other link related options like `title` and the `target`.
+
+The link value object can be queried as usual. An example rendering would look the following:
+
+```
+link = ${q(node).property("link")}
+renderer = afx`
+    <a href={props.link.href} title={props.link.title} target={props.link.target} rel={props.link.rel} rel.@if={props.link.rel != []}>
+        My Text
+    </a>
+`
 ```
 
 ## Contribution
