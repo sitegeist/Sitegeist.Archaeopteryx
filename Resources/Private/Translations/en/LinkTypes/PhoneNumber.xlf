@@ -9,7 +9,7 @@
                 <source>Phone Number:</source>
             </trans-unit>
             <trans-unit id="phoneNumber.placeholder" xml:space="preserve" approved="yes">
-                <source>your phone number without area code</source>
+                <source>your phone number without country code</source>
             </trans-unit>
             <trans-unit id="phoneNumber.validation.required" xml:space="preserve" approved="yes">
                 <source>A phone number is required</source>
