@@ -276,7 +276,7 @@ The `PhoneNumber` link type handles phone links, which start with `tel:` and all
   <img src="./Docs/CustomLink.png" width="700">
 </p>
 
-The `CustomLink` link type allows the editor to add a link in any format. With this you give the editor an escape hatch if the other link types are insufficient for the desired use case. As any other link type the `CustomLink` can be deactivated via the configuration. If you want to deactivate the `CustomLink` link type globaly you can use a preset and a mixin, which is than used as a supertype in all link generating node types:
+The `CustomLink` link type allows the editor to add a link in any format. With this you give the editor an escape hatch if the other link types are insufficient for the desired use case. As any other link type the `CustomLink` can be deactivated via the configuration. If you want to deactivate the `CustomLink` link type globally you can use a preset and a mixin, which is than used as a supertype in all link generating node types:
 
 Define the preset:
 
