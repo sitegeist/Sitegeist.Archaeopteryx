@@ -276,7 +276,37 @@ The `PhoneNumber` link type handles phone links, which start with `tel:` and all
   <img src="./Docs/CustomLink.png" width="700">
 </p>
 
-The `CustomLink` link type allows the editor to add a link in any format. With this you give the editor an escape hatch if the other link types are insufficient for the desired use case. As any other link type the `CustomLink` can be deactivated via the configuration.
+The `CustomLink` link type allows the editor to add a link in any format. With this you give the editor an escape hatch if the other link types are insufficient for the desired use case. As any other link type the `CustomLink` can be deactivated via the configuration. If you want to deactivate the `CustomLink` link type you can use the a preset:
+
+Define the preset:
+
+```yaml
+Neos:
+  Neos:
+    nodeTypes:
+      presets:
+        properties:
+          myVendor:
+            noCustomLinkEditor:
+              ui:
+                inspector:
+                  editor: 'Sitegeist.Archaeopteryx/Inspector/Editors/LinkEditor'
+                  editorOptions:
+                    linkTypes:
+                      'Sitegeist.Archaeopteryx:CustomLink':
+                        enabled: false
+```
+
+Use the preset in your link property, mixin or node type
+
+```yaml
+'MyVendor.Base:Mixin.Link':
+  abstract: true
+  properties:
+    link:
+      options:
+        preset: 'myVendor.noCustomLinkEditor'
+```
 
 ## Link Options
 
