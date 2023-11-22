@@ -166,11 +166,11 @@ The `Asset` Link Type handles links to files from the Media Module. The editor w
   <img src="./Docs/Mail To.png">
 </p>
 
-The `Mail To` Link Type handles e-mail links, so links that start with `mailto:`. Links with the `mailto:` protocol allow not only to specify a recipient, but also to configure a subject, a message body, carbon copy (CC) recipients and blind carbon copy (BCC) recipients for the outgoing e-mail.
+The `MailTo` Link Type handles e-mail links, so links that start with `mailto:`. Links with the `mailto:` protocol allow not only to specify a recipient, but also to configure a subject, a message body, carbon copy (CC) recipients and blind carbon copy (BCC) recipients for the outgoing e-mail.
 
-The editor for the `Mail To` Link Type will offer all of those fields. Each field can be deactivated via configuration.
+The editor for the `MailTo` Link Type will offer all of those fields. Each field can be deactivated via configuration.
 
-The `Mail To` Link Type can be configured as follows:
+The `MailTo` Link Type can be configured as follows:
 
 **RTE Configuration:**
 
@@ -224,7 +224,7 @@ The `Mail To` Link Type can be configured as follows:
   <img src="./Docs/Phone Number.png" width="700">
 </p>
 
-The `Phone Number` link type handles phone links, which start with `tel:` and allow to start a call. In the editor one selects the country calling code and add the rest of the phone number via an input field. To make it easier to check the added phone number, it is auto formatted  in the preview according to the selected country. Via the the node type configuration you can define a `defaultCountry` and an array of `favoredCountries`. The `defaultCountry` is used to prefill the country calling code for new links. The values from the `favoredCountries` array are used to define a list of preferred countries, which will be placed at the top of the selectable country calling codes in the editor. The used values are ISO 3166-1 alpha-2 ([wikipedia](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)) country codes. Both configuration settings are placed in the `linking` respectively `linkTypes` section of the `editorOptions`:
+The `PhoneNumber` link type handles phone links, which start with `tel:` and allow to start a call. In the editor one selects the country calling code and add the rest of the phone number via an input field. To make it easier to check the added phone number, it is auto formatted  in the preview according to the selected country. Via the the node type configuration you can define a `defaultCountry` and an array of `favoredCountries`. The `defaultCountry` is used to prefill the country calling code for new links. The values from the `favoredCountries` array are used to define a list of preferred countries, which will be placed at the top of the selectable country calling codes in the editor. The used values are ISO 3166-1 alpha-2 ([wikipedia](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)) country codes. Both configuration settings are placed in the `linking` respectively `linkTypes` section of the `editorOptions`:
 
 ```yaml
 'Vendor.Site:MyAwesomeNodeTypeWithSomeRichText':
@@ -268,6 +268,44 @@ The `Phone Number` link type handles phone links, which start with `tel:` and al
                   - AT
                   - CH
                   - FR
+```
+
+### Custom Link
+
+<p align="center">
+  <img src="./Docs/CustomLink.png" width="700">
+</p>
+
+The `CustomLink` link type allows the editor to add a link in any format. With this you give the editor an escape hatch if the other link types are insufficient for the desired use case. As any other link type the `CustomLink` can be deactivated via the configuration. If you want to deactivate the `CustomLink` link type you can use the a preset:
+
+Define the preset:
+
+```yaml
+Neos:
+  Neos:
+    nodeTypes:
+      presets:
+        properties:
+          myVendor:
+            noCustomLinkEditor:
+              ui:
+                inspector:
+                  editor: 'Sitegeist.Archaeopteryx/Inspector/Editors/LinkEditor'
+                  editorOptions:
+                    linkTypes:
+                      'Sitegeist.Archaeopteryx:CustomLink':
+                        enabled: false
+```
+
+Use the preset in your link property, mixin or node type
+
+```yaml
+'MyVendor.Base:Mixin.Link':
+  abstract: true
+  properties:
+    link:
+      options:
+        preset: 'myVendor.noCustomLinkEditor'
 ```
 
 ## Link Options
