@@ -370,7 +370,19 @@ It is possible to disable one or more link type editors via the configuration fo
             linking:
               'Sitegeist.Archaeopteryx':
                 linkTypes:
+                  'Sitegeist.Archaeopteryx:Asset':
+                    enabled: true
                   'Sitegeist.Archaeopteryx:MailTo':
+                    enabled: true
+                  # Document node/pages
+                  'Sitegeist.Archaeopteryx:Node':
+                    enabled: true
+                  'Sitegeist.Archaeopteryx:PhoneNumber':
+                    enabled: false
+                  # External links
+                  'Sitegeist.Archaeopteryx:Web':
+                    enabled: true
+                  'Sitegeist.Archaeopteryx:CustomLink':
                     enabled: false
 ```
 
@@ -388,7 +400,19 @@ It is possible to disable one or more link type editors via the configuration fo
           editor: 'Sitegeist.Archaeopteryx/Inspector/Editors/LinkEditor'
           editorOptions:
             linkTypes:
+              'Sitegeist.Archaeopteryx:Asset':
+                enabled: true
               'Sitegeist.Archaeopteryx:MailTo':
+                enabled: true
+              # Document node/pages
+              'Sitegeist.Archaeopteryx:Node':
+                enabled: true
+              'Sitegeist.Archaeopteryx:PhoneNumber':
+                enabled: false
+              # External links
+              'Sitegeist.Archaeopteryx:Web':
+                enabled: true
+              'Sitegeist.Archaeopteryx:CustomLink':
                 enabled: false
 ```
 
