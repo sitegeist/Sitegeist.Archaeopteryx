@@ -28,6 +28,15 @@ describe('LinType: Web', () => {
             .toBe(true);
     });
 
+    it('is satisfied by https:// links with a hash', () => {
+        const link = {
+            href: 'https://www.example.com#section'
+        };
+
+        expect(Web.isSuitableFor(link))
+                .toBe(true);
+    });
+
     it('is not satisfied by node:// links', () => {
         const link = {
             href: 'node://97c9a6e3-4b50-4559-9f60-b5ad68f25758'

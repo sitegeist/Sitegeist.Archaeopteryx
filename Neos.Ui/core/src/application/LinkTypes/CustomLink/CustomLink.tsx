@@ -14,9 +14,13 @@ type CustomLinkModel = {
 }
 
 export const CustomLink = makeLinkType<CustomLinkModel>('Sitegeist.Archaeopteryx:CustomLink', ({createError}) => ({
-    isSuitableFor: (link: ILink) => !link.href.startsWith('asset://') && !link.href.startsWith('mailto:')
-        && !(link.href.startsWith('node://') && !link.href.includes('#')) && !link.href.startsWith('tel:')
-        && !link.href.startsWith('http://') && !link.href.startsWith('https://'),
+    isSuitableFor: (link: ILink) => {
+        if ((link.href.startsWith('asset://') || link.href.startsWith('node://')) && link.href.includes('#')) {
+            return true;
+        }
+        return !link.href.startsWith('node://') && !link.href.startsWith('asset://') && !link.href.startsWith('mailto:')
+                && !link.href.startsWith('tel:') && !link.href.startsWith('http://') && !link.href.startsWith('https://');
+    },
 
     useResolvedModel: (link: ILink) => {
         return Process.success({
