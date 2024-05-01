@@ -1,0 +1,17 @@
+-
+  name: 'GetChildrenForTreeNode Query'
+  uriPattern: 'sitegeist/archaeopteryx/get-children-for-tree-node'
+  defaults:
+    '@package': 'Sitegeist.Archaeopteryx'
+    '@subpackage': 'Application\GetChildrenForTreeNode'
+    '@controller': 'GetChildrenForTreeNode'
+    '@action': 'ignored'
+
+-
+  name: 'GetTree Query'
+  uriPattern: 'sitegeist/archaeopteryx/get-tree'
+  defaults:
+    '@package': 'Sitegeist.Archaeopteryx'
+    '@subpackage': 'Application\GetTree'
+    '@controller': 'GetTree'
+    '@action': 'ignored'
