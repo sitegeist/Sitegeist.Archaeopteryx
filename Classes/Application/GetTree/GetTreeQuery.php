@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Sitegeist\Archaeopteryx\Application\GetTree;
 
 use Neos\ContentRepository\Domain\ContentSubgraph\NodePath;
-use Neos\ContentRepository\Domain\NodeType\NodeTypeName;
 use Neos\Flow\Annotations as Flow;
 
 /**
@@ -30,7 +29,8 @@ final class GetTreeQuery
         public readonly array $dimensionValues,
         public readonly NodePath $startingPoint,
         public readonly int $loadingDepth,
-        public readonly string $nodeTypeFilter,
+        public readonly string $baseNodeTypeFilter,
+        public readonly string $leafNodeTypeFilter,
         public readonly string $searchTerm,
     ) {
     }
@@ -63,8 +63,11 @@ final class GetTreeQuery
         is_int($array['loadingDepth'])
             or throw new \Exception('Loading depth must be an integer');
 
-        !isset($array['nodeTypeFilter']) or is_string($array['nodeTypeFilter'])
-            or throw new \Exception('Node type filter must be a string');
+        !isset($array['baseNodeTypeFilter']) or is_string($array['baseNodeTypeFilter'])
+            or throw new \Exception('Base node type filter must be a string');
+
+        !isset($array['leafNodeTypeFilter']) or is_string($array['leafNodeTypeFilter'])
+            or throw new \Exception('Leaf node type filter must be a string');
 
         !isset($array['searchTerm']) or is_string($array['searchTerm'])
             or throw new \Exception('Search term must be a string');
@@ -74,7 +77,8 @@ final class GetTreeQuery
             dimensionValues: $array['dimensionValues'],
             startingPoint: NodePath::fromString($array['startingPoint']),
             loadingDepth: $array['loadingDepth'],
-            nodeTypeFilter: $array['nodeTypeFilter'] ?? '',
+            baseNodeTypeFilter: $array['baseNodeTypeFilter'] ?? '',
+            leafNodeTypeFilter: $array['leafNodeTypeFilter'] ?? '',
             searchTerm: $array['searchTerm'] ?? '',
         );
     }

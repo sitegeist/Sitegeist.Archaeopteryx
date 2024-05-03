@@ -20,12 +20,12 @@ use Neos\ContentRepository\Domain\NodeType\NodeTypeName;
 use Neos\ContentRepository\Domain\Service\NodeTypeManager;
 use Neos\Flow\Annotations as Flow;
 use Neos\Neos\Domain\Service\ContentContextFactory;
-use Neos\Neos\Domain\Service\NodeSearchService;
-use Neos\Neos\Domain\Service\NodeSearchServiceInterface;
 use Sitegeist\Archaeopteryx\Application\Shared\NodeTypeFilterOptions;
 use Sitegeist\Archaeopteryx\Application\Shared\TreeNode;
 use Sitegeist\Archaeopteryx\Application\Shared\TreeNodeBuilder;
 use Sitegeist\Archaeopteryx\Application\Shared\TreeNodes;
+use Sitegeist\Archaeopteryx\Infrastructure\ContentRepository\NodeSearchService;
+use Sitegeist\Archaeopteryx\Infrastructure\ContentRepository\NodeTypeFilter;
 
 /**
  * @internal
@@ -40,7 +40,7 @@ final class GetTreeQueryHandler
     protected NodeTypeManager $nodeTypeManager;
 
     #[Flow\Inject]
-    protected NodeSearchServiceInterface $nodeSearchService;
+    protected NodeSearchService $nodeSearchService;
 
     #[Flow\Inject]
     protected NodeTypeConstraintFactory $nodeTypeConstraintFactory;
@@ -62,7 +62,7 @@ final class GetTreeQueryHandler
         }
 
         return new GetTreeQueryResult(
-            root: $tree = empty($query->searchTerm)
+            root: $tree = empty($query->searchTerm) && empty($query->leafNodeTypeFilter)
                 ? $this->createTreeNodeFromNode($rootNode, $query, $query->loadingDepth)
                 : $this->performSearch($rootNode, $query),
             nodeTypeFilterOptions: NodeTypeFilterOptions::fromTreeNode($tree, $this->nodeTypeManager),
@@ -71,16 +71,20 @@ final class GetTreeQueryHandler
 
     private function performSearch(Node $rootNode, GetTreeQuery $query): TreeNode
     {
-        $allowedNodeTypeNames = iterator_to_array(
-            $this->getAllowedNodeTypeNamesAccordingToNodeTypeFilter($query->nodeTypeFilter),
-            false
+        $baseNodeTypeFilter = NodeTypeFilter::fromFilterString(
+            $query->baseNodeTypeFilter,
+            $this->nodeTypeConstraintFactory,
+            $this->nodeTypeManager,
         );
-        /** @var NodeSearchService $nodeSearchService */
-        $nodeSearchService = $this->nodeSearchService;
-        $matchingNodes = $nodeSearchService->findByProperties(
+        $leafNodeTypeFilter = NodeTypeFilter::fromFilterString(
+            $query->leafNodeTypeFilter,
+            $this->nodeTypeConstraintFactory,
+            $this->nodeTypeManager,
+        );
+
+        $matchingNodes = $this->nodeSearchService->search(
             $query->searchTerm,
-            $allowedNodeTypeNames,
-            $rootNode->getContext(),
+            $leafNodeTypeFilter,
             $rootNode
         );
 
@@ -91,6 +95,17 @@ final class GetTreeQueryHandler
 
         foreach ($matchingNodes as $matchingNode) {
             /** @var Node $matchingNode */
+            if (!$baseNodeTypeFilter->isSatisfiedByNode($matchingNode)) {
+                //
+                // Our matching node (somehow) doesn't match the base node type
+                // filter.
+                //
+                // In this case, we don't traverse up its ancestry and drop it
+                // from our result set.
+                //
+                break;
+            }
+
             $treeNodeBuilder = $treeNodeBuildersByNodeAggregateIdentifier[(string) $matchingNode->getNodeAggregateIdentifier()] =
                 $this->createTreeNodeBuilderFromNode($matchingNode);
             $treeNodeBuilder->setIsMatchedByFilter(true);
@@ -99,8 +114,16 @@ final class GetTreeQueryHandler
             do {
                 /** @var null|Node $parentNode */
                 $parentNode = $subject->getParent();
-                if (!$parentNode) {
-                    throw new \Exception('What is this?');
+                if (!$parentNode || !$baseNodeTypeFilter->isSatisfiedByNode($parentNode)) {
+                    //
+                    // We're either at a dead-end in the hierarchy (meaning
+                    // that our matched node is an orphaned node or the
+                    // descendant of an orphaned node) or some ancestor of our
+                    // matched node doesn't match the base node type filter.
+                    //
+                    // In this case, we abandon the entire branch.
+                    //
+                    break;
                 }
 
                 $parentTreeNodeBuilder =
@@ -142,21 +165,6 @@ final class GetTreeQueryHandler
         );
     }
 
-    /**
-     * @return \Traversable<int,string>
-     */
-    private function getAllowedNodeTypeNamesAccordingToNodeTypeFilter(string $nodeTypeFilter): \Traversable
-    {
-        $nodeTypeConstraints = $this->nodeTypeConstraintFactory->parseFilterString($nodeTypeFilter);
-
-        foreach ($this->nodeTypeManager->getNodeTypes(false) as $nodeType) {
-            $nodeTypeName = $nodeType->getName();
-            if ($nodeTypeConstraints->matches(NodeTypeName::fromString($nodeTypeName))) {
-                yield $nodeTypeName;
-            }
-        }
-    }
-
     private function createTreeNodeFromNode(Node $node, GetTreeQuery $query, int $remainingDepth): TreeNode
     {
         return new TreeNode(
@@ -173,7 +181,7 @@ final class GetTreeQueryHandler
                 || $node->getHiddenAfterDateTime() !== null,
             hasUnloadedChildren:
                 $remainingDepth === 0
-                && $node->getNumberOfChildNodes($query->nodeTypeFilter) > 0,
+                && $node->getNumberOfChildNodes($query->baseNodeTypeFilter) > 0,
             nodeTypeNames: iterator_to_array(
                 $this->getAllNonAbstractSuperTypesOf($node->getNodeType()),
                 false
@@ -190,7 +198,7 @@ final class GetTreeQueryHandler
 
         $items = [];
 
-        foreach ($node->getChildNodes($query->nodeTypeFilter) as $childNode) {
+        foreach ($node->getChildNodes($query->baseNodeTypeFilter) as $childNode) {
             /** @var Node $childNode */
             $items[] = $this->createTreeNodeFromNode($childNode, $query, $remainingDepth - 1);
         }
