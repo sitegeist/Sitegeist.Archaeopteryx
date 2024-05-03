@@ -23,6 +23,9 @@ use Neos\Flow\Annotations as Flow;
 #[Flow\Proxy(false)]
 final class TreeNodeBuilder
 {
+    /** @var array<string,TreeNodeBuilder> */
+    private array $childrenByIdentifier;
+
     /**
      * @param NodeTypeName[] $nodeTypeNames
      * @param TreeNodeBuilder[] $children
@@ -51,7 +54,11 @@ final class TreeNodeBuilder
 
     public function addChild(TreeNodeBuilder $childBuilder): self
     {
-        $this->children[] = $childBuilder;
+        if (!isset($this->childrenByIdentifier[(string) $childBuilder->nodeAggregateIdentifier])) {
+            $this->children[] = $childBuilder;
+            $this->childrenByIdentifier[(string) $childBuilder->nodeAggregateIdentifier] = $childBuilder;
+        }
+
         return $this;
     }
 
