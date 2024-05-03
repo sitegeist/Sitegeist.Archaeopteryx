@@ -19,7 +19,6 @@ use Neos\ContentRepository\Domain\NodeType\NodeTypeName;
 use Neos\ContentRepository\Domain\Service\NodeTypeManager;
 use Neos\Flow\Annotations as Flow;
 use Neos\Neos\Domain\Service\ContentContextFactory;
-use Sitegeist\Archaeopteryx\Application\Shared\NodeTypeFilterOptions;
 use Sitegeist\Archaeopteryx\Application\Shared\TreeNode;
 use Sitegeist\Archaeopteryx\Application\Shared\TreeNodes;
 
@@ -52,8 +51,7 @@ final class GetChildrenForTreeNodeQueryHandler
         }
 
         return new GetChildrenForTreeNodeQueryResult(
-            children: $children = $this->createTreeNodesFromChildrenOfNode($node, $query),
-            additionalNodeTypeFilterOptions: NodeTypeFilterOptions::fromTreeNodes($children, $this->nodeTypeManager)
+            children: $this->createTreeNodesFromChildrenOfNode($node, $query),
         );
     }
 

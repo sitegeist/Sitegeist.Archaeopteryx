@@ -10,10 +10,9 @@
 
 declare(strict_types=1);
 
-namespace Sitegeist\Archaeopteryx\Application\Shared;
+namespace Sitegeist\Archaeopteryx\Application\GetNodeTypeFilterOptions;
 
 use Neos\ContentRepository\Domain\Model\NodeType;
-use Neos\ContentRepository\Domain\NodeType\NodeTypeName;
 use Neos\Flow\Annotations as Flow;
 
 /**
@@ -23,7 +22,7 @@ use Neos\Flow\Annotations as Flow;
 final class NodeTypeFilterOption implements \JsonSerializable
 {
     public function __construct(
-        public readonly NodeTypeName $value,
+        public readonly string $value,
         public readonly string $icon,
         public readonly string $label,
     ) {
@@ -32,9 +31,27 @@ final class NodeTypeFilterOption implements \JsonSerializable
     public static function fromNodeType(NodeType $nodeType): self
     {
         return new self(
-            value: NodeTypeName::fromString($nodeType->getName()),
+            value: $nodeType->getName(),
             icon: $nodeType->getConfiguration('ui.icon'),
             label: $nodeType->getConfiguration('ui.label'),
+        );
+    }
+
+    /**
+     * @param array<mixed> $preset
+     */
+    public static function fromNodeTreePresetConfiguration(array $preset): self
+    {
+        return new self(
+            value: isset($preset['baseNodeType']) && is_string($preset['baseNodeType'])
+                ? $preset['baseNodeType']
+                : '',
+            icon: isset($preset['ui']['icon']) && is_string($preset['ui']['icon'])
+                ? $preset['ui']['icon']
+                : 'filter',
+            label: isset($preset['ui']['label']) && is_string($preset['ui']['label'])
+                ? $preset['ui']['label']
+                : 'N/A',
         );
     }
 

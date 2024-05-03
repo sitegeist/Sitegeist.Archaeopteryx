@@ -8,6 +8,15 @@
     '@action': 'ignored'
 
 -
+  name: 'GetNodeTypeFilterOptions Query'
+  uriPattern: 'sitegeist/archaeopteryx/get-node-type-filter-options'
+  defaults:
+    '@package': 'Sitegeist.Archaeopteryx'
+    '@subpackage': 'Application\GetNodeTypeFilterOptions'
+    '@controller': 'GetNodeTypeFilterOptions'
+    '@action': 'ignored'
+
+-
   name: 'GetTree Query'
   uriPattern: 'sitegeist/archaeopteryx/get-tree'
   defaults:

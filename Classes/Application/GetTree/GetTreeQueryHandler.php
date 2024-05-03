@@ -20,7 +20,6 @@ use Neos\ContentRepository\Domain\NodeType\NodeTypeName;
 use Neos\ContentRepository\Domain\Service\NodeTypeManager;
 use Neos\Flow\Annotations as Flow;
 use Neos\Neos\Domain\Service\ContentContextFactory;
-use Sitegeist\Archaeopteryx\Application\Shared\NodeTypeFilterOptions;
 use Sitegeist\Archaeopteryx\Application\Shared\TreeNode;
 use Sitegeist\Archaeopteryx\Application\Shared\TreeNodeBuilder;
 use Sitegeist\Archaeopteryx\Application\Shared\TreeNodes;
@@ -65,7 +64,6 @@ final class GetTreeQueryHandler
             root: $tree = empty($query->searchTerm) && empty($query->leafNodeTypeFilter)
                 ? $this->createTreeNodeFromNode($rootNode, $query, $query->loadingDepth)
                 : $this->performSearch($rootNode, $query),
-            nodeTypeFilterOptions: NodeTypeFilterOptions::fromTreeNode($tree, $this->nodeTypeManager),
         );
     }
 

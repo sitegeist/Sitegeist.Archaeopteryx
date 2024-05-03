@@ -10,19 +10,18 @@
 
 declare(strict_types=1);
 
-namespace Sitegeist\Archaeopteryx\Application\GetTree;
+namespace Sitegeist\Archaeopteryx\Application\GetNodeTypeFilterOptions;
 
 use Neos\Flow\Annotations as Flow;
-use Sitegeist\Archaeopteryx\Application\Shared\TreeNode;
 
 /**
  * @internal
  */
 #[Flow\Proxy(false)]
-final class GetTreeQueryResult implements \JsonSerializable
+final class GetNodeTypeFilterOptionsQueryResult implements \JsonSerializable
 {
     public function __construct(
-        public readonly TreeNode $root,
+        public readonly NodeTypeFilterOptions $options,
     ) {
     }
 

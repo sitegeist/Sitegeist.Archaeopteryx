@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Sitegeist\Archaeopteryx\Application\GetChildrenForTreeNode;
 
 use Neos\Flow\Annotations as Flow;
-use Sitegeist\Archaeopteryx\Application\Shared\NodeTypeFilterOptions;
 use Sitegeist\Archaeopteryx\Application\Shared\TreeNodes;
 
 /**
@@ -24,7 +23,6 @@ final class GetChildrenForTreeNodeQueryResult implements \JsonSerializable
 {
     public function __construct(
         public readonly TreeNodes $children,
-        public readonly NodeTypeFilterOptions $additionalNodeTypeFilterOptions,
     ) {
     }
 
