@@ -31,6 +31,7 @@ final class TreeNode implements \JsonSerializable
         public readonly UriInterface $uri,
         public readonly string $icon,
         public readonly string $label,
+        public readonly string $nodeTypeLabel,
         public readonly bool $isMatchedByFilter,
         public readonly bool $isDisabled,
         public readonly bool $isHiddenInMenu,

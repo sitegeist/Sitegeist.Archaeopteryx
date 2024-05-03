@@ -76,6 +76,7 @@ final class GetChildrenForTreeNodeQueryHandler
             uri: new Uri('node://' . $node->getNodeAggregateIdentifier()),
             icon: $node->getNodeType()->getConfiguration('ui.icon'),
             label: $node->getLabel(),
+            nodeTypeLabel: $node->getNodeType()->getLabel(),
             isMatchedByFilter: true,
             isDisabled: $node->isHidden(),
             isHiddenInMenu: $node->isHiddenInIndex(),
