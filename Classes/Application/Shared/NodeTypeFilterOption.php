@@ -23,7 +23,7 @@ use Neos\Flow\Annotations as Flow;
 final class NodeTypeFilterOption implements \JsonSerializable
 {
     public function __construct(
-        public readonly NodeTypeName $nodeTypeName,
+        public readonly NodeTypeName $value,
         public readonly string $icon,
         public readonly string $label,
     ) {
@@ -32,7 +32,7 @@ final class NodeTypeFilterOption implements \JsonSerializable
     public static function fromNodeType(NodeType $nodeType): self
     {
         return new self(
-            nodeTypeName: NodeTypeName::fromString($nodeType->getName()),
+            value: NodeTypeName::fromString($nodeType->getName()),
             icon: $nodeType->getConfiguration('ui.icon'),
             label: $nodeType->getConfiguration('ui.label'),
         );
