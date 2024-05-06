@@ -22,7 +22,6 @@ export {
     useSiteNodeContextPath,
     useDocumentNodeContextPath,
     useAssetSummary,
-    useNodeSummary,
     useHasNode,
     useNodeType,
     useNodeTypes,
