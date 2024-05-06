@@ -12,6 +12,9 @@ declare(strict_types=1);
 
 namespace Sitegeist\Archaeopteryx\Application\Shared;
 
+use GuzzleHttp\Psr7\Uri;
+use Neos\ContentRepository\Domain\Model\Node;
+use Neos\ContentRepository\Domain\Model\NodeType;
 use Neos\ContentRepository\Domain\NodeAggregate\NodeAggregateIdentifier;
 use Neos\ContentRepository\Domain\NodeType\NodeTypeName;
 use Psr\Http\Message\UriInterface;
@@ -46,9 +49,38 @@ final class TreeNodeBuilder
     ) {
     }
 
+    public static function fromNode(Node $node): self
+    {
+        return new self(
+            nodeAggregateIdentifier: $node->getNodeAggregateIdentifier(),
+            uri: new Uri('node://' . $node->getNodeAggregateIdentifier()),
+            icon: $node->getNodeType()->getConfiguration('ui.icon') ?? 'questionmark',
+            label: $node->getLabel(),
+            nodeTypeLabel: $node->getNodeType()->getLabel(),
+            isMatchedByFilter: false,
+            isDisabled: $node->isHidden(),
+            isHiddenInMenu: $node->isHiddenInIndex(),
+            hasScheduledDisabledState:
+                $node->getHiddenBeforeDateTime() !== null
+                || $node->getHiddenAfterDateTime() !== null,
+            hasUnloadedChildren: false,
+            nodeTypeNames: iterator_to_array(
+                self::getAllNonAbstractSuperTypesOf($node->getNodeType()),
+                false
+            ),
+            children: [],
+        );
+    }
+
     public function setIsMatchedByFilter(bool $value): self
     {
         $this->isMatchedByFilter = $value;
+        return $this;
+    }
+
+    public function setHasUnloadedChildren(bool $value): self
+    {
+        $this->hasUnloadedChildren = $value;
         return $this;
     }
 
@@ -90,4 +122,18 @@ final class TreeNodeBuilder
 
         return new TreeNodes(...$items);
     }
+
+   /**
+    * @return \Traversable<int,NodeTypeName>
+    */
+   private static function getAllNonAbstractSuperTypesOf(NodeType $nodeType): \Traversable
+   {
+       if (!$nodeType->isAbstract()) {
+           yield NodeTypeName::fromString($nodeType->getName());
+       }
+
+       foreach ($nodeType->getDeclaredSuperTypes() as $superType) {
+           yield from self::getAllNonAbstractSuperTypesOf($superType);
+       }
+   }
 }

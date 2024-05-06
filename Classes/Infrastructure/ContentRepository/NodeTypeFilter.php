@@ -29,6 +29,7 @@ final class NodeTypeFilter
      * @param string[] $allowedNodeTypeNames
      */
     private function __construct(
+        public readonly string $filterString,
         public readonly array $allowedNodeTypeNames
     ) {
     }
@@ -48,7 +49,7 @@ final class NodeTypeFilter
             }
         }
 
-        return new self($allowedNodeTypeNames);
+        return new self($filterString, $allowedNodeTypeNames);
     }
 
     public function isSatisfiedByNode(Node $node): bool

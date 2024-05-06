@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Sitegeist\Archaeopteryx\Application\GetTree;
 
 use Neos\ContentRepository\Domain\ContentSubgraph\NodePath;
+use Neos\ContentRepository\Domain\NodeAggregate\NodeAggregateIdentifier;
 use Neos\Flow\Annotations as Flow;
 
 /**
@@ -32,6 +33,7 @@ final class GetTreeQuery
         public readonly string $baseNodeTypeFilter,
         public readonly string $leafNodeTypeFilter,
         public readonly string $searchTerm,
+        public readonly ?NodeAggregateIdentifier $selectedNodeId,
     ) {
     }
 
@@ -72,6 +74,9 @@ final class GetTreeQuery
         !isset($array['searchTerm']) or is_string($array['searchTerm'])
             or throw new \Exception('Search term must be a string');
 
+        !isset($array['selectedNodeId']) or is_string($array['selectedNodeId'])
+            or throw new \Exception('Selected node id term must be a string');
+
         return new self(
             workspaceName: $array['workspaceName'],
             dimensionValues: $array['dimensionValues'],
@@ -80,6 +85,9 @@ final class GetTreeQuery
             baseNodeTypeFilter: $array['baseNodeTypeFilter'] ?? '',
             leafNodeTypeFilter: $array['leafNodeTypeFilter'] ?? '',
             searchTerm: $array['searchTerm'] ?? '',
+            selectedNodeId: isset($array['selectedNodeId'])
+                ? NodeAggregateIdentifier::fromString($array['selectedNodeId'])
+                : null,
         );
     }
 
