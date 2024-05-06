@@ -10,7 +10,6 @@ export { q, fetchWithErrorHandling } from "./application";
 export type {
     INeosContextProperties,
     IGlobalRegistry,
-    INode,
 } from "./domain";
 export {
     NeosContext,

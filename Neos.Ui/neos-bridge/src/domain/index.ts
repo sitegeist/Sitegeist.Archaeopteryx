@@ -1,6 +1,3 @@
-export type {
-    INode,
-} from "./ContentRepository";
 export {
     ContextPath,
     NodeTypeName,

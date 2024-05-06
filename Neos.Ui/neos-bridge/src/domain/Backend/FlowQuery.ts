@@ -1,4 +1,3 @@
-import {INode} from '../ContentRepository/Node';
 import {ContextPath} from "../ContentRepository/ContextPath";
 import {NodeTypeName} from '../ContentRepository/NodeType';
 
@@ -33,14 +32,5 @@ export class FlowQuery {
     public search(searchTerm?: string, nodeTypeFilter?: NodeTypeName): this {
         this.q = this.q.search(searchTerm, nodeTypeFilter);
         return this;
-    }
-
-    public async get(): Promise<INode[]> {
-        return this.q.get().then((nodes: any[]) => {
-            return nodes.map(node => ({
-                ...node,
-                contextPath: ContextPath.fromString(node.contextPath)
-            })).filter(node => node.contextPath);
-        });
     }
 }
