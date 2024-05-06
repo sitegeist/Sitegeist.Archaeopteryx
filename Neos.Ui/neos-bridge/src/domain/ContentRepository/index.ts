@@ -14,6 +14,4 @@ export type {INode, INodePartialForTree} from './Node';
 export type {INodeType} from './NodeType';
 export {NodeTypeName} from './NodeType';
 
-export type {INodeTypesRegistry} from './NodeTypesRegistry';
-
 export {usePersonalWorkspaceName} from './Workspace';

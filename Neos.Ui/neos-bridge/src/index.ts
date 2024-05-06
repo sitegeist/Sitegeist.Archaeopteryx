@@ -13,7 +13,6 @@ export type {
     INode,
     INodePartialForTree,
     INodeType,
-    INodeTypesRegistry,
 } from "./domain";
 export {
     NeosContext,
