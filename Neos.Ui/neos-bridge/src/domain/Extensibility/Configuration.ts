@@ -1,4 +1,3 @@
-import {NodeTypeName} from '../ContentRepository/NodeType';
 import {useNeos} from './NeosContext';
 
 export interface IConfiguration {
@@ -6,7 +5,7 @@ export interface IConfiguration {
         loadingDepth?: number
         presets?: {
             [key: string]: {
-                baseNodeType?: NodeTypeName
+                baseNodeType?: string
                 ui?: {
                     label?: string
                     icon?: string

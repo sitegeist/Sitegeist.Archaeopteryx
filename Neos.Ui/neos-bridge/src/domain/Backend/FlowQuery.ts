@@ -1,5 +1,4 @@
 import {ContextPath} from "../ContentRepository/ContextPath";
-import {NodeTypeName} from '../ContentRepository/NodeType';
 
 export class FlowQuery {
     constructor(private q : any) {}
@@ -15,7 +14,7 @@ export class FlowQuery {
     }
 
     public neosUiDefaultNodes(
-        baseNodeType: NodeTypeName,
+        baseNodeType: string,
         loadingDepth: number,
         toggledNodes: ContextPath[],
         clipboardNodesContextPaths: ContextPath[]
@@ -29,7 +28,7 @@ export class FlowQuery {
         return this;
     }
 
-    public search(searchTerm?: string, nodeTypeFilter?: NodeTypeName): this {
+    public search(searchTerm?: string, nodeTypeFilter?: string): this {
         this.q = this.q.search(searchTerm, nodeTypeFilter);
         return this;
     }

@@ -1,6 +1,5 @@
 export {
     ContextPath,
-    NodeTypeName,
     useSiteNodeContextPath,
     useDocumentNodeContextPath,
     useDimensionValues,

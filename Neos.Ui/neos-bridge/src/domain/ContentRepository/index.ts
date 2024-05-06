@@ -9,6 +9,4 @@ export {ContextPath, useSiteNodeContextPath, useDocumentNodeContextPath} from '.
 
 export {useDimensionValues} from './Dimensions';
 
-export {NodeTypeName} from './NodeType';
-
 export {usePersonalWorkspaceName} from './Workspace';

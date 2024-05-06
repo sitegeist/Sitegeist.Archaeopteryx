@@ -14,7 +14,6 @@ export type {
 export {
     NeosContext,
     ContextPath,
-    NodeTypeName,
     useSiteNodeContextPath,
     useDocumentNodeContextPath,
     useAssetSummary,

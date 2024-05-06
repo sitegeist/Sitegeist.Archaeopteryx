@@ -11,7 +11,6 @@ import { Nullable } from "ts-toolbelt/out/Union/Nullable";
 import { OptionalDeep } from "ts-toolbelt/out/Object/Optional";
 
 import {
-    NodeTypeName,
     useSiteNodeContextPath,
     useConfiguration,
     useI18n,
@@ -31,9 +30,9 @@ type NodeLinkModel = {
 };
 type NodeLinkOptions = {
     startingPoint: string;
-    baseNodeType: NodeTypeName;
+    baseNodeType: string;
     loadingDepth: number;
-    allowedNodeTypes: NodeTypeName[];
+    allowedNodeTypes: string[];
 };
 
 const NodePreview: React.FC<{ nodeId: string }> = (props) => {
