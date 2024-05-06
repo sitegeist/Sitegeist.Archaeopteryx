@@ -1,43 +1,57 @@
-import * as React from 'react';
-import {INode} from '../ContentRepository/Node';
-import {useNeos} from './NeosContext';
+import * as React from "react";
+import { INode } from "../ContentRepository/Node";
+import { useNeos } from "./NeosContext";
 
 export interface IState {
     cr?: {
         nodes?: {
-            siteNode?: string
-            documentNode?: string
+            siteNode?: string;
+            documentNode?: string;
             byContextPath?: {
-                [key: string]: INode
-            }
-        }
-    }
+                [key: string]: INode;
+            };
+        };
+        workspaces?: {
+            personalWorkspace?: {
+                name: string;
+            };
+        };
+        contentDimensions?: {
+            active: null | Record<string, string[]>;
+        };
+    };
     ui?: {
         pageTree?: {
-            query?: string
-            filterNodeType?: string
-        }
-    }
+            query?: string;
+            filterNodeType?: string;
+        };
+    };
     system?: {
-        authenticationTimeout?: boolean
-    }
+        authenticationTimeout?: boolean;
+    };
 }
 
 export interface IStore {
-    getState(): IState
-    subscribe(listener: () => void): () => void
+    getState(): IState;
+    subscribe(listener: () => void): () => void;
 }
 
 export function useSelector<R>(selector: (state: IState) => R): R {
     const neos = useNeos();
-    const [result, setResult] = React.useState<R>(selector(neos.store.getState()));
+    const [result, setResult] = React.useState<R>(
+        selector(neos.store.getState())
+    );
 
-    React.useEffect(() => neos.store.subscribe(() => {
-        const state = neos.store.getState();
-        const result = selector(state);
+    React.useEffect(
+        () =>
+            neos.store.subscribe(() => {
+                const state = neos.store.getState();
+                const result = selector(state);
 
-        setResult(result);
-    }), []);
+                setResult(result);
+            }),
+        []
+    );
 
     return result;
 }

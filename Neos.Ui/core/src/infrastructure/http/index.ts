@@ -5,5 +5,4 @@
  * information, please view the LICENSE file which was distributed with this
  * source code.
  */
-export { NodeTypeFilterOptionDTO } from "./NodeTypeFilterOptionDTO";
-export { TreeNodeDTO } from "./TreeNodeDTO";
+export { getNodeSummary } from "./getNodeSummary";

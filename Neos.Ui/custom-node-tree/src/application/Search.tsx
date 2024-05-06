@@ -1,52 +1,35 @@
-import * as React from 'react';
-import {useDebounce} from 'react-use';
+/*
+ * This script belongs to the package "Sitegeist.Archaeopteryx".
+ *
+ * This package is Open Source Software. For the full copyright and license
+ * information, please view the LICENSE file which was distributed with this
+ * source code.
+ */
+import * as React from "react";
+import { useDebounce } from "react-use";
 
-import {useNodeTypesRegistry} from '@sitegeist/archaeopteryx-neos-bridge';
-
-import {INodeTreeState, NodeTreeDispatch, searchForNodesInNodeTree} from '../domain';
-import {SearchInput} from '../presentation';
+import { SearchInput } from "../presentation";
 
 interface Props {
-    state: INodeTreeState
-    dispatch: NodeTreeDispatch
-    initialValue: string
+    initialValue: string;
+    onChange: (value: string) => void;
 }
 
-export const Search: React.FC<Props> = props => {
-    const componentWasInitializedRef = React.useRef(false);
-    const valueWasClearedRef = React.useRef(false);
-    const nodeTypesRegistry = useNodeTypesRegistry();
+export const Search: React.FC<Props> = (props) => {
     const [value, setValue] = React.useState(props.initialValue);
     const handleClear = React.useCallback(() => {
-        setValue('');
-        if (nodeTypesRegistry) {
-            searchForNodesInNodeTree(
-                {state: props.state, dispatch: props.dispatch},
-                nodeTypesRegistry,
-                null
-            );
-        }
-        valueWasClearedRef.current = true;
-    }, [setValue, nodeTypesRegistry]);
+        setValue("");
+    }, [setValue]);
 
-    useDebounce(() => {
-        if (componentWasInitializedRef.current && !valueWasClearedRef.current) {
-            searchForNodesInNodeTree(
-                {state: props.state, dispatch: props.dispatch},
-                nodeTypesRegistry,
-                value || null
-            );
-        } else {
-            componentWasInitializedRef.current = true;
-            valueWasClearedRef.current = false;
-        }
-    }, 300, [value, nodeTypesRegistry]);
+    useDebounce(
+        () => {
+            props.onChange(value);
+        },
+        300,
+        [value]
+    );
 
     return (
-        <SearchInput
-            value={value}
-            onChange={setValue}
-            onClear={handleClear}
-        />
+        <SearchInput value={value} onChange={setValue} onClear={handleClear} />
     );
-}
+};

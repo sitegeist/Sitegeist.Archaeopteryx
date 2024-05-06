@@ -1,178 +1,193 @@
-import * as React from 'react';
-import { useAsync } from 'react-use';
+/*
+ * This script belongs to the package "Sitegeist.Archaeopteryx".
+ *
+ * This package is Open Source Software. For the full copyright and license
+ * information, please view the LICENSE file which was distributed with this
+ * source code.
+ */
+import React from "react";
+import { useAsync } from "react-use";
+import { Nullable } from "ts-toolbelt/out/Union/Nullable";
+import { OptionalDeep } from "ts-toolbelt/out/Object/Optional";
 
 import {
-    q,
-    INodePartialForTree,
     NodeTypeName,
     useSiteNodeContextPath,
-    useDocumentNodeContextPath,
     useConfiguration,
-    useNodeSummary,
-    useNodeType,
     useI18n,
     useSelector,
-} from '@sitegeist/archaeopteryx-neos-bridge';
-import { NodeTree } from '@sitegeist/archaeopteryx-custom-node-tree';
+    usePersonalWorkspaceName,
+    useDimensionValues,
+} from "@sitegeist/archaeopteryx-neos-bridge";
+import { Tree } from "@sitegeist/archaeopteryx-custom-node-tree";
 
-import { Nullable } from 'ts-toolbelt/out/Union/Nullable';
-import { OptionalDeep } from 'ts-toolbelt/out/Object/Optional';
-import { ILink, makeLinkType } from '../../../domain';
-import { IconCard, IconLabel } from '../../../presentation';
-import { Process, Field } from '../../../framework';
-
-const nodeCache = new Map<string, INodePartialForTree>();
+import { ILink, makeLinkType } from "../../../domain";
+import { IconCard, IconLabel } from "../../../presentation";
+import { Process, Field } from "../../../framework";
+import { getNodeSummary } from "../../../infrastructure/http";
 
 type NodeLinkModel = {
-    identifier: string
-    // might be not be set if the node was deleted
-    node?: INodePartialForTree
+    nodeId: string;
 };
 type NodeLinkOptions = {
-    startingPoint: string
-    baseNodeType: NodeTypeName
-    loadingDepth: number
-    allowedNodeTypes: NodeTypeName[]
+    startingPoint: string;
+    baseNodeType: NodeTypeName;
+    loadingDepth: number;
+    allowedNodeTypes: NodeTypeName[];
 };
 
-const NodePreview = ({ node }: { node: INodePartialForTree }) => {
-    const nodeSummary = useNodeSummary(node.identifier!);
-    const nodeType = useNodeType(node.nodeType ?? NodeTypeName('Neos.Neos:Document'));
+const NodePreview: React.FC<{ nodeId: string }> = (props) => {
+    const i18n = useI18n();
+    const workspaceName = usePersonalWorkspaceName();
+    const dimensionValues = useDimensionValues();
+    const fetch__nodeSummary = useAsync(async () => {
+        if (!workspaceName) {
+            return null;
+        }
+        if (!dimensionValues) {
+            return null;
+        }
+        const result = await getNodeSummary({
+            workspaceName,
+            dimensionValues,
+            nodeId: props.nodeId,
+        });
+
+        if ("success" in result) {
+            return result.success;
+        }
+
+        return null;
+    }, [props.nodeId, workspaceName, dimensionValues]);
+    const breadcrumbs = fetch__nodeSummary.value?.breadcrumbs
+        .map(({ label }) => label)
+        .join(" > ");
 
     return (
         <IconCard
-            icon={nodeType?.ui?.icon ?? 'square'}
-            title={nodeSummary.value?.label ?? node.label}
-            subTitle={nodeSummary.value?.breadcrumb ?? `node://${node.identifier}`}
+            icon={fetch__nodeSummary.value?.icon ?? "ban"}
+            title={
+                fetch__nodeSummary.value?.label ??
+                `[${i18n(
+                    "Sitegeist.Archaeopteryx:LinkTypes.Node:labelOfNonExistingNode"
+                )}]`
+            }
+            subTitle={breadcrumbs ?? `node://${props.nodeId}`}
         />
     );
-}
+};
 
-export const Node = makeLinkType<NodeLinkModel, NodeLinkOptions>('Sitegeist.Archaeopteryx:Node', ({ createError }) => ({
-    supportedLinkOptions: ['anchor', 'title', 'targetBlank', 'relNofollow'],
+export const Node = makeLinkType<NodeLinkModel, NodeLinkOptions>(
+    "Sitegeist.Archaeopteryx:Node",
+    ({ createError }) => ({
+        supportedLinkOptions: ["anchor", "title", "targetBlank", "relNofollow"],
 
-    isSuitableFor: (link: ILink) => link.href.startsWith('node://'),
+        isSuitableFor: (link: ILink) => link.href.startsWith("node://"),
 
-    useResolvedModel: (link: ILink) => {
-        const siteNodeContextPath = useSiteNodeContextPath();
-        const asyncState = useAsync(async () => {
-            if (!siteNodeContextPath) {
-                throw createError('Could not find siteNodeContextPath.');
-            }
-
+        useResolvedModel: (link: ILink) => {
             const match = /node:\/\/(.*)/.exec(link.href);
 
             if (!match) {
                 throw createError(`Cannot handle href "${link.href}".`);
             }
 
-            const identifier = match[1];
-            const cacheIdentifier = `${identifier}@${siteNodeContextPath.context}`;
+            const nodeId = match[1];
 
-            if (nodeCache.has(cacheIdentifier)) {
-                return { node: nodeCache.get(cacheIdentifier)!, identifier };
-            }
+            return Process.success({ nodeId });
+        },
 
-            const result = await q(siteNodeContextPath).find(`#${identifier}`)
-                .getForTree();
+        convertModelToLink: ({ nodeId }: NodeLinkModel) => ({
+            href: `node://${nodeId}`,
+        }),
 
-            // eslint-disable-next-line no-restricted-syntax
-            for (const node of result) {
-                const model = { node, identifier };
-                nodeCache.set(cacheIdentifier, model.node);
-                return model;
-            }
+        TabHeader: () => {
+            const i18n = useI18n();
 
-            // node might have been deleted
-            return {
-                node: undefined,
-                identifier
-            }
-        }, [link.href, siteNodeContextPath]);
-
-        return Process.fromAsyncState(asyncState);
-    },
-
-    convertModelToLink: ({ node }: NodeLinkModel) => ({ href: `node://${node?.identifier}` }),
-
-    TabHeader: () => {
-        const i18n = useI18n();
-
-        return (
-            <IconLabel icon="file">
-                {i18n('Sitegeist.Archaeopteryx:LinkTypes.Node:title')}
-            </IconLabel>
-        );
-    },
-
-    Preview: ({ model: { node, identifier } }: { model: NodeLinkModel }) => {
-        const i18n = useI18n();
-
-        if (!node) {
             return (
-                <IconCard
-                    icon='ban'
-                    title={`[${i18n('Sitegeist.Archaeopteryx:LinkTypes.Node:labelOfNonExistingNode')}]`}
-                    subTitle={`node://${identifier}`}
-                />
+                <IconLabel icon="file">
+                    {i18n("Sitegeist.Archaeopteryx:LinkTypes.Node:title")}
+                </IconLabel>
             );
-        }
+        },
 
-        return <NodePreview node={node} />
-    },
+        Preview: (props: { model: NodeLinkModel }) => {
+            return <NodePreview nodeId={props.model.nodeId} />;
+        },
 
-    // eslint-disable-next-line max-len
-    Editor: ({ model, options }: { model: Nullable<NodeLinkModel>, options: OptionalDeep<NodeLinkOptions> }) => {
-        const i18n = useI18n();
-        const siteNodeContextPath = useSiteNodeContextPath();
-        const documentNodeContextPath = useDocumentNodeContextPath();
-        const baseNodeTypeName = useConfiguration((c) => c.nodeTree?.presets?.default?.baseNodeType) ?? NodeTypeName('Neos.Neos:Document');
-        const loadingDepth = useConfiguration((c) => c.nodeTree?.loadingDepth) ?? 4;
-        const initialSearchTerm = useSelector((state) => state.ui?.pageTree?.query) ?? '';
-        const initialNodeTypeFilter = useSelector((state) => state.ui?.pageTree?.filterNodeType) ?? '';
-        const rootNodeContextPath = React.useMemo(() => (options.startingPoint
-            ? siteNodeContextPath?.adopt(options.startingPoint) ?? siteNodeContextPath
-            : siteNodeContextPath), [options.startingPoint, siteNodeContextPath]);
-
-        if (!rootNodeContextPath) {
-            throw createError('Could not load node tree, because rootNodeContextPath could not be determined.');
-        } else if (!documentNodeContextPath) {
-            throw createError('Could not load node tree, because documentNodeContextPath could not be determined.');
-        } else {
-            return (
-                <Field<null | INodePartialForTree>
-                    name="node"
-                    initialValue={model?.node}
-                    // eslint-disable-next-line consistent-return
-                    validate={(value) => {
-                        if (!value) {
-                            return i18n('Sitegeist.Archaeopteryx:LinkTypes.Node:node.validation.required');
-                        }
-                    }}
-                >{({ input }) => (
-                    <NodeTree
-                        configuration={{
-                            baseNodeTypeName: options.baseNodeType as NodeTypeName ?? baseNodeTypeName,
-                            allowedNodeTypes: options.allowedNodeTypes as NodeTypeName[],
-                            rootNodeContextPath,
-                            documentNodeContextPath,
-                            selectedNodeContextPath: input.value?.contextPath,
-                            loadingDepth: options.loadingDepth ?? loadingDepth,
-                        }}
-                        options={{
-                            enableSearch: true,
-                            enableNodeTypeFilter: true,
-                        }}
-                        initialSearchTerm={initialSearchTerm}
-                        initialNodeTypeFilter={initialNodeTypeFilter}
-                        onSelect={(node) => {
-                            const cacheIdentifier = `${node.identifier}@${rootNodeContextPath.context}`;
-                            nodeCache.set(cacheIdentifier, node);
-                            input.onChange(node);
-                        }}
-                    />
-                )}</Field>
+        // eslint-disable-next-line max-len
+        Editor: ({
+            model,
+            options,
+        }: {
+            model: Nullable<NodeLinkModel>;
+            options: OptionalDeep<NodeLinkOptions>;
+        }) => {
+            const i18n = useI18n();
+            const workspaceName = usePersonalWorkspaceName();
+            const dimensionValues = useDimensionValues();
+            const siteNodeContextPath = useSiteNodeContextPath();
+            const loadingDepth =
+                useConfiguration((c) => c.nodeTree?.loadingDepth) ?? 4;
+            const initialSearchTerm =
+                useSelector((state) => state.ui?.pageTree?.query) ?? "";
+            const initialLeafNodeTypeFilter =
+                useSelector((state) => state.ui?.pageTree?.filterNodeType) ??
+                "";
+            const startingPoint = React.useMemo(
+                () => options.startingPoint ?? siteNodeContextPath?.path,
+                [options.startingPoint, siteNodeContextPath]
             );
-        }
-    },
-}));
+
+            if (!startingPoint) {
+                throw createError(
+                    "Could not load node tree, because startingPoint could not be determined."
+                );
+            } else if (!workspaceName) {
+                throw createError(
+                    "Could not load node tree, because workspaceName could not be determined."
+                );
+            } else if (!dimensionValues) {
+                throw createError(
+                    "Could not load node tree, because dimensionValues could not be determined."
+                );
+            } else {
+                return (
+                    <Field<null | string>
+                        name="nodeId"
+                        initialValue={model?.nodeId}
+                        // eslint-disable-next-line consistent-return
+                        validate={(value) => {
+                            if (!value) {
+                                return i18n(
+                                    "Sitegeist.Archaeopteryx:LinkTypes.Node:node.validation.required"
+                                );
+                            }
+                        }}
+                    >
+                        {({ input }) => (
+                            <Tree
+                                initialSearchTerm={initialSearchTerm}
+                                workspaceName={workspaceName}
+                                dimensionValues={dimensionValues}
+                                startingPoint={startingPoint}
+                                loadingDepth={loadingDepth}
+                                baseNodeTypeFilter={"Neos.Neos:Document"}
+                                initialLeafNodeTypeFilter={
+                                    initialLeafNodeTypeFilter
+                                }
+                                selectedTreeNodeId={input.value ?? undefined}
+                                options={{
+                                    enableSearch: true,
+                                    enableNodeTypeFilter: true,
+                                }}
+                                onSelect={(nodeId) => {
+                                    input.onChange(nodeId);
+                                }}
+                            />
+                        )}
+                    </Field>
+                );
+            }
+        },
+    })
+);
