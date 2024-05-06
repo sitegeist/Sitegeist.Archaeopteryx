@@ -9,7 +9,6 @@ export {
     NodeTypeName,
     useSiteNodeContextPath,
     useDocumentNodeContextPath,
-    useHasNode,
     useNodeType,
     useNodeTypes,
     useNodeTypesRegistry,

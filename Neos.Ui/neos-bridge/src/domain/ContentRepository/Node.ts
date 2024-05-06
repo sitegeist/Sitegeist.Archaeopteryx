@@ -47,8 +47,3 @@ export interface INodeSummary {
     breadcrumb: string
     nodeType: NodeTypeName
 }
-
-export function useHasNode(contextPath?: ContextPath) {
-    const node: any = useSelector(selectors.CR.Nodes.byContextPathSelector(contextPath?.toString() ?? ''));
-    return Boolean(node);
-}
