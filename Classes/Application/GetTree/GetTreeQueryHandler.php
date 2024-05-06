@@ -91,6 +91,10 @@ final class GetTreeQueryHandler
                 $rootTreeNodeBuilder = $this->createTreeNodeBuilderFromNode($rootNode)
         ];
 
+        $rootTreeNodeBuilder->setIsMatchedByFilter(
+            $leafNodeTypeFilter->isSatisfiedByNode($rootNode)
+        );
+
         foreach ($matchingNodes as $matchingNode) {
             /** @var Node $matchingNode */
             if (!$baseNodeTypeFilter->isSatisfiedByNode($matchingNode)) {
