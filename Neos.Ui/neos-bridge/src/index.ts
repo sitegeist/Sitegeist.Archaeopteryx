@@ -22,7 +22,6 @@ export {
     useSiteNodeContextPath,
     useDocumentNodeContextPath,
     useAssetSummary,
-    useNodeTypesRegistry,
     useDimensionValues,
     usePersonalWorkspaceName,
     useGlobalRegistry,

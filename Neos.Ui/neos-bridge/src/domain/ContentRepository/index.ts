@@ -15,6 +15,5 @@ export type {INodeType} from './NodeType';
 export {NodeTypeName} from './NodeType';
 
 export type {INodeTypesRegistry} from './NodeTypesRegistry';
-export {useNodeTypesRegistry} from './NodeTypesRegistry';
 
 export {usePersonalWorkspaceName} from './Workspace';

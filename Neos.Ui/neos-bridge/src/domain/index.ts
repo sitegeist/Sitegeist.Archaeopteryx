@@ -9,7 +9,6 @@ export {
     NodeTypeName,
     useSiteNodeContextPath,
     useDocumentNodeContextPath,
-    useNodeTypesRegistry,
     useDimensionValues,
     usePersonalWorkspaceName,
 } from "./ContentRepository";
