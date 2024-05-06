@@ -11,7 +11,6 @@ export {useDimensionValues} from './Dimensions';
 
 export type {INode, INodePartialForTree} from './Node';
 
-export type {INodeType} from './NodeType';
 export {NodeTypeName} from './NodeType';
 
 export {usePersonalWorkspaceName} from './Workspace';

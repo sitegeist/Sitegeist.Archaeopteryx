@@ -12,7 +12,6 @@ export type {
     IGlobalRegistry,
     INode,
     INodePartialForTree,
-    INodeType,
 } from "./domain";
 export {
     NeosContext,
