@@ -33,7 +33,8 @@ final class TreeNodeBuilder
      * @param NodeTypeName[] $nodeTypeNames
      * @param TreeNodeBuilder[] $children
      */
-    public function __construct(
+    private function __construct(
+        public readonly int $sortingIndex,
         private NodeAggregateIdentifier $nodeAggregateIdentifier,
         private UriInterface $uri,
         private string $icon,
@@ -52,6 +53,8 @@ final class TreeNodeBuilder
     public static function fromNode(Node $node): self
     {
         return new self(
+            // @phpstan-ignore-next-line
+            sortingIndex: $node->getIndex() ?? 0,
             nodeAggregateIdentifier: $node->getNodeAggregateIdentifier(),
             uri: new Uri('node://' . $node->getNodeAggregateIdentifier()),
             icon: $node->getNodeType()->getConfiguration('ui.icon') ?? 'questionmark',
@@ -115,6 +118,12 @@ final class TreeNodeBuilder
     private function buildChildren(): TreeNodes
     {
         $items = [];
+
+        usort(
+            $this->children,
+            fn (TreeNodeBuilder $a, TreeNodeBuilder $b) =>
+                $a->sortingIndex <=> $b->sortingIndex
+        );
 
         foreach ($this->children as $childBuilder) {
             $items[] = $childBuilder->build();
