@@ -9,7 +9,6 @@ export {
     NodeTypeName,
     useSiteNodeContextPath,
     useDocumentNodeContextPath,
-    useNodeType,
     useNodeTypes,
     useNodeTypesRegistry,
     useDimensionValues,

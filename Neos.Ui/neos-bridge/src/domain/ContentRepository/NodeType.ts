@@ -1,4 +1,3 @@
-import * as React from 'react';
 import {Any} from 'ts-toolbelt';
 import { useNodeTypesRegistry } from './NodeTypesRegistry';
 
@@ -13,11 +12,6 @@ export interface INodeType {
     ui?: {
         icon?: string
     }
-}
-
-export function useNodeType(nodeTypeName: NodeTypeName): null | INodeType {
-    const nodeTypesRegistry = useNodeTypesRegistry();
-    return nodeTypesRegistry.get(nodeTypeName) ?? null;
 }
 
 export function useNodeTypes(baseNodeTypeName: NodeTypeName): INodeType[] {
