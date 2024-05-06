@@ -21,8 +21,3 @@ export interface INode {
     }
 }
 
-export interface INodeSummary {
-    label: string
-    breadcrumb: string
-    nodeType: NodeTypeName
-}
