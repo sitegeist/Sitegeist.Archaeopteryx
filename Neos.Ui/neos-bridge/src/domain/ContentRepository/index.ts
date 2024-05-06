@@ -9,7 +9,7 @@ export {ContextPath, useSiteNodeContextPath, useDocumentNodeContextPath} from '.
 
 export {useDimensionValues} from './Dimensions';
 
-export type {INode, INodePartialForTree} from './Node';
+export type {INode} from './Node';
 
 export {NodeTypeName} from './NodeType';
 

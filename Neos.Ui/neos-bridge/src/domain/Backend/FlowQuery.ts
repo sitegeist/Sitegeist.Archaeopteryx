@@ -1,4 +1,4 @@
-import {INode, INodePartialForTree} from '../ContentRepository/Node';
+import {INode} from '../ContentRepository/Node';
 import {ContextPath} from "../ContentRepository/ContextPath";
 import {NodeTypeName} from '../ContentRepository/NodeType';
 
@@ -37,24 +37,6 @@ export class FlowQuery {
 
     public async get(): Promise<INode[]> {
         return this.q.get().then((nodes: any[]) => {
-            return nodes.map(node => ({
-                ...node,
-                contextPath: ContextPath.fromString(node.contextPath)
-            })).filter(node => node.contextPath);
-        });
-    }
-
-    public async getForTree(): Promise<INodePartialForTree[]> {
-        return this.q.getForTree().then((nodes: any[]) => {
-            return nodes.map(node => ({
-                ...node,
-                contextPath: ContextPath.fromString(node.contextPath)
-            })).filter(node => node.contextPath);
-        });
-    }
-
-    public async getForTreeWithParents(): Promise<INodePartialForTree[]> {
-        return this.q.getForTreeWithParents().then((nodes: any[]) => {
             return nodes.map(node => ({
                 ...node,
                 contextPath: ContextPath.fromString(node.contextPath)

@@ -1,6 +1,5 @@
 export type {
     INode,
-    INodePartialForTree,
 } from "./ContentRepository";
 export {
     ContextPath,
