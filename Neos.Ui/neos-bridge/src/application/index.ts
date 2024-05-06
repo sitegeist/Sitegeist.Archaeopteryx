@@ -6,4 +6,3 @@
  * source code.
  */
 export { fetchWithErrorHandling } from "./fetchWithErrorHandling";
-export { q } from "./FlowQuery";

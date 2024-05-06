@@ -5,7 +5,7 @@
  * information, please view the LICENSE file which was distributed with this
  * source code.
  */
-export { q, fetchWithErrorHandling } from "./application";
+export { fetchWithErrorHandling } from "./application";
 
 export type {
     INeosContextProperties,
