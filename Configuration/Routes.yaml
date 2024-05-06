@@ -8,6 +8,15 @@
     '@action': 'ignored'
 
 -
+  name: 'GetNodeSummary Query'
+  uriPattern: 'sitegeist/archaeopteryx/get-node-summary'
+  defaults:
+    '@package': 'Sitegeist.Archaeopteryx'
+    '@subpackage': 'Application\GetNodeSummary'
+    '@controller': 'GetNodeSummary'
+    '@action': 'ignored'
+
+-
   name: 'GetNodeTypeFilterOptions Query'
   uriPattern: 'sitegeist/archaeopteryx/get-node-type-filter-options'
   defaults:
