@@ -14,7 +14,6 @@ namespace Sitegeist\Archaeopteryx\Application\Shared;
 
 use Neos\ContentRepository\Domain\NodeAggregate\NodeAggregateIdentifier;
 use Neos\ContentRepository\Domain\NodeType\NodeTypeName;
-use Psr\Http\Message\UriInterface;
 use Neos\Flow\Annotations as Flow;
 
 /**
@@ -28,7 +27,6 @@ final class TreeNode implements \JsonSerializable
      */
     public function __construct(
         public readonly NodeAggregateIdentifier $nodeAggregateIdentifier,
-        public readonly UriInterface $uri,
         public readonly string $icon,
         public readonly string $label,
         public readonly string $nodeTypeLabel,
@@ -44,10 +42,7 @@ final class TreeNode implements \JsonSerializable
 
     public function jsonSerialize(): mixed
     {
-        $result = get_object_vars($this);
-        $result['uri'] = (string) $result['uri'];
-
-        return $result;
+        return get_object_vars($this);
     }
 
     /**

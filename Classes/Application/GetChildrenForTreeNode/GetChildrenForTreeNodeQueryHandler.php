@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Sitegeist\Archaeopteryx\Application\GetChildrenForTreeNode;
 
-use GuzzleHttp\Psr7\Uri;
 use Neos\ContentRepository\Domain\Model\Node;
 use Neos\ContentRepository\Domain\Model\NodeType;
 use Neos\ContentRepository\Domain\NodeType\NodeTypeName;
@@ -71,7 +70,6 @@ final class GetChildrenForTreeNodeQueryHandler
     {
         return new TreeNode(
             nodeAggregateIdentifier: $node->getNodeAggregateIdentifier(),
-            uri: new Uri('node://' . $node->getNodeAggregateIdentifier()),
             icon: $node->getNodeType()->getConfiguration('ui.icon'),
             label: $node->getLabel(),
             nodeTypeLabel: $node->getNodeType()->getLabel(),

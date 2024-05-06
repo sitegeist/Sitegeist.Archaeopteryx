@@ -12,12 +12,10 @@ declare(strict_types=1);
 
 namespace Sitegeist\Archaeopteryx\Application\Shared;
 
-use GuzzleHttp\Psr7\Uri;
 use Neos\ContentRepository\Domain\Model\Node;
 use Neos\ContentRepository\Domain\Model\NodeType;
 use Neos\ContentRepository\Domain\NodeAggregate\NodeAggregateIdentifier;
 use Neos\ContentRepository\Domain\NodeType\NodeTypeName;
-use Psr\Http\Message\UriInterface;
 use Neos\Flow\Annotations as Flow;
 
 /**
@@ -36,7 +34,6 @@ final class TreeNodeBuilder
     private function __construct(
         public readonly int $sortingIndex,
         private NodeAggregateIdentifier $nodeAggregateIdentifier,
-        private UriInterface $uri,
         private string $icon,
         private string $label,
         private string $nodeTypeLabel,
@@ -56,7 +53,6 @@ final class TreeNodeBuilder
             // @phpstan-ignore-next-line
             sortingIndex: $node->getIndex() ?? 0,
             nodeAggregateIdentifier: $node->getNodeAggregateIdentifier(),
-            uri: new Uri('node://' . $node->getNodeAggregateIdentifier()),
             icon: $node->getNodeType()->getConfiguration('ui.icon') ?? 'questionmark',
             label: $node->getLabel(),
             nodeTypeLabel: $node->getNodeType()->getLabel(),
@@ -101,7 +97,6 @@ final class TreeNodeBuilder
     {
         return new TreeNode(
             nodeAggregateIdentifier: $this->nodeAggregateIdentifier,
-            uri: $this->uri,
             icon: $this->icon,
             label: $this->label,
             nodeTypeLabel: $this->nodeTypeLabel,

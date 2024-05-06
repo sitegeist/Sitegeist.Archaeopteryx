@@ -7,7 +7,6 @@
  */
 export type TreeNodeDTO = {
     nodeAggregateIdentifier: string;
-    uri: string;
     icon: string;
     label: string;
     nodeTypeLabel: string;
