@@ -13,17 +13,25 @@ type GetNodeSummaryQuery = {
     nodeId: string;
 };
 
-type GetNodeSummaryQueryResultEnvelope = {
-    success: {
-        icon: string;
-        label: string;
-        uri: string;
-        breadcrumbs: {
-            icon: string;
-            label: string;
-        }[];
-    };
-};
+type GetNodeSummaryQueryResultEnvelope =
+    | {
+          success: {
+              icon: string;
+              label: string;
+              uri: string;
+              breadcrumbs: {
+                  icon: string;
+                  label: string;
+              }[];
+          };
+      }
+    | {
+          error: {
+              type: string;
+              code: number;
+              message: string;
+          };
+      };
 
 export async function getNodeSummary(
     query: GetNodeSummaryQuery

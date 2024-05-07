@@ -33,6 +33,7 @@ export const TreeNode: React.FC<Props> = (props) => {
     );
     const [isLoading, setIsLoading] = React.useState(false);
     const [children, setChildren] = React.useState(props.treeNode.children);
+    const [hasError, setHasError] = React.useState(false);
     const handleNodeToggle = React.useCallback(async () => {
         if (
             isCollapsed &&
@@ -40,15 +41,23 @@ export const TreeNode: React.FC<Props> = (props) => {
             children.length === 0
         ) {
             setIsLoading(true);
-            const result = await getChildrenForTreeNode({
-                workspaceName: props.workspaceName,
-                dimensionValues: props.dimensionValues,
-                treeNodeId: props.treeNode.nodeAggregateIdentifier,
-                nodeTypeFilter: props.baseNodeTypeFilter,
-            });
+            try {
+                const result = await getChildrenForTreeNode({
+                    workspaceName: props.workspaceName,
+                    dimensionValues: props.dimensionValues,
+                    treeNodeId: props.treeNode.nodeAggregateIdentifier,
+                    nodeTypeFilter: props.baseNodeTypeFilter,
+                });
 
-            if ("success" in result) {
-                setChildren(result.success.children);
+                if ("success" in result) {
+                    setChildren(result.success.children);
+                }
+
+                if ("error" in result) {
+                    setHasError(true);
+                }
+            } catch (_) {
+                setHasError(true);
             }
 
             setIsLoading(false);
@@ -91,7 +100,7 @@ export const TreeNode: React.FC<Props> = (props) => {
                     !props.treeNode.isLinkable
                 }
                 isDragging={false}
-                hasError={false}
+                hasError={hasError}
                 label={props.treeNode.label}
                 icon={
                     props.treeNode.isLinkable

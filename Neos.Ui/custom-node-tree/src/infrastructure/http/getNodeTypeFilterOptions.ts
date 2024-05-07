@@ -13,11 +13,19 @@ type GetNodeTypeFilterOptionsQuery = {
     baseNodeTypeFilter: string;
 };
 
-type GetNodeTypeFilterOptionsQueryResultEnvelope = {
-    success: {
-        options: NodeTypeFilterOptionDTO[];
-    };
-};
+type GetNodeTypeFilterOptionsQueryResultEnvelope =
+    | {
+          success: {
+              options: NodeTypeFilterOptionDTO[];
+          };
+      }
+    | {
+          error: {
+              type: string;
+              code: number;
+              message: string;
+          };
+      };
 
 export async function getNodeTypeFilterOptions(
     query: GetNodeTypeFilterOptionsQuery

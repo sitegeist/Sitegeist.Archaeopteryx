@@ -46,42 +46,42 @@ final class GetTreeQuery
     public static function fromArray(array $array): self
     {
         isset($array['workspaceName'])
-            or throw new \Exception('Workspace name must be set');
+            or throw new \InvalidArgumentException('Workspace name must be set');
         is_string($array['workspaceName'])
-            or throw new \Exception('Workspace name must be a string');
+            or throw new \InvalidArgumentException('Workspace name must be a string');
 
         isset($array['dimensionValues'])
-            or throw new \Exception('Dimension values must be set');
+            or throw new \InvalidArgumentException('Dimension values must be set');
         is_array($array['dimensionValues'])
-            or throw new \Exception('Dimension values must be an array');
+            or throw new \InvalidArgumentException('Dimension values must be an array');
 
         isset($array['startingPoint'])
-            or throw new \Exception('Starting point must be set');
+            or throw new \InvalidArgumentException('Starting point must be set');
         is_string($array['startingPoint'])
-            or throw new \Exception('Starting point must be a string');
+            or throw new \InvalidArgumentException('Starting point must be a string');
 
         isset($array['loadingDepth'])
-            or throw new \Exception('Loading depth must be set');
+            or throw new \InvalidArgumentException('Loading depth must be set');
         if (is_string($array['loadingDepth'])) {
             $array['loadingDepth'] = (int) $array['loadingDepth'];
         }
         is_int($array['loadingDepth'])
-            or throw new \Exception('Loading depth must be an integer');
+            or throw new \InvalidArgumentException('Loading depth must be an integer');
 
         !isset($array['baseNodeTypeFilter']) or is_string($array['baseNodeTypeFilter'])
-            or throw new \Exception('Base node type filter must be a string');
+            or throw new \InvalidArgumentException('Base node type filter must be a string');
 
         !isset($array['linkableNodeTypes']) or is_array($array['linkableNodeTypes'])
-            or throw new \Exception('Linkable node types must be an array');
+            or throw new \InvalidArgumentException('Linkable node types must be an array');
 
         !isset($array['narrowNodeTypeFilter']) or is_string($array['narrowNodeTypeFilter'])
-            or throw new \Exception('Narrow node type filter must be a string');
+            or throw new \InvalidArgumentException('Narrow node type filter must be a string');
 
         !isset($array['searchTerm']) or is_string($array['searchTerm'])
-            or throw new \Exception('Search term must be a string');
+            or throw new \InvalidArgumentException('Search term must be a string');
 
         !isset($array['selectedNodeId']) or is_string($array['selectedNodeId'])
-            or throw new \Exception('Selected node id term must be a string');
+            or throw new \InvalidArgumentException('Selected node id term must be a string');
 
         return new self(
             workspaceName: $array['workspaceName'],

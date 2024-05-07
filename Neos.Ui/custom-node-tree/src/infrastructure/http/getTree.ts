@@ -21,11 +21,19 @@ type GetTreeQuery = {
     selectedNodeId?: string;
 };
 
-type GetTreeQueryResultEnvelope = {
-    success: {
-        root: TreeNodeDTO;
-    };
-};
+type GetTreeQueryResultEnvelope =
+    | {
+          success: {
+              root: TreeNodeDTO;
+          };
+      }
+    | {
+          error: {
+              type: string;
+              code: number;
+              message: string;
+          };
+      };
 
 export async function getTree(
     query: GetTreeQuery

@@ -38,9 +38,8 @@ export const Tree: React.FC<Props> = (props) => {
     const [searchTerm, setSearchTerm] = React.useState<string>(
         props.initialSearchTerm ?? ""
     );
-    const [narrowNodeTypeFilter, setNarrowNodeTypeFilter] = React.useState<string>(
-        props.initialNarrowNodeTypeFilter ?? ""
-    );
+    const [narrowNodeTypeFilter, setNarrowNodeTypeFilter] =
+        React.useState<string>(props.initialNarrowNodeTypeFilter ?? "");
     const fetch__getTree = useAsync(async () => {
         const result = await getTree({
             workspaceName: props.workspaceName,
@@ -56,6 +55,10 @@ export const Tree: React.FC<Props> = (props) => {
 
         if ("success" in result) {
             return result.success;
+        }
+
+        if ("error" in result) {
+            throw new VError(result.error.message);
         }
 
         throw new VError("Something went wrong while fetching the tree.");

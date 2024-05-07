@@ -17,6 +17,7 @@ use Neos\ContentRepository\Domain\NodeType\NodeTypeConstraintFactory;
 use Neos\ContentRepository\Domain\Service\NodeTypeManager;
 use Neos\Flow\Annotations as Flow;
 use Neos\Neos\Domain\Service\ContentContextFactory;
+use Sitegeist\Archaeopteryx\Application\Shared\NodeWasNotFound;
 use Sitegeist\Archaeopteryx\Application\Shared\TreeNode;
 use Sitegeist\Archaeopteryx\Infrastructure\ContentRepository\LinkableNodeSpecification;
 use Sitegeist\Archaeopteryx\Infrastructure\ContentRepository\NodeSearchService;
@@ -55,7 +56,10 @@ final class GetTreeQueryHandler
 
         $rootNode = $contentContext->getNode((string) $query->startingPoint);
         if (!$rootNode instanceof Node) {
-            throw new \Exception('Forget it!');
+            throw StartingPointWasNotFound::becauseNodeWithGivenPathDoesNotExistInContext(
+                nodePath: $query->startingPoint,
+                contentContext: $contentContext,
+            );
         }
 
         return new GetTreeQueryResult(

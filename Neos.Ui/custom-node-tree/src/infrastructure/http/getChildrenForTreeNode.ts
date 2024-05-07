@@ -16,11 +16,19 @@ type GetChildrenForTreeNodeQuery = {
     nodeTypeFilter: string;
 };
 
-type GetChildrenForTreeNodeQueryResultEnvelope = {
-    success: {
-        children: TreeNodeDTO[];
-    };
-};
+type GetChildrenForTreeNodeQueryResultEnvelope =
+    | {
+          success: {
+              children: TreeNodeDTO[];
+          };
+      }
+    | {
+          error: {
+              type: string;
+              code: number;
+              message: string;
+          };
+      };
 
 export async function getChildrenForTreeNode(
     query: GetChildrenForTreeNodeQuery

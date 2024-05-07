@@ -16,6 +16,7 @@ use Neos\ContentRepository\Domain\Model\Node;
 use Neos\ContentRepository\Domain\Service\NodeTypeManager;
 use Neos\Flow\Annotations as Flow;
 use Neos\Neos\Domain\Service\ContentContextFactory;
+use Sitegeist\Archaeopteryx\Application\Shared\NodeWasNotFound;
 use Sitegeist\Archaeopteryx\Application\Shared\TreeNodeBuilder;
 use Sitegeist\Archaeopteryx\Application\Shared\TreeNodes;
 use Sitegeist\Archaeopteryx\Infrastructure\ContentRepository\NodeTypeFilter;
@@ -45,7 +46,10 @@ final class GetChildrenForTreeNodeQueryHandler
 
         $node = $contentContext->getNodeByIdentifier((string) $query->treeNodeId);
         if (!$node instanceof Node) {
-            throw new \Exception('Forget it!');
+            throw NodeWasNotFound::becauseNodeWithGivenIdentifierDoesNotExistInContext(
+                nodeAggregateIdentifier: $query->treeNodeId,
+                contentContext: $contentContext,
+            );
         }
 
         return new GetChildrenForTreeNodeQueryResult(

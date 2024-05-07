@@ -31,9 +31,9 @@ final class GetNodeTypeFilterOptionsQuery
     public static function fromArray(array $array): self
     {
         isset($array['baseNodeTypeFilter'])
-            or throw new \Exception('Base node type filter must be set');
+            or throw new \InvalidArgumentException('Base node type filter must be set');
         is_string($array['baseNodeTypeFilter'])
-            or throw new \Exception('Base node type filter must be a string');
+            or throw new \InvalidArgumentException('Base node type filter must be a string');
 
         return new self(
             baseNodeTypeFilter: $array['baseNodeTypeFilter'],

@@ -7,6 +7,7 @@
  */
 import * as React from "react";
 import { useAsync } from "react-use";
+import { VError } from "verror";
 
 import { SelectBox } from "@neos-project/react-ui-components";
 import { useI18n } from "@sitegeist/archaeopteryx-neos-bridge";
@@ -40,7 +41,15 @@ export const SelectNodeTypeFilter: React.FC<Props> = (props) => {
             baseNodeTypeFilter: props.baseNodeTypeFilter,
         });
 
-        return result.success.options;
+        if ("success" in result) {
+            return result.success.options;
+        }
+
+        if ("error" in result) {
+            throw new VError(result.error.message);
+        }
+
+        throw new VError("Unable to fetch node type filter options");
     }, [props.baseNodeTypeFilter]);
     const options = React.useMemo(() => {
         return searchNodeTypeFilterOptions(
@@ -51,7 +60,7 @@ export const SelectNodeTypeFilter: React.FC<Props> = (props) => {
 
     return (
         <SelectBox
-            disabled={fetch__options.loading}
+            disabled={fetch__options.loading || fetch__options.error}
             placeholder={i18n("Neos.Neos:Main:filter")}
             placeholderIcon={"filter"}
             onValueChange={props.onChange}

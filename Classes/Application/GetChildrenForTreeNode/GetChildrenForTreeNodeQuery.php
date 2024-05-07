@@ -41,25 +41,25 @@ final class GetChildrenForTreeNodeQuery
     public static function fromArray(array $array): self
     {
         isset($array['workspaceName'])
-            or throw new \Exception('Workspace name must be set');
+            or throw new \InvalidArgumentException('Workspace name must be set');
         is_string($array['workspaceName'])
-            or throw new \Exception('Workspace name must be a string');
+            or throw new \InvalidArgumentException('Workspace name must be a string');
 
         isset($array['dimensionValues'])
-            or throw new \Exception('Dimension values must be set');
+            or throw new \InvalidArgumentException('Dimension values must be set');
         is_array($array['dimensionValues'])
-            or throw new \Exception('Dimension values must be an array');
+            or throw new \InvalidArgumentException('Dimension values must be an array');
 
         isset($array['treeNodeId'])
-            or throw new \Exception('Tree node id must be set');
+            or throw new \InvalidArgumentException('Tree node id must be set');
         is_string($array['treeNodeId'])
-            or throw new \Exception('Tree node id must be a string');
+            or throw new \InvalidArgumentException('Tree node id must be a string');
 
         !isset($array['nodeTypeFilter']) or is_string($array['nodeTypeFilter'])
-            or throw new \Exception('Node type filter must be a string');
+            or throw new \InvalidArgumentException('Node type filter must be a string');
 
         !isset($array['linkableNodeTypes']) or is_array($array['linkableNodeTypes'])
-            or throw new \Exception('Linkable node types must be an array');
+            or throw new \InvalidArgumentException('Linkable node types must be an array');
 
         return new self(
             workspaceName: $array['workspaceName'],

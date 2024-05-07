@@ -38,7 +38,7 @@ final class NodeTypeNames
         $items = [];
         foreach ($array as $nodeTypeNameAsString) {
             is_string($nodeTypeNameAsString)
-                or throw new \Exception('Node type name must be a string');
+                or throw new \InvalidArgumentException('Node type name must be a string');
 
             $items[] = NodeTypeName::fromString($nodeTypeNameAsString);
         }

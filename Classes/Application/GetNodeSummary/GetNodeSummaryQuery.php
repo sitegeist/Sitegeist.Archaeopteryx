@@ -37,19 +37,19 @@ final class GetNodeSummaryQuery
     public static function fromArray(array $array): self
     {
         isset($array['workspaceName'])
-            or throw new \Exception('Workspace name must be set');
+            or throw new \InvalidArgumentException('Workspace name must be set');
         is_string($array['workspaceName'])
-            or throw new \Exception('Workspace name must be a string');
+            or throw new \InvalidArgumentException('Workspace name must be a string');
 
         isset($array['dimensionValues'])
-            or throw new \Exception('Dimension values must be set');
+            or throw new \InvalidArgumentException('Dimension values must be set');
         is_array($array['dimensionValues'])
-            or throw new \Exception('Dimension values must be an array');
+            or throw new \InvalidArgumentException('Dimension values must be an array');
 
         isset($array['nodeId'])
-            or throw new \Exception('Node id must be set');
+            or throw new \InvalidArgumentException('Node id must be set');
         is_string($array['nodeId'])
-            or throw new \Exception('Node id must be a string');
+            or throw new \InvalidArgumentException('Node id must be a string');
 
         return new self(
             workspaceName: $array['workspaceName'],

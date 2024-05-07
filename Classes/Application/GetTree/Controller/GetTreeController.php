@@ -13,30 +13,27 @@ declare(strict_types=1);
 namespace Sitegeist\Archaeopteryx\Application\GetTree\Controller;
 
 use Neos\Flow\Annotations as Flow;
-use Neos\Flow\Mvc\ActionRequest;
-use Neos\Flow\Mvc\ActionResponse;
-use Neos\Flow\Mvc\Controller\ControllerInterface;
 use Sitegeist\Archaeopteryx\Application\GetTree\GetTreeQuery;
 use Sitegeist\Archaeopteryx\Application\GetTree\GetTreeQueryHandler;
+use Sitegeist\Archaeopteryx\Application\GetTree\StartingPointWasNotFound;
+use Sitegeist\Archaeopteryx\Framework\MVC\QueryController;
+use Sitegeist\Archaeopteryx\Framework\MVC\QueryResponse;
 
 #[Flow\Scope("singleton")]
-final class GetTreeController implements ControllerInterface
+final class GetTreeController extends QueryController
 {
     #[Flow\Inject]
     protected GetTreeQueryHandler $queryHandler;
 
-    public function processRequest(ActionRequest $request, ActionResponse $response)
+    public function processQuery(array $arguments): QueryResponse
     {
-        $request->setDispatched(true);
+        try {
+            $query = GetTreeQuery::fromArray($arguments);
+            $queryResult = $this->queryHandler->handle($query);
 
-        $query = $request->getArguments();
-        $query = GetTreeQuery::fromArray($query);
-
-        $queryResult = $this->queryHandler->handle($query);
-
-        $response->setContentType('application/json');
-        $response->setContent(json_encode([
-            'success' => $queryResult
-        ], JSON_THROW_ON_ERROR));
+            return QueryResponse::success($queryResult);
+        } catch (StartingPointWasNotFound $e) {
+            return QueryResponse::clientError($e);
+        }
     }
 }

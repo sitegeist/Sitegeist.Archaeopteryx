@@ -13,30 +13,22 @@ declare(strict_types=1);
 namespace Sitegeist\Archaeopteryx\Application\GetNodeTypeFilterOptions\Controller;
 
 use Neos\Flow\Annotations as Flow;
-use Neos\Flow\Mvc\ActionRequest;
-use Neos\Flow\Mvc\ActionResponse;
-use Neos\Flow\Mvc\Controller\ControllerInterface;
 use Sitegeist\Archaeopteryx\Application\GetNodeTypeFilterOptions\GetNodeTypeFilterOptionsQuery;
 use Sitegeist\Archaeopteryx\Application\GetNodeTypeFilterOptions\GetNodeTypeFilterOptionsQueryHandler;
+use Sitegeist\Archaeopteryx\Framework\MVC\QueryController;
+use Sitegeist\Archaeopteryx\Framework\MVC\QueryResponse;
 
 #[Flow\Scope("singleton")]
-final class GetNodeTypeFilterOptionsController implements ControllerInterface
+final class GetNodeTypeFilterOptionsController extends QueryController
 {
     #[Flow\Inject]
     protected GetNodeTypeFilterOptionsQueryHandler $queryHandler;
 
-    public function processRequest(ActionRequest $request, ActionResponse $response)
+    public function processQuery(array $arguments): QueryResponse
     {
-        $request->setDispatched(true);
-
-        $query = $request->getArguments();
-        $query = GetNodeTypeFilterOptionsQuery::fromArray($query);
-
+        $query = GetNodeTypeFilterOptionsQuery::fromArray($arguments);
         $queryResult = $this->queryHandler->handle($query);
 
-        $response->setContentType('application/json');
-        $response->setContent(json_encode([
-            'success' => $queryResult
-        ], JSON_THROW_ON_ERROR));
+        return QueryResponse::success($queryResult);
     }
 }
