@@ -125,7 +125,7 @@ export const Node = makeLinkType<NodeLinkModel, NodeLinkOptions>(
             const workspaceName = usePersonalWorkspaceName();
             const dimensionValues = useDimensionValues();
             const siteNodeContextPath = useSiteNodeContextPath();
-            const loadingDepth =
+            const defaultLoadingDepth =
                 useConfiguration((c) => c.nodeTree?.loadingDepth) ?? 4;
             const initialSearchTerm =
                 useSelector((state) => state.ui?.pageTree?.query) ?? "";
@@ -169,7 +169,7 @@ export const Node = makeLinkType<NodeLinkModel, NodeLinkOptions>(
                                 workspaceName={workspaceName}
                                 dimensionValues={dimensionValues}
                                 startingPoint={startingPoint}
-                                loadingDepth={loadingDepth}
+                                loadingDepth={options.loadingDepth ?? defaultLoadingDepth}
                                 baseNodeTypeFilter={options.baseNodeType ?? "Neos.Neos:Document"}
                                 initialNarrowNodeTypeFilter={
                                     initialNarrowNodeTypeFilter
