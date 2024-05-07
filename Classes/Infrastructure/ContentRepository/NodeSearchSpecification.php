@@ -24,7 +24,7 @@ final class NodeSearchSpecification
 {
     public function __construct(
         public readonly NodeTypeFilter $baseNodeTypeFilter,
-        public readonly ?NodeTypeFilter $leafNodeTypeFilter,
+        public readonly ?NodeTypeFilter $narrowNodeTypeFilter,
         public readonly ?string $searchTerm,
     ) {
     }
@@ -35,7 +35,7 @@ final class NodeSearchSpecification
             return false;
         }
 
-        if ($this->leafNodeTypeFilter && !$this->leafNodeTypeFilter->isSatisfiedByNode($node)) {
+        if ($this->narrowNodeTypeFilter && !$this->narrowNodeTypeFilter->isSatisfiedByNode($node)) {
             return false;
         }
 

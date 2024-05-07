@@ -59,7 +59,7 @@ final class GetTreeQueryHandler
         }
 
         return new GetTreeQueryResult(
-            root: $tree = empty($query->searchTerm) && empty($query->leafNodeTypeFilter)
+            root: $tree = empty($query->searchTerm) && empty($query->narrowNodeTypeFilter)
                 ? $this->loadTree($rootNode, $query, $query->loadingDepth)
                 : $this->performSearch($rootNode, $query),
         );
@@ -72,15 +72,15 @@ final class GetTreeQueryHandler
             $this->nodeTypeConstraintFactory,
             $this->nodeTypeManager,
         );
-        $leafNodeTypeFilter = NodeTypeFilter::fromFilterString(
-            $query->leafNodeTypeFilter,
+        $narrowNodeTypeFilter = NodeTypeFilter::fromFilterString(
+            $query->narrowNodeTypeFilter,
             $this->nodeTypeConstraintFactory,
             $this->nodeTypeManager,
         );
 
         $matchingNodes = $this->nodeSearchService->search(
             $query->searchTerm,
-            $leafNodeTypeFilter,
+            $narrowNodeTypeFilter,
             $rootNode
         );
 
@@ -88,7 +88,7 @@ final class GetTreeQueryHandler
             rootNode: $rootNode,
             nodeSearchSpecification: new NodeSearchSpecification(
                 baseNodeTypeFilter: $baseNodeTypeFilter,
-                leafNodeTypeFilter: $leafNodeTypeFilter,
+                narrowNodeTypeFilter: $narrowNodeTypeFilter,
                 searchTerm: $query->searchTerm
             )
         );
@@ -112,7 +112,7 @@ final class GetTreeQueryHandler
             rootNode: $node,
             nodeSearchSpecification: new NodeSearchSpecification(
                 baseNodeTypeFilter: $baseNodeTypeFilter,
-                leafNodeTypeFilter: null,
+                narrowNodeTypeFilter: null,
                 searchTerm: null
             )
         );

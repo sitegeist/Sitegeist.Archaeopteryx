@@ -19,7 +19,7 @@ import { getTree } from "../infrastructure/http";
 
 interface Props {
     initialSearchTerm?: string;
-    initialLeafNodeTypeFilter?: string;
+    initialNarrowNodeTypeFilter?: string;
     workspaceName: string;
     dimensionValues: Record<string, string[]>;
     startingPoint: string;
@@ -37,8 +37,8 @@ export const Tree: React.FC<Props> = (props) => {
     const [searchTerm, setSearchTerm] = React.useState<string>(
         props.initialSearchTerm ?? ""
     );
-    const [leafNodeTypeFilter, setLeafNodeTypeFilter] = React.useState<string>(
-        props.initialLeafNodeTypeFilter ?? ""
+    const [narrowNodeTypeFilter, setNarrowNodeTypeFilter] = React.useState<string>(
+        props.initialNarrowNodeTypeFilter ?? ""
     );
     const fetch__getTree = useAsync(async () => {
         const result = await getTree({
@@ -48,7 +48,7 @@ export const Tree: React.FC<Props> = (props) => {
             loadingDepth: props.loadingDepth,
             baseNodeTypeFilter: props.baseNodeTypeFilter,
             selectedNodeId: props.selectedTreeNodeId,
-            leafNodeTypeFilter,
+            narrowNodeTypeFilter,
             searchTerm,
         });
 
@@ -63,7 +63,7 @@ export const Tree: React.FC<Props> = (props) => {
         props.startingPoint,
         props.loadingDepth,
         props.baseNodeTypeFilter,
-        leafNodeTypeFilter,
+        narrowNodeTypeFilter,
         searchTerm,
     ]);
     const handleTreeNodeClick = React.useCallback((treeNodeId: string) => {
@@ -77,7 +77,7 @@ export const Tree: React.FC<Props> = (props) => {
     );
     const handleNodeTypeFilterChange = React.useCallback(
         (newNodeTypeFilter: string) => {
-            setLeafNodeTypeFilter(newNodeTypeFilter);
+            setNarrowNodeTypeFilter(newNodeTypeFilter);
         },
         []
     );
@@ -121,7 +121,7 @@ export const Tree: React.FC<Props> = (props) => {
         filter = (
             <SelectNodeTypeFilter
                 baseNodeTypeFilter={props.baseNodeTypeFilter}
-                value={leafNodeTypeFilter}
+                value={narrowNodeTypeFilter}
                 onChange={handleNodeTypeFilterChange}
             />
         );

@@ -31,7 +31,7 @@ final class GetTreeQuery
         public readonly NodePath $startingPoint,
         public readonly int $loadingDepth,
         public readonly string $baseNodeTypeFilter,
-        public readonly string $leafNodeTypeFilter,
+        public readonly string $narrowNodeTypeFilter,
         public readonly string $searchTerm,
         public readonly ?NodeAggregateIdentifier $selectedNodeId,
     ) {
@@ -68,8 +68,8 @@ final class GetTreeQuery
         !isset($array['baseNodeTypeFilter']) or is_string($array['baseNodeTypeFilter'])
             or throw new \Exception('Base node type filter must be a string');
 
-        !isset($array['leafNodeTypeFilter']) or is_string($array['leafNodeTypeFilter'])
-            or throw new \Exception('Leaf node type filter must be a string');
+        !isset($array['narrowNodeTypeFilter']) or is_string($array['narrowNodeTypeFilter'])
+            or throw new \Exception('Narrow node type filter must be a string');
 
         !isset($array['searchTerm']) or is_string($array['searchTerm'])
             or throw new \Exception('Search term must be a string');
@@ -83,7 +83,7 @@ final class GetTreeQuery
             startingPoint: NodePath::fromString($array['startingPoint']),
             loadingDepth: $array['loadingDepth'],
             baseNodeTypeFilter: $array['baseNodeTypeFilter'] ?? '',
-            leafNodeTypeFilter: $array['leafNodeTypeFilter'] ?? '',
+            narrowNodeTypeFilter: $array['narrowNodeTypeFilter'] ?? '',
             searchTerm: $array['searchTerm'] ?? '',
             selectedNodeId: isset($array['selectedNodeId'])
                 ? NodeAggregateIdentifier::fromString($array['selectedNodeId'])

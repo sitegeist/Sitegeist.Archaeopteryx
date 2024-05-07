@@ -129,7 +129,7 @@ export const Node = makeLinkType<NodeLinkModel, NodeLinkOptions>(
                 useConfiguration((c) => c.nodeTree?.loadingDepth) ?? 4;
             const initialSearchTerm =
                 useSelector((state) => state.ui?.pageTree?.query) ?? "";
-            const initialLeafNodeTypeFilter =
+            const initialNarrowNodeTypeFilter =
                 useSelector((state) => state.ui?.pageTree?.filterNodeType) ??
                 "";
             const startingPoint = React.useMemo(
@@ -171,8 +171,8 @@ export const Node = makeLinkType<NodeLinkModel, NodeLinkOptions>(
                                 startingPoint={startingPoint}
                                 loadingDepth={loadingDepth}
                                 baseNodeTypeFilter={"Neos.Neos:Document"}
-                                initialLeafNodeTypeFilter={
-                                    initialLeafNodeTypeFilter
+                                initialNarrowNodeTypeFilter={
+                                    initialNarrowNodeTypeFilter
                                 }
                                 selectedTreeNodeId={input.value ?? undefined}
                                 options={{

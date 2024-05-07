@@ -15,7 +15,7 @@ type GetTreeQuery = {
     startingPoint: string;
     loadingDepth: number;
     baseNodeTypeFilter: string;
-    leafNodeTypeFilter: string;
+    narrowNodeTypeFilter: string;
     searchTerm: string;
     selectedNodeId?: string;
 };
@@ -45,7 +45,7 @@ export async function getTree(
     searchParams.set("startingPoint", query.startingPoint);
     searchParams.set("loadingDepth", String(query.loadingDepth));
     searchParams.set("baseNodeTypeFilter", query.baseNodeTypeFilter);
-    searchParams.set("leafNodeTypeFilter", query.leafNodeTypeFilter);
+    searchParams.set("narrowNodeTypeFilter", query.narrowNodeTypeFilter);
     searchParams.set("searchTerm", query.searchTerm);
 
     if (query.selectedNodeId) {
