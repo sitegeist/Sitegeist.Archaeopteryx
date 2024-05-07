@@ -48,6 +48,10 @@ final class NodeTypeNames
 
     public function includesSuperTypeOf(NodeType $nodeType): bool
     {
+        if (empty($this->items)) {
+            return true;
+        }
+
         foreach ($this->items as $item) {
             if ($nodeType->isOfType((string) $item)) {
                 return true;
