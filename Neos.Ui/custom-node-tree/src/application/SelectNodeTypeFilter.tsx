@@ -42,7 +42,10 @@ export const SelectNodeTypeFilter: React.FC<Props> = (props) => {
         });
 
         if ("success" in result) {
-            return result.success.options;
+            return result.success.options.map((option) => ({
+                ...option,
+                label: i18n(option.label)
+            }));
         }
 
         if ("error" in result) {
