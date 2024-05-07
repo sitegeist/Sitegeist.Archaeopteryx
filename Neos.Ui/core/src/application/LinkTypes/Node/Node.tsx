@@ -170,7 +170,7 @@ export const Node = makeLinkType<NodeLinkModel, NodeLinkOptions>(
                                 dimensionValues={dimensionValues}
                                 startingPoint={startingPoint}
                                 loadingDepth={loadingDepth}
-                                baseNodeTypeFilter={"Neos.Neos:Document"}
+                                baseNodeTypeFilter={options.baseNodeType ?? "Neos.Neos:Document"}
                                 initialNarrowNodeTypeFilter={
                                     initialNarrowNodeTypeFilter
                                 }
