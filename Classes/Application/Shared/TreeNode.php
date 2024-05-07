@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Sitegeist\Archaeopteryx\Application\Shared;
 
 use Neos\ContentRepository\Domain\NodeAggregate\NodeAggregateIdentifier;
-use Neos\ContentRepository\Domain\NodeType\NodeTypeName;
 use Neos\Flow\Annotations as Flow;
 
 /**
@@ -22,9 +21,6 @@ use Neos\Flow\Annotations as Flow;
 #[Flow\Proxy(false)]
 final class TreeNode implements \JsonSerializable
 {
-    /**
-     * @param NodeTypeName[] $nodeTypeNames
-     */
     public function __construct(
         public readonly NodeAggregateIdentifier $nodeAggregateIdentifier,
         public readonly string $icon,
@@ -36,7 +32,6 @@ final class TreeNode implements \JsonSerializable
         public readonly bool $isHiddenInMenu,
         public readonly bool $hasScheduledDisabledState,
         public readonly bool $hasUnloadedChildren,
-        public readonly array $nodeTypeNames,
         public readonly TreeNodes $children
     ) {
     }
@@ -44,19 +39,5 @@ final class TreeNode implements \JsonSerializable
     public function jsonSerialize(): mixed
     {
         return get_object_vars($this);
-    }
-
-    /**
-     * @return \Traversable<string,NodeTypeName>
-     */
-    public function getNodeTypeNamesForFilterRecursively(): \Traversable
-    {
-        if ($this->isMatchedByFilter) {
-            foreach ($this->nodeTypeNames as $nodeTypeName) {
-                yield (string) $nodeTypeName => $nodeTypeName;
-            }
-        }
-
-        yield from $this->children->getNodeTypeNamesForFilterRecursively();
     }
 }

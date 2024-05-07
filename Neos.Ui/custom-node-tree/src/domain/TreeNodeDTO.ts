@@ -16,6 +16,5 @@ export type TreeNodeDTO = {
     isHiddenInMenu: boolean;
     hasScheduledDisabledState: boolean;
     hasUnloadedChildren: boolean;
-    nodeTypeNames: string[];
     children: TreeNodeDTO[];
 };

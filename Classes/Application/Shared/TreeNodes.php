@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Sitegeist\Archaeopteryx\Application\Shared;
 
-use Neos\ContentRepository\Domain\NodeType\NodeTypeName;
 use Neos\Flow\Annotations as Flow;
 
 /**
@@ -32,15 +31,5 @@ final class TreeNodes implements \JsonSerializable
     public function jsonSerialize(): mixed
     {
         return $this->items;
-    }
-
-    /**
-     * @return \Traversable<string,NodeTypeName>
-     */
-    public function getNodeTypeNamesForFilterRecursively(): \Traversable
-    {
-        foreach ($this->items as $childTreeNode) {
-            yield from $childTreeNode->getNodeTypeNamesForFilterRecursively();
-        }
     }
 }

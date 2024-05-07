@@ -13,9 +13,7 @@ declare(strict_types=1);
 namespace Sitegeist\Archaeopteryx\Application\Shared;
 
 use Neos\ContentRepository\Domain\Model\Node;
-use Neos\ContentRepository\Domain\Model\NodeType;
 use Neos\ContentRepository\Domain\NodeAggregate\NodeAggregateIdentifier;
-use Neos\ContentRepository\Domain\NodeType\NodeTypeName;
 use Neos\Flow\Annotations as Flow;
 
 /**
@@ -28,7 +26,6 @@ final class TreeNodeBuilder
     private array $childrenByIdentifier;
 
     /**
-     * @param NodeTypeName[] $nodeTypeNames
      * @param TreeNodeBuilder[] $children
      */
     private function __construct(
@@ -43,7 +40,6 @@ final class TreeNodeBuilder
         private bool $isHiddenInMenu,
         private bool $hasScheduledDisabledState,
         private bool $hasUnloadedChildren,
-        private array $nodeTypeNames,
         private array $children
     ) {
     }
@@ -65,10 +61,6 @@ final class TreeNodeBuilder
                 $node->getHiddenBeforeDateTime() !== null
                 || $node->getHiddenAfterDateTime() !== null,
             hasUnloadedChildren: false,
-            nodeTypeNames: iterator_to_array(
-                self::getAllNonAbstractSuperTypesOf($node->getNodeType()),
-                false
-            ),
             children: [],
         );
     }
@@ -114,7 +106,6 @@ final class TreeNodeBuilder
             isHiddenInMenu: $this->isHiddenInMenu,
             hasScheduledDisabledState: $this->hasScheduledDisabledState,
             hasUnloadedChildren: $this->hasUnloadedChildren,
-            nodeTypeNames: $this->nodeTypeNames,
             children: $this->buildChildren(),
         );
     }
@@ -135,18 +126,4 @@ final class TreeNodeBuilder
 
         return new TreeNodes(...$items);
     }
-
-   /**
-    * @return \Traversable<int,NodeTypeName>
-    */
-   private static function getAllNonAbstractSuperTypesOf(NodeType $nodeType): \Traversable
-   {
-       if (!$nodeType->isAbstract()) {
-           yield NodeTypeName::fromString($nodeType->getName());
-       }
-
-       foreach ($nodeType->getDeclaredSuperTypes() as $superType) {
-           yield from self::getAllNonAbstractSuperTypesOf($superType);
-       }
-   }
 }
