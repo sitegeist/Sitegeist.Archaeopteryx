@@ -42,7 +42,7 @@ final class TreeBuilder
     ): self {
         return new self(
             rootNode: $rootNode,
-            rootTreeNodeBuilder: TreeNodeBuilder::fromNode($rootNode),
+            rootTreeNodeBuilder: TreeNodeBuilder::forNode($rootNode),
             nodeSearchSpecification: $nodeSearchSpecification,
             linkableNodeSpecification: $linkableNodeSpecification,
         );
@@ -148,7 +148,7 @@ final class TreeBuilder
     {
         $treeNodeBuilder = $this->treeNodeBuildersByNodeAggregateIdentifier[
             (string) $node->getNodeAggregateIdentifier()
-        ] ??= TreeNodeBuilder::fromNode($node);
+        ] ??= TreeNodeBuilder::forNode($node);
 
         $treeNodeBuilder->setIsMatchedByFilter(
             $this->nodeSearchSpecification->isSatisfiedByNode($node)

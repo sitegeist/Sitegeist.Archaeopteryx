@@ -64,7 +64,7 @@ final class GetChildrenForTreeNodeQueryHandler
 
         foreach ($node->getChildNodes($query->nodeTypeFilter) as $childNode) {
             /** @var Node $childNode */
-            $items[] = TreeNodeBuilder::fromNode($childNode)
+            $items[] = TreeNodeBuilder::forNode($childNode)
                 ->setIsMatchedByFilter(true)
                 ->setIsLinkable($linkableNodeTypesFilter->isSatisfiedByNode($childNode))
                 ->setHasUnloadedChildren($childNode->getNumberOfChildNodes($query->nodeTypeFilter) > 0)

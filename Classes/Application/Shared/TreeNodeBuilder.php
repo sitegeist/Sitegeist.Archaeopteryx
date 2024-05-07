@@ -44,7 +44,7 @@ final class TreeNodeBuilder
     ) {
     }
 
-    public static function fromNode(Node $node): self
+    public static function forNode(Node $node): self
     {
         return new self(
             // @phpstan-ignore-next-line
