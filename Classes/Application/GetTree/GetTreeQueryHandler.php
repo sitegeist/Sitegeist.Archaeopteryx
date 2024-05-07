@@ -18,7 +18,7 @@ use Neos\ContentRepository\Domain\Service\NodeTypeManager;
 use Neos\Flow\Annotations as Flow;
 use Neos\Neos\Domain\Service\ContentContextFactory;
 use Sitegeist\Archaeopteryx\Application\Shared\TreeNode;
-use Sitegeist\Archaeopteryx\Application\Shared\TreeNodeBuilder;
+use Sitegeist\Archaeopteryx\Infrastructure\ContentRepository\LinkableNodeSpecification;
 use Sitegeist\Archaeopteryx\Infrastructure\ContentRepository\NodeSearchService;
 use Sitegeist\Archaeopteryx\Infrastructure\ContentRepository\NodeSearchSpecification;
 use Sitegeist\Archaeopteryx\Infrastructure\ContentRepository\NodeTypeFilter;
@@ -89,8 +89,14 @@ final class GetTreeQueryHandler
             nodeSearchSpecification: new NodeSearchSpecification(
                 baseNodeTypeFilter: $baseNodeTypeFilter,
                 narrowNodeTypeFilter: $narrowNodeTypeFilter,
-                searchTerm: $query->searchTerm
-            )
+                searchTerm: $query->searchTerm,
+            ),
+            linkableNodeSpecification: new LinkableNodeSpecification(
+                linkableNodeTypes: NodeTypeFilter::fromNodeTypeNames(
+                    nodeTypeNames: $query->linkableNodeTypes,
+                    nodeTypeManager: $this->nodeTypeManager,
+                ),
+            ),
         );
 
         foreach ($matchingNodes as $matchingNode) {
@@ -113,8 +119,14 @@ final class GetTreeQueryHandler
             nodeSearchSpecification: new NodeSearchSpecification(
                 baseNodeTypeFilter: $baseNodeTypeFilter,
                 narrowNodeTypeFilter: null,
-                searchTerm: null
-            )
+                searchTerm: null,
+            ),
+            linkableNodeSpecification: new LinkableNodeSpecification(
+                linkableNodeTypes: NodeTypeFilter::fromNodeTypeNames(
+                    nodeTypeNames: $query->linkableNodeTypes,
+                    nodeTypeManager: $this->nodeTypeManager,
+                ),
+            ),
         );
 
         $treeBuilder->addNodeWithDescendants($node, $remainingDepth);

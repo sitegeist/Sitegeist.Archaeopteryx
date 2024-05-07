@@ -25,6 +25,7 @@ interface Props {
     startingPoint: string;
     loadingDepth: number;
     baseNodeTypeFilter: string;
+    linkableNodeTypes?: string[];
     selectedTreeNodeId?: string;
     options?: {
         enableSearch?: boolean;
@@ -47,6 +48,7 @@ export const Tree: React.FC<Props> = (props) => {
             startingPoint: props.startingPoint,
             loadingDepth: props.loadingDepth,
             baseNodeTypeFilter: props.baseNodeTypeFilter,
+            linkableNodeTypes: props.linkableNodeTypes,
             selectedNodeId: props.selectedTreeNodeId,
             narrowNodeTypeFilter,
             searchTerm,
@@ -63,6 +65,7 @@ export const Tree: React.FC<Props> = (props) => {
         props.startingPoint,
         props.loadingDepth,
         props.baseNodeTypeFilter,
+        props.linkableNodeTypes,
         narrowNodeTypeFilter,
         searchTerm,
     ]);

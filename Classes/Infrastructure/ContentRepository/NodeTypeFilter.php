@@ -18,6 +18,7 @@ use Neos\ContentRepository\Domain\NodeType\NodeTypeConstraintFactory;
 use Neos\ContentRepository\Domain\NodeType\NodeTypeName;
 use Neos\ContentRepository\Domain\Service\NodeTypeManager;
 use Neos\Flow\Annotations as Flow;
+use Sitegeist\Archaeopteryx\Application\Shared\NodeTypeNames;
 
 /**
  * @internal
@@ -29,8 +30,8 @@ final class NodeTypeFilter
      * @param string[] $allowedNodeTypeNames
      */
     private function __construct(
-        public readonly string $filterString,
-        public readonly array $allowedNodeTypeNames
+        private readonly ?string $filterString,
+        public readonly array $allowedNodeTypeNames,
     ) {
     }
 
@@ -50,6 +51,28 @@ final class NodeTypeFilter
         }
 
         return new self($filterString, $allowedNodeTypeNames);
+    }
+
+    public static function fromNodeTypeNames(
+        NodeTypeNames $nodeTypeNames,
+        NodeTypeManager $nodeTypeManager,
+    ): self {
+        $allowedNodeTypeNames = [];
+
+        foreach ($nodeTypeManager->getNodeTypes(false) as $nodeType) {
+            $nodeTypeName = $nodeType->getName();
+
+            if ($nodeTypeNames->includesSuperTypeOf($nodeType)) {
+                $allowedNodeTypeNames[] = $nodeTypeName;
+            }
+        }
+
+        return new self(null, $allowedNodeTypeNames);
+    }
+
+    public function toFilterString(): string
+    {
+        return $this->filterString ?? implode(',', $this->allowedNodeTypeNames);
     }
 
     public function isSatisfiedByNode(Node $node): bool

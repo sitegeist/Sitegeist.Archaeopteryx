@@ -11,6 +11,7 @@ export type TreeNodeDTO = {
     label: string;
     nodeTypeLabel: string;
     isMatchedByFilter: boolean;
+    isLinkable: boolean;
     isDisabled: boolean;
     isHiddenInMenu: boolean;
     hasScheduledDisabledState: boolean;

@@ -15,6 +15,7 @@ type GetTreeQuery = {
     startingPoint: string;
     loadingDepth: number;
     baseNodeTypeFilter: string;
+    linkableNodeTypes?: string[];
     narrowNodeTypeFilter: string;
     searchTerm: string;
     selectedNodeId?: string;
@@ -45,6 +46,11 @@ export async function getTree(
     searchParams.set("startingPoint", query.startingPoint);
     searchParams.set("loadingDepth", String(query.loadingDepth));
     searchParams.set("baseNodeTypeFilter", query.baseNodeTypeFilter);
+
+    for (const linkableNodeType of query.linkableNodeTypes ?? []) {
+        searchParams.append(`linkableNodeTypes[]`, linkableNodeType);
+    }
+
     searchParams.set("narrowNodeTypeFilter", query.narrowNodeTypeFilter);
     searchParams.set("searchTerm", query.searchTerm);
 

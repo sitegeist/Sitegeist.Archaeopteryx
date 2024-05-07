@@ -30,16 +30,21 @@ final class TreeBuilder
         Node $rootNode,
         private readonly TreeNodeBuilder $rootTreeNodeBuilder,
         private readonly NodeSearchSpecification $nodeSearchSpecification,
+        private readonly LinkableNodeSpecification $linkableNodeSpecification,
     ) {
         $this->treeNodeBuildersByNodeAggregateIdentifier[(string) $rootNode->getNodeAggregateIdentifier()] = $rootTreeNodeBuilder;
     }
 
-    public static function forRootNode(Node $rootNode, NodeSearchSpecification $nodeSearchSpecification): self
-    {
+    public static function forRootNode(
+        Node $rootNode,
+        NodeSearchSpecification $nodeSearchSpecification,
+        LinkableNodeSpecification $linkableNodeSpecification,
+    ): self {
         return new self(
             rootNode: $rootNode,
             rootTreeNodeBuilder: TreeNodeBuilder::fromNode($rootNode),
             nodeSearchSpecification: $nodeSearchSpecification,
+            linkableNodeSpecification: $linkableNodeSpecification,
         );
     }
 
@@ -50,10 +55,10 @@ final class TreeBuilder
 
             if ($loadingDepth === 0) {
                 $treeNodeBuilder->setHasUnloadedChildren(
-                    $node->getNumberOfChildNodes($this->nodeSearchSpecification->baseNodeTypeFilter->filterString) > 0,
+                    $node->getNumberOfChildNodes($this->nodeSearchSpecification->baseNodeTypeFilter->toFilterString()) > 0,
                 );
             } else {
-                foreach ($node->getChildNodes($this->nodeSearchSpecification->baseNodeTypeFilter->filterString) as $childNode) {
+                foreach ($node->getChildNodes($this->nodeSearchSpecification->baseNodeTypeFilter->toFilterString()) as $childNode) {
                     /** @var Node $childNode */
                     $treeNodeBuilder->addChild(
                         $addNodeWithChildrenRecursively($childNode, $loadingDepth - 1)
@@ -99,7 +104,7 @@ final class TreeBuilder
                     if ($this->nodeSearchSpecification->baseNodeTypeFilter->isSatisfiedByNode($siblingNode)) {
                         $siblingTreeNodeBuilder = $this->addNode($siblingNode);
                         $siblingTreeNodeBuilder->setHasUnloadedChildren(
-                            $siblingNode->getNumberOfChildNodes($this->nodeSearchSpecification->baseNodeTypeFilter->filterString) > 0,
+                            $siblingNode->getNumberOfChildNodes($this->nodeSearchSpecification->baseNodeTypeFilter->toFilterString()) > 0,
                         );
 
                         $parentTreeNodeBuilder->addChild($siblingTreeNodeBuilder);
@@ -113,7 +118,7 @@ final class TreeBuilder
                     if ($this->nodeSearchSpecification->baseNodeTypeFilter->isSatisfiedByNode($siblingNode)) {
                         $siblingTreeNodeBuilder = $this->addNode($siblingNode);
                         $siblingTreeNodeBuilder->setHasUnloadedChildren(
-                            $siblingNode->getNumberOfChildNodes($this->nodeSearchSpecification->baseNodeTypeFilter->filterString) > 0,
+                            $siblingNode->getNumberOfChildNodes($this->nodeSearchSpecification->baseNodeTypeFilter->toFilterString()) > 0,
                         );
 
                         $parentTreeNodeBuilder->addChild($siblingTreeNodeBuilder);
@@ -128,7 +133,7 @@ final class TreeBuilder
 
         $leafTreeNodeBuilder = $addNodeWithSiblingsAndParentRecursively($node);
         $leafTreeNodeBuilder->setHasUnloadedChildren(
-            $node->getNumberOfChildNodes($this->nodeSearchSpecification->baseNodeTypeFilter->filterString) > 0,
+            $node->getNumberOfChildNodes($this->nodeSearchSpecification->baseNodeTypeFilter->toFilterString()) > 0,
         );
 
         return $this;
@@ -147,6 +152,10 @@ final class TreeBuilder
 
         $treeNodeBuilder->setIsMatchedByFilter(
             $this->nodeSearchSpecification->isSatisfiedByNode($node)
+        );
+
+        $treeNodeBuilder->setIsLinkable(
+            $this->linkableNodeSpecification->isSatisfiedByNode($node)
         );
 
         return $treeNodeBuilder;

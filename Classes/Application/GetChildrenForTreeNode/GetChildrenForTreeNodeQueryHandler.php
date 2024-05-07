@@ -13,13 +13,12 @@ declare(strict_types=1);
 namespace Sitegeist\Archaeopteryx\Application\GetChildrenForTreeNode;
 
 use Neos\ContentRepository\Domain\Model\Node;
-use Neos\ContentRepository\Domain\Model\NodeType;
-use Neos\ContentRepository\Domain\NodeType\NodeTypeName;
 use Neos\ContentRepository\Domain\Service\NodeTypeManager;
 use Neos\Flow\Annotations as Flow;
 use Neos\Neos\Domain\Service\ContentContextFactory;
-use Sitegeist\Archaeopteryx\Application\Shared\TreeNode;
+use Sitegeist\Archaeopteryx\Application\Shared\TreeNodeBuilder;
 use Sitegeist\Archaeopteryx\Application\Shared\TreeNodes;
+use Sitegeist\Archaeopteryx\Infrastructure\ContentRepository\NodeTypeFilter;
 
 /**
  * @internal
@@ -56,49 +55,22 @@ final class GetChildrenForTreeNodeQueryHandler
 
     private function createTreeNodesFromChildrenOfNode(Node $node, GetChildrenForTreeNodeQuery $query): TreeNodes
     {
+        $linkableNodeTypesFilter = NodeTypeFilter::fromNodeTypeNames(
+            nodeTypeNames: $query->linkableNodeTypes,
+            nodeTypeManager: $this->nodeTypeManager
+        );
+
         $items = [];
 
         foreach ($node->getChildNodes($query->nodeTypeFilter) as $childNode) {
             /** @var Node $childNode */
-            $items[] = $this->createTreeNodeFromNode($childNode, $query);
+            $items[] = TreeNodeBuilder::fromNode($childNode)
+                ->setIsMatchedByFilter(true)
+                ->setIsLinkable($linkableNodeTypesFilter->isSatisfiedByNode($childNode))
+                ->setHasUnloadedChildren($childNode->getNumberOfChildNodes($query->nodeTypeFilter) > 0)
+                ->build();
         }
 
         return new TreeNodes(...$items);
-    }
-
-    private function createTreeNodeFromNode(Node $node, GetChildrenForTreeNodeQuery $query): TreeNode
-    {
-        return new TreeNode(
-            nodeAggregateIdentifier: $node->getNodeAggregateIdentifier(),
-            icon: $node->getNodeType()->getConfiguration('ui.icon'),
-            label: $node->getLabel(),
-            nodeTypeLabel: $node->getNodeType()->getLabel(),
-            isMatchedByFilter: true,
-            isDisabled: $node->isHidden(),
-            isHiddenInMenu: $node->isHiddenInIndex(),
-            hasScheduledDisabledState:
-                $node->getHiddenBeforeDateTime() !== null
-                || $node->getHiddenAfterDateTime() !== null,
-            hasUnloadedChildren: $node->getNumberOfChildNodes($query->nodeTypeFilter) > 0,
-            nodeTypeNames: iterator_to_array(
-                $this->getAllNonAbstractSuperTypesOf($node->getNodeType()),
-                false
-            ),
-            children: new TreeNodes(),
-        );
-    }
-
-    /**
-     * @return \Traversable<int,NodeTypeName>
-     */
-    private function getAllNonAbstractSuperTypesOf(NodeType $nodeType): \Traversable
-    {
-        if (!$nodeType->isAbstract()) {
-            yield NodeTypeName::fromString($nodeType->getName());
-        }
-
-        foreach ($nodeType->getDeclaredSuperTypes() as $superType) {
-            yield from $this->getAllNonAbstractSuperTypesOf($superType);
-        }
     }
 }

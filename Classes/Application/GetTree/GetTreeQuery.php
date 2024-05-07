@@ -14,7 +14,9 @@ namespace Sitegeist\Archaeopteryx\Application\GetTree;
 
 use Neos\ContentRepository\Domain\ContentSubgraph\NodePath;
 use Neos\ContentRepository\Domain\NodeAggregate\NodeAggregateIdentifier;
+use Neos\ContentRepository\Domain\NodeType\NodeTypeName;
 use Neos\Flow\Annotations as Flow;
+use Sitegeist\Archaeopteryx\Application\Shared\NodeTypeNames;
 
 /**
  * @internal
@@ -31,6 +33,7 @@ final class GetTreeQuery
         public readonly NodePath $startingPoint,
         public readonly int $loadingDepth,
         public readonly string $baseNodeTypeFilter,
+        public readonly NodeTypeNames $linkableNodeTypes,
         public readonly string $narrowNodeTypeFilter,
         public readonly string $searchTerm,
         public readonly ?NodeAggregateIdentifier $selectedNodeId,
@@ -68,6 +71,9 @@ final class GetTreeQuery
         !isset($array['baseNodeTypeFilter']) or is_string($array['baseNodeTypeFilter'])
             or throw new \Exception('Base node type filter must be a string');
 
+        !isset($array['linkableNodeTypes']) or is_array($array['linkableNodeTypes'])
+            or throw new \Exception('Linkable node types must be an array');
+
         !isset($array['narrowNodeTypeFilter']) or is_string($array['narrowNodeTypeFilter'])
             or throw new \Exception('Narrow node type filter must be a string');
 
@@ -83,6 +89,7 @@ final class GetTreeQuery
             startingPoint: NodePath::fromString($array['startingPoint']),
             loadingDepth: $array['loadingDepth'],
             baseNodeTypeFilter: $array['baseNodeTypeFilter'] ?? '',
+            linkableNodeTypes: NodeTypeNames::fromArray($array['linkableNodeTypes'] ?? []),
             narrowNodeTypeFilter: $array['narrowNodeTypeFilter'] ?? '',
             searchTerm: $array['searchTerm'] ?? '',
             selectedNodeId: isset($array['selectedNodeId'])

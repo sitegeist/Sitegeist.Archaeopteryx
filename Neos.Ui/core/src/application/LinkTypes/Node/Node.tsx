@@ -174,6 +174,11 @@ export const Node = makeLinkType<NodeLinkModel, NodeLinkOptions>(
                                 initialNarrowNodeTypeFilter={
                                     initialNarrowNodeTypeFilter
                                 }
+                                linkableNodeTypes={
+                                    options.allowedNodeTypes as
+                                        | undefined
+                                        | string[]
+                                }
                                 selectedTreeNodeId={input.value ?? undefined}
                                 options={{
                                     enableSearch: true,

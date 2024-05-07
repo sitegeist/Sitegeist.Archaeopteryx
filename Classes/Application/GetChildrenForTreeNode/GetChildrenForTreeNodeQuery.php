@@ -15,6 +15,7 @@ namespace Sitegeist\Archaeopteryx\Application\GetChildrenForTreeNode;
 use Neos\ContentRepository\Domain\NodeAggregate\NodeAggregateIdentifier;
 use Neos\ContentRepository\Domain\NodeType\NodeTypeName;
 use Neos\Flow\Annotations as Flow;
+use Sitegeist\Archaeopteryx\Application\Shared\NodeTypeNames;
 
 /**
  * @internal
@@ -30,6 +31,7 @@ final class GetChildrenForTreeNodeQuery
         public readonly array $dimensionValues,
         public readonly NodeAggregateIdentifier $treeNodeId,
         public readonly string $nodeTypeFilter,
+        public readonly NodeTypeNames $linkableNodeTypes,
     ) {
     }
 
@@ -56,11 +58,15 @@ final class GetChildrenForTreeNodeQuery
         !isset($array['nodeTypeFilter']) or is_string($array['nodeTypeFilter'])
             or throw new \Exception('Node type filter must be a string');
 
+        !isset($array['linkableNodeTypes']) or is_array($array['linkableNodeTypes'])
+            or throw new \Exception('Linkable node types must be an array');
+
         return new self(
             workspaceName: $array['workspaceName'],
             dimensionValues: $array['dimensionValues'],
             treeNodeId: NodeAggregateIdentifier::fromString($array['treeNodeId']),
             nodeTypeFilter: $array['nodeTypeFilter'] ?? '',
+            linkableNodeTypes: NodeTypeNames::fromArray($array['linkableNodeTypes'] ?? []),
         );
     }
 

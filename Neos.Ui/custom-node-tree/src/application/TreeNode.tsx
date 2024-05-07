@@ -64,7 +64,7 @@ export const TreeNode: React.FC<Props> = (props) => {
         children.length,
     ]);
     const handleNodeClick = React.useCallback(() => {
-        if (props.treeNode.isMatchedByFilter) {
+        if (props.treeNode.isMatchedByFilter && props.treeNode.isLinkable) {
             props.onClick(props.treeNode.nodeAggregateIdentifier);
         }
     }, [
@@ -87,13 +87,14 @@ export const TreeNode: React.FC<Props> = (props) => {
                 isHidden={props.treeNode.isDisabled}
                 isHiddenInIndex={
                     props.treeNode.isHiddenInMenu ||
-                    !props.treeNode.isMatchedByFilter
+                    !props.treeNode.isMatchedByFilter ||
+                    !props.treeNode.isLinkable
                 }
                 isDragging={false}
                 hasError={false}
                 label={props.treeNode.label}
                 icon={
-                    props.treeNode.isMatchedByFilter
+                    props.treeNode.isLinkable
                         ? props.treeNode.icon
                         : "fas fa-unlink"
                 }
