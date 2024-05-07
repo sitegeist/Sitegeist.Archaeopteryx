@@ -7,7 +7,7 @@
  */
 import React from "react";
 
-import { Tree as NeosTree } from "@neos-project/react-ui-components";
+import { Tree as NeosTree, Icon } from "@neos-project/react-ui-components";
 
 import { TreeNodeDTO } from "../domain/TreeNodeDTO";
 import { getChildrenForTreeNode } from "../infrastructure/http";
@@ -34,6 +34,45 @@ export const TreeNode: React.FC<Props> = (props) => {
     const [isLoading, setIsLoading] = React.useState(false);
     const [children, setChildren] = React.useState(props.treeNode.children);
     const [hasError, setHasError] = React.useState(false);
+    const customIconComponent = React.useMemo(() => {
+        if (props.treeNode.hasScheduledDisabledState) {
+            const circleColor = props.treeNode.isDisabled
+                ? "error"
+                : "primaryBlue";
+
+            return (
+                <span className="fa-layers fa-fw">
+                    <Icon icon={props.treeNode.icon} />
+                    <Icon
+                        icon="circle"
+                        color={circleColor}
+                        transform="shrink-5 down-6 right-4"
+                    />
+                    <Icon icon="clock" transform="shrink-9 down-6 right-4" />
+                </span>
+            );
+        }
+
+        if (props.treeNode.isDisabled) {
+            return (
+                <span className="fa-layers fa-fw">
+                    <Icon icon={props.treeNode.icon} />
+                    <Icon
+                        icon="circle"
+                        color="error"
+                        transform="shrink-3 down-6 right-4"
+                    />
+                    <Icon icon="times" transform="shrink-7 down-6 right-4" />
+                </span>
+            );
+        }
+
+        return null;
+    }, [
+        props.treeNode.hasScheduledDisabledState,
+        props.treeNode.isDisabled,
+        props.treeNode.icon,
+    ]);
     const handleNodeToggle = React.useCallback(async () => {
         if (
             isCollapsed &&
@@ -107,6 +146,7 @@ export const TreeNode: React.FC<Props> = (props) => {
                         ? props.treeNode.icon
                         : "fas fa-unlink"
                 }
+                customIconComponent={customIconComponent}
                 iconLabel={props.treeNode.nodeTypeLabel}
                 level={props.level}
                 onToggle={handleNodeToggle}

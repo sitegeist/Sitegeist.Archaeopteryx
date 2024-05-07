@@ -55,7 +55,7 @@ final class TreeNodeBuilder
             nodeTypeLabel: $node->getNodeType()->getLabel(),
             isMatchedByFilter: false,
             isLinkable: false,
-            isDisabled: $node->isHidden(),
+            isDisabled: !$node->isVisible(),
             isHiddenInMenu: $node->isHiddenInIndex(),
             hasScheduledDisabledState:
                 $node->getHiddenBeforeDateTime() !== null
