@@ -51,7 +51,7 @@ const NodePreview = ({ node }: { node: INodePartialForTree }) => {
 export const Node = makeLinkType<NodeLinkModel, NodeLinkOptions>('Sitegeist.Archaeopteryx:Node', ({ createError }) => ({
     supportedLinkOptions: ['anchor', 'title', 'targetBlank', 'relNofollow'],
 
-    isSuitableFor: (link: ILink) => link.href.startsWith('node://'),
+    isSuitableFor: (link: ILink) => link.href.startsWith('node://') && !link.href.includes('#'),
 
     useResolvedModel: (link: ILink) => {
         const siteNodeContextPath = useSiteNodeContextPath();
