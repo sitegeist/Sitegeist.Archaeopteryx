@@ -1,29 +1,28 @@
-export {q} from './application';
+/*
+ * This script belongs to the package "Sitegeist.Archaeopteryx".
+ *
+ * This package is Open Source Software. For the full copyright and license
+ * information, please view the LICENSE file which was distributed with this
+ * source code.
+ */
+export { fetchWithErrorHandling } from "./application";
 
 export type {
     INeosContextProperties,
     IGlobalRegistry,
-    INode,
-    INodePartialForTree,
-    INodeType,
-    INodeTypesRegistry
-} from './domain';
+} from "./domain";
 export {
     NeosContext,
     ContextPath,
-    NodeTypeName,
     useSiteNodeContextPath,
     useDocumentNodeContextPath,
     useAssetSummary,
-    useNodeSummary,
-    useHasNode,
-    useNodeType,
-    useNodeTypes,
-    useNodeTypesRegistry,
+    useDimensionValues,
+    usePersonalWorkspaceName,
     useGlobalRegistry,
     useConfiguration,
     useRoutes,
     useSelector,
     useI18n,
-    useNeos
-} from './domain';
+    useNeos,
+} from "./domain";

@@ -1,17 +1,12 @@
-export type {INode, INodePartialForTree, INodeType, INodeTypesRegistry} from './ContentRepository';
 export {
     ContextPath,
-    NodeTypeName,
     useSiteNodeContextPath,
     useDocumentNodeContextPath,
-    useNodeSummary,
-    useHasNode,
-    useNodeType,
-    useNodeTypes,
-    useNodeTypesRegistry
-} from './ContentRepository';
+    useDimensionValues,
+    usePersonalWorkspaceName,
+} from "./ContentRepository";
 
-export type {INeosContextProperties, IGlobalRegistry} from './Extensibility'
+export type { INeosContextProperties, IGlobalRegistry } from "./Extensibility";
 export {
     NeosContext,
     useNeos,
@@ -19,7 +14,7 @@ export {
     useConfiguration,
     useRoutes,
     useSelector,
-    useI18n
-} from './Extensibility';
+    useI18n,
+} from "./Extensibility";
 
-export {useAssetSummary} from './Media';
+export { useAssetSummary } from "./Media";

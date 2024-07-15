@@ -1,4 +1,3 @@
-import {INodeTypesRegistry} from '../ContentRepository/NodeTypesRegistry';
 import {useNeos} from './NeosContext';
 
 export interface IGlobalRegistry {
@@ -7,7 +6,6 @@ export interface IGlobalRegistry {
         getAllAsList: <T>() => T[]
         set(key: string, value: any): void
     } | undefined
-    get(key: '@neos-project/neos-ui-contentrepository'): INodeTypesRegistry
     set(key: string, value: any): void
 }
 

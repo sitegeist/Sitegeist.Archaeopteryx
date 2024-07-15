@@ -78,7 +78,7 @@ In case of the Inspector Editor, Sitegeist.Archaeopteryx won't automatically ove
 
 ## Link Types
 
-Sitegeist.Archaeopteryx ships with 4 built-in Link Types.
+Sitegeist.Archaeopteryx ships with 6 built-in Link Types.
 
 ### Web
 
@@ -329,6 +329,8 @@ Not all Link Types support all of these options however. Here's an overview of w
 | Document      | Anchor, Title, Open in new window, `rel="nofollow"` |
 | Asset         | Title, Open in new window, `rel="nofollow"`         |
 | Mail To       | - none -                                            |
+| Phone Number  | - none -                                            |
+| Custom        | - none -                                            |
 
 To enable or disable certain Link Options generally, you can use the `linking` section of your RTE configuration:
 
@@ -370,7 +372,19 @@ It is possible to disable one or more link type editors via the configuration fo
             linking:
               'Sitegeist.Archaeopteryx':
                 linkTypes:
+                  'Sitegeist.Archaeopteryx:Asset':
+                    enabled: true
                   'Sitegeist.Archaeopteryx:MailTo':
+                    enabled: true
+                  # Document node/pages
+                  'Sitegeist.Archaeopteryx:Node':
+                    enabled: true
+                  'Sitegeist.Archaeopteryx:PhoneNumber':
+                    enabled: false
+                  # External links
+                  'Sitegeist.Archaeopteryx:Web':
+                    enabled: true
+                  'Sitegeist.Archaeopteryx:CustomLink':
                     enabled: false
 ```
 
@@ -388,7 +402,19 @@ It is possible to disable one or more link type editors via the configuration fo
           editor: 'Sitegeist.Archaeopteryx/Inspector/Editors/LinkEditor'
           editorOptions:
             linkTypes:
+              'Sitegeist.Archaeopteryx:Asset':
+                enabled: true
               'Sitegeist.Archaeopteryx:MailTo':
+                enabled: true
+              # Document node/pages
+              'Sitegeist.Archaeopteryx:Node':
+                enabled: true
+              'Sitegeist.Archaeopteryx:PhoneNumber':
+                enabled: false
+              # External links
+              'Sitegeist.Archaeopteryx:Web':
+                enabled: true
+              'Sitegeist.Archaeopteryx:CustomLink':
                 enabled: false
 ```
 

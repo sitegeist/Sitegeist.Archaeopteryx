@@ -1,0 +1,18 @@
+#                                                                        #
+# Security policy for the Sitegeist.Archaeopteryx package                           #
+#                                                                        #
+---
+privilegeTargets:
+
+  'Neos\Flow\Security\Authorization\Privilege\Method\MethodPrivilege':
+
+    'Sitegeist.Archaeopteryx:ApiAccess':
+      matcher: 'method(Sitegeist\Archaeopteryx\Application\.*\Controller\.*Controller->processRequest())'
+
+roles:
+
+    'Neos.Neos:AbstractEditor':
+      privileges:
+        -
+          privilegeTarget: 'Sitegeist.Archaeopteryx:ApiAccess'
+          permission: GRANT
