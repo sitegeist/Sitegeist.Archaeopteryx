@@ -78,7 +78,7 @@ In case of the Inspector Editor, Sitegeist.Archaeopteryx won't automatically ove
 
 ## Link Types
 
-Sitegeist.Archaeopteryx ships with 4 built-in Link Types.
+Sitegeist.Archaeopteryx ships with 6 built-in Link Types.
 
 ### Web
 
@@ -329,6 +329,8 @@ Not all Link Types support all of these options however. Here's an overview of w
 | Document      | Anchor, Title, Open in new window, `rel="nofollow"` |
 | Asset         | Title, Open in new window, `rel="nofollow"`         |
 | Mail To       | - none -                                            |
+| Phone Number  | - none -                                            |
+| Custom        | - none -                                            |
 
 To enable or disable certain Link Options generally, you can use the `linking` section of your RTE configuration:
 
