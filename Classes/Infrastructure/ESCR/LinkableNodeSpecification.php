@@ -10,9 +10,9 @@
 
 declare(strict_types=1);
 
-namespace Sitegeist\Archaeopteryx\Infrastructure\ContentRepository;
+namespace Sitegeist\Archaeopteryx\Infrastructure\ESCR;
 
-use Neos\ContentRepository\Domain\Model\Node;
+use Neos\ContentRepository\Core\Projection\ContentGraph\Node;
 use Neos\Flow\Annotations as Flow;
 
 /**

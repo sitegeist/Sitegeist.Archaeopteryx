@@ -15,6 +15,7 @@ namespace Sitegeist\Archaeopteryx\Framework\MVC;
 use Neos\Flow\Mvc\ActionRequest;
 use Neos\Flow\Mvc\ActionResponse;
 use Neos\Flow\Mvc\Controller\ControllerInterface;
+use Neos\Neos\FrontendRouting\SiteDetection\SiteDetectionResult;
 
 abstract class QueryController implements ControllerInterface
 {
@@ -24,7 +25,15 @@ abstract class QueryController implements ControllerInterface
         $response->setContentType('application/json');
 
         try {
-            $queryResponse = $this->processQuery($request->getArguments());
+            // @TODO: It should not be necessary to inject the contentRepositoryId
+            // like this. For the time being, it's the only way though.
+            $arguments = $request->getArguments();
+            if (!isset($arguments['contentRepositoryId'])) {
+                $siteDetectionResult = SiteDetectionResult::fromRequest($request->getHttpRequest());
+                $arguments['contentRepositoryId'] = $siteDetectionResult->contentRepositoryId->value;
+            }
+
+            $queryResponse = $this->processQuery($arguments);
         } catch (\InvalidArgumentException $e) {
             $queryResponse = QueryResponse::clientError($e);
         } catch (\Exception $e) {

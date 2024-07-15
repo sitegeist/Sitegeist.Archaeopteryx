@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Sitegeist\Archaeopteryx\Application\GetNodeTypeFilterOptions;
 
-use Neos\ContentRepository\Domain\Model\NodeType;
+use Neos\ContentRepository\Core\NodeType\NodeType;
 use Neos\Flow\Annotations as Flow;
 
 /**
@@ -31,8 +31,8 @@ final class NodeTypeFilterOption implements \JsonSerializable
     public static function fromNodeType(NodeType $nodeType): self
     {
         return new self(
-            value: $nodeType->getName(),
-            icon: $nodeType->getConfiguration('ui.icon'),
+            value: $nodeType->name->value,
+            icon: $nodeType->getConfiguration('ui.icon') ?? 'questionmark',
             label: $nodeType->getConfiguration('ui.label'),
         );
     }

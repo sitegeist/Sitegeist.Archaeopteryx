@@ -12,7 +12,10 @@ declare(strict_types=1);
 
 namespace Sitegeist\Archaeopteryx\Application\GetNodeSummary;
 
-use Neos\ContentRepository\Domain\NodeAggregate\NodeAggregateIdentifier;
+use Neos\ContentRepository\Core\DimensionSpace\DimensionSpacePoint;
+use Neos\ContentRepository\Core\SharedModel\ContentRepository\ContentRepositoryId;
+use Neos\ContentRepository\Core\SharedModel\Node\NodeAggregateId;
+use Neos\ContentRepository\Core\SharedModel\Workspace\WorkspaceName;
 use Neos\Flow\Annotations as Flow;
 
 /**
@@ -21,13 +24,11 @@ use Neos\Flow\Annotations as Flow;
 #[Flow\Proxy(false)]
 final class GetNodeSummaryQuery
 {
-    /**
-     * @param array<string,array<int,string>> $dimensionValues
-     */
     public function __construct(
-        public readonly string $workspaceName,
-        public readonly array $dimensionValues,
-        public readonly NodeAggregateIdentifier $nodeId,
+        public readonly ContentRepositoryId $contentRepositoryId,
+        public readonly WorkspaceName $workspaceName,
+        public readonly DimensionSpacePoint $dimensionSpacePoint,
+        public readonly NodeAggregateId $nodeId,
     ) {
     }
 
@@ -36,6 +37,11 @@ final class GetNodeSummaryQuery
      */
     public static function fromArray(array $array): self
     {
+        isset($array['contentRepositoryId'])
+            or throw new \InvalidArgumentException('Content Repository Id must be set');
+        is_string($array['contentRepositoryId'])
+            or throw new \InvalidArgumentException('Content Repository Id must be a string');
+
         isset($array['workspaceName'])
             or throw new \InvalidArgumentException('Workspace name must be set');
         is_string($array['workspaceName'])
@@ -47,23 +53,10 @@ final class GetNodeSummaryQuery
             or throw new \InvalidArgumentException('Node id must be a string');
 
         return new self(
-            workspaceName: $array['workspaceName'],
-            dimensionValues: $array['dimensionValues'] ?? [],
-            nodeId: NodeAggregateIdentifier::fromString($array['nodeId']),
+            contentRepositoryId: ContentRepositoryId::fromString($array['contentRepositoryId']),
+            workspaceName: WorkspaceName::fromString($array['workspaceName']),
+            dimensionSpacePoint: DimensionSpacePoint::fromLegacyDimensionArray($array['dimensionValues'] ?? []),
+            nodeId: NodeAggregateId::fromString($array['nodeId']),
         );
-    }
-
-    /**
-     * @return array<string,string>
-     */
-    public function getTargetDimensionValues(): array
-    {
-        $result = [];
-
-        foreach ($this->dimensionValues as $dimensionName => $fallbackChain) {
-            $result[$dimensionName] = $fallbackChain[0] ?? '';
-        }
-
-        return $result;
     }
 }

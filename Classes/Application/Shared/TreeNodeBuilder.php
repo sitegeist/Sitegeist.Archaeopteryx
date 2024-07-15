@@ -12,8 +12,7 @@ declare(strict_types=1);
 
 namespace Sitegeist\Archaeopteryx\Application\Shared;
 
-use Neos\ContentRepository\Domain\Model\Node;
-use Neos\ContentRepository\Domain\NodeAggregate\NodeAggregateIdentifier;
+use Neos\ContentRepository\Core\SharedModel\Node\NodeAggregateId;
 use Neos\Flow\Annotations as Flow;
 
 /**
@@ -28,9 +27,9 @@ final class TreeNodeBuilder
     /**
      * @param TreeNodeBuilder[] $children
      */
-    private function __construct(
+    public function __construct(
         public readonly int $sortingIndex,
-        private NodeAggregateIdentifier $nodeAggregateIdentifier,
+        private NodeAggregateId $nodeAggregateId,
         private string $icon,
         private string $label,
         private string $nodeTypeLabel,
@@ -42,27 +41,6 @@ final class TreeNodeBuilder
         private bool $hasUnloadedChildren,
         private array $children
     ) {
-    }
-
-    public static function forNode(Node $node): self
-    {
-        return new self(
-            // @phpstan-ignore-next-line
-            sortingIndex: $node->getIndex() ?? 0,
-            nodeAggregateIdentifier: $node->getNodeAggregateIdentifier(),
-            icon: $node->getNodeType()->getConfiguration('ui.icon') ?? 'questionmark',
-            label: $node->getLabel(),
-            nodeTypeLabel: $node->getNodeType()->getLabel(),
-            isMatchedByFilter: false,
-            isLinkable: false,
-            isDisabled: !$node->isVisible(),
-            isHiddenInMenu: $node->isHiddenInIndex(),
-            hasScheduledDisabledState:
-                $node->getHiddenBeforeDateTime() !== null
-                || $node->getHiddenAfterDateTime() !== null,
-            hasUnloadedChildren: false,
-            children: [],
-        );
     }
 
     public function setIsMatchedByFilter(bool $value): self
@@ -85,9 +63,9 @@ final class TreeNodeBuilder
 
     public function addChild(TreeNodeBuilder $childBuilder): self
     {
-        if (!isset($this->childrenByIdentifier[(string) $childBuilder->nodeAggregateIdentifier])) {
+        if (!isset($this->childrenByIdentifier[$childBuilder->nodeAggregateId->value])) {
             $this->children[] = $childBuilder;
-            $this->childrenByIdentifier[(string) $childBuilder->nodeAggregateIdentifier] = $childBuilder;
+            $this->childrenByIdentifier[$childBuilder->nodeAggregateId->value] = $childBuilder;
         }
 
         return $this;
@@ -96,7 +74,7 @@ final class TreeNodeBuilder
     public function build(): TreeNode
     {
         return new TreeNode(
-            nodeAggregateIdentifier: $this->nodeAggregateIdentifier,
+            nodeAggregateIdentifier: $this->nodeAggregateId,
             icon: $this->icon,
             label: $this->label,
             nodeTypeLabel: $this->nodeTypeLabel,

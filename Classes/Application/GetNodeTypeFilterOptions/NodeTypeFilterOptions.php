@@ -12,8 +12,7 @@ declare(strict_types=1);
 
 namespace Sitegeist\Archaeopteryx\Application\GetNodeTypeFilterOptions;
 
-use Neos\ContentRepository\Domain\NodeType\NodeTypeName;
-use Neos\ContentRepository\Domain\Service\NodeTypeManager;
+use Neos\ContentRepository\Core\NodeType\NodeType;
 use Neos\Flow\Annotations as Flow;
 
 /**
@@ -31,15 +30,16 @@ final class NodeTypeFilterOptions implements \JsonSerializable
     }
 
     /**
-     * @param array<string,string|NodeTypeName> $nodeTypeNames
+     * @param NodeType[] $nodeTypes
      */
-    public static function fromNodeTypeNames(array $nodeTypeNames, NodeTypeManager $nodeTypeManager): self
+    public static function fromNodeTypes(array $nodeTypes): self
     {
         $items = [];
 
-        foreach ($nodeTypeNames as $nodeTypeName) {
-            $nodeType = $nodeTypeManager->getNodeType((string) $nodeTypeName);
-            $items[] = NodeTypeFilterOption::fromNodeType($nodeType);
+        foreach ($nodeTypes as $nodeType) {
+            if (!$nodeType->isAbstract()) {
+                $items[] = NodeTypeFilterOption::fromNodeType($nodeType);
+            }
         }
 
         return new self(...$items);

@@ -12,10 +12,9 @@ declare(strict_types=1);
 
 namespace Sitegeist\Archaeopteryx\Application\GetNodeTypeFilterOptions;
 
-use Neos\ContentRepository\Domain\NodeType\NodeTypeConstraintFactory;
-use Neos\ContentRepository\Domain\Service\NodeTypeManager;
 use Neos\Flow\Annotations as Flow;
-use Sitegeist\Archaeopteryx\Infrastructure\ContentRepository\NodeTypeFilter;
+use Sitegeist\Archaeopteryx\Infrastructure\ESCR\NodeTypeService;
+use Sitegeist\Archaeopteryx\Infrastructure\ESCR\NodeTypeServiceFactory;
 
 /**
  * @internal
@@ -28,17 +27,18 @@ final class GetNodeTypeFilterOptionsQueryHandler
     protected array $nodeTreePresets;
 
     #[Flow\Inject]
-    protected NodeTypeManager $nodeTypeManager;
-
-    #[Flow\Inject]
-    protected NodeTypeConstraintFactory $nodeTypeConstraintFactory;
+    protected NodeTypeServiceFactory $nodeTypeServiceFactory;
 
     public function handle(GetNodeTypeFilterOptionsQuery $query): GetNodeTypeFilterOptionsQueryResult
     {
+        $nodeTypeService = $this->nodeTypeServiceFactory->create(
+            contentRepositoryId: $query->contentRepositoryId,
+        );
+
         return new GetNodeTypeFilterOptionsQueryResult(
             options: $this->thereAreNodeTreePresetsOtherThanDefault()
                 ? $this->createNodeTypeFilterOptionsForNodeTreePresets()
-                : $this->createNodeTypeFilterOptionsForNodeTypes($query->baseNodeTypeFilter),
+                : $this->createNodeTypeFilterOptionsForNodeTypes($nodeTypeService, $query->baseNodeTypeFilter),
         );
     }
 
@@ -59,17 +59,18 @@ final class GetNodeTypeFilterOptionsQueryHandler
     }
 
     private function createNodeTypeFilterOptionsForNodeTypes(
+        NodeTypeService $nodeTypeService,
         string $baseNodeTypeFilter
     ): NodeTypeFilterOptions {
-        $nodeTypeFilter = NodeTypeFilter::fromFilterString(
+        $nodeTypeFilter = $nodeTypeService->createNodeTypeFilterFromFilterString(
             $baseNodeTypeFilter,
-            $this->nodeTypeConstraintFactory,
-            $this->nodeTypeManager,
         );
 
-        return NodeTypeFilterOptions::fromNodeTypeNames(
-            $nodeTypeFilter->allowedNodeTypeNames,
-            $this->nodeTypeManager,
-        );
+        $nodeTypes = [];
+        foreach ($nodeTypeFilter->getAllowedNodeTypeNames() as $nodeTypeName) {
+            $nodeTypes[] = $nodeTypeService->requireNodeTypeByName($nodeTypeName);
+        }
+
+        return NodeTypeFilterOptions::fromNodeTypes($nodeTypes);
     }
 }
