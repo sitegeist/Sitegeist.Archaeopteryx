@@ -32,8 +32,8 @@ final class NodeTypeFilterOption implements \JsonSerializable
     {
         return new self(
             value: $nodeType->getName(),
-            icon: $nodeType->getConfiguration('ui.icon'),
-            label: $nodeType->getConfiguration('ui.label'),
+            icon: $nodeType->getConfiguration('ui.icon') ?: 'question',
+            label: $nodeType->getConfiguration('ui.label') ?: $nodeType->getName(),
         );
     }
 
