@@ -18,6 +18,8 @@ use Neos\Flow\Annotations as Flow;
 use Sitegeist\Archaeopteryx\Application\Shared\TreeNodes;
 use Sitegeist\Archaeopteryx\Infrastructure\ESCR\NodeService;
 use Sitegeist\Archaeopteryx\Infrastructure\ESCR\NodeServiceFactory;
+use Sitegeist\Archaeopteryx\Infrastructure\ESCR\NodeTypeService;
+use Sitegeist\Archaeopteryx\Infrastructure\ESCR\NodeTypeServiceFactory;
 
 /**
  * @internal
@@ -28,6 +30,9 @@ final class GetChildrenForTreeNodeQueryHandler
     #[Flow\Inject]
     protected NodeServiceFactory $nodeServiceFactory;
 
+    #[Flow\Inject]
+    protected NodeTypeServiceFactory $nodeTypeServiceFactory;
+
     public function handle(GetChildrenForTreeNodeQuery $query): GetChildrenForTreeNodeQueryResult
     {
         $nodeService = $this->nodeServiceFactory->create(
@@ -35,17 +40,20 @@ final class GetChildrenForTreeNodeQueryHandler
             workspaceName: $query->workspaceName,
             dimensionSpacePoint: $query->dimensionSpacePoint,
         );
+        $nodeTypeService = $this->nodeTypeServiceFactory->create(
+            contentRepositoryId: $query->contentRepositoryId,
+        );
 
         $node = $nodeService->requireNodeById($query->treeNodeId);
 
         return new GetChildrenForTreeNodeQueryResult(
-            children: $this->createTreeNodesFromChildrenOfNode($nodeService, $node, $query),
+            children: $this->createTreeNodesFromChildrenOfNode($nodeService, $nodeTypeService, $node, $query),
         );
     }
 
-    private function createTreeNodesFromChildrenOfNode(NodeService $nodeService, Node $node, GetChildrenForTreeNodeQuery $query): TreeNodes
+    private function createTreeNodesFromChildrenOfNode(NodeService $nodeService, NodeTypeService $nodeTypeService, Node $node, GetChildrenForTreeNodeQuery $query): TreeNodes
     {
-        $linkableNodeTypesFilter = $nodeService->createNodeTypeFilterFromNodeTypeNames(
+        $linkableNodeTypesFilter = $nodeTypeService->createNodeTypeFilterFromNodeTypeNames(
             nodeTypeNames: $query->linkableNodeTypes
         );
 

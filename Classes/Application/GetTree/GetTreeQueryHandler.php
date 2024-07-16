@@ -19,6 +19,8 @@ use Sitegeist\Archaeopteryx\Infrastructure\ESCR\LinkableNodeSpecification;
 use Sitegeist\Archaeopteryx\Infrastructure\ESCR\NodeSearchSpecification;
 use Sitegeist\Archaeopteryx\Infrastructure\ESCR\NodeService;
 use Sitegeist\Archaeopteryx\Infrastructure\ESCR\NodeServiceFactory;
+use Sitegeist\Archaeopteryx\Infrastructure\ESCR\NodeTypeService;
+use Sitegeist\Archaeopteryx\Infrastructure\ESCR\NodeTypeServiceFactory;
 
 /**
  * @internal
@@ -29,12 +31,18 @@ final class GetTreeQueryHandler
     #[Flow\Inject]
     protected NodeServiceFactory $nodeServiceFactory;
 
+    #[Flow\Inject]
+    protected NodeTypeServiceFactory $nodeTypeServiceFactory;
+
     public function handle(GetTreeQuery $query): GetTreeQueryResult
     {
         $nodeService = $this->nodeServiceFactory->create(
             contentRepositoryId: $query->contentRepositoryId,
             workspaceName: $query->workspaceName,
             dimensionSpacePoint: $query->dimensionSpacePoint,
+        );
+        $nodeTypeService = $this->nodeTypeServiceFactory->create(
+            contentRepositoryId: $query->contentRepositoryId,
         );
 
         $rootNode = $nodeService->findNodeByAbsoluteNodePath($query->startingPoint);
@@ -47,20 +55,21 @@ final class GetTreeQueryHandler
 
         return new GetTreeQueryResult(
             root: empty($query->searchTerm) && empty($query->narrowNodeTypeFilter)
-                ? $this->loadTree($nodeService, $rootNode, $query, $query->loadingDepth)
-                : $this->performSearch($nodeService, $rootNode, $query),
+                ? $this->loadTree($nodeService, $nodeTypeService, $rootNode, $query, $query->loadingDepth)
+                : $this->performSearch($nodeService, $nodeTypeService, $rootNode, $query),
         );
     }
 
     private function performSearch(
         NodeService $nodeService,
+        NodeTypeService $nodeTypeService,
         Node $rootNode,
         GetTreeQuery $query,
     ): TreeNode {
-        $baseNodeTypeFilter = $nodeService->createNodeTypeFilterFromFilterString(
+        $baseNodeTypeFilter = $nodeTypeService->createNodeTypeFilterFromFilterString(
             filterString: $query->baseNodeTypeFilter,
         );
-        $narrowNodeTypeFilter = $nodeService->createNodeTypeFilterFromFilterString(
+        $narrowNodeTypeFilter = $nodeTypeService->createNodeTypeFilterFromFilterString(
             filterString: $query->narrowNodeTypeFilter,
         );
 
@@ -79,7 +88,7 @@ final class GetTreeQueryHandler
                 nodeService: $nodeService,
             ),
             linkableNodeSpecification: new LinkableNodeSpecification(
-                linkableNodeTypes: $nodeService->createNodeTypeFilterFromNodeTypeNames(
+                linkableNodeTypes: $nodeTypeService->createNodeTypeFilterFromNodeTypeNames(
                     nodeTypeNames: $query->linkableNodeTypes,
                 ),
             ),
@@ -97,11 +106,12 @@ final class GetTreeQueryHandler
 
     private function loadTree(
         NodeService $nodeService,
+        NodeTypeService $nodeTypeService,
         Node $node,
         GetTreeQuery $query,
         int $remainingDepth,
     ): TreeNode {
-        $baseNodeTypeFilter = $nodeService->createNodeTypeFilterFromFilterString(
+        $baseNodeTypeFilter = $nodeTypeService->createNodeTypeFilterFromFilterString(
             filterString: $query->baseNodeTypeFilter,
         );
 
@@ -114,7 +124,7 @@ final class GetTreeQueryHandler
                 nodeService: $nodeService,
             ),
             linkableNodeSpecification: new LinkableNodeSpecification(
-                linkableNodeTypes: $nodeService->createNodeTypeFilterFromNodeTypeNames(
+                linkableNodeTypes: $nodeTypeService->createNodeTypeFilterFromNodeTypeNames(
                     nodeTypeNames: $query->linkableNodeTypes,
                 ),
             ),
