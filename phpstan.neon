@@ -1,3 +1,5 @@
+includes:
+	- Packages/Libraries/jangregor/phpstan-prophecy/extension.neon
 parameters:
 	bootstrapFiles:
 		- Packages/Framework/Neos.Flow/Tests/BaseTestCase.php
