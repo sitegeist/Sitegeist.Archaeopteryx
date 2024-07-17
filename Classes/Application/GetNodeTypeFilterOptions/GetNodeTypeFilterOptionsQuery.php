@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Sitegeist\Archaeopteryx\Application\GetNodeTypeFilterOptions;
 
+use Neos\ContentRepository\Core\Projection\ContentGraph\Filter\NodeType\NodeTypeCriteria;
 use Neos\ContentRepository\Core\SharedModel\ContentRepository\ContentRepositoryId;
 use Neos\Flow\Annotations as Flow;
 
@@ -23,7 +24,7 @@ final class GetNodeTypeFilterOptionsQuery
 {
     public function __construct(
         public readonly ContentRepositoryId $contentRepositoryId,
-        public readonly string $baseNodeTypeFilter,
+        public readonly NodeTypeCriteria $baseNodeTypeFilter,
     ) {
     }
 
@@ -44,7 +45,7 @@ final class GetNodeTypeFilterOptionsQuery
 
         return new self(
             contentRepositoryId: ContentRepositoryId::fromString($array['contentRepositoryId']),
-            baseNodeTypeFilter: $array['baseNodeTypeFilter'],
+            baseNodeTypeFilter: NodeTypeCriteria::fromFilterString($array['baseNodeTypeFilter']),
         );
     }
 }

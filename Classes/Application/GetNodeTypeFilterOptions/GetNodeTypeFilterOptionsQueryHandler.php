@@ -13,8 +13,9 @@ declare(strict_types=1);
 namespace Sitegeist\Archaeopteryx\Application\GetNodeTypeFilterOptions;
 
 use Neos\Flow\Annotations as Flow;
-use Sitegeist\Archaeopteryx\Infrastructure\ESCR\NodeTypeService;
 use Sitegeist\Archaeopteryx\Infrastructure\ESCR\NodeTypeServiceFactory;
+use Sitegeist\Archaeopteryx\Presentation\Option\Options;
+use Sitegeist\Archaeopteryx\Presentation\Option\OptionsFactory;
 
 /**
  * @internal
@@ -29,16 +30,15 @@ final class GetNodeTypeFilterOptionsQueryHandler
     #[Flow\Inject]
     protected NodeTypeServiceFactory $nodeTypeServiceFactory;
 
+    #[Flow\Inject]
+    protected OptionsFactory $optionsFactory;
+
     public function handle(GetNodeTypeFilterOptionsQuery $query): GetNodeTypeFilterOptionsQueryResult
     {
-        $nodeTypeService = $this->nodeTypeServiceFactory->create(
-            contentRepositoryId: $query->contentRepositoryId,
-        );
-
         return new GetNodeTypeFilterOptionsQueryResult(
             options: $this->thereAreNodeTreePresetsOtherThanDefault()
-                ? $this->createNodeTypeFilterOptionsForNodeTreePresets()
-                : $this->createNodeTypeFilterOptionsForNodeTypes($nodeTypeService, $query->baseNodeTypeFilter),
+                ? $this->renderOptionsForNodeTreePresets()
+                : $this->renderOptionsForNodeTypes($query),
         );
     }
 
@@ -51,26 +51,19 @@ final class GetNodeTypeFilterOptionsQueryHandler
             || (!$defaultExists && $numberOfPresets > 0);
     }
 
-    private function createNodeTypeFilterOptionsForNodeTreePresets(): NodeTypeFilterOptions
+    private function renderOptionsForNodeTreePresets(): Options
     {
-        return NodeTypeFilterOptions::fromNodeTreePresetsConfiguration(
-            $this->nodeTreePresets
-        );
+        return $this->optionsFactory->forNodeTreePresets($this->nodeTreePresets);
     }
 
-    private function createNodeTypeFilterOptionsForNodeTypes(
-        NodeTypeService $nodeTypeService,
-        string $baseNodeTypeFilter
-    ): NodeTypeFilterOptions {
-        $nodeTypeFilter = $nodeTypeService->createNodeTypeFilterFromFilterString(
-            $baseNodeTypeFilter,
+    private function renderOptionsForNodeTypes(GetNodeTypeFilterOptionsQuery $query): Options
+    {
+        $nodeTypeService = $this->nodeTypeServiceFactory->create(
+            contentRepositoryId: $query->contentRepositoryId,
         );
 
-        $nodeTypes = [];
-        foreach ($nodeTypeFilter->getAllowedNodeTypeNames() as $nodeTypeName) {
-            $nodeTypes[] = $nodeTypeService->requireNodeTypeByName($nodeTypeName);
-        }
-
-        return NodeTypeFilterOptions::fromNodeTypes($nodeTypes);
+        return $this->optionsFactory->forNodeTypes(
+            ...$nodeTypeService->getAllNodeTypesMatching($query->baseNodeTypeFilter)
+        );
     }
 }

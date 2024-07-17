@@ -44,6 +44,39 @@ final class NodeTypeService
         return $nodeType;
     }
 
+    /** @return NodeType[] */
+    public function getAllNodeTypesMatching(NodeTypeCriteria $nodeTypeCriteria): array
+    {
+        $nodeTypeManager = $this->contentRepository->getNodeTypeManager();
+        $explicitlyAllowedNodeTypeNames = $nodeTypeCriteria->explicitlyAllowedNodeTypeNames->toStringArray();
+        $explicitlyDisallowedNodeTypeNames = $nodeTypeCriteria->explicitlyDisallowedNodeTypeNames->toStringArray();
+        $isEmpty =  $nodeTypeCriteria->explicitlyAllowedNodeTypeNames->isEmpty()
+            && $nodeTypeCriteria->explicitlyDisallowedNodeTypeNames->isEmpty();
+
+        $result = [];
+        foreach ($nodeTypeManager->getNodeTypes(false) as $candidateNodeType) {
+            if ($isEmpty) {
+                $result[] = $candidateNodeType;
+                continue;
+            }
+
+            foreach ($explicitlyDisallowedNodeTypeNames as $disallowedNodeTypeName) {
+                if ($candidateNodeType->isOfType($disallowedNodeTypeName)) {
+                    continue 2;
+                }
+            }
+
+            foreach ($explicitlyAllowedNodeTypeNames as $allowedNodeTypeName) {
+                if ($candidateNodeType->isOfType($allowedNodeTypeName)) {
+                    $result[] = $candidateNodeType;
+                    continue 2;
+                }
+            }
+        }
+
+        return $result;
+    }
+
     public function createNodeTypeFilterFromFilterString(string $filterString): NodeTypeFilter
     {
         $nodeTypeManager = $this->contentRepository->getNodeTypeManager();
