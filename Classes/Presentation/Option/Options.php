@@ -10,24 +10,26 @@
 
 declare(strict_types=1);
 
-namespace Sitegeist\Archaeopteryx\Application\GetNodeTypeFilterOptions;
+namespace Sitegeist\Archaeopteryx\Presentation\Option;
 
 use Neos\Flow\Annotations as Flow;
-use Sitegeist\Archaeopteryx\Presentation\Option\Options;
 
 /**
  * @internal
  */
 #[Flow\Proxy(false)]
-final class GetNodeTypeFilterOptionsQueryResult implements \JsonSerializable
+final class Options implements \JsonSerializable
 {
-    public function __construct(
-        public readonly Options $options,
-    ) {
+    /** @var Option[] */
+    private readonly array $items;
+
+    public function __construct(Option ...$items)
+    {
+        $this->items = array_values($items);
     }
 
     public function jsonSerialize(): mixed
     {
-        return get_object_vars($this);
+        return $this->items;
     }
 }

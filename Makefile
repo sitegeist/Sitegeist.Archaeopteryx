@@ -35,7 +35,7 @@ lint::
 		Classes/ Tests/
 
 analyse::
-	@$(PHP) bin/phpstan analyse --level 8 Classes
+	@$(PHP) bin/phpstan analyse --level 8 Classes Tests
 
 test::
 	@$(PHP) bin/phpunit -c phpunit.xml \

@@ -10,24 +10,24 @@
 
 declare(strict_types=1);
 
-namespace Sitegeist\Archaeopteryx\Application\GetNodeTypeFilterOptions;
+namespace Sitegeist\Archaeopteryx\Infrastructure\ESCR;
 
+use Neos\ContentRepository\Core\Projection\ContentGraph\Node;
 use Neos\Flow\Annotations as Flow;
-use Sitegeist\Archaeopteryx\Presentation\Option\Options;
 
 /**
  * @internal
  */
 #[Flow\Proxy(false)]
-final class GetNodeTypeFilterOptionsQueryResult implements \JsonSerializable
+final class LinkableNodeSpecification
 {
     public function __construct(
-        public readonly Options $options,
+        public readonly NodeTypeFilter $linkableNodeTypes,
     ) {
     }
 
-    public function jsonSerialize(): mixed
+    public function isSatisfiedByNode(Node $node): bool
     {
-        return get_object_vars($this);
+        return $this->linkableNodeTypes->isSatisfiedByNode($node);
     }
 }

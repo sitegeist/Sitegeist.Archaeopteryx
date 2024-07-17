@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Sitegeist\Archaeopteryx\Application\Shared;
 
-use Neos\ContentRepository\Domain\NodeAggregate\NodeAggregateIdentifier;
-use Neos\ContentRepository\Domain\Service\Context as ContentContext;
+use Neos\ContentRepository\Core\Projection\ContentGraph\ContentSubgraphInterface;
+use Neos\ContentRepository\Core\SharedModel\Node\NodeAggregateId;
 use Neos\Flow\Annotations as Flow;
 
 /**
@@ -27,15 +27,19 @@ final class NodeWasNotFound extends \Exception
         parent::__construct($message, $code);
     }
 
-    public static function becauseNodeWithGivenIdentifierDoesNotExistInContext(
-        NodeAggregateIdentifier $nodeAggregateIdentifier,
-        ContentContext $contentContext,
+    public static function becauseNodeWithGivenIdentifierDoesNotExistInCurrentSubgraph(
+        NodeAggregateId $nodeAggregateId,
+        ContentSubgraphInterface $subgraph,
     ): self {
         return new self(
             sprintf(
-                'A node with the identifier "%s" does not exist in context: %s',
-                (string) $nodeAggregateIdentifier,
-                json_encode($contentContext->getProperties(), JSON_PRETTY_PRINT),
+                'A node with the identifier "%s" does not exist in subgraph: %s',
+                $nodeAggregateId->value,
+                json_encode([
+                    'contentRepositoryId' => $subgraph->getContentRepositoryId(),
+                    'workspaceName' => $subgraph->getWorkspaceName(),
+                    'dimensionSpacePoint' => $subgraph->getDimensionSpacePoint(),
+                ], JSON_PRETTY_PRINT),
             ),
             1715082627
         );

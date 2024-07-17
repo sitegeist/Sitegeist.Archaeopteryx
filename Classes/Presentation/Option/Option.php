@@ -10,19 +10,20 @@
 
 declare(strict_types=1);
 
-namespace Sitegeist\Archaeopteryx\Application\GetNodeTypeFilterOptions;
+namespace Sitegeist\Archaeopteryx\Presentation\Option;
 
 use Neos\Flow\Annotations as Flow;
-use Sitegeist\Archaeopteryx\Presentation\Option\Options;
+use Sitegeist\Archaeopteryx\Presentation\IconLabel\IconLabel;
 
 /**
  * @internal
  */
 #[Flow\Proxy(false)]
-final class GetNodeTypeFilterOptionsQueryResult implements \JsonSerializable
+final class Option implements \JsonSerializable
 {
     public function __construct(
-        public readonly Options $options,
+        public readonly string $value,
+        public readonly IconLabel $label,
     ) {
     }
 

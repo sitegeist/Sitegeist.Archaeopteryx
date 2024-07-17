@@ -10,9 +10,9 @@
 
 declare(strict_types=1);
 
-namespace Sitegeist\Archaeopteryx\Infrastructure\ContentRepository;
+namespace Sitegeist\Archaeopteryx\Infrastructure\ESCR;
 
-use Neos\ContentRepository\Domain\Model\Node;
+use Neos\ContentRepository\Core\Projection\ContentGraph\Node;
 use Neos\Flow\Annotations as Flow;
 use Neos\Utility\Unicode\Functions as UnicodeFunctions;
 
@@ -26,6 +26,7 @@ final class NodeSearchSpecification
         public readonly NodeTypeFilter $baseNodeTypeFilter,
         public readonly ?NodeTypeFilter $narrowNodeTypeFilter,
         public readonly ?string $searchTerm,
+        private readonly NodeService $nodeService,
     ) {
     }
 
@@ -55,9 +56,11 @@ final class NodeSearchSpecification
         $term = json_encode(UnicodeFunctions::strtolower($this->searchTerm), JSON_UNESCAPED_UNICODE);
         $term = trim($term ? $term : '', '"');
 
+        $label = $this->nodeService->getLabelForNode($node);
+
         /** @var int|false $positionOfTermInLabel */
         $positionOfTermInLabel = UnicodeFunctions::strpos(
-            UnicodeFunctions::strtolower($node->getLabel()),
+            UnicodeFunctions::strtolower($label),
             $term
         );
 
@@ -66,19 +69,10 @@ final class NodeSearchSpecification
             return true;
         }
 
-        //
-        // In case the term cannot be found in the node label, we need to
-        // replicate how the term is matched against the node properties in the
-        // node data repository.
-        //
-        // Yeah, I know :(
-        //
-        $nodeData = $node->getNodeData();
-        $reflectionNodeData = new \ReflectionObject($nodeData);
-        $reflectionProperties = $reflectionNodeData->getProperty('properties');
-        $reflectionProperties->setAccessible(true);
-        $properties = $reflectionProperties->getValue($nodeData);
-        $properties = json_encode($properties, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_FORCE_OBJECT | JSON_UNESCAPED_UNICODE);
+        $properties = json_encode(
+            $node->properties->serialized(),
+            JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_FORCE_OBJECT | JSON_UNESCAPED_UNICODE
+        );
 
         return UnicodeFunctions::strpos($properties, $term) !== false;
     }

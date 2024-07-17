@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Sitegeist\Archaeopteryx\Application\Shared;
 
-use Neos\ContentRepository\Domain\NodeAggregate\NodeAggregateIdentifier;
+use Neos\ContentRepository\Core\SharedModel\Node\NodeAggregateId;
 use Neos\Flow\Annotations as Flow;
 
 /**
@@ -22,7 +22,7 @@ use Neos\Flow\Annotations as Flow;
 final class TreeNode implements \JsonSerializable
 {
     public function __construct(
-        public readonly NodeAggregateIdentifier $nodeAggregateIdentifier,
+        public readonly NodeAggregateId $nodeAggregateIdentifier,
         public readonly string $icon,
         public readonly string $label,
         public readonly string $nodeTypeLabel,

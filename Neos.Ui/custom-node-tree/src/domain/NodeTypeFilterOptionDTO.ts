@@ -7,6 +7,8 @@
  */
 export type NodeTypeFilterOptionDTO = {
     value: string;
-    icon: string;
-    label: string;
+    label: {
+        icon: string;
+        label: string;
+    };
 };

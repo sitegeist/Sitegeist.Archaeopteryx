@@ -12,14 +12,14 @@ declare(strict_types=1);
 
 namespace Sitegeist\Archaeopteryx\Application\GetChildrenForTreeNode;
 
-use Neos\ContentRepository\Domain\Model\Node;
-use Neos\ContentRepository\Domain\Service\NodeTypeManager;
+use Neos\ContentRepository\Core\Projection\ContentGraph\Filter\NodeType\NodeTypeCriteria;
+use Neos\ContentRepository\Core\Projection\ContentGraph\Node;
 use Neos\Flow\Annotations as Flow;
-use Neos\Neos\Domain\Service\ContentContextFactory;
-use Sitegeist\Archaeopteryx\Application\Shared\NodeWasNotFound;
-use Sitegeist\Archaeopteryx\Application\Shared\TreeNodeBuilder;
 use Sitegeist\Archaeopteryx\Application\Shared\TreeNodes;
-use Sitegeist\Archaeopteryx\Infrastructure\ContentRepository\NodeTypeFilter;
+use Sitegeist\Archaeopteryx\Infrastructure\ESCR\NodeService;
+use Sitegeist\Archaeopteryx\Infrastructure\ESCR\NodeServiceFactory;
+use Sitegeist\Archaeopteryx\Infrastructure\ESCR\NodeTypeService;
+use Sitegeist\Archaeopteryx\Infrastructure\ESCR\NodeTypeServiceFactory;
 
 /**
  * @internal
@@ -28,50 +28,44 @@ use Sitegeist\Archaeopteryx\Infrastructure\ContentRepository\NodeTypeFilter;
 final class GetChildrenForTreeNodeQueryHandler
 {
     #[Flow\Inject]
-    protected ContentContextFactory $contentContextFactory;
+    protected NodeServiceFactory $nodeServiceFactory;
 
     #[Flow\Inject]
-    protected NodeTypeManager $nodeTypeManager;
+    protected NodeTypeServiceFactory $nodeTypeServiceFactory;
 
     public function handle(GetChildrenForTreeNodeQuery $query): GetChildrenForTreeNodeQueryResult
     {
-        $contentContext = $this->contentContextFactory->create([
-            'workspaceName' => $query->workspaceName,
-            'dimensions' => $query->dimensionValues,
-            'targetDimensions' => $query->getTargetDimensionValues(),
-            'invisibleContentShown' => true,
-            'removedContentShown' => false,
-            'inaccessibleContentShown' => true
-        ]);
+        $nodeService = $this->nodeServiceFactory->create(
+            contentRepositoryId: $query->contentRepositoryId,
+            workspaceName: $query->workspaceName,
+            dimensionSpacePoint: $query->dimensionSpacePoint,
+        );
+        $nodeTypeService = $this->nodeTypeServiceFactory->create(
+            contentRepositoryId: $query->contentRepositoryId,
+        );
 
-        $node = $contentContext->getNodeByIdentifier((string) $query->treeNodeId);
-        if (!$node instanceof Node) {
-            throw NodeWasNotFound::becauseNodeWithGivenIdentifierDoesNotExistInContext(
-                nodeAggregateIdentifier: $query->treeNodeId,
-                contentContext: $contentContext,
-            );
-        }
+        $node = $nodeService->requireNodeById($query->treeNodeId);
 
         return new GetChildrenForTreeNodeQueryResult(
-            children: $this->createTreeNodesFromChildrenOfNode($node, $query),
+            children: $this->createTreeNodesFromChildrenOfNode($nodeService, $nodeTypeService, $node, $query),
         );
     }
 
-    private function createTreeNodesFromChildrenOfNode(Node $node, GetChildrenForTreeNodeQuery $query): TreeNodes
+    private function createTreeNodesFromChildrenOfNode(NodeService $nodeService, NodeTypeService $nodeTypeService, Node $node, GetChildrenForTreeNodeQuery $query): TreeNodes
     {
-        $linkableNodeTypesFilter = NodeTypeFilter::fromNodeTypeNames(
-            nodeTypeNames: $query->linkableNodeTypes,
-            nodeTypeManager: $this->nodeTypeManager
+        $linkableNodeTypesFilter = $nodeTypeService->createNodeTypeFilterFromNodeTypeNames(
+            nodeTypeNames: $query->linkableNodeTypes
         );
 
         $items = [];
+        $nodeTypeCriteria = NodeTypeCriteria::fromFilterString($query->nodeTypeFilter);
 
-        foreach ($node->getChildNodes($query->nodeTypeFilter) as $childNode) {
+        foreach ($nodeService->findChildNodes($node, $nodeTypeCriteria) as $childNode) {
             /** @var Node $childNode */
-            $items[] = TreeNodeBuilder::forNode($childNode)
+            $items[] = $nodeService->createTreeNodeBuilderForNode($childNode)
                 ->setIsMatchedByFilter(true)
                 ->setIsLinkable($linkableNodeTypesFilter->isSatisfiedByNode($childNode))
-                ->setHasUnloadedChildren($childNode->getNumberOfChildNodes($query->nodeTypeFilter) > 0)
+                ->setHasUnloadedChildren($nodeService->getNumberOfChildNodes($childNode, $nodeTypeCriteria) > 0)
                 ->build();
         }
 
