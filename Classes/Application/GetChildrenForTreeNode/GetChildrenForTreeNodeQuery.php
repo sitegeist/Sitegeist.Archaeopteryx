@@ -45,11 +45,6 @@ final class GetChildrenForTreeNodeQuery
         is_string($array['workspaceName'])
             or throw new \InvalidArgumentException('Workspace name must be a string');
 
-        isset($array['dimensionValues'])
-            or throw new \InvalidArgumentException('Dimension values must be set');
-        is_array($array['dimensionValues'])
-            or throw new \InvalidArgumentException('Dimension values must be an array');
-
         isset($array['treeNodeId'])
             or throw new \InvalidArgumentException('Tree node id must be set');
         is_string($array['treeNodeId'])
@@ -63,7 +58,7 @@ final class GetChildrenForTreeNodeQuery
 
         return new self(
             workspaceName: $array['workspaceName'],
-            dimensionValues: $array['dimensionValues'],
+            dimensionValues: $array['dimensionValues'] ?? [],
             treeNodeId: NodeAggregateIdentifier::fromString($array['treeNodeId']),
             nodeTypeFilter: $array['nodeTypeFilter'] ?? '',
             linkableNodeTypes: NodeTypeNames::fromArray($array['linkableNodeTypes'] ?? []),
