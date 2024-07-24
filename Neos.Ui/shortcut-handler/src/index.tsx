@@ -3,6 +3,12 @@ import {IEditor} from "@sitegeist/archaeopteryx-core";
 import {SynchronousRegistry} from "@neos-project/neos-ui-extensibility";
 import {ILinkOptions} from "@sitegeist/archaeopteryx-core/lib/domain";
 
+export const executeCommand = (editor: NeosEditor, command: string, argument: any, reFocusEditor = true) => {
+    editor.execute(command, argument);
+    if (reFocusEditor) {
+        editor.editing.view.focus();
+    }
+};
 export function registerShortcutHandler (
     neosContextProperties: INeosContextProperties,
     editor: IEditor
@@ -70,27 +76,26 @@ export function registerShortcutHandler (
 
                 const result = await editor.tx.editLink(link, enabledLinkOptions, ckEditorInstance.neos.editorOptions);
 
-                console.log(editor, ckEditorInstance, result);
                 if (result.change) {
                     if (result.value === null) {
-                        ckEditorInstance.execute('linkTitle', false, false);
-                        ckEditorInstance.execute('linkRelNofollow', false, false);
-                        ckEditorInstance.execute('linkTargetBlank', false, false);
-                        ckEditorInstance.execute('unlink', undefined, true);
+                        executeCommand(ckEditorInstance, 'linkTitle', false, false);
+                        executeCommand(ckEditorInstance, 'linkRelNofollow', false, false);
+                        executeCommand(ckEditorInstance, 'linkTargetBlank', false, false);
+                        executeCommand(ckEditorInstance, 'unlink', undefined, true);
                     } else {
-                        ckEditorInstance.execute('linkTitle', result.value.options?.title || false, false);
-                        ckEditorInstance.execute('linkTargetBlank', result.value.options?.targetBlank ?? false, false);
-                        ckEditorInstance.execute('linkRelNofollow', result.value.options?.relNofollow ?? false, false);
+                        executeCommand(ckEditorInstance, 'linkTitle', result.value.options?.title || false, false);
+                        executeCommand(ckEditorInstance, 'linkTargetBlank', result.value.options?.targetBlank ?? false, false);
+                        executeCommand(ckEditorInstance, 'linkRelNofollow', result.value.options?.relNofollow ?? false, false);
 
                         if (result.value.options?.anchor) {
-                            ckEditorInstance.execute('link', `${result.value.href}#${result.value.options?.anchor}`, true);
+                            executeCommand(ckEditorInstance, 'link', `${result.value.href}#${result.value.options?.anchor}`, true);
                         } else {
-                            ckEditorInstance.execute('link', result.value.href, true);
+                            executeCommand(ckEditorInstance, 'link', result.value.href, true);
                         }
                     }
                 } else {
-                    ckEditorInstance.execute('undo', undefined, true);
-                    ckEditorInstance.execute('redo', undefined, true);
+                    executeCommand(ckEditorInstance, 'undo', undefined, true);
+                    executeCommand(ckEditorInstance, 'redo', undefined, true);
                 }
             })
         });

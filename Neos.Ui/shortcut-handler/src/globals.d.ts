@@ -12,6 +12,11 @@ declare class NeosEditor {
             }
         }
     };
+    editing: {
+        view: {
+            focus(): void;
+        }
+    }
 }
 declare class EditingKeystrokeHandler {
     set(keystroke: string | Array<string | number>, callback: EditingKeystrokeCallback, options: object = {}): void
