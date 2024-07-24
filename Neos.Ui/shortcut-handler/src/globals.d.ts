@@ -4,11 +4,17 @@ declare class NeosEditor {
     execute(command: string, ...args: any[]): void;
     neos: {
         editorOptions: {
-            linking: {
-                anchor: boolean
-                title: boolean
-                relNofollow: boolean
-                targetBlank: boolean
+            linking?: {
+                anchor?: boolean
+                title?: boolean
+                relNofollow?: boolean
+                targetBlank?: boolean
+                startingPoint?: string
+                'Sitegeist.Archaeopteryx'?: {
+                    linkTypes?: {
+                        [key: string]: object
+                    }
+                }
             }
         }
     };

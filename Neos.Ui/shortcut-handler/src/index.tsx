@@ -34,7 +34,23 @@ export function registerShortcutHandler (
                 // Cancel keystroke event
                 cancel();
 
-                // const formattingUnderCursor = selectors.UI.ContentCanvas.formattingUnderCursor(store.getState());
+                const inlineEditorOptions = ckEditorInstance.neos.editorOptions;
+                const editorOptions = {
+                    ...inlineEditorOptions?.linking?.['Sitegeist.Archaeopteryx'],
+                    linkTypes: {
+                        ...inlineEditorOptions?.linking?.['Sitegeist.Archaeopteryx']?.linkTypes
+                    }
+                };
+
+                if (inlineEditorOptions?.linking?.startingPoint) {
+                    editorOptions.linkTypes['Sitegeist.Archaeopteryx:Node'] = {
+                        ...editorOptions.linkTypes['Sitegeist.Archaeopteryx:Node'],
+                        startingPoint:
+                            (editorOptions.linkTypes['Sitegeist.Archaeopteryx:Node'] as any).startingPoint
+                            ?? inlineEditorOptions.linking.startingPoint
+                    };
+                }
+
                 const formattingUnderCursor = store.getState()?.ui?.contentCanvas?.formattingUnderCursor
                 const link = (() => {
                     if (formattingUnderCursor?.link) {
@@ -74,7 +90,7 @@ export function registerShortcutHandler (
                     return enabledLinkOptions;
                 })();
 
-                const result = await editor.tx.editLink(link, enabledLinkOptions, ckEditorInstance.neos.editorOptions);
+                const result = await editor.tx.editLink(link, enabledLinkOptions, editorOptions);
 
                 if (result.change) {
                     if (result.value === null) {
