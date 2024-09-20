@@ -41,11 +41,6 @@ final class GetNodeSummaryQuery
         is_string($array['workspaceName'])
             or throw new \InvalidArgumentException('Workspace name must be a string');
 
-        isset($array['dimensionValues'])
-            or throw new \InvalidArgumentException('Dimension values must be set');
-        is_array($array['dimensionValues'])
-            or throw new \InvalidArgumentException('Dimension values must be an array');
-
         isset($array['nodeId'])
             or throw new \InvalidArgumentException('Node id must be set');
         is_string($array['nodeId'])
@@ -53,7 +48,7 @@ final class GetNodeSummaryQuery
 
         return new self(
             workspaceName: $array['workspaceName'],
-            dimensionValues: $array['dimensionValues'],
+            dimensionValues: $array['dimensionValues'] ?? [],
             nodeId: NodeAggregateIdentifier::fromString($array['nodeId']),
         );
     }
