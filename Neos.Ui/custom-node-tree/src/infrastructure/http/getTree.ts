@@ -41,14 +41,21 @@ export async function getTree(
     const searchParams = new URLSearchParams();
 
     searchParams.set("workspaceName", query.workspaceName);
-    for (const [dimensionName, fallbackChain] of Object.entries(
-        query.dimensionValues
-    )) {
-        for (const fallbackValue of fallbackChain) {
-            searchParams.set(
-                `dimensionValues[${dimensionName}][]`,
-                fallbackValue
-            );
+    if (Object.keys(query.dimensionValues).length === 0) {
+        searchParams.set(
+            `dimensionValues`,
+            `[]`
+        );
+    } else {
+        for (const [dimensionName, fallbackChain] of Object.entries(
+            query.dimensionValues
+        )) {
+            for (const fallbackValue of fallbackChain) {
+                searchParams.set(
+                    `dimensionValues[${dimensionName}][]`,
+                    fallbackValue
+                );
+            }
         }
     }
     searchParams.set("startingPoint", query.startingPoint);
