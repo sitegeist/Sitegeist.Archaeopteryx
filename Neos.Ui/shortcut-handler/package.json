@@ -1,0 +1,20 @@
+{
+    "name": "@sitegeist/archaeopteryx-shortcut-handler",
+    "license": "MIT",
+    "version": "0.0.0",
+    "main": "./lib/index.js",
+    "types": "./lib/index.d.ts",
+    "scripts": {
+        "build": "rm -rf lib && tsc -p tsconfig.build.json",
+        "watch": "tsc -w -p tsconfig.build.json"
+    },
+    "dependencies": {
+        "@neos-project/neos-ui-extensibility": "^7.0.2",
+        "@sitegeist/archaeopteryx-neos-bridge": "^0.0.0",
+        "@sitegeist/archaeopteryx-core": "^0.0.0",
+        "react": "^17.0.2"
+    },
+    "devDependencies": {
+        "typescript": "^4.2.4"
+    }
+}
