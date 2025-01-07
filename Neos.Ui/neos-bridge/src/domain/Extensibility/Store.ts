@@ -21,6 +21,14 @@ export interface IState {
             query?: string;
             filterNodeType?: string;
         };
+        contentCanvas?: {
+            formattingUnderCursor?: {
+                link?: string;
+                linkTitle?: string;
+                linkTargetBlank?: boolean;
+                linkRelNofollow?: boolean;
+            };
+        };
     };
     system?: {
         authenticationTimeout?: boolean;
