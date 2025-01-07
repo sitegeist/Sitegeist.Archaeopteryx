@@ -71,6 +71,7 @@ export const Web = makeLinkType<WebLinkModel>('Sitegeist.Archaeopteryx:Web', ({c
         const [protocol, setProtocol] = useState<string>("");
 
         const i18n = useI18n();
+        const form = useForm();
 
         return (
             <div>
@@ -86,7 +87,7 @@ export const Web = makeLinkType<WebLinkModel>('Sitegeist.Archaeopteryx:Web', ({c
                             }
 
                             if(value === undefined){
-                                useForm().change('linkTypeProps.Sitegeist_Archaeopteryx:Web.protocol', protocol);
+                                form.change('linkTypeProps.Sitegeist_Archaeopteryx:Web.protocol', protocol);
                             }
                             return value;
                         }}
@@ -128,7 +129,7 @@ export const Web = makeLinkType<WebLinkModel>('Sitegeist.Archaeopteryx:Web', ({c
                             if (matches) {
                                 const [, protocol, urlWithoutProtocol] = matches;
 
-                                useForm().change('linkTypeProps.Sitegeist_Archaeopteryx:Web.protocol', protocol);
+                                form.change('linkTypeProps.Sitegeist_Archaeopteryx:Web.protocol', protocol);
                                 return urlWithoutProtocol;
                             }
                             return value;
