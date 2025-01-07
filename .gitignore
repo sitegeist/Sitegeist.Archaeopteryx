@@ -9,5 +9,6 @@ node_modules/
 composer.lock
 .phpunit.result.cache
 .idea
+.yarn
 lerna-debug.log
 Resources/Public/JavaScript/Plugin.js.map
