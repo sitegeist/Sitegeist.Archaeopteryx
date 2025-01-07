@@ -16,7 +16,7 @@ type AssetLinkModel = {
 export const Asset = makeLinkType<AssetLinkModel>('Sitegeist.Archaeopteryx:Asset', ({createError}) => ({
     supportedLinkOptions: ['title', 'targetBlank', 'relNofollow'],
 
-    isSuitableFor: (link: ILink) => link.href.startsWith('asset://'),
+    isSuitableFor: (link: ILink) => link.href.startsWith('asset://') && !link.href.includes('#'),
 
     useResolvedModel: (link: ILink) => {
         const match = /asset:\/\/(.*)/.exec(link.href);

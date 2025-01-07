@@ -81,7 +81,7 @@ export const Node = makeLinkType<NodeLinkModel, NodeLinkOptions>(
     ({ createError }) => ({
         supportedLinkOptions: ["anchor", "title", "targetBlank", "relNofollow"],
 
-        isSuitableFor: (link: ILink) => link.href.startsWith("node://"),
+        isSuitableFor: (link: ILink) => link.href.startsWith("node://") && !link.href.includes('#'),
 
         useResolvedModel: (link: ILink) => {
             const match = /node:\/\/(.*)/.exec(link.href);
