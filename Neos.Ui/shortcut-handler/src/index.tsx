@@ -22,7 +22,7 @@ export function registerShortcutHandler (
     }
 
     const ckeditor5Configuration = ckeditor5Registry.get<SynchronousRegistry<any>>('config')
-    if (!ckeditor5Registry) {
+    if (!ckeditor5Configuration) {
         console.warn('[Sitegeist.Archaeopteryx]: Could not find ckeditor5 config registry.');
         console.warn('[Sitegeist.Archaeopteryx]: Skipping registration of keyboard shortcut...');
         return;
