@@ -5,18 +5,14 @@ const FieldGroupContext = React.createContext<null | string>(null);
 
 export function Field<
     FieldValue = any,
-    RP extends FieldRenderProps<FieldValue, T> = FieldRenderProps<
-        FieldValue,
-        HTMLElement
-    >,
     T extends HTMLElement = HTMLElement
->(props: FieldProps<FieldValue, RP, T>): React.ReactElement {
+>(props: FieldProps<FieldValue, FieldRenderProps<FieldValue, T>, T>): React.ReactElement {
     const groupPrefix = React.useContext(FieldGroupContext);
     const name = groupPrefix !== null
         ? `${groupPrefix}.${props.name}`
         : props.name;
 
-    return (<FinalFormField<FieldValue, RP, T> {...props} name={name}/>);
+    return (<FinalFormField<FieldValue, T> {...props} name={name}/>);
 };
 
 export const FieldGroup: React.FC<{

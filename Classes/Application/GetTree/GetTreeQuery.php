@@ -50,11 +50,6 @@ final class GetTreeQuery
         is_string($array['workspaceName'])
             or throw new \InvalidArgumentException('Workspace name must be a string');
 
-        isset($array['dimensionValues'])
-            or throw new \InvalidArgumentException('Dimension values must be set');
-        is_array($array['dimensionValues'])
-            or throw new \InvalidArgumentException('Dimension values must be an array');
-
         isset($array['startingPoint'])
             or throw new \InvalidArgumentException('Starting point must be set');
         is_string($array['startingPoint'])
@@ -85,7 +80,7 @@ final class GetTreeQuery
 
         return new self(
             workspaceName: $array['workspaceName'],
-            dimensionValues: $array['dimensionValues'],
+            dimensionValues: $array['dimensionValues'] ?? [],
             startingPoint: NodePath::fromString($array['startingPoint']),
             loadingDepth: $array['loadingDepth'],
             baseNodeTypeFilter: $array['baseNodeTypeFilter'] ?? '',

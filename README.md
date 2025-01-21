@@ -10,6 +10,24 @@
   <img src="./Docs/Demo.gif">
 </p>
 
+ ## Overview
+  - [Installation](#installation)
+  - [Links in Rich Text](#links-in-rich-text)
+  - [Link in Inspector properties](#link-in-inspector-properties)
+  - [Link Types](#link-types)
+    - [Web](#web)
+    - [Document](#document)
+    - [Asset](#asset)
+    - [Mail To](#mail-to)
+    - [Phone Number](#phone-number)
+    - [Custom Link](#custom-link)
+  - [Link Options](#link-options)
+  - [Disabling Link Type Editors](#disabling-link-type-editors)
+    - [RTE Configuration](#rte-configuration)
+    - [Inspector Editor Configuration](#inspector-editor-configuration)
+  - [Contribution](#contribution)
+  - [LICENSE](#license)
+
 ### Authors & Sponsors
 
 * Wilhelm Behncke - behncke@sitegeist.de
