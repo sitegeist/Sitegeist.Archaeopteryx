@@ -15,6 +15,8 @@ import {Dialog} from '@neos-project/react-ui-components';
 // fix for the native Dialog in Neos UI will follow soon.
 //
 const StyledDialog = styled(Dialog)`
+    z-index: 100;
+
     [class*="_dialog__contentsPosition "],
     [class$="_dialog__contentsPosition"] {
         top: 50%;
