@@ -58,7 +58,7 @@ export const Dialog: React.FC = () => {
                 )}
                 renderBody={() => (
                     <Form<ILinkOptions> onSubmit={handleSubmit}>
-                        {({handleSubmit, valid, dirty, values}) => (
+                        {({handleSubmit, valid, dirty}) => (
                             <ErrorBoundary>
                                 <StyledForm
                                     renderBody={() => initialValue === null || valueWasDeleted ? (

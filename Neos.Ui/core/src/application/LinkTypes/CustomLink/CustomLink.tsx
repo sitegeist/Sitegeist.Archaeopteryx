@@ -13,7 +13,7 @@ type CustomLinkModel = {
     customLink: string,
 }
 
-export const CustomLink = makeLinkType<CustomLinkModel>('Sitegeist.Archaeopteryx:CustomLink', ({createError}) => ({
+export const CustomLink = makeLinkType<CustomLinkModel>('Sitegeist.Archaeopteryx:CustomLink', () => ({
     isSuitableFor: (link: ILink) => {
         if ((link.href.startsWith('asset://') || link.href.startsWith('node://')) && link.href.includes('#')) {
             return true;

@@ -22,4 +22,6 @@ export function useRoutes<R>(selector?: (configuration: IRoutes) => R): undefine
             return neos.routes as R;
         }
     }
+
+    return;
 }
