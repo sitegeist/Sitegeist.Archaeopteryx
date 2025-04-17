@@ -1,13 +1,8 @@
 {
     "name": "@sitegeist/archaeopteryx-error-handling",
     "license": "GPL-3.0-or-later",
-    "version": "0.0.0",
-    "main": "./lib/index.js",
-    "types": "./lib/index.d.ts",
-    "scripts": {
-        "build": "rm -rf lib && tsc -p tsconfig.build.json",
-        "watch": "tsc -w -p tsconfig.build.json"
-    },
+    "version": "",
+    "main": "./src/index.ts",
     "dependencies": {
         "react-error-boundary": "^3.1.3"
     },

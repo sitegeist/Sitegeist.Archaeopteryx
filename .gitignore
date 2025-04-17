@@ -1,14 +1,3 @@
-bin/
-Build/
-Packages/
-/Web/
-Data/
-vendor/
-node_modules/
-**/node_modules/**
-composer.lock
-.phpunit.result.cache
-.idea
+node_modules
+tsconfig.tsbuildinfo
 .yarn
-lerna-debug.log
-Resources/Public/JavaScript/Plugin.js.map

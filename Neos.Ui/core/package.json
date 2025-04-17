@@ -1,19 +1,17 @@
 {
     "name": "@sitegeist/archaeopteryx-core",
     "license": "GPL-3.0-or-later",
-    "version": "0.0.0",
-    "main": "./lib/index.js",
+    "version": "",
+    "main": "./src/index.ts",
     "scripts": {
-        "build": "rm -rf lib && tsc -p tsconfig.build.json",
-        "watch": "tsc -w -p tsconfig.build.json",
         "test": "jest"
     },
     "dependencies": {
         "@neos-project/positional-array-sorter": "^8.0.1",
         "@neos-project/react-ui-components": "^7.0.2",
-        "@sitegeist/archaeopteryx-custom-node-tree": "^0.0.0",
-        "@sitegeist/archaeopteryx-error-handling": "^0.0.0",
-        "@sitegeist/archaeopteryx-neos-bridge": "^0.0.0",
+        "@sitegeist/archaeopteryx-custom-node-tree": "workspace:*",
+        "@sitegeist/archaeopteryx-error-handling": "workspace:*",
+        "@sitegeist/archaeopteryx-neos-bridge": "workspace:*",
         "final-form": "^4.20.2",
         "libphonenumber-js": "^1.9.52",
         "react-final-form": "^6.5.3",

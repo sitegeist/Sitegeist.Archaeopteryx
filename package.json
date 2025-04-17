@@ -3,17 +3,15 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "build": "NODE_ENV=production lerna run --stream build",
-    "build-dev": "lerna run --stream build",
-    "watch": "lerna run --stream --parallel watch",
-    "test": "lerna run --stream test",
-    "postinstall": "patch-package"
+    "lint": "tsc --noemit",
+    "build": "yarn workspace @sitegeist/archaeopteryx-plugin run build",
+    "watch": "yarn workspace @sitegeist/archaeopteryx-plugin run watch",
+    "test": "lerna run --stream test"
   },
   "workspaces": [
     "Neos.Ui/*"
   ],
   "devDependencies": {
-    "@neos-project/neos-ui-extensibility": "^7.0.2",
     "@simbathesailor/use-what-changed": "^2.0.0",
     "@testing-library/jest-dom": "^5.12.0",
     "@testing-library/react": "^11.2.6",
@@ -23,13 +21,12 @@
     "@types/styled-components": "^5.1.9",
     "@types/verror": "^1.10.4",
     "jest": "^26.6.3",
-    "lerna": "^4.0.0",
-    "patch-package": "^6.5.1",
     "ts-jest": "^26.5.5",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.4"
   },
   "resolutions": {
     "@types/react": "^17.0.3"
-  }
+  },
+  "packageManager": "yarn@3.2.0"
 }

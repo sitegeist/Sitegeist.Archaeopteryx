@@ -1,17 +1,12 @@
 {
     "name": "@sitegeist/archaeopteryx-custom-node-tree",
     "license": "GPL-3.0-or-later",
-    "version": "0.0.0",
-    "main": "./lib/index.js",
-    "types": "./lib/index.d.ts",
-    "scripts": {
-        "build": "rm -rf lib && tsc -p tsconfig.build.json",
-        "watch": "tsc -w -p tsconfig.build.json"
-    },
+    "version": "",
+    "main": "./src/index.ts",
     "dependencies": {
-        "@neos-project/react-ui-components": "^7.0.2",
-        "@sitegeist/archaeopteryx-error-handling": "^0.0.0",
-        "@sitegeist/archaeopteryx-neos-bridge": "^0.0.0",
+        "@neos-project/react-ui-components": "~8.3.0",
+        "@sitegeist/archaeopteryx-error-handling": "workspace:*",
+        "@sitegeist/archaeopteryx-neos-bridge": "workspace:*",
         "immer": "^9.0.2",
         "react": "^17.0.2",
         "react-use": "^17.2.4",
