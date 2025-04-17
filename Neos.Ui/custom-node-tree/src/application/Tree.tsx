@@ -7,7 +7,7 @@
  */
 import * as React from "react";
 import { useAsync } from "react-use";
-import { VError } from "verror";
+import { VError } from "@sitegeist/archaeopteryx-error-handling";
 
 import { Tree as NeosTree } from "@neos-project/react-ui-components";
 import { decodeError } from "@sitegeist/archaeopteryx-error-handling";
@@ -91,8 +91,8 @@ export const Tree: React.FC<Props> = (props) => {
     let main;
     if (fetch__getTree.error) {
         throw new VError(
+            "NodeTree could not be loaded.",
             decodeError(fetch__getTree.error),
-            "NodeTree could not be loaded."
         );
     } else if (fetch__getTree.loading || !fetch__getTree.value) {
         main = <div>Loading...</div>;
