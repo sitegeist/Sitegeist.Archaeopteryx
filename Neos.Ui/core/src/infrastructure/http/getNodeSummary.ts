@@ -55,7 +55,7 @@ export async function getNodeSummary(
         const response = await fetchWithErrorHandling.withCsrfToken(
             (csrfToken) => ({
                 url:
-                    "/sitegeist/archaeopteryx/get-node-summary?" +
+                    "/neos/archaeopteryx/get-node-summary?" +
                     searchParams.toString(),
                 method: "GET",
                 credentials: "include",
