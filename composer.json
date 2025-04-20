@@ -15,6 +15,10 @@
             "role": "Developer"
         }
     ],
+    "scripts": {
+        "test:behat-cli": "../../../bin/behat -f progress --strict --no-interaction",
+        "test:behavioral:stop-on-failure": "@test:behat-cli -c Tests/Behavior/behat.yml.dist -vvv --stop-on-failure"
+    },
     "require": {
         "neos/neos": "^9.0"
     },

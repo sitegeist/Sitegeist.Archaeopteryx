@@ -39,7 +39,7 @@ final class GetNodeSummaryQueryHandler
         $nodeType = $nodeService->requireNodeTypeByName($node->nodeTypeName);
 
         return new GetNodeSummaryQueryResult(
-            icon: $nodeType->getConfiguration('ui.icon'),
+            icon: $nodeType->getConfiguration('ui.icon') ?? 'questionmark',
             label: $nodeService->getLabelForNode($node),
             uri: new Uri('node://' . $node->aggregateId->value),
             breadcrumbs: $this->createBreadcrumbsForNode($nodeService, $node),
