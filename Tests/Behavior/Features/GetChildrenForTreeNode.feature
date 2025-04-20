@@ -6,6 +6,9 @@ Feature: GetChildrenForTreeNode
       | language   | de, en, gsw | gsw->de, en     |
     And using the following node types:
     """yaml
+    'Neos.Neos:Content':
+      abstract: true
+
     'Neos.Neos:Document':
       abstract: true
       properties:
@@ -31,6 +34,30 @@ Feature: GetChildrenForTreeNode
       ui:
         icon: "my-other-icon"
         label: "My Other Document Type"
+
+    'Vendor.Site:Content':
+      superTypes:
+        'Neos.Neos:Content': true
+      ui:
+        icon: "my-content"
+        label: "My Content"
+
+    'Vendor.Site:SpecialLinkable':
+      abstract: true
+
+    'Vendor.Site:IncludedLinkableDocument':
+      superTypes:
+        'Vendor.Site:Document': true
+        'Vendor.Site:SpecialLinkable': true
+      ui:
+        label: "My Included Document Type"
+
+    'Vendor.Site:ExcludedLinkableDocument':
+      superTypes:
+        'Vendor.Site:IncludedLinkableDocument': true
+        'Vendor.Site:SpecialLinkable': false
+      ui:
+        label: "My Excluded Document Type"
     """
     And using identifier "default", I define a content repository
     And I am in content repository "default"
@@ -45,12 +72,17 @@ Feature: GetChildrenForTreeNode
       | nodeTypeName    | "Neos.ContentRepository:Root" |
 
     And the following CreateNodeAggregateWithNode commands are executed:
-      | nodeAggregateId      | parentNodeAggregateId | nodeTypeName              | initialPropertyValues | originDimensionSpacePoint |
-      | homepage             | root                  | Neos.Neos:Site            | {"title": "home"}     | {"language": "en"}        |
-      | features             | homepage              | Vendor.Site:Document      | {"title": "features"} | {"language": "en"}        |
-      | feature-a-multi-dsp  | features              | Vendor.Site:Document      | {"title": "a"}        | {"language": "en"}        |
-      | feature-b-disabled   | features              | Vendor.Site:Document      | {"title": "b"}        | {"language": "en"}        |
-      | feature-c-other-type | features              | Vendor.Site:OtherDocument | {"title": "c"}        | {"language": "en"}        |
+      | nodeAggregateId      | parentNodeAggregateId | nodeTypeName                         | initialPropertyValues | originDimensionSpacePoint |
+      | homepage             | root                  | Neos.Neos:Site                       | {"title": "home"}     | {"language": "en"}        |
+      | features             | homepage              | Vendor.Site:Document                 | {"title": "features"} | {"language": "en"}        |
+      | content-a            | features              | Vendor.Site:Content                  | {}                    | {"language": "en"}        |
+      | feature-a-multi-dsp  | features              | Vendor.Site:Document                 | {"title": "a"}        | {"language": "en"}        |
+      | feature-b-disabled   | features              | Vendor.Site:Document                 | {"title": "b"}        | {"language": "en"}        |
+      | feature-c-other-type | features              | Vendor.Site:OtherDocument            | {"title": "c"}        | {"language": "en"}        |
+      | linkable             | homepage              | Vendor.Site:Document                 | {"title": "linkable"} | {"language": "en"}        |
+      | linkable-a-default   | linkable              | Vendor.Site:Document                 | {"title": "a"}        | {"language": "en"}        |
+      | linkable-b-included  | linkable              | Vendor.Site:IncludedLinkableDocument | {"title": "b"}        | {"language": "en"}        |
+      | linkable-c-excluded  | linkable              | Vendor.Site:ExcludedLinkableDocument | {"title": "c"}        | {"language": "en"}        |
 
     And the command CreateNodeVariant is executed with payload:
       | Key             | Value             |
@@ -114,8 +146,39 @@ Feature: GetChildrenForTreeNode
                        "label": "My Node: features",
                        "nodeAggregateIdentifier": "features",
                        "nodeTypeLabel": "My Document Type"
+                   },
+                   {
+                       "children": [],
+                       "hasScheduledDisabledState": false,
+                       "hasUnloadedChildren": true,
+                       "icon": "my-icon",
+                       "isDisabled": false,
+                       "isHiddenInMenu": false,
+                       "isLinkable": true,
+                       "isMatchedByFilter": true,
+                       "label": "My Node: linkable",
+                       "nodeAggregateIdentifier": "linkable",
+                       "nodeTypeLabel": "My Document Type"
                    }
                ]
+          }
+      }
+      """
+
+  Scenario: GetChildrenForTreeNode for leaf node
+    When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-children-for-tree-node":
+      | Key                 | Value                 |
+      | contentRepositoryId | "default"             |
+      | workspaceName       | "live"                |
+      | dimensionValues     | {"language": ["en"]}  |
+      | treeNodeId          | "feature-a-multi-dsp" |
+      | nodeTypeFilter      | ""                    |
+      | linkableNodeTypes   | []                    |
+    Then I expect the following query response:
+      """json
+      {
+          "success": {
+              "children": []
           }
       }
       """
@@ -127,7 +190,7 @@ Feature: GetChildrenForTreeNode
       | workspaceName       | "live"               |
       | dimensionValues     | {"language": ["en"]} |
       | treeNodeId          | "features"           |
-      | nodeTypeFilter      | ""                   |
+      | nodeTypeFilter      | "Neos.Neos:Document" |
       | linkableNodeTypes   | []                   |
     Then I expect the following query response:
       """json
@@ -210,7 +273,6 @@ Feature: GetChildrenForTreeNode
       }
       """
 
-
   Scenario: GetChildrenForTreeNode for document with one child in other dimension
     When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-children-for-tree-node":
       | Key                 | Value                |
@@ -243,20 +305,60 @@ Feature: GetChildrenForTreeNode
       }
       """
 
-  Scenario: GetChildrenForTreeNode for leaf node
+  Scenario: GetChildrenForTreeNode for document with filtered children
     When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-children-for-tree-node":
-      | Key                 | Value                 |
-      | contentRepositoryId | "default"             |
-      | workspaceName       | "live"                |
-      | dimensionValues     | {"language": ["en"]}  |
-      | treeNodeId          | "feature-a-multi-dsp" |
-      | nodeTypeFilter      | ""                    |
-      | linkableNodeTypes   | []                    |
+      | Key                 | Value                           |
+      | contentRepositoryId | "default"                       |
+      | workspaceName       | "live"                          |
+      | dimensionValues     | {"language": ["en"]}            |
+      | treeNodeId          | "linkable"                      |
+      | nodeTypeFilter      | "Neos.Neos:Document"            |
+      | linkableNodeTypes   | ["Vendor.Site:SpecialLinkable"] |
     Then I expect the following query response:
       """json
       {
           "success": {
-              "children": []
+              "children": [
+                   {
+                       "children": [],
+                       "hasScheduledDisabledState": false,
+                       "hasUnloadedChildren": false,
+                       "icon": "my-icon",
+                       "isDisabled": false,
+                       "isHiddenInMenu": false,
+                       "isLinkable": false,
+                       "isMatchedByFilter": true,
+                       "label": "My Node: a",
+                       "nodeAggregateIdentifier": "linkable-a-default",
+                       "nodeTypeLabel": "My Document Type"
+                   },
+                   {
+                       "children": [],
+                       "hasScheduledDisabledState": false,
+                       "hasUnloadedChildren": false,
+                       "icon": "my-icon",
+                       "isDisabled": false,
+                       "isHiddenInMenu": false,
+                       "isLinkable": true,
+                       "isMatchedByFilter": true,
+                       "label": "My Node: b",
+                       "nodeAggregateIdentifier": "linkable-b-included",
+                       "nodeTypeLabel": "My Included Document Type"
+                   },
+                   {
+                       "children": [],
+                       "hasScheduledDisabledState": false,
+                       "hasUnloadedChildren": false,
+                       "icon": "my-icon",
+                       "isDisabled": false,
+                       "isHiddenInMenu": false,
+                       "isLinkable": false,
+                       "isMatchedByFilter": true,
+                       "label": "My Node: c",
+                       "nodeAggregateIdentifier": "linkable-c-excluded",
+                       "nodeTypeLabel": "My Excluded Document Type"
+                   }
+               ]
           }
       }
       """

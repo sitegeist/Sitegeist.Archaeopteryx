@@ -67,7 +67,7 @@ final class GetChildrenForTreeNodeQuery
             dimensionSpacePoint: DimensionSpacePoint::fromLegacyDimensionArray($array['dimensionValues'] ?? []),
             treeNodeId: NodeAggregateId::fromString($array['treeNodeId']),
             nodeTypeFilter: $array['nodeTypeFilter'] ?? '',
-            linkableNodeTypes: NodeTypeNames::fromArray($array['linkableNodeTypes'] ?? []),
+            linkableNodeTypes: NodeTypeNames::fromStringArray($array['linkableNodeTypes'] ?? []),
         );
     }
 }
