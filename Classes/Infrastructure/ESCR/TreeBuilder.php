@@ -14,6 +14,7 @@ namespace Sitegeist\Archaeopteryx\Infrastructure\ESCR;
 
 use Neos\ContentRepository\Core\Projection\ContentGraph\Node;
 use Neos\ContentRepository\Core\Projection\ContentGraph\Nodes;
+use Neos\ContentRepository\Core\SharedModel\Node\NodeAggregateId;
 use Neos\Flow\Annotations as Flow;
 use Sitegeist\Archaeopteryx\Application\Shared\TreeNode;
 use Sitegeist\Archaeopteryx\Application\Shared\TreeNodeBuilder;
@@ -35,6 +36,11 @@ final class TreeBuilder
         private readonly LinkableNodeSpecification $linkableNodeSpecification,
     ) {
         $this->treeNodeBuildersByNodeAggregateIdentifier[$rootNode->aggregateId->value] = $rootTreeNodeBuilder;
+    }
+
+    public function containsNodeTreeByNodeAggregateId(NodeAggregateId $nodeAggregateId): bool
+    {
+        return $this->rootTreeNodeBuilder->containsNodeTreeByNodeAggregateId($nodeAggregateId);
     }
 
     public function addNodeWithDescendants(Node $node, int $loadingDepth): self

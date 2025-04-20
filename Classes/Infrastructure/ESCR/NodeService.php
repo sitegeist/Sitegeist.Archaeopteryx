@@ -147,8 +147,7 @@ final class NodeService
             hasScheduledDisabledState:
                 $node->getProperty('enableAfterDateTime') instanceof \DateTimeInterface
                 || $node->getProperty('disableAfterDateTime') instanceof \DateTimeInterface,
-            hasUnloadedChildren: false,
-            children: [],
+            hasUnloadedChildren: false
         );
     }
 

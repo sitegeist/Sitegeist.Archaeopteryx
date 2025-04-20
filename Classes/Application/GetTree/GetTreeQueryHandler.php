@@ -115,7 +115,7 @@ final class GetTreeQueryHandler
             filterString: $query->baseNodeTypeFilter,
         );
 
-        $treeBuilder =  $nodeService->createTreeBuilderForRootNode(
+        $treeBuilder = $nodeService->createTreeBuilderForRootNode(
             rootNode: $node,
             nodeSearchSpecification: new NodeSearchSpecification(
                 baseNodeTypeFilter: $baseNodeTypeFilter,
@@ -133,10 +133,11 @@ final class GetTreeQueryHandler
         $treeBuilder->addNodeWithDescendants($node, $remainingDepth);
 
         if ($query->selectedNodeId) {
-            /** @var Node|null $selectedNode */
-            $selectedNode = $nodeService->findNodeById($query->selectedNodeId);
-            if ($selectedNode) {
-                $treeBuilder->addNodeWithSiblingsAndAncestors($selectedNode);
+            if ($treeBuilder->containsNodeTreeByNodeAggregateId($query->selectedNodeId) === false) {
+                $selectedNode = $nodeService->findNodeById($query->selectedNodeId);
+                if ($selectedNode) {
+                    $treeBuilder->addNodeWithSiblingsAndAncestors($selectedNode);
+                }
             }
         }
 

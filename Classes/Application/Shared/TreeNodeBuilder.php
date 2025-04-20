@@ -22,25 +22,36 @@ use Neos\Flow\Annotations as Flow;
 final class TreeNodeBuilder
 {
     /** @var array<string,TreeNodeBuilder> */
-    private array $childrenByIdentifier;
+    private array $childrenByIdentifier = [];
 
-    /**
-     * @param TreeNodeBuilder[] $children
-     */
+    /** @var list<TreeNodeBuilder> $children */
+    private array $children = [];
+
     public function __construct(
-        public readonly int $sortingIndex,
-        private NodeAggregateId $nodeAggregateId,
-        private string $icon,
-        private string $label,
-        private string $nodeTypeLabel,
+        private readonly NodeAggregateId $nodeAggregateId,
+        private readonly string $icon,
+        private readonly string $label,
+        private readonly string $nodeTypeLabel,
         private bool $isMatchedByFilter,
         private bool $isLinkable,
-        private bool $isDisabled,
-        private bool $isHiddenInMenu,
-        private bool $hasScheduledDisabledState,
+        private readonly bool $isDisabled,
+        private readonly bool $isHiddenInMenu,
+        private readonly bool $hasScheduledDisabledState,
         private bool $hasUnloadedChildren,
-        private array $children
     ) {
+    }
+
+    public function containsNodeTreeByNodeAggregateId(NodeAggregateId $nodeAggregateId): bool
+    {
+        if ($this->nodeAggregateId->equals($nodeAggregateId)) {
+            return true;
+        }
+        foreach ($this->children as $child) {
+            if ($child->containsNodeTreeByNodeAggregateId($nodeAggregateId)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public function setIsMatchedByFilter(bool $value): self
