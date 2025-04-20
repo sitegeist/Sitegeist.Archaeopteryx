@@ -80,17 +80,25 @@ Feature: GetTreeQuery
       | nodeTypeName    | "Neos.Neos:Sites" |
 
     And the following CreateNodeAggregateWithNode commands are executed:
-      | nodeAggregateId      | parentNodeAggregateId | nodeTypeName                         | initialPropertyValues | originDimensionSpacePoint | nodeName |
-      | homepage             | sites                 | Neos.Neos:Site                       | {"title": "home"}     | {"language": "en"}        | site-a   |
-      | features             | homepage              | Vendor.Site:Document                 | {"title": "features"} | {"language": "en"}        | features |
-      | content-a            | features              | Vendor.Site:Content                  | {}                    | {"language": "en"}        |          |
-      | feature-a-multi-dsp  | features              | Vendor.Site:Document                 | {"title": "a"}        | {"language": "en"}        | a        |
-      | feature-b-disabled   | features              | Vendor.Site:Document                 | {"title": "b"}        | {"language": "en"}        |          |
-      | feature-c-other-type | features              | Vendor.Site:OtherDocument            | {"title": "c"}        | {"language": "en"}        |          |
-      | linkable             | homepage              | Vendor.Site:Document                 | {"title": "linkable"} | {"language": "en"}        | linkable |
-      | linkable-a-default   | linkable              | Vendor.Site:Document                 | {"title": "a"}        | {"language": "en"}        |          |
-      | linkable-b-included  | linkable              | Vendor.Site:IncludedLinkableDocument | {"title": "b"}        | {"language": "en"}        |          |
-      | linkable-c-excluded  | linkable              | Vendor.Site:ExcludedLinkableDocument | {"title": "c"}        | {"language": "en"}        |          |
+      | nodeAggregateId      | parentNodeAggregateId | nodeTypeName                         | initialPropertyValues        | originDimensionSpacePoint | nodeName |
+      | homepage             | sites                 | Neos.Neos:Site                       | {"title": "home"}            | {"language": "en"}        | site-a   |
+      | features             | homepage              | Vendor.Site:Document                 | {"title": "features"}        | {"language": "en"}        | features |
+      | features-content     | features              | Vendor.Site:Content                  | {}                           | {"language": "en"}        |          |
+      | feature-a-multi-dsp  | features              | Vendor.Site:Document                 | {"title": "a"}               | {"language": "en"}        | a        |
+      | feature-b-disabled   | features              | Vendor.Site:Document                 | {"title": "b"}               | {"language": "en"}        |          |
+      | feature-c-other-type | features              | Vendor.Site:OtherDocument            | {"title": "c"}               | {"language": "en"}        |          |
+      | linkable             | homepage              | Vendor.Site:Document                 | {"title": "linkable"}        | {"language": "en"}        | linkable |
+      | linkable-a-default   | linkable              | Vendor.Site:Document                 | {"title": "a"}               | {"language": "en"}        |          |
+      | linkable-b-included  | linkable              | Vendor.Site:IncludedLinkableDocument | {"title": "b"}               | {"language": "en"}        |          |
+      | linkable-c-excluded  | linkable              | Vendor.Site:ExcludedLinkableDocument | {"title": "c"}               | {"language": "en"}        |          |
+      | search               | homepage              | Vendor.Site:Document                 | {"title": "search"}          | {"language": "en"}        | search   |
+      | search-content       | search                | Vendor.Site:Content                  | {}                           | {"language": "en"}        |          |
+      | search-a-default     | search                | Vendor.Site:Document                 | {"title": "a"}               | {"language": "en"}        |          |
+      | search-a1-default    | search-a-default      | Vendor.Site:Document                 | {"title": "a1"}              | {"language": "en"}        |          |
+      | search-a2-other-type | search-a-default      | Vendor.Site:OtherDocument            | {"title": "a2"}              | {"language": "en"}        |          |
+      | search-a3-other-text | search-a-default      | Vendor.Site:OtherDocument            | {"title": "a3 special text"} | {"language": "en"}        |          |
+      | search-b-with-text   | search                | Vendor.Site:Document                 | {"title": "b special text"}  | {"language": "en"}        |          |
+      | search-c-other-type  | search                | Vendor.Site:OtherDocument            | {"title": "c"}               | {"language": "en"}        |          |
 
     And the command CreateNodeVariant is executed with payload:
       | Key             | Value             |
@@ -207,6 +215,19 @@ Feature: GetTreeQuery
                            "isMatchedByFilter": true,
                            "label": "My Node: linkable",
                            "nodeAggregateIdentifier": "linkable",
+                           "nodeTypeLabel": "My Document Type"
+                       },
+                       {
+                           "children": [],
+                           "hasScheduledDisabledState": false,
+                           "hasUnloadedChildren": true,
+                           "icon": "my-icon",
+                           "isDisabled": false,
+                           "isHiddenInMenu": false,
+                           "isLinkable": true,
+                           "isMatchedByFilter": true,
+                           "label": "My Node: search",
+                           "nodeAggregateIdentifier": "search",
                            "nodeTypeLabel": "My Document Type"
                        }
                   ],
@@ -515,6 +536,235 @@ Feature: GetTreeQuery
                           "hasScheduledDisabledState": false,
                           "hasUnloadedChildren": false,
                           "children": []
+                      }
+                  ]
+              }
+          }
+      }
+      """
+
+  Scenario: GetTreeQuery search: with node types narrowed
+    When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-tree":
+      | Key                  | Value                              |
+      | contentRepositoryId  | "default"                          |
+      | workspaceName        | "live"                             |
+      | dimensionValues      | {"language": ["en"]}               |
+      | startingPoint        | "/<Neos.Neos:Sites>/site-a/search" |
+      | loadingDepth         | 8                                  |
+      | baseNodeTypeFilter   | "Neos.Neos:Document"               |
+      | linkableNodeTypes    | []                                 |
+      | narrowNodeTypeFilter | "Vendor.Site:OtherDocument"        |
+      | searchTerm           | ""                                 |
+      | selectedNodeId       | null                               |
+
+    # todo order of results is not order in tree?!
+    Then I expect the following query response:
+      """json
+      {
+          "success": {
+              "root": {
+                  "nodeAggregateIdentifier": "search",
+                  "icon": "my-icon",
+                  "label": "My Node: search",
+                  "nodeTypeLabel": "My Document Type",
+                  "isMatchedByFilter": false,
+                  "isLinkable": true,
+                  "isDisabled": false,
+                  "isHiddenInMenu": false,
+                  "hasScheduledDisabledState": false,
+                  "hasUnloadedChildren": false,
+                  "children": [
+                      {
+                          "nodeAggregateIdentifier": "search-c-other-type",
+                          "icon": "my-other-icon",
+                          "label": "My Other Node",
+                          "nodeTypeLabel": "My Other Document Type",
+                          "isMatchedByFilter": true,
+                          "isLinkable": true,
+                          "isDisabled": false,
+                          "isHiddenInMenu": false,
+                          "hasScheduledDisabledState": false,
+                          "hasUnloadedChildren": false,
+                          "children": []
+                      },
+                      {
+                          "nodeAggregateIdentifier": "search-a-default",
+                          "icon": "my-icon",
+                          "label": "My Node: a",
+                          "nodeTypeLabel": "My Document Type",
+                          "isMatchedByFilter": false,
+                          "isLinkable": true,
+                          "isDisabled": false,
+                          "isHiddenInMenu": false,
+                          "hasScheduledDisabledState": false,
+                          "hasUnloadedChildren": false,
+                          "children": [
+                              {
+                                  "nodeAggregateIdentifier": "search-a2-other-type",
+                                  "icon": "my-other-icon",
+                                  "label": "My Other Node",
+                                  "nodeTypeLabel": "My Other Document Type",
+                                  "isMatchedByFilter": true,
+                                  "isLinkable": true,
+                                  "isDisabled": false,
+                                  "isHiddenInMenu": false,
+                                  "hasScheduledDisabledState": false,
+                                  "hasUnloadedChildren": false,
+                                  "children": []
+                              },
+                              {
+                                  "nodeAggregateIdentifier": "search-a3-other-text",
+                                  "icon": "my-other-icon",
+                                  "label": "My Other Node",
+                                  "nodeTypeLabel": "My Other Document Type",
+                                  "isMatchedByFilter": true,
+                                  "isLinkable": true,
+                                  "isDisabled": false,
+                                  "isHiddenInMenu": false,
+                                  "hasScheduledDisabledState": false,
+                                  "hasUnloadedChildren": false,
+                                  "children": []
+                              }
+                          ]
+                      }
+                  ]
+              }
+          }
+      }
+      """
+
+  Scenario: GetTreeQuery search: with text search
+    When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-tree":
+      | Key                  | Value                              |
+      | contentRepositoryId  | "default"                          |
+      | workspaceName        | "live"                             |
+      | dimensionValues      | {"language": ["en"]}               |
+      | startingPoint        | "/<Neos.Neos:Sites>/site-a/search" |
+      | loadingDepth         | 8                                  |
+      | baseNodeTypeFilter   | "Neos.Neos:Document"               |
+      | linkableNodeTypes    | []                                 |
+      | narrowNodeTypeFilter | ""                                 |
+      | searchTerm           | "special text"                     |
+      | selectedNodeId       | null                               |
+
+    Then I expect the following query response:
+      """json
+      {
+          "success": {
+              "root": {
+                  "nodeAggregateIdentifier": "search",
+                  "icon": "my-icon",
+                  "label": "My Node: search",
+                  "nodeTypeLabel": "My Document Type",
+                  "isMatchedByFilter": false,
+                  "isLinkable": true,
+                  "isDisabled": false,
+                  "isHiddenInMenu": false,
+                  "hasScheduledDisabledState": false,
+                  "hasUnloadedChildren": false,
+                  "children": [
+                      {
+                          "nodeAggregateIdentifier": "search-b-with-text",
+                          "icon": "my-icon",
+                          "label": "My Node: b special text",
+                          "nodeTypeLabel": "My Document Type",
+                          "isMatchedByFilter": true,
+                          "isLinkable": true,
+                          "isDisabled": false,
+                          "isHiddenInMenu": false,
+                          "hasScheduledDisabledState": false,
+                          "hasUnloadedChildren": false,
+                          "children": []
+                      },
+                      {
+                          "nodeAggregateIdentifier": "search-a-default",
+                          "icon": "my-icon",
+                          "label": "My Node: a",
+                          "nodeTypeLabel": "My Document Type",
+                          "isMatchedByFilter": false,
+                          "isLinkable": true,
+                          "isDisabled": false,
+                          "isHiddenInMenu": false,
+                          "hasScheduledDisabledState": false,
+                          "hasUnloadedChildren": false,
+                          "children": [
+                              {
+                                  "nodeAggregateIdentifier": "search-a3-other-text",
+                                  "icon": "my-other-icon",
+                                  "label": "My Other Node",
+                                  "nodeTypeLabel": "My Other Document Type",
+                                  "isMatchedByFilter": true,
+                                  "isLinkable": true,
+                                  "isDisabled": false,
+                                  "isHiddenInMenu": false,
+                                  "hasScheduledDisabledState": false,
+                                  "hasUnloadedChildren": false,
+                                  "children": []
+                              }
+                          ]
+                      }
+                  ]
+              }
+          }
+      }
+      """
+
+  Scenario: GetTreeQuery search: with node types narrowed and text search
+    When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-tree":
+      | Key                  | Value                              |
+      | contentRepositoryId  | "default"                          |
+      | workspaceName        | "live"                             |
+      | dimensionValues      | {"language": ["en"]}               |
+      | startingPoint        | "/<Neos.Neos:Sites>/site-a/search" |
+      | loadingDepth         | 8                                  |
+      | baseNodeTypeFilter   | "Neos.Neos:Document"               |
+      | linkableNodeTypes    | []                                 |
+      | narrowNodeTypeFilter | "Vendor.Site:OtherDocument"        |
+      | searchTerm           | "special text"                     |
+      | selectedNodeId       | null                               |
+
+    Then I expect the following query response:
+      """json
+      {
+          "success": {
+              "root": {
+                  "nodeAggregateIdentifier": "search",
+                  "icon": "my-icon",
+                  "label": "My Node: search",
+                  "nodeTypeLabel": "My Document Type",
+                  "isMatchedByFilter": false,
+                  "isLinkable": true,
+                  "isDisabled": false,
+                  "isHiddenInMenu": false,
+                  "hasScheduledDisabledState": false,
+                  "hasUnloadedChildren": false,
+                  "children": [
+                      {
+                          "nodeAggregateIdentifier": "search-a-default",
+                          "icon": "my-icon",
+                          "label": "My Node: a",
+                          "nodeTypeLabel": "My Document Type",
+                          "isMatchedByFilter": false,
+                          "isLinkable": true,
+                          "isDisabled": false,
+                          "isHiddenInMenu": false,
+                          "hasScheduledDisabledState": false,
+                          "hasUnloadedChildren": false,
+                          "children": [
+                              {
+                                  "nodeAggregateIdentifier": "search-a3-other-text",
+                                  "icon": "my-other-icon",
+                                  "label": "My Other Node",
+                                  "nodeTypeLabel": "My Other Document Type",
+                                  "isMatchedByFilter": true,
+                                  "isLinkable": true,
+                                  "isDisabled": false,
+                                  "isHiddenInMenu": false,
+                                  "hasScheduledDisabledState": false,
+                                  "hasUnloadedChildren": false,
+                                  "children": []
+                              }
+                          ]
                       }
                   ]
               }
