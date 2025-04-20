@@ -83,7 +83,7 @@ final class NodeTypeService
         $nodeTypeCriteria = NodeTypeCriteria::fromFilterString($filterString);
         $explicitlyAllowedNodeTypeNames = $nodeTypeCriteria->explicitlyAllowedNodeTypeNames->toStringArray();
         $explicitlyDisallowedNodeTypeNames = $nodeTypeCriteria->explicitlyDisallowedNodeTypeNames->toStringArray();
-        $isEmpty =  $nodeTypeCriteria->explicitlyAllowedNodeTypeNames->isEmpty()
+        $isEmpty = $nodeTypeCriteria->explicitlyAllowedNodeTypeNames->isEmpty()
             && $nodeTypeCriteria->explicitlyDisallowedNodeTypeNames->isEmpty();
 
         $allowedNodeTypeNames = [];

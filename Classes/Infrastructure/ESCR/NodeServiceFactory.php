@@ -13,12 +13,12 @@ declare(strict_types=1);
 namespace Sitegeist\Archaeopteryx\Infrastructure\ESCR;
 
 use Neos\ContentRepository\Core\DimensionSpace\DimensionSpacePoint;
-use Neos\ContentRepository\Core\Projection\ContentGraph\VisibilityConstraints;
 use Neos\ContentRepository\Core\SharedModel\ContentRepository\ContentRepositoryId;
 use Neos\ContentRepository\Core\SharedModel\Workspace\WorkspaceName;
 use Neos\ContentRepositoryRegistry\ContentRepositoryRegistry;
 use Neos\Flow\Annotations as Flow;
 use Neos\Neos\Domain\NodeLabel\NodeLabelGeneratorInterface;
+use Neos\Neos\Domain\SubtreeTagging\NeosVisibilityConstraints;
 
 /**
  * @internal
@@ -43,7 +43,7 @@ final class NodeServiceFactory
             ->getContentGraph($workspaceName)
             ->getSubgraph(
                 $dimensionSpacePoint,
-                VisibilityConstraints::withoutRestrictions()
+                NeosVisibilityConstraints::excludeRemoved()
             );
 
         return new NodeService(
