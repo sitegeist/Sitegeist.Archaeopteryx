@@ -6,6 +6,10 @@ Feature: GetChildrenForTreeNode
       | language   | de, en, gsw | gsw->de, en     |
     And using the following node types:
     """yaml
+    'Neos.Neos:Sites':
+      superTypes:
+        'Neos.ContentRepository:Root': true
+
     'Neos.Neos:Content':
       abstract: true
 
@@ -67,22 +71,22 @@ Feature: GetChildrenForTreeNode
       | newContentStreamId | "cs-identifier" |
     And I am in workspace "live" and dimension space point {"language": "en"}
     And the command CreateRootNodeAggregateWithNode is executed with payload:
-      | Key             | Value                         |
-      | nodeAggregateId | "root"                        |
-      | nodeTypeName    | "Neos.ContentRepository:Root" |
+      | Key             | Value             |
+      | nodeAggregateId | "sites"           |
+      | nodeTypeName    | "Neos.Neos:Sites" |
 
     And the following CreateNodeAggregateWithNode commands are executed:
-      | nodeAggregateId      | parentNodeAggregateId | nodeTypeName                         | initialPropertyValues | originDimensionSpacePoint |
-      | homepage             | root                  | Neos.Neos:Site                       | {"title": "home"}     | {"language": "en"}        |
-      | features             | homepage              | Vendor.Site:Document                 | {"title": "features"} | {"language": "en"}        |
-      | content-a            | features              | Vendor.Site:Content                  | {}                    | {"language": "en"}        |
-      | feature-a-multi-dsp  | features              | Vendor.Site:Document                 | {"title": "a"}        | {"language": "en"}        |
-      | feature-b-disabled   | features              | Vendor.Site:Document                 | {"title": "b"}        | {"language": "en"}        |
-      | feature-c-other-type | features              | Vendor.Site:OtherDocument            | {"title": "c"}        | {"language": "en"}        |
-      | linkable             | homepage              | Vendor.Site:Document                 | {"title": "linkable"} | {"language": "en"}        |
-      | linkable-a-default   | linkable              | Vendor.Site:Document                 | {"title": "a"}        | {"language": "en"}        |
-      | linkable-b-included  | linkable              | Vendor.Site:IncludedLinkableDocument | {"title": "b"}        | {"language": "en"}        |
-      | linkable-c-excluded  | linkable              | Vendor.Site:ExcludedLinkableDocument | {"title": "c"}        | {"language": "en"}        |
+      | nodeAggregateId      | parentNodeAggregateId | nodeTypeName                         | initialPropertyValues | originDimensionSpacePoint | nodeName |
+      | homepage             | sites                 | Neos.Neos:Site                       | {"title": "home"}     | {"language": "en"}        | site-a   |
+      | features             | homepage              | Vendor.Site:Document                 | {"title": "features"} | {"language": "en"}        |          |
+      | content-a            | features              | Vendor.Site:Content                  | {}                    | {"language": "en"}        |          |
+      | feature-a-multi-dsp  | features              | Vendor.Site:Document                 | {"title": "a"}        | {"language": "en"}        |          |
+      | feature-b-disabled   | features              | Vendor.Site:Document                 | {"title": "b"}        | {"language": "en"}        |          |
+      | feature-c-other-type | features              | Vendor.Site:OtherDocument            | {"title": "c"}        | {"language": "en"}        |          |
+      | linkable             | homepage              | Vendor.Site:Document                 | {"title": "linkable"} | {"language": "en"}        |          |
+      | linkable-a-default   | linkable              | Vendor.Site:Document                 | {"title": "a"}        | {"language": "en"}        |          |
+      | linkable-b-included  | linkable              | Vendor.Site:IncludedLinkableDocument | {"title": "b"}        | {"language": "en"}        |          |
+      | linkable-c-excluded  | linkable              | Vendor.Site:ExcludedLinkableDocument | {"title": "c"}        | {"language": "en"}        |          |
 
     And the command CreateNodeVariant is executed with payload:
       | Key             | Value             |
