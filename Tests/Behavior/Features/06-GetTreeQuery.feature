@@ -175,6 +175,56 @@ Feature: GetTreeQuery
       }
       """
 
+  Scenario: GetTreeQuery for root node
+    When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-tree":
+      | Key                  | Value                |
+      | contentRepositoryId  | "default"            |
+      | workspaceName        | "live"               |
+      | dimensionValues      | {"language": ["en"]} |
+      | startingPoint        | "/<Neos.Neos:Sites>" |
+      | loadingDepth         | 1                    |
+      | baseNodeTypeFilter   | ""                   |
+      | linkableNodeTypes    | []                   |
+      | narrowNodeTypeFilter | ""                   |
+      | searchTerm           | ""                   |
+      | selectedNodeId       | null                 |
+
+    Then I expect the following query response:
+      """json
+      {
+          "success": {
+              "root": {
+                  "children": [
+                    {
+                      "children": [],
+                      "hasScheduledDisabledState": false,
+                      "hasUnloadedChildren": true,
+                      "icon": "globe",
+                      "isDisabled": false,
+                      "isHiddenInMenu": false,
+                      "isLinkable": true,
+                      "isMatchedByFilter": true,
+                      "label": "Homepage site-a",
+                      "nodeAggregateIdentifier": "homepage",
+                      "nodeTypeLabel": "Home Page Type"
+                    }
+                  ],
+                  "hasScheduledDisabledState": false,
+                  "hasUnloadedChildren": false,
+                  "icon": "questionmark",
+                  "isDisabled": false,
+                  "isHiddenInMenu": false,
+                  "isLinkable": true,
+                  "isMatchedByFilter": true,
+                  "label": "Neos.Neos:Sites",
+                  "nodeAggregateIdentifier": "sites",
+                  "nodeTypeLabel": ""
+              }
+          }
+      }
+      """
+
+
   Scenario: GetTreeQuery for homepage with one level of children
     When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-tree":
       | Key                  | Value                       |

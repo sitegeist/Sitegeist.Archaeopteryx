@@ -52,7 +52,7 @@ trait DinoTrait
         $engine = $this->getObject(InternalRequestEngine::class);
         // we must avoid $securityContext->clearContext() being called as this would overrule the active "withoutAuthorizationChecks"
         ObjectAccess::setProperty($engine, 'securityContext', new class {
-            public function clearContext() {}
+            public function clearContext(): void {}
         }, true);
         $browser->setRequestEngine($engine);
         $this->dino_last_query_response = $this->getObject(Context::class)->withoutAuthorizationChecks(
@@ -67,6 +67,7 @@ trait DinoTrait
     {
         $eventPayload = [];
         foreach ($payloadTable->getHash() as $line) {
+            (isset($line['Key']) and is_string($line['Key'])) or throw new \InvalidArgumentException('Key must be set.');
             $eventPayload[$line['Key']] = json_decode($line['Value'], true, 512, JSON_THROW_ON_ERROR);
         }
 
@@ -76,7 +77,7 @@ trait DinoTrait
     /**
      * @Then I expect the following query response:
      */
-    public function iExpectTheFollowingQueryResponse(PyStringNode $rawJson)
+    public function iExpectTheFollowingQueryResponse(PyStringNode $rawJson): void
     {
         $contents = $this->dino_last_query_response?->getBody()->getContents();
         Assert::assertNotNull($contents);
@@ -84,6 +85,9 @@ trait DinoTrait
             echo $contents;
             Assert::fail('Not a json response');
         }
+
+        // echo json_encode(json_decode($contents, true), JSON_PRETTY_PRINT);
+        // die();
 
         Assert::assertJsonStringEqualsJsonString(
             $rawJson->getRaw(),

@@ -169,13 +169,14 @@ Feature: GetNodeSummary
       }
       """
 
-  Scenario: GetNodeSummary for root node (not in use)
+  Scenario: GetNodeSummary for root node
     When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-node-summary":
       | Key                 | Value                |
       | contentRepositoryId | "default"            |
       | workspaceName       | "live"               |
       | dimensionValues     | {"language": ["en"]} |
       | nodeId              | "sites"           |
+    # todo improve Neos' default config for Neos.Neos:Sites node type
     Then I expect the following query response:
       """json
       {

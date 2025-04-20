@@ -30,9 +30,15 @@ class FeatureContext implements Context
         $this->contentRepositoryRegistry = $this->getObject(ContentRepositoryRegistry::class);
     }
 
+    /**
+     * @template T of ContentRepositoryServiceInterface
+     * @param ContentRepositoryServiceFactoryInterface<T> $factory
+     * @return T
+     */
     protected function getContentRepositoryService(
         ContentRepositoryServiceFactoryInterface $factory
     ): ContentRepositoryServiceInterface {
+        $this->currentContentRepository !== null or throw new \RuntimeException('Content repository is not initialised.');
         return $this->contentRepositoryRegistry->buildService(
             $this->currentContentRepository->id,
             $factory
