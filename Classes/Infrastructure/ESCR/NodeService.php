@@ -136,8 +136,6 @@ final class NodeService
         $nodeType = $this->requireNodeTypeByName($node->nodeTypeName);
 
         return new TreeNodeBuilder(
-            // @TODO: Figure this one out
-            sortingIndex: 0,
             nodeAggregateId: $node->aggregateId,
             icon: $nodeType->getConfiguration('ui.icon') ?? 'questionmark',
             label: $this->getLabelForNode($node),

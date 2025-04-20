@@ -92,12 +92,6 @@ final class TreeNodeBuilder
     {
         $items = [];
 
-        usort(
-            $this->children,
-            fn (TreeNodeBuilder $a, TreeNodeBuilder $b) =>
-                $a->sortingIndex <=> $b->sortingIndex
-        );
-
         foreach ($this->children as $childBuilder) {
             $items[] = $childBuilder->build();
         }
