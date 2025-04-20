@@ -84,9 +84,13 @@ Feature: GetTreeQuery
       | homepage             | sites                 | Neos.Neos:Site                       | {"title": "home"}            | {"language": "en"}        | site-a   |
       | features             | homepage              | Vendor.Site:Document                 | {"title": "features"}        | {"language": "en"}        | features |
       | features-content     | features              | Vendor.Site:Content                  | {}                           | {"language": "en"}        |          |
-      | feature-a-multi-dsp  | features              | Vendor.Site:Document                 | {"title": "a"}               | {"language": "en"}        | a        |
+      | feature-a-default    | features              | Vendor.Site:Document                 | {"title": "a"}               | {"language": "en"}        | a        |
+      | feature-a1-default   | feature-a-default     | Vendor.Site:Document                 | {"title": "a1"}              | {"language": "en"}        | leaf     |
+      | feature-a2-default   | feature-a-default     | Vendor.Site:Document                 | {"title": "a2"}              | {"language": "en"}        |          |
       | feature-b-disabled   | features              | Vendor.Site:Document                 | {"title": "b"}               | {"language": "en"}        |          |
       | feature-c-other-type | features              | Vendor.Site:OtherDocument            | {"title": "c"}               | {"language": "en"}        |          |
+      | feature-c1-default   | feature-c-other-type  | Vendor.Site:Document                 | {"title": "c1"}              | {"language": "en"}        |          |
+      | feature-d-multi-dsp  | features              | Vendor.Site:Document                 | {"title": "d"}               | {"language": "en"}        | d        |
       | linkable             | homepage              | Vendor.Site:Document                 | {"title": "linkable"}        | {"language": "en"}        | linkable |
       | linkable-a-default   | linkable              | Vendor.Site:Document                 | {"title": "a"}               | {"language": "en"}        |          |
       | linkable-b-included  | linkable              | Vendor.Site:IncludedLinkableDocument | {"title": "b"}               | {"language": "en"}        |          |
@@ -114,7 +118,7 @@ Feature: GetTreeQuery
 
     And the command CreateNodeVariant is executed with payload:
       | Key             | Value                 |
-      | nodeAggregateId | "feature-a-multi-dsp" |
+      | nodeAggregateId | "feature-d-multi-dsp" |
       | sourceOrigin    | {"language":"en"}     |
       | targetOrigin    | {"language":"de"}     |
 
@@ -126,9 +130,9 @@ Feature: GetTreeQuery
 
     And the command SetNodeProperties is executed with payload:
       | Key                       | Value                 |
-      | nodeAggregateId           | "feature-a-multi-dsp" |
+      | nodeAggregateId           | "feature-d-multi-dsp" |
       | originDimensionSpacePoint | {"language": "de"}    |
-      | propertyValues            | {"title": "a (de)"}   |
+      | propertyValues            | {"title": "d (de)"}   |
 
     Given the command TagSubtree is executed with payload:
       | Key                          | Value                |
@@ -248,17 +252,17 @@ Feature: GetTreeQuery
 
   Scenario: GetTreeQuery for leaf node
     When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-tree":
-      | Key                  | Value                                  |
-      | contentRepositoryId  | "default"                              |
-      | workspaceName        | "live"                                 |
-      | dimensionValues      | {"language": ["en"]}                   |
-      | startingPoint        | "/<Neos.Neos:Sites>/site-a/features/a" |
-      | loadingDepth         | 8                                      |
-      | baseNodeTypeFilter   | ""                                     |
-      | linkableNodeTypes    | []                                     |
-      | narrowNodeTypeFilter | ""                                     |
-      | searchTerm           | ""                                     |
-      | selectedNodeId       | null                                   |
+      | Key                  | Value                                       |
+      | contentRepositoryId  | "default"                                   |
+      | workspaceName        | "live"                                      |
+      | dimensionValues      | {"language": ["en"]}                        |
+      | startingPoint        | "/<Neos.Neos:Sites>/site-a/features/a/leaf" |
+      | loadingDepth         | 8                                           |
+      | baseNodeTypeFilter   | ""                                          |
+      | linkableNodeTypes    | []                                          |
+      | narrowNodeTypeFilter | ""                                          |
+      | searchTerm           | ""                                          |
+      | selectedNodeId       | null                                        |
 
     Then I expect the following query response:
       """json
@@ -273,8 +277,8 @@ Feature: GetTreeQuery
                   "isHiddenInMenu": false,
                   "isLinkable": true,
                   "isMatchedByFilter": true,
-                  "label": "My Node: a",
-                  "nodeAggregateIdentifier": "feature-a-multi-dsp",
+                  "label": "My Node: a1",
+                  "nodeAggregateIdentifier": "feature-a1-default",
                   "nodeTypeLabel": "My Document Type"
               }
           }
@@ -302,7 +306,31 @@ Feature: GetTreeQuery
               "root": {
                   "children": [
                        {
-                           "children": [],
+                           "children": [{
+                              "children": [],
+                              "hasScheduledDisabledState": false,
+                              "hasUnloadedChildren": false,
+                              "icon": "my-icon",
+                              "isDisabled": false,
+                              "isHiddenInMenu": false,
+                              "isLinkable": true,
+                              "isMatchedByFilter": true,
+                              "label": "My Node: a1",
+                              "nodeAggregateIdentifier": "feature-a1-default",
+                              "nodeTypeLabel": "My Document Type"
+                           },{
+                              "children": [],
+                              "hasScheduledDisabledState": false,
+                              "hasUnloadedChildren": false,
+                              "icon": "my-icon",
+                              "isDisabled": false,
+                              "isHiddenInMenu": false,
+                              "isLinkable": true,
+                              "isMatchedByFilter": true,
+                              "label": "My Node: a2",
+                              "nodeAggregateIdentifier": "feature-a2-default",
+                              "nodeTypeLabel": "My Document Type"
+                           }],
                            "hasScheduledDisabledState": false,
                            "hasUnloadedChildren": false,
                            "icon": "my-icon",
@@ -311,7 +339,7 @@ Feature: GetTreeQuery
                            "isLinkable": true,
                            "isMatchedByFilter": true,
                            "label": "My Node: a",
-                           "nodeAggregateIdentifier": "feature-a-multi-dsp",
+                           "nodeAggregateIdentifier": "feature-a-default",
                            "nodeTypeLabel": "My Document Type"
                        },
                        {
@@ -328,7 +356,19 @@ Feature: GetTreeQuery
                            "nodeTypeLabel": "My Document Type"
                        },
                        {
-                           "children": [],
+                           "children": [{
+                              "children": [],
+                              "hasScheduledDisabledState": false,
+                              "hasUnloadedChildren": false,
+                              "icon": "my-icon",
+                              "isDisabled": false,
+                              "isHiddenInMenu": false,
+                              "isLinkable": true,
+                              "isMatchedByFilter": true,
+                              "label": "My Node: c1",
+                              "nodeAggregateIdentifier": "feature-c1-default",
+                              "nodeTypeLabel": "My Document Type"
+                           }],
                            "hasScheduledDisabledState": false,
                            "hasUnloadedChildren": false,
                            "icon": "my-other-icon",
@@ -339,6 +379,19 @@ Feature: GetTreeQuery
                            "label": "My Other Node",
                            "nodeAggregateIdentifier": "feature-c-other-type",
                            "nodeTypeLabel": "My Other Document Type"
+                       },
+                       {
+                           "children": [],
+                           "hasScheduledDisabledState": false,
+                           "hasUnloadedChildren": false,
+                           "icon": "my-icon",
+                           "isDisabled": false,
+                           "isHiddenInMenu": false,
+                           "isLinkable": true,
+                           "isMatchedByFilter": true,
+                           "label": "My Node: d",
+                           "nodeAggregateIdentifier": "feature-d-multi-dsp",
+                           "nodeTypeLabel": "My Document Type"
                        }
                    ],
                    "hasScheduledDisabledState": false,
@@ -448,9 +501,9 @@ Feature: GetTreeQuery
                           "hasUnloadedChildren": false,
                           "children": [
                               {
-                                  "nodeAggregateIdentifier": "feature-a-multi-dsp",
+                                  "nodeAggregateIdentifier": "feature-d-multi-dsp",
                                   "icon": "my-icon",
-                                  "label": "My Node: a (de)",
+                                  "label": "My Node: d (de)",
                                   "nodeTypeLabel": "My Document Type",
                                   "isMatchedByFilter": true,
                                   "isLinkable": true,
@@ -771,3 +824,223 @@ Feature: GetTreeQuery
           }
       }
       """
+
+  Scenario: GetTreeQuery with not existing selectedNodeId
+    When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-tree":
+      | Key                  | Value                                       |
+      | contentRepositoryId  | "default"                                   |
+      | workspaceName        | "live"                                      |
+      | dimensionValues      | {"language": ["en"]}                        |
+      | startingPoint        | "/<Neos.Neos:Sites>/site-a/features/a/leaf" |
+      | loadingDepth         | 0                                           |
+      | baseNodeTypeFilter   | ""                                          |
+      | linkableNodeTypes    | []                                          |
+      | narrowNodeTypeFilter | ""                                          |
+      | searchTerm           | ""                                          |
+      | selectedNodeId       | "not-existing-node"                         |
+    Then I expect the following query response:
+      """json
+      {
+          "success": {
+              "root": {
+                  "children": [],
+                  "hasScheduledDisabledState": false,
+                  "hasUnloadedChildren": false,
+                  "icon": "my-icon",
+                  "isDisabled": false,
+                  "isHiddenInMenu": false,
+                  "isLinkable": true,
+                  "isMatchedByFilter": true,
+                  "label": "My Node: a1",
+                  "nodeAggregateIdentifier": "feature-a1-default",
+                  "nodeTypeLabel": "My Document Type"
+              }
+          }
+      }
+      """
+
+  Scenario: GetTreeQuery with selectedNodeId not in startingPoint graph
+    When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-tree":
+      | Key                  | Value                                       |
+      | contentRepositoryId  | "default"                                   |
+      | workspaceName        | "live"                                      |
+      | dimensionValues      | {"language": ["en"]}                        |
+      | startingPoint        | "/<Neos.Neos:Sites>/site-a/features/a/leaf" |
+      | loadingDepth         | 8                                           |
+      | baseNodeTypeFilter   | ""                                          |
+      | linkableNodeTypes    | []                                          |
+      | narrowNodeTypeFilter | ""                                          |
+      | searchTerm           | ""                                          |
+      | selectedNodeId       | null                                        |
+
+    Then I expect the following query response:
+      """json
+      {
+          "success": {
+              "root": {
+                  "children": [],
+                  "hasScheduledDisabledState": false,
+                  "hasUnloadedChildren": false,
+                  "icon": "my-icon",
+                  "isDisabled": false,
+                  "isHiddenInMenu": false,
+                  "isLinkable": true,
+                  "isMatchedByFilter": true,
+                  "label": "My Node: a1",
+                  "nodeAggregateIdentifier": "feature-a1-default",
+                  "nodeTypeLabel": "My Document Type"
+              }
+          }
+      }
+      """
+
+  Scenario: GetTreeQuery with selectedNodeId
+    When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-tree":
+      | Key                  | Value                                       |
+      | contentRepositoryId  | "default"                                   |
+      | workspaceName        | "live"                                      |
+      | dimensionValues      | {"language": ["en"]}                        |
+      | startingPoint        | "/<Neos.Neos:Sites>/site-a/features/a/leaf" |
+      | loadingDepth         | 8                                           |
+      | baseNodeTypeFilter   | ""                                          |
+      | linkableNodeTypes    | []                                          |
+      | narrowNodeTypeFilter | ""                                          |
+      | searchTerm           | ""                                          |
+      | selectedNodeId       | "feature-a1-default"                        |
+
+    Then I expect the following query response:
+      """json
+      {
+          "success": {
+              "root": {
+                  "children": [],
+                  "hasScheduledDisabledState": false,
+                  "hasUnloadedChildren": false,
+                  "icon": "my-icon",
+                  "isDisabled": false,
+                  "isHiddenInMenu": false,
+                  "isLinkable": true,
+                  "isMatchedByFilter": true,
+                  "label": "My Node: a1",
+                  "nodeAggregateIdentifier": "feature-a1-default",
+                  "nodeTypeLabel": "My Document Type"
+              }
+          }
+      }
+      """
+
+  Scenario: GetTreeQuery with selectedNodeId not in depth
+    When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-tree":
+      | Key                  | Value                                |
+      | contentRepositoryId  | "default"                            |
+      | workspaceName        | "live"                               |
+      | dimensionValues      | {"language": ["en"]}                 |
+      | startingPoint        | "/<Neos.Neos:Sites>/site-a/features" |
+      | loadingDepth         | 0                                    |
+      | baseNodeTypeFilter   | "Neos.Neos:Document"                 |
+      | linkableNodeTypes    | []                                   |
+      | narrowNodeTypeFilter | ""                                   |
+      | searchTerm           | ""                                   |
+      | selectedNodeId       | "feature-a2-default"                 |
+
+    Then I expect the following query response:
+      """json
+      {
+        "success": {
+            "root": {
+                "nodeAggregateIdentifier": "features",
+                "icon": "my-icon",
+                "label": "My Node: features",
+                "nodeTypeLabel": "My Document Type",
+                "isMatchedByFilter": true,
+                "isLinkable": true,
+                "isDisabled": false,
+                "isHiddenInMenu": false,
+                "hasScheduledDisabledState": false,
+                "hasUnloadedChildren": false,
+                "children": [
+                    {
+                        "nodeAggregateIdentifier": "feature-a-default",
+                        "icon": "my-icon",
+                        "label": "My Node: a",
+                        "nodeTypeLabel": "My Document Type",
+                        "isMatchedByFilter": true,
+                        "isLinkable": true,
+                        "isDisabled": false,
+                        "isHiddenInMenu": false,
+                        "hasScheduledDisabledState": false,
+                        "hasUnloadedChildren": false,
+                        "children": [
+                            {
+                                "nodeAggregateIdentifier": "feature-a1-default",
+                                "icon": "my-icon",
+                                "label": "My Node: a1",
+                                "nodeTypeLabel": "My Document Type",
+                                "isMatchedByFilter": true,
+                                "isLinkable": true,
+                                "isDisabled": false,
+                                "isHiddenInMenu": false,
+                                "hasScheduledDisabledState": false,
+                                "hasUnloadedChildren": false,
+                                "children": []
+                            },
+                            {
+                                "nodeAggregateIdentifier": "feature-a2-default",
+                                "icon": "my-icon",
+                                "label": "My Node: a2",
+                                "nodeTypeLabel": "My Document Type",
+                                "isMatchedByFilter": true,
+                                "isLinkable": true,
+                                "isDisabled": false,
+                                "isHiddenInMenu": false,
+                                "hasScheduledDisabledState": false,
+                                "hasUnloadedChildren": false,
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "nodeAggregateIdentifier": "feature-b-disabled",
+                        "icon": "my-icon",
+                        "label": "My Node: b",
+                        "nodeTypeLabel": "My Document Type",
+                        "isMatchedByFilter": true,
+                        "isLinkable": true,
+                        "isDisabled": true,
+                        "isHiddenInMenu": false,
+                        "hasScheduledDisabledState": false,
+                        "hasUnloadedChildren": false,
+                        "children": []
+                    },
+                    {
+                        "nodeAggregateIdentifier": "feature-c-other-type",
+                        "icon": "my-other-icon",
+                        "label": "My Other Node",
+                        "nodeTypeLabel": "My Other Document Type",
+                        "isMatchedByFilter": true,
+                        "isLinkable": true,
+                        "isDisabled": false,
+                        "isHiddenInMenu": false,
+                        "hasScheduledDisabledState": false,
+                        "hasUnloadedChildren": true,
+                        "children": []
+                    },
+                    {
+                        "nodeAggregateIdentifier": "feature-d-multi-dsp",
+                        "icon": "my-icon",
+                        "label": "My Node: d",
+                        "nodeTypeLabel": "My Document Type",
+                        "isMatchedByFilter": true,
+                        "isLinkable": true,
+                        "isDisabled": false,
+                        "isHiddenInMenu": false,
+                        "hasScheduledDisabledState": false,
+                        "hasUnloadedChildren": false,
+                        "children": []
+                    }
+                ]
+            }
+        }
+      }
+      """
+
