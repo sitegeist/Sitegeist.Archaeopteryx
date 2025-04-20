@@ -96,7 +96,12 @@ Feature: GetNodeSummary
       """json
       {
           "success": {
-              "breadcrumbs": [],
+              "breadcrumbs": [
+                  {
+                      "icon": "globe",
+                      "label": "Homepage site-a"
+                  }
+              ],
               "icon": "globe",
               "label": "Homepage site-a",
               "uri": "node://homepage"
@@ -116,6 +121,10 @@ Feature: GetNodeSummary
       {
           "success": {
               "breadcrumbs": [
+                  {
+                      "icon": "globe",
+                      "label": "Homepage site-a"
+                  },
                   {
                       "icon": "my-icon",
                       "label": "My Node: features"
@@ -145,6 +154,10 @@ Feature: GetNodeSummary
           "success": {
               "breadcrumbs": [
                   {
+                      "icon": "globe",
+                      "label": "Homepage site-a"
+                  },
+                  {
                       "icon": "my-icon",
                       "label": "My Node: features"
                   }
@@ -152,6 +165,25 @@ Feature: GetNodeSummary
               "icon": "my-icon",
               "label": "My Node: features",
               "uri": "node://features"
+          }
+      }
+      """
+
+  Scenario: GetNodeSummary for root node (not in use)
+    When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-node-summary":
+      | Key                 | Value                |
+      | contentRepositoryId | "default"            |
+      | workspaceName       | "live"               |
+      | dimensionValues     | {"language": ["en"]} |
+      | nodeId              | "sites"           |
+    Then I expect the following query response:
+      """json
+      {
+          "success": {
+              "breadcrumbs": [],
+              "icon": "questionmark",
+              "label": "Neos.Neos:Sites",
+              "uri": "node://sites"
           }
       }
       """
@@ -168,6 +200,10 @@ Feature: GetNodeSummary
       {
           "success": {
               "breadcrumbs": [
+                  {
+                      "icon": "globe",
+                      "label": "Homepage site-a"
+                  },
                   {
                       "icon": "my-icon",
                       "label": "My Node: features (de)"

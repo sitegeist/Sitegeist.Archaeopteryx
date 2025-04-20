@@ -56,7 +56,7 @@ final class GetNodeSummaryQueryHandler
             $node = $nodeService->findParentNode($node);
         }
 
-        $items = array_slice($items, 0, -2);
+        $items = array_slice($items, 0, -1);
         $items = array_reverse($items);
 
         return new Breadcrumbs(...$items);
