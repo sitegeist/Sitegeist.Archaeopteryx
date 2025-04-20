@@ -38,6 +38,9 @@ final class GetTreeQuery
         public readonly string $searchTerm,
         public readonly ?NodeAggregateId $selectedNodeId,
     ) {
+        if ($this->loadingDepth < 0) {
+            throw new \InvalidArgumentException(sprintf('Loading depth must not be negative, got %d', $this->loadingDepth), 1745164594);
+        }
     }
 
     /**
