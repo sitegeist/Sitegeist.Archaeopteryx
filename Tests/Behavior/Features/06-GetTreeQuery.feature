@@ -875,41 +875,15 @@ Feature: GetTreeQuery
       }
       """
 
-  Scenario: GetTreeQuery with not existing selectedNodeId
-    When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-tree":
-      | Key                  | Value                                       |
-      | contentRepositoryId  | "default"                                   |
-      | workspaceName        | "live"                                      |
-      | dimensionValues      | {"language": ["en"]}                        |
-      | startingPoint        | "/<Neos.Neos:Sites>/site-a/features/a/leaf" |
-      | loadingDepth         | 0                                           |
-      | baseNodeTypeFilter   | ""                                          |
-      | linkableNodeTypes    | []                                          |
-      | narrowNodeTypeFilter | ""                                          |
-      | searchTerm           | ""                                          |
-      | selectedNodeId       | "not-existing-node"                         |
-    Then I expect the following query response:
-      """json
-      {
-          "success": {
-              "root": {
-                  "children": [],
-                  "hasScheduledDisabledState": false,
-                  "hasUnloadedChildren": false,
-                  "icon": "my-icon",
-                  "isDisabled": false,
-                  "isHiddenInMenu": false,
-                  "isLinkable": true,
-                  "isMatchedByFilter": true,
-                  "label": "My Node: a1",
-                  "nodeAggregateIdentifier": "feature-a1-default",
-                  "nodeTypeLabel": "My Document Type"
-              }
-          }
-      }
-      """
+  Scenario Outline: GetTreeQuery with selectedNodeId
+    Examples:
+      | selectedNodeId       |
+      | "feature-a1-default" |
+      # selectedNodeId not in startingPoint graph (e.g. node was moved out of tree)
+      | "feature-a1"         |
+      # not existing selectedNodeId (e.g. node was deleted)
+      | "not-existing-node"  |
 
-  Scenario: GetTreeQuery with selectedNodeId not in startingPoint graph
     When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-tree":
       | Key                  | Value                                       |
       | contentRepositoryId  | "default"                                   |
@@ -921,7 +895,7 @@ Feature: GetTreeQuery
       | linkableNodeTypes    | []                                          |
       | narrowNodeTypeFilter | ""                                          |
       | searchTerm           | ""                                          |
-      | selectedNodeId       | null                                        |
+      | selectedNodeId       | <selectedNodeId>                            |
 
     Then I expect the following query response:
       """json
@@ -944,42 +918,13 @@ Feature: GetTreeQuery
       }
       """
 
-  Scenario: GetTreeQuery with selectedNodeId
-    When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-tree":
-      | Key                  | Value                                       |
-      | contentRepositoryId  | "default"                                   |
-      | workspaceName        | "live"                                      |
-      | dimensionValues      | {"language": ["en"]}                        |
-      | startingPoint        | "/<Neos.Neos:Sites>/site-a/features/a/leaf" |
-      | loadingDepth         | 8                                           |
-      | baseNodeTypeFilter   | ""                                          |
-      | linkableNodeTypes    | []                                          |
-      | narrowNodeTypeFilter | ""                                          |
-      | searchTerm           | ""                                          |
-      | selectedNodeId       | "feature-a1-default"                        |
 
-    Then I expect the following query response:
-      """json
-      {
-          "success": {
-              "root": {
-                  "children": [],
-                  "hasScheduledDisabledState": false,
-                  "hasUnloadedChildren": false,
-                  "icon": "my-icon",
-                  "isDisabled": false,
-                  "isHiddenInMenu": false,
-                  "isLinkable": true,
-                  "isMatchedByFilter": true,
-                  "label": "My Node: a1",
-                  "nodeAggregateIdentifier": "feature-a1-default",
-                  "nodeTypeLabel": "My Document Type"
-              }
-          }
-      }
-      """
+  Scenario Outline: GetTreeQuery with selectedNodeId not in depth
+    Examples:
+      | selectedNodeId       |
+      | "feature-a1-default" |
+      | "feature-a2-default" |
 
-  Scenario: GetTreeQuery with selectedNodeId not in depth
     When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-tree":
       | Key                  | Value                                |
       | contentRepositoryId  | "default"                            |
@@ -991,7 +936,7 @@ Feature: GetTreeQuery
       | linkableNodeTypes    | []                                   |
       | narrowNodeTypeFilter | ""                                   |
       | searchTerm           | ""                                   |
-      | selectedNodeId       | "feature-a2-default"                 |
+      | selectedNodeId       | <selectedNodeId>                     |
 
     Then I expect the following query response:
       """json
@@ -1093,4 +1038,3 @@ Feature: GetTreeQuery
         }
       }
       """
-
