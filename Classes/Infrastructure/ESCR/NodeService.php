@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Sitegeist\Archaeopteryx\Infrastructure\ESCR;
 
 use Neos\ContentRepository\Core\ContentRepository;
-use Neos\ContentRepository\Core\Feature\SubtreeTagging\Dto\SubtreeTag;
 use Neos\ContentRepository\Core\NodeType\NodeType;
 use Neos\ContentRepository\Core\NodeType\NodeTypeName;
 use Neos\ContentRepository\Core\Projection\ContentGraph\AbsoluteNodePath;
@@ -30,6 +29,7 @@ use Neos\ContentRepository\Core\Projection\ContentGraph\Nodes;
 use Neos\ContentRepository\Core\SharedModel\Node\NodeAggregateId;
 use Neos\Flow\Annotations as Flow;
 use Neos\Neos\Domain\NodeLabel\NodeLabelGeneratorInterface;
+use Neos\Neos\Domain\SubtreeTagging\NeosSubtreeTag;
 use Sitegeist\Archaeopteryx\Application\Shared\NodeTypeWasNotFound;
 use Sitegeist\Archaeopteryx\Application\Shared\NodeWasNotFound;
 use Sitegeist\Archaeopteryx\Application\Shared\TreeNodeBuilder;
@@ -110,8 +110,8 @@ final class NodeService
     public function search(Node $rootNode, string $searchTerm, NodeTypeFilter $nodeTypeFilter): Nodes
     {
         $filter = FindDescendantNodesFilter::create(
-            searchTerm: $searchTerm,
-            nodeTypes: $nodeTypeFilter->nodeTypeCriteria
+            nodeTypes: $nodeTypeFilter->nodeTypeCriteria,
+            searchTerm: $searchTerm
         );
 
         return $this->subgraph->findDescendantNodes($rootNode->aggregateId, $filter);
@@ -142,7 +142,7 @@ final class NodeService
             nodeTypeLabel: $nodeType->getLabel(),
             isMatchedByFilter: false,
             isLinkable: false,
-            isDisabled: $node->tags->withoutInherited()->contain(SubtreeTag::disabled()),
+            isDisabled: $node->tags->withoutInherited()->contain(NeosSubtreeTag::disabled()),
             isHiddenInMenu: $node->getProperty('hiddenInMenu') ?? false,
             hasScheduledDisabledState:
                 $node->getProperty('enableAfterDateTime') instanceof \DateTimeInterface
