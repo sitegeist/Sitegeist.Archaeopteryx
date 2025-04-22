@@ -10,6 +10,7 @@ import {Process, Field} from '../../../framework';
 import {ILink, makeLinkType} from '../../../domain';
 import {IconCard, IconLabel} from '../../../presentation';
 import { Nullable } from 'ts-toolbelt/out/Union/Nullable';
+import {isSuitableFor} from "./WebSpecification";
 
 type WebLinkModel = {
     protocol: 'http' | 'https'
@@ -23,12 +24,7 @@ function removeHttp(url: string) {
 export const Web = makeLinkType<WebLinkModel>('Sitegeist.Archaeopteryx:Web', ({createError}) => ({
     supportedLinkOptions: ['anchor', 'title', 'targetBlank', 'relNofollow'],
 
-    isSuitableFor: (link: ILink) => {
-        const isHttp = link.href.startsWith('http://');
-        const isHttps = link.href.startsWith('https://');
-
-        return isHttp || isHttps;
-    },
+    isSuitableFor,
 
     useResolvedModel: (link: ILink) => {
         const matches = link.href.match(/^(https?):\/\/(.*)$/);

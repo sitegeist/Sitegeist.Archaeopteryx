@@ -24,6 +24,7 @@ import { ILink, makeLinkType } from "../../../domain";
 import { IconCard, IconLabel } from "../../../presentation";
 import { Process, Field } from "../../../framework";
 import { getNodeSummary } from "../../../infrastructure/http";
+import {isSuitableFor} from "./NodeSpecification";
 
 type NodeLinkModel = {
     nodeId: string;
@@ -81,7 +82,7 @@ export const Node = makeLinkType<NodeLinkModel, NodeLinkOptions>(
     ({ createError }) => ({
         supportedLinkOptions: ["anchor", "title", "targetBlank", "relNofollow"],
 
-        isSuitableFor: (link: ILink) => link.href.startsWith("node://") && !link.href.includes('#'),
+        isSuitableFor,
 
         useResolvedModel: (link: ILink) => {
             const match = /node:\/\/(.*)/.exec(link.href);

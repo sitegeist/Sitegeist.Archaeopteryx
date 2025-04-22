@@ -11,6 +11,7 @@ import {Process, Field, EditorEnvelope} from '../../../framework';
 import {IconCard, IconLabel} from "../../../presentation";
 import {Nullable} from 'ts-toolbelt/out/Union/Nullable';
 import {OptionalDeep} from 'ts-toolbelt/out/Object/Optional';
+import {isSuitableFor} from "../Node/NodeSpecification";
 
 type PhoneNumberLinkModel = {
     phoneNumber: string,
@@ -24,7 +25,7 @@ type PhoneNumberLinkOptions = {
 
 export const PhoneNumber = makeLinkType<PhoneNumberLinkModel, PhoneNumberLinkOptions>('Sitegeist.Archaeopteryx:PhoneNumber', ({createError}) => ({
 
-    isSuitableFor: (link: ILink) => link.href.startsWith('tel:'),
+    isSuitableFor,
 
     useResolvedModel: (link: ILink) => {
         const phoneNumber = parsePhoneNumber(link.href.replace('tel:', ''));

@@ -8,19 +8,14 @@ import {ILink, makeLinkType} from "../../../domain";
 import {Process, Field} from '../../../framework';
 import {IconCard, IconLabel} from "../../../presentation";
 import {Nullable} from 'ts-toolbelt/out/Union/Nullable';
+import {isSuitableFor} from "./CustomLinkSpecification";
 
 type CustomLinkModel = {
     customLink: string,
 }
 
 export const CustomLink = makeLinkType<CustomLinkModel>('Sitegeist.Archaeopteryx:CustomLink', () => ({
-    isSuitableFor: (link: ILink) => {
-        if ((link.href.startsWith('asset://') || link.href.startsWith('node://')) && link.href.includes('#')) {
-            return true;
-        }
-        return !link.href.startsWith('node://') && !link.href.startsWith('asset://') && !link.href.startsWith('mailto:')
-                && !link.href.startsWith('tel:') && !link.href.startsWith('http://') && !link.href.startsWith('https://');
-    },
+    isSuitableFor,
 
     useResolvedModel: (link: ILink) => {
         return Process.success({

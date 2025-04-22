@@ -1,15 +1,7 @@
-jest.mock('@neos-project/neos-ui-backend-connector', () => ({}), { virtual: true });
-jest.mock('@neos-project/react-ui-components', () => ({}));
-jest.mock('@sitegeist/archaeopteryx-custom-node-tree', () => ({}));
-jest.mock('@neos-project/neos-ui-redux-store', () => ({}), { virtual: true });
-jest.mock('@neos-project/neos-ui-editors', () => ({}), { virtual: true });
+import {describe, it} from 'node:test';
+import {equal} from 'node:assert/strict';
 
-jest.mock('../../../presentation', () => ({}));
-
-import '@testing-library/jest-dom/extend-expect';
-
-import {Node} from './Node';
-
+import {isSuitableFor} from './NodeSpecification';
 
 describe('LinkType: Node', () => {
     it('is not satisfied by http:// links', () => {
@@ -17,8 +9,7 @@ describe('LinkType: Node', () => {
             href: 'http://www.example.com'
         };
 
-        expect(Node.isSuitableFor(link))
-            .toBe(false);
+        equal(isSuitableFor(link), false);
     });
 
     it('is not satisfied by https:// links', () => {
@@ -26,8 +17,7 @@ describe('LinkType: Node', () => {
             href: 'https://www.example.com'
         };
 
-        expect(Node.isSuitableFor(link))
-            .toBe(false);
+        equal(isSuitableFor(link), false);
     });
 
     it('is satisfied by node:// links', () => {
@@ -35,8 +25,7 @@ describe('LinkType: Node', () => {
             href: 'node://97c9a6e3-4b50-4559-9f60-b5ad68f25758'
         };
 
-        expect(Node.isSuitableFor(link))
-            .toBe(true);
+        equal(isSuitableFor(link), true);
     });
 
     it('is not satisfied by node:// links with a hash', () => {
@@ -44,8 +33,7 @@ describe('LinkType: Node', () => {
             href: 'node://97c9a6e3-4b50-4559-9f60-b5ad68f25758#section'
         };
 
-        expect(Node.isSuitableFor(link))
-                .toBe(false);
+        equal(isSuitableFor(link), false);
     });
 
     it('is not satisfied by asset:// links', () => {
@@ -53,8 +41,7 @@ describe('LinkType: Node', () => {
             href: 'asset://97c9a6e3-4b50-4559-9f60-b5ad68f25758'
         };
 
-        expect(Node.isSuitableFor(link))
-            .toBe(false);
+        equal(isSuitableFor(link), false);
     });
 
     it('is not satisfied by mailto: links', () => {
@@ -62,8 +49,7 @@ describe('LinkType: Node', () => {
             href: 'mailto:foo@example.com'
         };
 
-        expect(Node.isSuitableFor(link))
-            .toBe(false);
+        equal(isSuitableFor(link), false);
     });
 
     it('is not satisfied by invalid links', () => {
@@ -71,8 +57,7 @@ describe('LinkType: Node', () => {
             href: 'Think of Beethoven\'s 5th: foo foo foo bar'
         };
 
-        expect(Node.isSuitableFor(link))
-            .toBe(false);
+        equal(isSuitableFor(link), false);
     });
 
     it('is not satisfied by tel: links', () => {
@@ -80,7 +65,6 @@ describe('LinkType: Node', () => {
             href: 'tel:+491258795857'
         };
 
-        expect(Node.isSuitableFor(link))
-            .toBe(false);
+        equal(isSuitableFor(link), false);
     });
 });

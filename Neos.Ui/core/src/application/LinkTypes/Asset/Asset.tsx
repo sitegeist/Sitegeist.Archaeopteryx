@@ -8,6 +8,7 @@ import {ImageCard, IconLabel} from '../../../presentation';
 
 import {MediaBrowser} from './MediaBrowser';
 import { Nullable } from 'ts-toolbelt/out/Union/Nullable';
+import {isSuitableFor} from "./AssetSpecification";
 
 type AssetLinkModel = {
     identifier: string
@@ -16,7 +17,7 @@ type AssetLinkModel = {
 export const Asset = makeLinkType<AssetLinkModel>('Sitegeist.Archaeopteryx:Asset', ({createError}) => ({
     supportedLinkOptions: ['title', 'targetBlank', 'relNofollow'],
 
-    isSuitableFor: (link: ILink) => link.href.startsWith('asset://') && !link.href.includes('#'),
+    isSuitableFor,
 
     useResolvedModel: (link: ILink) => {
         const match = /asset:\/\/(.*)/.exec(link.href);
