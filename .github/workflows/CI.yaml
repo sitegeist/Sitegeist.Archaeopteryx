@@ -1,0 +1,48 @@
+name: CI
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Enable Corepack
+        run: corepack enable
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'yarn'
+      - name: Install node modules
+        run: yarn
+      - name: Lint
+        run: yarn lint
+      - name: Run build
+        run: yarn build
+      - name: Push build files to GitHub
+        run: |
+          set -ex
+
+          if [ "$GITHUB_REF" != 'refs/heads/main' ]; then
+              echo "not pushing because ref is $GITHUB_REF"
+              exit 0
+          fi
+
+          git status -s | grep Resources/Public
+          if [ $? -eq 0 ]; then
+              git config --global user.name "github-actions[bot]"
+              git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+              git add -f Resources/Public
+              git commit -m "Update: Build frontend files"
+              git push
+          else
+              echo "No changes since last run"
+          fi
+
+      - name: Run test
+        run: yarn test
