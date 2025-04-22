@@ -3,9 +3,6 @@
     "license": "GPL-3.0-or-later",
     "version": "",
     "main": "./src/index.ts",
-    "scripts": {
-        "test": "jest"
-    },
     "dependencies": {
         "@neos-project/positional-array-sorter": "^8.0.1",
         "@neos-project/react-ui-components": "^7.0.2",
@@ -19,8 +16,5 @@
         "rxjs": "^6.6.7",
         "ts-toolbelt": "^9.6.0",
         "typesafe-actions": "^5.1.0"
-    },
-    "devDependencies": {
-        "jest": "^26.6.3"
     }
 }
