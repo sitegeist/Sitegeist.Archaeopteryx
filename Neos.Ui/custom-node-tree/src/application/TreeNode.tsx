@@ -16,6 +16,7 @@ interface Props {
     workspaceName: string;
     dimensionValues: Record<string, string[]>;
     baseNodeTypeFilter: string;
+    linkableNodeTypes?: string[];
     treeNode: TreeNodeDTO;
     selectedTreeNodeId?: string;
     level: number;
@@ -86,6 +87,7 @@ export const TreeNode: React.FC<Props> = (props) => {
                     dimensionValues: props.dimensionValues,
                     treeNodeId: props.treeNode.nodeAggregateIdentifier,
                     nodeTypeFilter: props.baseNodeTypeFilter,
+                    linkableNodeTypes: props.linkableNodeTypes
                 });
 
                 if ("success" in result) {
