@@ -1,3 +1,5 @@
 node_modules
 tsconfig.tsbuildinfo
 .yarn
+
+Resources/Public/JavaScript

@@ -7,6 +7,7 @@ const options = {
     logLevel: "info",
     bundle: true,
     minify: !isWatch,
+    sourcemap: "linked",
     legalComments: "linked",
     target: "es2020",
     entryPoints: { "Plugin": "./src/index.js" },
