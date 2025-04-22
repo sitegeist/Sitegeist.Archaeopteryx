@@ -63,6 +63,16 @@ const NodePreview: React.FC<{ nodeId: string }> = (props) => {
         .map(({ label }) => label)
         .join(" > ");
 
+    if (fetch__nodeSummary.loading) {
+        return (
+            <IconCard
+                icon="spinner"
+                title={i18n("Sitegeist.Archaeopteryx:LinkTypes.Node:loadingPreview")}
+                subTitle={`node://${props.nodeId}`}
+            />
+        );
+    }
+
     return (
         <IconCard
             icon={fetch__nodeSummary.value?.icon ?? "ban"}
