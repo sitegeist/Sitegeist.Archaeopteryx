@@ -4,10 +4,10 @@
     ],
     "compilerOptions": {
         "esModuleInterop": true,
+        "skipLibCheck": true,
         "target": "es2020",
         "moduleResolution": "node",
         "declaration": false,
-        "experimentalDecorators": true,
         "forceConsistentCasingInFileNames": true,
         "jsx": "react",
         "lib": [
@@ -23,10 +23,5 @@
         "strictNullChecks": true,
         "noUnusedParameters": true,
         "strict": true,
-        "pretty": true,
-        "removeComments": true,
-        "sourceMap": true,
-        "incremental": true,
-        "skipLibCheck": true
     }
 }
