@@ -36,28 +36,28 @@ Feature: GetTreeQuery Constraints
       | nodeTypeName    | "Neos.Neos:Sites" |
 
     And the following CreateNodeAggregateWithNode commands are executed:
-      | nodeAggregateId      | parentNodeAggregateId | nodeTypeName                         | initialPropertyValues        | originDimensionSpacePoint | nodeName |
-      | homepage             | sites                 | Neos.Neos:Site                       | {"title": "home"}            | {"language": "en"}        | site-a   |
+      | nodeAggregateId | parentNodeAggregateId | nodeTypeName   | initialPropertyValues | originDimensionSpacePoint | nodeName |
+      | homepage        | sites                 | Neos.Neos:Site | {"title": "home"}     | {"language": "en"}        | site-a   |
 
   Scenario: Invalid starting path
     When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-tree":
-      | Key                  | Value                             |
-      | contentRepositoryId  | "default"                         |
-      | workspaceName        | "live"                            |
-      | dimensionValues      | {"language": ["en"]}              |
-      | startingPoint        | "node-is-not-allowed" |
-      | loadingDepth         | 0                                 |
-      | baseNodeTypeFilter   | ""                                |
-      | linkableNodeTypes    | []                                |
-      | narrowNodeTypeFilter | ""                                |
-      | searchTerm           | ""                                |
-      | selectedNodeId       | null                              |
+      | Key                  | Value                |
+      | contentRepositoryId  | "default"            |
+      | workspaceName        | "live"               |
+      | dimensionValues      | {"language": ["en"]} |
+      | startingPoint        | "/sites"             |
+      | loadingDepth         | 0                    |
+      | baseNodeTypeFilter   | ""                   |
+      | linkableNodeTypes    | []                   |
+      | narrowNodeTypeFilter | ""                   |
+      | searchTerm           | ""                   |
+      | selectedNodeId       | null                 |
     Then I expect the following query response:
       """json
       {
           "error": {
               "code": 1687207234,
-              "message": "Absolute node paths must serialized beginning with the pattern \"/<My.Package:Root>\" ,\"node-is-not-allowed\" does not",
+              "message": "Absolute node paths must serialized beginning with the pattern \"/<My.Package:Root>\" ,\"/sites\" does not",
               "type": "Neos\\ContentRepository\\Core\\SharedModel\\Exception\\AbsoluteNodePathIsInvalid"
           }
       }
@@ -89,17 +89,17 @@ Feature: GetTreeQuery Constraints
 
   Scenario: Negative loading depth
     When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-tree":
-      | Key                  | Value                             |
-      | contentRepositoryId  | "default"                         |
-      | workspaceName        | "live"                            |
-      | dimensionValues      | {"language": ["en"]}              |
+      | Key                  | Value                       |
+      | contentRepositoryId  | "default"                   |
+      | workspaceName        | "live"                      |
+      | dimensionValues      | {"language": ["en"]}        |
       | startingPoint        | "/<Neos.Neos:Sites>/site-a" |
-      | loadingDepth         | -1                                 |
-      | baseNodeTypeFilter   | ""                                |
-      | linkableNodeTypes    | []                                |
-      | narrowNodeTypeFilter | ""                                |
-      | searchTerm           | ""                                |
-      | selectedNodeId       | null                              |
+      | loadingDepth         | -1                          |
+      | baseNodeTypeFilter   | ""                          |
+      | linkableNodeTypes    | []                          |
+      | narrowNodeTypeFilter | ""                          |
+      | searchTerm           | ""                          |
+      | selectedNodeId       | null                        |
     Then I expect the following query response:
       """json
       {

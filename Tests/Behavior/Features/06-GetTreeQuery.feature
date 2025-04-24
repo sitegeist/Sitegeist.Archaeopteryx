@@ -227,17 +227,18 @@ Feature: GetTreeQuery
 
   Scenario: GetTreeQuery for homepage with one level of children
     When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-tree":
-      | Key                  | Value                       |
-      | contentRepositoryId  | "default"                   |
-      | workspaceName        | "live"                      |
-      | dimensionValues      | {"language": ["en"]}        |
-      | startingPoint        | "/<Neos.Neos:Sites>/site-a" |
-      | loadingDepth         | 1                           |
-      | baseNodeTypeFilter   | ""                          |
-      | linkableNodeTypes    | []                          |
-      | narrowNodeTypeFilter | ""                          |
-      | searchTerm           | ""                          |
-      | selectedNodeId       | null                        |
+      | Key                  | Value                |
+      | contentRepositoryId  | "default"            |
+      | workspaceName        | "live"               |
+      | dimensionValues      | {"language": ["en"]} |
+      # or /<Neos.Neos:Sites>/site-a
+      | startingPoint        | "homepage"           |
+      | loadingDepth         | 1                    |
+      | baseNodeTypeFilter   | ""                   |
+      | linkableNodeTypes    | []                   |
+      | narrowNodeTypeFilter | ""                   |
+      | searchTerm           | ""                   |
+      | selectedNodeId       | null                 |
 
     Then I expect the following query response:
       """json

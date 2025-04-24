@@ -1,7 +1,5 @@
 export {
-    ContextPath,
-    useSiteNodeContextPath,
-    useDocumentNodeContextPath,
+    useSiteNodeAggregateId,
     useDimensionValues,
     usePersonalWorkspaceName,
 } from "./ContentRepository";

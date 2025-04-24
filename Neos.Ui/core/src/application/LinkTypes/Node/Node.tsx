@@ -11,7 +11,7 @@ import { Nullable } from "ts-toolbelt/out/Union/Nullable";
 import { OptionalDeep } from "ts-toolbelt/out/Object/Optional";
 
 import {
-    useSiteNodeContextPath,
+    useSiteNodeAggregateId,
     useConfiguration,
     useI18n,
     useSelector,
@@ -135,7 +135,7 @@ export const Node = makeLinkType<NodeLinkModel, NodeLinkOptions>(
             const i18n = useI18n();
             const workspaceName = usePersonalWorkspaceName();
             const dimensionValues = useDimensionValues();
-            const siteNodeContextPath = useSiteNodeContextPath();
+            const siteNodeAggregateId = useSiteNodeAggregateId();
             const defaultLoadingDepth =
                 useConfiguration((c) => c.nodeTree?.loadingDepth) ?? 4;
             const initialSearchTerm =
@@ -144,8 +144,8 @@ export const Node = makeLinkType<NodeLinkModel, NodeLinkOptions>(
                 useSelector((state) => state.ui?.pageTree?.filterNodeType) ??
                 "";
             const startingPoint = React.useMemo(
-                () => options.startingPoint ?? siteNodeContextPath?.path,
-                [options.startingPoint, siteNodeContextPath]
+                () => options.startingPoint ?? siteNodeAggregateId,
+                [options.startingPoint, siteNodeAggregateId]
             );
 
             if (!startingPoint) {

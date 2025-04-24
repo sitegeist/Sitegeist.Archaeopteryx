@@ -12,7 +12,9 @@ declare(strict_types=1);
 
 namespace Sitegeist\Archaeopteryx\Application\GetTree;
 
+use Neos\ContentRepository\Core\Projection\ContentGraph\AbsoluteNodePath;
 use Neos\ContentRepository\Core\Projection\ContentGraph\Node;
+use Neos\ContentRepository\Core\SharedModel\Node\NodeAggregateId;
 use Neos\Flow\Annotations as Flow;
 use Sitegeist\Archaeopteryx\Application\Shared\TreeNode;
 use Sitegeist\Archaeopteryx\Infrastructure\ESCR\LinkableNodeSpecification;
@@ -45,13 +47,16 @@ final class GetTreeQueryHandler
             contentRepositoryId: $query->contentRepositoryId,
         );
 
-        $rootNode = $nodeService->findNodeByAbsoluteNodePath($query->startingPoint);
-        if ($rootNode === null) {
-            throw StartingPointWasNotFound::becauseNodeWithGivenPathDoesNotExistInCurrentSubgraph(
+        $rootNode = match ($query->startingPoint::class) {
+            NodeAggregateId::class => $nodeService->findNodeById($query->startingPoint) ?? throw StartingPointWasNotFound::becauseNodeWithGivenIdNotExistInCurrentSubgraph(
+                nodeAggregateId: $query->startingPoint,
+                subgraph: $nodeService->subgraph,
+            ),
+            AbsoluteNodePath::class => $nodeService->findNodeByAbsoluteNodePath($query->startingPoint) ?? throw StartingPointWasNotFound::becauseNodeWithGivenPathDoesNotExistInCurrentSubgraph(
                 nodePath: $query->startingPoint,
                 subgraph: $nodeService->subgraph,
-            );
-        }
+            ),
+        };
 
         return new GetTreeQueryResult(
             root: empty($query->searchTerm) && empty($query->narrowNodeTypeFilter)
