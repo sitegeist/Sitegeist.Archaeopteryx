@@ -1,6 +1,4 @@
 parameters:
-	bootstrapFiles:
-		- Packages/Framework/Neos.Flow/Tests/BaseTestCase.php
-		- Packages/Framework/Neos.Flow/Tests/UnitTestCase.php
-		- Packages/Framework/Neos.Flow/Tests/FunctionalTestCase.php
-		- phpstan.bootstrap.php
+    level: 8
+    paths:
+        - Classes
