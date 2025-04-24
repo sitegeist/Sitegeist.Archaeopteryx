@@ -11,7 +11,7 @@ import {Process, Field, EditorEnvelope} from '../../../framework';
 import {IconCard, IconLabel} from "../../../presentation";
 import {Nullable} from 'ts-toolbelt/out/Union/Nullable';
 import {OptionalDeep} from 'ts-toolbelt/out/Object/Optional';
-import {isSuitableFor} from "../Node/NodeSpecification";
+import {isSuitableFor} from "./PhoneNumberSpecification";
 
 type PhoneNumberLinkModel = {
     phoneNumber: string,
