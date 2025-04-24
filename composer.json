@@ -16,8 +16,14 @@
         }
     ],
     "scripts": {
+        "lint:phpstan": "../../../bin/phpstan analyse",
+        "lint:phpcs": "../../../bin/phpcs --standard=PSR12 --extensions=php --exclude=Generic.Files.LineLength Classes/ Test/",
+        "lint": [
+            "@lint:phpstan",
+            "@lint:phpcs"
+        ],
         "test:behat-cli": "../../../bin/behat -f progress --strict --no-interaction",
-        "test:behavioral:stop-on-failure": "@test:behat-cli -c Tests/Behavior/behat.yml.dist -vvv --stop-on-failure"
+        "test:behavioral": "@test:behat-cli -c Tests/Behavior/behat.yml.dist -vvv"
     },
     "require": {
         "neos/neos": "^9.0"
@@ -28,14 +34,6 @@
         "neos/buildessentials": "^6.3",
         "mikey179/vfsstream": "^1.6",
         "squizlabs/php_codesniffer": "^3.6"
-    },
-    "scripts": {
-        "lint:phpstan": "../../../bin/phpstan analyse",
-        "lint:phpcs": "../../../bin/phpcs --standard=PSR12 --extensions=php --exclude=Generic.Files.LineLength Classes/",
-        "lint": [
-            "@lint:phpstan",
-            "@lint:phpcs"
-        ]
     },
     "autoload": {
         "psr-4": {
