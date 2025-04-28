@@ -86,7 +86,7 @@ Feature: GetNodeSummary
       | propertyValues            | {"title": "a (de)"} |
 
   Scenario: GetNodeSummary for homepage
-    When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-node-summary":
+    When I issue the following query to "http://127.0.0.1:8081/neos/archaeopteryx/get-node-summary":
       | Key                 | Value                |
       | contentRepositoryId | "default"            |
       | workspaceName       | "live"               |
@@ -110,7 +110,7 @@ Feature: GetNodeSummary
       """
 
   Scenario: GetNodeSummary for not configured node type
-    When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-node-summary":
+    When I issue the following query to "http://127.0.0.1:8081/neos/archaeopteryx/get-node-summary":
       | Key                 | Value                |
       | contentRepositoryId | "default"            |
       | workspaceName       | "live"               |
@@ -142,7 +142,7 @@ Feature: GetNodeSummary
       """
 
   Scenario: GetNodeSummary for customized node with parent
-    When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-node-summary":
+    When I issue the following query to "http://127.0.0.1:8081/neos/archaeopteryx/get-node-summary":
       | Key                 | Value                |
       | contentRepositoryId | "default"            |
       | workspaceName       | "live"               |
@@ -170,7 +170,7 @@ Feature: GetNodeSummary
       """
 
   Scenario: GetNodeSummary for root node
-    When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-node-summary":
+    When I issue the following query to "http://127.0.0.1:8081/neos/archaeopteryx/get-node-summary":
       | Key                 | Value                |
       | contentRepositoryId | "default"            |
       | workspaceName       | "live"               |
@@ -190,7 +190,7 @@ Feature: GetNodeSummary
       """
 
   Scenario: GetNodeSummary for customized node with multiple parents in another language
-    When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-node-summary":
+    When I issue the following query to "http://127.0.0.1:8081/neos/archaeopteryx/get-node-summary":
       | Key                 | Value                |
       | contentRepositoryId | "default"            |
       | workspaceName       | "live"               |

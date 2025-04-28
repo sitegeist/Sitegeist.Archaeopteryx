@@ -141,7 +141,7 @@ Feature: GetTreeQuery
       | tag                          | "disabled"           |
 
   Scenario: Simplest GetTreeQuery for homepage ignored children
-    When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-tree":
+    When I issue the following query to "http://127.0.0.1:8081/neos/archaeopteryx/get-tree":
       | Key                  | Value                       |
       | contentRepositoryId  | "default"                   |
       | workspaceName        | "live"                      |
@@ -176,7 +176,7 @@ Feature: GetTreeQuery
       """
 
   Scenario: GetTreeQuery for root node
-    When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-tree":
+    When I issue the following query to "http://127.0.0.1:8081/neos/archaeopteryx/get-tree":
       | Key                  | Value                |
       | contentRepositoryId  | "default"            |
       | workspaceName        | "live"               |
@@ -226,7 +226,7 @@ Feature: GetTreeQuery
 
 
   Scenario: GetTreeQuery for homepage with one level of children
-    When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-tree":
+    When I issue the following query to "http://127.0.0.1:8081/neos/archaeopteryx/get-tree":
       | Key                  | Value                |
       | contentRepositoryId  | "default"            |
       | workspaceName        | "live"               |
@@ -302,7 +302,7 @@ Feature: GetTreeQuery
       """
 
   Scenario: GetTreeQuery for leaf node
-    When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-tree":
+    When I issue the following query to "http://127.0.0.1:8081/neos/archaeopteryx/get-tree":
       | Key                  | Value                                       |
       | contentRepositoryId  | "default"                                   |
       | workspaceName        | "live"                                      |
@@ -337,7 +337,7 @@ Feature: GetTreeQuery
       """
 
   Scenario: GetTreeQuery for document with multiple children
-    When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-tree":
+    When I issue the following query to "http://127.0.0.1:8081/neos/archaeopteryx/get-tree":
       | Key                  | Value                                |
       | contentRepositoryId  | "default"                            |
       | workspaceName        | "live"                               |
@@ -461,7 +461,7 @@ Feature: GetTreeQuery
       """
 
   Scenario: GetTreeQuery for document with filtered children
-    When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-tree":
+    When I issue the following query to "http://127.0.0.1:8081/neos/archaeopteryx/get-tree":
       | Key                  | Value                                |
       | contentRepositoryId  | "default"                            |
       | workspaceName        | "live"                               |
@@ -510,7 +510,7 @@ Feature: GetTreeQuery
       """
 
   Scenario: GetTreeQuery for homepage with all children in other dimension
-    When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-tree":
+    When I issue the following query to "http://127.0.0.1:8081/neos/archaeopteryx/get-tree":
       | Key                  | Value                       |
       | contentRepositoryId  | "default"                   |
       | workspaceName        | "live"                      |
@@ -573,7 +573,7 @@ Feature: GetTreeQuery
       """
 
   Scenario: GetTreeQuery for document with filtered children
-    When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-tree":
+    When I issue the following query to "http://127.0.0.1:8081/neos/archaeopteryx/get-tree":
       | Key                  | Value                                |
       | contentRepositoryId  | "default"                            |
       | workspaceName        | "live"                               |
@@ -648,7 +648,7 @@ Feature: GetTreeQuery
       """
 
   Scenario: GetTreeQuery search: with node types narrowed
-    When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-tree":
+    When I issue the following query to "http://127.0.0.1:8081/neos/archaeopteryx/get-tree":
       | Key                  | Value                              |
       | contentRepositoryId  | "default"                          |
       | workspaceName        | "live"                             |
@@ -738,7 +738,7 @@ Feature: GetTreeQuery
       """
 
   Scenario: GetTreeQuery search: with text search
-    When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-tree":
+    When I issue the following query to "http://127.0.0.1:8081/neos/archaeopteryx/get-tree":
       | Key                  | Value                              |
       | contentRepositoryId  | "default"                          |
       | workspaceName        | "live"                             |
@@ -814,7 +814,7 @@ Feature: GetTreeQuery
       """
 
   Scenario: GetTreeQuery search: with node types narrowed and text search
-    When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-tree":
+    When I issue the following query to "http://127.0.0.1:8081/neos/archaeopteryx/get-tree":
       | Key                  | Value                              |
       | contentRepositoryId  | "default"                          |
       | workspaceName        | "live"                             |
@@ -885,7 +885,7 @@ Feature: GetTreeQuery
       # not existing selectedNodeId (e.g. node was deleted)
       | "not-existing-node"  |
 
-    When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-tree":
+    When I issue the following query to "http://127.0.0.1:8081/neos/archaeopteryx/get-tree":
       | Key                  | Value                                       |
       | contentRepositoryId  | "default"                                   |
       | workspaceName        | "live"                                      |
@@ -926,7 +926,7 @@ Feature: GetTreeQuery
       | "feature-a1-default" |
       | "feature-a2-default" |
 
-    When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-tree":
+    When I issue the following query to "http://127.0.0.1:8081/neos/archaeopteryx/get-tree":
       | Key                  | Value                                |
       | contentRepositoryId  | "default"                            |
       | workspaceName        | "live"                               |

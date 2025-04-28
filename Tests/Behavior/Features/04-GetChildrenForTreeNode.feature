@@ -125,7 +125,7 @@ Feature: GetChildrenForTreeNode
       | tag                          | "disabled"           |
 
   Scenario: GetChildrenForTreeNode for homepage with nested children
-    When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-children-for-tree-node":
+    When I issue the following query to "http://127.0.0.1:8081/neos/archaeopteryx/get-children-for-tree-node":
       | Key                 | Value                |
       | contentRepositoryId | "default"            |
       | workspaceName       | "live"               |
@@ -170,7 +170,7 @@ Feature: GetChildrenForTreeNode
       """
 
   Scenario: GetChildrenForTreeNode for leaf node
-    When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-children-for-tree-node":
+    When I issue the following query to "http://127.0.0.1:8081/neos/archaeopteryx/get-children-for-tree-node":
       | Key                 | Value                 |
       | contentRepositoryId | "default"             |
       | workspaceName       | "live"                |
@@ -188,7 +188,7 @@ Feature: GetChildrenForTreeNode
       """
 
   Scenario: GetChildrenForTreeNode for document with multiple children
-    When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-children-for-tree-node":
+    When I issue the following query to "http://127.0.0.1:8081/neos/archaeopteryx/get-children-for-tree-node":
       | Key                 | Value                |
       | contentRepositoryId | "default"            |
       | workspaceName       | "live"               |
@@ -246,7 +246,7 @@ Feature: GetChildrenForTreeNode
       """
 
   Scenario: GetChildrenForTreeNode for document with filtered children
-    When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-children-for-tree-node":
+    When I issue the following query to "http://127.0.0.1:8081/neos/archaeopteryx/get-children-for-tree-node":
       | Key                 | Value                       |
       | contentRepositoryId | "default"                   |
       | workspaceName       | "live"                      |
@@ -278,7 +278,7 @@ Feature: GetChildrenForTreeNode
       """
 
   Scenario: GetChildrenForTreeNode for document with one child in other dimension
-    When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-children-for-tree-node":
+    When I issue the following query to "http://127.0.0.1:8081/neos/archaeopteryx/get-children-for-tree-node":
       | Key                 | Value                |
       | contentRepositoryId | "default"            |
       | workspaceName       | "live"               |
@@ -310,7 +310,7 @@ Feature: GetChildrenForTreeNode
       """
 
   Scenario: GetChildrenForTreeNode for document with filtered children
-    When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-children-for-tree-node":
+    When I issue the following query to "http://127.0.0.1:8081/neos/archaeopteryx/get-children-for-tree-node":
       | Key                 | Value                           |
       | contentRepositoryId | "default"                       |
       | workspaceName       | "live"                          |

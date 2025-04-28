@@ -40,7 +40,7 @@ Feature: GetTreeQuery Constraints
       | homepage        | sites                 | Neos.Neos:Site | {"title": "home"}     | {"language": "en"}        | site-a   |
 
   Scenario: Invalid starting path
-    When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-tree":
+    When I issue the following query to "http://127.0.0.1:8081/neos/archaeopteryx/get-tree":
       | Key                  | Value                |
       | contentRepositoryId  | "default"            |
       | workspaceName        | "live"               |
@@ -64,7 +64,7 @@ Feature: GetTreeQuery Constraints
       """
 
   Scenario: Not existing starting path
-    When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-tree":
+    When I issue the following query to "http://127.0.0.1:8081/neos/archaeopteryx/get-tree":
       | Key                  | Value                             |
       | contentRepositoryId  | "default"                         |
       | workspaceName        | "live"                            |
@@ -88,7 +88,7 @@ Feature: GetTreeQuery Constraints
       """
 
   Scenario: Negative loading depth
-    When I issue the following query to "http://127.0.0.1:8081/sitegeist/archaeopteryx/get-tree":
+    When I issue the following query to "http://127.0.0.1:8081/neos/archaeopteryx/get-tree":
       | Key                  | Value                       |
       | contentRepositoryId  | "default"                   |
       | workspaceName        | "live"                      |
