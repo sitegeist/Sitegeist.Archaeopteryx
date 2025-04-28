@@ -452,38 +452,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neos-project/positional-array-sorter@npm:8.3.11, @neos-project/positional-array-sorter@npm:^8.0.1":
+"@neos-project/positional-array-sorter@npm:8.3.11, @neos-project/positional-array-sorter@npm:~8.3.0":
   version: 8.3.11
   resolution: "@neos-project/positional-array-sorter@npm:8.3.11"
   checksum: 4a12432cf73220d51a7bfd30da03b147bdb8f53afc0d8e52d5783bb637c61fefa0167beff0d5b229683a0d1c2987ecc8f81ad3d21fbbcc2917b0ec218648215c
-  languageName: node
-  linkType: hard
-
-"@neos-project/react-ui-components@npm:^7.0.2":
-  version: 7.3.22
-  resolution: "@neos-project/react-ui-components@npm:7.3.22"
-  peerDependencies:
-    "@friendsofreactjs/react-css-themr": ^4.1.0
-    classnames: ^2.2.3
-    lodash.debounce: ^4.0.8
-    lodash.escaperegexp: ^4.1.2
-    lodash.isequal: ^4.5.0
-    lodash.isfunction: ^3.0.8
-    lodash.omit: ^4.3.0
-    lodash.throttle: ^4.0.8
-    moment: ^2.14.1
-    prop-types: ^15.5.10
-    react: ^16.0.0
-    react-collapse: ^5.0.1
-    react-datetime: ^2.8.10
-    react-dnd: ^10.0.0
-    react-dnd-html5-backend: ^10.0.0
-    react-dom: ^16.0.0
-    react-height: ^3.0.0
-    react-motion: ^0.5.0
-    react-svg: ^11.1.2
-    react-textarea-autosize: ^8.3.0
-  checksum: 3a2c222f42526d757dadea713d4d2e9d06e3f289e6212df6815f91b739cd25e20e30b378bf1cebd6c10ece549ac203007efa84b6484f4b1c876328436bcc2fc8
   languageName: node
   linkType: hard
 
@@ -590,8 +562,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@sitegeist/archaeopteryx-core@workspace:Neos.Ui/core"
   dependencies:
-    "@neos-project/positional-array-sorter": ^8.0.1
-    "@neos-project/react-ui-components": ^7.0.2
+    "@neos-project/positional-array-sorter": ~8.3.0
+    "@neos-project/react-ui-components": ~8.3.0
     "@sitegeist/archaeopteryx-custom-node-tree": "workspace:*"
     "@sitegeist/archaeopteryx-error-handling": "workspace:*"
     "@sitegeist/archaeopteryx-neos-bridge": "workspace:*"
@@ -612,7 +584,6 @@ __metadata:
     "@neos-project/react-ui-components": ~8.3.0
     "@sitegeist/archaeopteryx-error-handling": "workspace:*"
     "@sitegeist/archaeopteryx-neos-bridge": "workspace:*"
-    immer: ^9.0.2
     react: ^17.0.2
     react-use: ^17.2.4
     rxjs: ^6.6.7
@@ -646,7 +617,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@sitegeist/archaeopteryx-link-button@workspace:Neos.Ui/link-button"
   dependencies:
-    "@neos-project/react-ui-components": ^7.0.2
+    "@neos-project/react-ui-components": ~8.3.0
     "@sitegeist/archaeopteryx-core": "workspace:*"
     react: ^17.0.2
     typescript: ^4.2.4
@@ -1332,13 +1303,6 @@ __metadata:
   dependencies:
     safer-buffer: ">= 2.1.2 < 3.0.0"
   checksum: 3f60d47a5c8fc3313317edfd29a00a692cc87a19cac0159e2ce711d0ebc9019064108323b5e493625e25594f11c6236647d8e256fbe7a58f4a3b33b89e6d30bf
-  languageName: node
-  linkType: hard
-
-"immer@npm:^9.0.2":
-  version: 9.0.21
-  resolution: "immer@npm:9.0.21"
-  checksum: 70e3c274165995352f6936695f0ef4723c52c92c92dd0e9afdfe008175af39fa28e76aafb3a2ca9d57d1fb8f796efc4dd1e1cc36f18d33fa5b74f3dfb0375432
   languageName: node
   linkType: hard
 

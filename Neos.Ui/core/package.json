@@ -4,8 +4,8 @@
     "version": "",
     "main": "./src/index.ts",
     "dependencies": {
-        "@neos-project/positional-array-sorter": "^8.0.1",
-        "@neos-project/react-ui-components": "^7.0.2",
+        "@neos-project/positional-array-sorter": "~8.3.0",
+        "@neos-project/react-ui-components": "~8.3.0",
         "@sitegeist/archaeopteryx-custom-node-tree": "workspace:*",
         "@sitegeist/archaeopteryx-error-handling": "workspace:*",
         "@sitegeist/archaeopteryx-neos-bridge": "workspace:*",

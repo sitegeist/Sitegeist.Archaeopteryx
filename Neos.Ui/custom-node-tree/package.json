@@ -7,7 +7,6 @@
         "@neos-project/react-ui-components": "~8.3.0",
         "@sitegeist/archaeopteryx-error-handling": "workspace:*",
         "@sitegeist/archaeopteryx-neos-bridge": "workspace:*",
-        "immer": "^9.0.2",
         "react": "^17.0.2",
         "react-use": "^17.2.4",
         "rxjs": "^6.6.7",
