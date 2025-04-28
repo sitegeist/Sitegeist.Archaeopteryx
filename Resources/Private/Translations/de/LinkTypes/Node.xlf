@@ -13,6 +13,11 @@
                 <target>Gelöschte Node</target>
             </trans-unit>
 
+            <trans-unit id="loadingPreview" xml:space="preserve" approved="yes">
+                <source>Loading ...</source>
+                <target>Laden ...</target>
+            </trans-unit>
+
             <!-- Identifier -->
             <trans-unit id="node.validation.required" xml:space="preserve" approved="yes">
                 <source>Node is required</source>

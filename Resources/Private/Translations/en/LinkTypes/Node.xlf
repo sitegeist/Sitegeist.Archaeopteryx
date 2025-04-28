@@ -11,6 +11,10 @@
                 <source>Deleted Node</source>
             </trans-unit>
 
+            <trans-unit id="loadingPreview" xml:space="preserve" approved="yes">
+                <source>Loading ...</source>
+            </trans-unit>
+
             <!-- Identifier -->
             <trans-unit id="node.validation.required" xml:space="preserve" approved="yes">
                 <source>Node is required</source>
