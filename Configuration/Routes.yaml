@@ -1,6 +1,6 @@
 -
   name: 'GetChildrenForTreeNode Query'
-  uriPattern: 'sitegeist/archaeopteryx/get-children-for-tree-node'
+  uriPattern: 'neos/archaeopteryx/get-children-for-tree-node'
   defaults:
     '@package': 'Sitegeist.Archaeopteryx'
     '@subpackage': 'Application\GetChildrenForTreeNode'
@@ -9,7 +9,7 @@
 
 -
   name: 'GetNodeSummary Query'
-  uriPattern: 'sitegeist/archaeopteryx/get-node-summary'
+  uriPattern: 'neos/archaeopteryx/get-node-summary'
   defaults:
     '@package': 'Sitegeist.Archaeopteryx'
     '@subpackage': 'Application\GetNodeSummary'
@@ -18,7 +18,7 @@
 
 -
   name: 'GetNodeTypeFilterOptions Query'
-  uriPattern: 'sitegeist/archaeopteryx/get-node-type-filter-options'
+  uriPattern: 'neos/archaeopteryx/get-node-type-filter-options'
   defaults:
     '@package': 'Sitegeist.Archaeopteryx'
     '@subpackage': 'Application\GetNodeTypeFilterOptions'
@@ -27,7 +27,7 @@
 
 -
   name: 'GetTree Query'
-  uriPattern: 'sitegeist/archaeopteryx/get-tree'
+  uriPattern: 'neos/archaeopteryx/get-tree'
   defaults:
     '@package': 'Sitegeist.Archaeopteryx'
     '@subpackage': 'Application\GetTree'

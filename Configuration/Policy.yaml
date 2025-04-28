@@ -1,7 +1,4 @@
-#                                                                        #
-# Security policy for the Sitegeist.Archaeopteryx package                           #
-#                                                                        #
----
+
 privilegeTargets:
 
   'Neos\Flow\Security\Authorization\Privilege\Method\MethodPrivilege':
@@ -11,8 +8,7 @@ privilegeTargets:
 
 roles:
 
-    'Neos.Neos:AbstractEditor':
-      privileges:
-        -
-          privilegeTarget: 'Sitegeist.Archaeopteryx:ApiAccess'
-          permission: GRANT
+  'Neos.Neos:AbstractEditor':
+    privileges:
+      - privilegeTarget: 'Sitegeist.Archaeopteryx:ApiAccess'
+        permission: GRANT

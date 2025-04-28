@@ -53,7 +53,7 @@ export async function getChildrenForTreeNode(
         const response = await fetchWithErrorHandling.withCsrfToken(
             (csrfToken) => ({
                 url:
-                    "/sitegeist/archaeopteryx/get-children-for-tree-node?" +
+                    "/neos/archaeopteryx/get-children-for-tree-node?" +
                     searchParams.toString(),
                 method: "GET",
                 credentials: "include",

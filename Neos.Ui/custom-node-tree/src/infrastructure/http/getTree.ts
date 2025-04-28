@@ -70,7 +70,7 @@ export async function getTree(
         const response = await fetchWithErrorHandling.withCsrfToken(
             (csrfToken) => ({
                 url:
-                    "/sitegeist/archaeopteryx/get-tree?" +
+                    "/neos/archaeopteryx/get-tree?" +
                     searchParams.toString(),
                 method: "GET",
                 credentials: "include",
