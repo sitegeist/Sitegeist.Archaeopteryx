@@ -14,12 +14,12 @@ namespace Sitegeist\Archaeopteryx\Tests\Unit\Presentation\IconLabel;
 
 use Neos\ContentRepository\Core\NodeType\NodeType;
 use Neos\ContentRepository\Core\NodeType\NodeTypeName;
-use Neos\Flow\Tests\UnitTestCase;
 use PHPUnit\Framework\Assert;
+use PHPUnit\Framework\TestCase;
 use Sitegeist\Archaeopteryx\Presentation\IconLabel\IconLabel;
 use Sitegeist\Archaeopteryx\Presentation\IconLabel\IconLabelFactory;
 
-final class IconLabelFactoryTest extends UnitTestCase
+final class IconLabelFactoryTest extends TestCase
 {
     /** @return \Traversable<mixed> */
     public static function forNodeTreePresetSamples(): \Traversable

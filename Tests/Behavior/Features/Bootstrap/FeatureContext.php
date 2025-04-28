@@ -13,6 +13,7 @@ use Neos\ContentRepository\TestSuite\Fakes\FakeContentDimensionSourceFactory;
 use Neos\ContentRepository\TestSuite\Fakes\FakeNodeTypeManagerFactory;
 use Neos\ContentRepositoryRegistry\ContentRepositoryRegistry;
 
+// phpcs:ignore PSR1.Classes.ClassDeclaration.MissingNamespace
 class FeatureContext implements Context
 {
     use FlowBootstrapTrait;

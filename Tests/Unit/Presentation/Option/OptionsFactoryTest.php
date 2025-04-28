@@ -16,6 +16,7 @@ use Neos\ContentRepository\Core\NodeType\NodeType;
 use Neos\ContentRepository\Core\NodeType\NodeTypeName;
 use Neos\Flow\Tests\UnitTestCase;
 use PHPUnit\Framework\Assert;
+use PHPUnit\Framework\TestCase;
 use Sitegeist\Archaeopteryx\Presentation\IconLabel\IconLabel;
 use Sitegeist\Archaeopteryx\Presentation\IconLabel\IconLabelFactory;
 use Sitegeist\Archaeopteryx\Presentation\Option\Option;
@@ -23,7 +24,7 @@ use Sitegeist\Archaeopteryx\Presentation\Option\OptionFactory;
 use Sitegeist\Archaeopteryx\Presentation\Option\Options;
 use Sitegeist\Archaeopteryx\Presentation\Option\OptionsFactory;
 
-final class OptionsFactoryTest extends UnitTestCase
+final class OptionsFactoryTest extends TestCase
 {
     /** @return \Traversable<mixed> */
     public static function forNodeTreePresetsSamples(): \Traversable

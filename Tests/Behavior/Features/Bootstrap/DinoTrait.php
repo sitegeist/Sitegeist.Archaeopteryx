@@ -1,15 +1,5 @@
 <?php
 
-/*
- * This file is part of the Neos.RedirectHandler.NeosAdapter package.
- *
- * (c) Contributors of the Neos Project - www.neos.io
- *
- * This package is Open Source Software. For the full copyright and license
- * information, please view the LICENSE file which was distributed with this
- * source code.
- */
-
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use Neos\Flow\Http\Client\Browser;
@@ -20,6 +10,7 @@ use PHPUnit\Framework\Assert;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 
+// phpcs:ignore PSR1.Classes.ClassDeclaration.MissingNamespace
 trait DinoTrait
 {
     private ResponseInterface|null $dino_last_query_response = null;
@@ -52,7 +43,9 @@ trait DinoTrait
         $engine = $this->getObject(InternalRequestEngine::class);
         // we must avoid $securityContext->clearContext() being called as this would overrule the active "withoutAuthorizationChecks"
         ObjectAccess::setProperty($engine, 'securityContext', new class {
-            public function clearContext(): void {}
+            public function clearContext(): void
+            {
+            }
         }, true);
         $browser->setRequestEngine($engine);
         $this->dino_last_query_response = $this->getObject(Context::class)->withoutAuthorizationChecks(

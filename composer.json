@@ -17,7 +17,7 @@
     ],
     "scripts": {
         "lint:phpstan": "../../../bin/phpstan analyse",
-        "lint:phpcs": "../../../bin/phpcs --standard=PSR12 --extensions=php --exclude=Generic.Files.LineLength Classes/ Test/",
+        "lint:phpcs": "../../../bin/phpcs --standard=PSR12 --extensions=php --exclude=Generic.Files.LineLength Classes/ Tests/",
         "lint": [
             "@lint:phpstan",
             "@lint:phpcs"
