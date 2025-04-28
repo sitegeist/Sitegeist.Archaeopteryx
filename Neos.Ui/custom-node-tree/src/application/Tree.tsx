@@ -103,6 +103,7 @@ export const Tree: React.FC<Props> = (props) => {
                     workspaceName={props.workspaceName}
                     dimensionValues={props.dimensionValues}
                     baseNodeTypeFilter={props.baseNodeTypeFilter}
+                    linkableNodeTypes={props.linkableNodeTypes}
                     treeNode={fetch__getTree.value.root}
                     selectedTreeNodeId={props.selectedTreeNodeId}
                     level={1}

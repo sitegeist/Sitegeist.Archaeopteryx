@@ -14,6 +14,7 @@ type GetChildrenForTreeNodeQuery = {
     dimensionValues: Record<string, string[]>;
     treeNodeId: string;
     nodeTypeFilter: string;
+    linkableNodeTypes?: string[]
 };
 
 type GetChildrenForTreeNodeQueryResultEnvelope =
@@ -49,6 +50,10 @@ export async function getChildrenForTreeNode(
     searchParams.set("treeNodeId", query.treeNodeId);
     searchParams.set("nodeTypeFilter", query.nodeTypeFilter);
 
+    for (const linkableNodeType of query.linkableNodeTypes ?? []) {
+        searchParams.append(`linkableNodeTypes[]`, linkableNodeType);
+    }
+    
     try {
         const response = await fetchWithErrorHandling.withCsrfToken(
             (csrfToken) => ({
