@@ -1,17 +1,12 @@
 {
     "name": "@sitegeist/archaeopteryx-inspector-editor",
     "license": "MIT",
-    "version": "0.0.0",
-    "main": "./lib/index.js",
-    "types": "./lib/index.d.ts",
-    "scripts": {
-        "build": "rm -rf lib && tsc -p tsconfig.build.json",
-        "watch": "tsc -w -p tsconfig.build.json"
-    },
+    "version": "",
+    "main": "./src/index.tsx",
     "dependencies": {
-        "@neos-project/react-ui-components": "^7.0.2",
-        "@sitegeist/archaeopteryx-core": "^0.0.0",
-        "@sitegeist/archaeopteryx-error-handling": "^0.0.0",
+        "@neos-project/react-ui-components": "~8.3.0",
+        "@sitegeist/archaeopteryx-core": "workspace:*",
+        "@sitegeist/archaeopteryx-error-handling": "workspace:*",
         "react": "^17.0.2",
         "styled-components": "^5.3.0"
     },

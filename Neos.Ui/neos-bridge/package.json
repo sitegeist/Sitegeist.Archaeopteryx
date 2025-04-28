@@ -1,18 +1,10 @@
 {
     "name": "@sitegeist/archaeopteryx-neos-bridge",
     "license": "GPL-3.0-or-later",
-    "version": "0.0.0",
-    "main": "./lib/index.js",
-    "types": "./lib/index.d.ts",
-    "scripts": {
-        "build": "rm -rf lib && tsc -p tsconfig.build.json",
-        "watch": "tsc -w -p tsconfig.build.json"
-    },
+    "version": "",
+    "main": "./src/index.ts",
     "dependencies": {
         "react-use": "^17.2.4",
         "ts-toolbelt": "^9.6.0"
-    },
-    "devDependencies": {
-        "jest": "^26.6.3"
     }
 }

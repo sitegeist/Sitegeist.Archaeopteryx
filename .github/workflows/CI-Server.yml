@@ -1,0 +1,65 @@
+name: CI Server
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  server-build:
+    env:
+      FLOW_CONTEXT: Testing
+      FLOW_PATH_ROOT: ../neos-base-distribution
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - php-version: 8.1
+            neos-version: 7.3
+          - php-version: 8.1
+            neos-version: 8.3
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: mbstring, xml, json, zlib, iconv, intl, pdo_sqlite, mysql
+
+      - id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Prepare Neos distribution
+        run: |
+          git clone --depth 1 --branch ${{ matrix.neos-version }} https://github.com/neos/neos-base-distribution.git ${FLOW_PATH_ROOT}
+          cd ${FLOW_PATH_ROOT}
+          composer config --no-plugins allow-plugins.neos/composer-plugin true
+          composer config repositories.package '{ "type": "path", "url": "../Sitegeist.Archaeopteryx", "options": { "symlink": false } }'
+          composer require --no-update --no-interaction sitegeist/archaeopteryx:@dev
+          # the dev distribution does not ship these depenencies
+          composer require --dev --no-update --no-interaction phpstan/phpstan:^1.10
+          composer require --dev --no-update --no-interaction squizlabs/php_codesniffer:^3.6
+
+      - name: Install dependencies
+        run: |
+          cd ${FLOW_PATH_ROOT}
+          composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Linting
+        run: |
+          cd ${FLOW_PATH_ROOT}/Packages/Plugins/Sitegeist.Archaeopteryx
+          composer run lint

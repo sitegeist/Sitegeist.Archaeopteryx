@@ -18,7 +18,7 @@ use Neos\Flow\Mvc\Controller\ControllerInterface;
 
 abstract class QueryController implements ControllerInterface
 {
-    public function processRequest(ActionRequest $request, ActionResponse $response)
+    public function processRequest(ActionRequest $request, ActionResponse $response): void
     {
         $request->setDispatched(true);
         $response->setContentType('application/json');
@@ -37,5 +37,5 @@ abstract class QueryController implements ControllerInterface
     /**
      * @param array<mixed> $arguments
      */
-    abstract function processQuery(array $arguments): QueryResponse;
+    abstract public function processQuery(array $arguments): QueryResponse;
 }

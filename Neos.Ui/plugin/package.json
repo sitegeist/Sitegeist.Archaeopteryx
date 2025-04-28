@@ -1,18 +1,16 @@
 {
     "name": "@sitegeist/archaeopteryx-plugin",
     "license": "MIT",
-    "version": "0.0.0",
+    "version": "",
     "scripts": {
-        "build": "neos-react-scripts build",
-        "watch": "neos-react-scripts watch"
-    },
-    "neos": {
-        "buildTargetDirectory": "../../Resources/Public/JavaScript"
+        "build": "node esbuild.js",
+        "watch": "node esbuild.js --watch"
     },
     "dependencies": {
-        "@sitegeist/archaeopteryx-core": "^0.0.0",
-        "@sitegeist/archaeopteryx-inspector-editor": "^0.0.0",
-        "@sitegeist/archaeopteryx-link-button": "^0.0.0",
-        "@sitegeist/archaeopteryx-neos-bridge": "^0.0.0"
+        "@neos-project/neos-ui-extensibility": "~8.3.0",
+        "@sitegeist/archaeopteryx-core": "workspace:*",
+        "@sitegeist/archaeopteryx-inspector-editor": "workspace:*",
+        "@sitegeist/archaeopteryx-link-button": "workspace:*",
+        "@sitegeist/archaeopteryx-neos-bridge": "workspace:*"
     }
 }

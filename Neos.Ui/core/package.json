@@ -1,29 +1,20 @@
 {
     "name": "@sitegeist/archaeopteryx-core",
     "license": "GPL-3.0-or-later",
-    "version": "0.0.0",
-    "main": "./lib/index.js",
-    "scripts": {
-        "build": "rm -rf lib && tsc -p tsconfig.build.json",
-        "watch": "tsc -w -p tsconfig.build.json",
-        "test": "jest"
-    },
+    "version": "",
+    "main": "./src/index.ts",
     "dependencies": {
-        "@neos-project/positional-array-sorter": "^8.0.1",
-        "@neos-project/react-ui-components": "^7.0.2",
-        "@sitegeist/archaeopteryx-custom-node-tree": "^0.0.0",
-        "@sitegeist/archaeopteryx-error-handling": "^0.0.0",
-        "@sitegeist/archaeopteryx-neos-bridge": "^0.0.0",
+        "@neos-project/positional-array-sorter": "~8.3.0",
+        "@neos-project/react-ui-components": "~8.3.0",
+        "@sitegeist/archaeopteryx-custom-node-tree": "workspace:*",
+        "@sitegeist/archaeopteryx-error-handling": "workspace:*",
+        "@sitegeist/archaeopteryx-neos-bridge": "workspace:*",
         "final-form": "^4.20.2",
         "libphonenumber-js": "^1.9.52",
         "react-final-form": "^6.5.3",
         "react-use": "^17.2.4",
         "rxjs": "^6.6.7",
         "ts-toolbelt": "^9.6.0",
-        "typesafe-actions": "^5.1.0",
-        "verror": "^1.10.0"
-    },
-    "devDependencies": {
-        "jest": "^26.6.3"
+        "typesafe-actions": "^5.1.0"
     }
 }

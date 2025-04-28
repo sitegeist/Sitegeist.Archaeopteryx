@@ -7,6 +7,7 @@ import {ILink, makeLinkType} from '../../../domain';
 import {IconCard, Layout, IconLabel} from '../../../presentation';
 import { OptionalDeep } from 'ts-toolbelt/out/Object/Optional';
 import { Nullable } from 'ts-toolbelt/out/Union/Nullable';
+import {isSuitableFor} from "./MailToSpecification";
 
 const simpleEmailRegex = /^[^\s@]+@[^\s@]+$/;
 
@@ -28,7 +29,7 @@ type MailToOptions = {
 }
 
 export const MailTo = makeLinkType<MailToLinkModel, MailToOptions>('Sitegeist.Archaeopteryx:MailTo', ({createError}) => ({
-    isSuitableFor: (link: ILink) => link.href.startsWith('mailto:'),
+    isSuitableFor,
 
     useResolvedModel:  (link: ILink) => {
         if (!link.href.startsWith('mailto:')) {

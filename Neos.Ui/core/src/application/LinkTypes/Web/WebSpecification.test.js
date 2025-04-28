@@ -1,22 +1,16 @@
-jest.mock('@neos-project/neos-ui-backend-connector', () => ({}), { virtual: true });
-jest.mock('@neos-project/react-ui-components', () => ({}));
-jest.mock('@neos-project/neos-ui-redux-store', () => ({}), { virtual: true });
-jest.mock('@neos-project/neos-ui-editors', () => ({}), { virtual: true });
+import {describe, it} from 'node:test';
+import {equal} from 'node:assert/strict';
 
-jest.mock('../../../presentation', () => ({}));
 
-import '@testing-library/jest-dom/extend-expect';
+import {isSuitableFor} from './WebSpecification';
 
-import {Web} from './Web';
-
-describe('LinType: Web', () => {
+describe('LinkType: Web', () => {
     it('is satisfied by http:// links', () => {
         const link = {
             href: 'http://www.example.com'
         };
 
-        expect(Web.isSuitableFor(link))
-            .toBe(true);
+        equal(isSuitableFor(link), true);
     });
 
     it('is satisfied by https:// links', () => {
@@ -24,8 +18,7 @@ describe('LinType: Web', () => {
             href: 'https://www.example.com'
         };
 
-        expect(Web.isSuitableFor(link))
-            .toBe(true);
+        equal(isSuitableFor(link), true);
     });
 
     it('is satisfied by https:// links with a hash', () => {
@@ -33,8 +26,7 @@ describe('LinType: Web', () => {
             href: 'https://www.example.com#section'
         };
 
-        expect(Web.isSuitableFor(link))
-                .toBe(true);
+        equal(isSuitableFor(link), true);
     });
 
     it('is not satisfied by node:// links', () => {
@@ -42,8 +34,7 @@ describe('LinType: Web', () => {
             href: 'node://97c9a6e3-4b50-4559-9f60-b5ad68f25758'
         };
 
-        expect(Web.isSuitableFor(link))
-            .toBe(false);
+        equal(isSuitableFor(link), false);
     });
 
     it('is not satisfied by asset:// links', () => {
@@ -51,8 +42,7 @@ describe('LinType: Web', () => {
             href: 'asset://97c9a6e3-4b50-4559-9f60-b5ad68f25758'
         };
 
-        expect(Web.isSuitableFor(link))
-            .toBe(false);
+        equal(isSuitableFor(link), false);
     });
 
     it('is not satisfied by mailto: links', () => {
@@ -60,8 +50,7 @@ describe('LinType: Web', () => {
             href: 'mailto:foo@example.com'
         };
 
-        expect(Web.isSuitableFor(link))
-            .toBe(false);
+        equal(isSuitableFor(link), false);
     });
 
     it('is not satisfied by invalid links', () => {
@@ -69,8 +58,7 @@ describe('LinType: Web', () => {
             href: 'Think of Beethoven\'s 5th: foo foo foo bar'
         };
 
-        expect(Web.isSuitableFor(link))
-            .toBe(false);
+        equal(isSuitableFor(link), false);
     });
 
     it('is not satisfied by tel: links', () => {
@@ -78,7 +66,6 @@ describe('LinType: Web', () => {
             href: 'tel:+491258795857'
         };
 
-        expect(Web.isSuitableFor(link))
-            .toBe(false);
+        equal(isSuitableFor(link), false);
     });
 });

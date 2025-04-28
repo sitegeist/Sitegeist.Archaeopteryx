@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {FallbackProps, ErrorBoundary as ReactErrorBoundary} from 'react-error-boundary';
-import {VError} from 'verror';
+import {VError} from '@sitegeist/archaeopteryx-error-handling';
 
 import {Alert, Trace} from '../presentation';
 

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Object} from 'ts-toolbelt';
-import {VError} from 'verror';
+import {VError} from '@sitegeist/archaeopteryx-error-handling';
 import positionalArraySorter from '@neos-project/positional-array-sorter';
 
 import {useGlobalRegistry} from '@sitegeist/archaeopteryx-neos-bridge';
@@ -46,10 +46,8 @@ export function makeLinkType<ModelType = any, OptionsType extends object = {}>(
         'supportedLinkOptions' | 'Icon' | 'Title' | 'LoadingPreview' | 'LoadingEditor'
     >
 ): ILinkType<ModelType, OptionsType> {
-    const createError = (message: string, cause?: Error) => cause
-        ? new VError(cause, `[${id}]: ${message}`)
-        : new VError(`[${id}]: ${message}`)
-    ;
+    const createError = (message: string, cause?: Error) =>
+        new VError(`[${id}]: ${message}`, cause);
     const options = createOptions({createError});
 
     return {
@@ -113,7 +111,7 @@ export function useSortedAndFilteredLinkTypes(): ILinkType[] {
     const filteredLinkTypes = sortedLinkTypesViaEditorOptionsPosition.filter(
         ({options}) => (options && "enabled" in options) ? options.enabled : true
     )
-    
+
     return filteredLinkTypes.map(
         ({linkType}) => linkType
     );

@@ -62,7 +62,7 @@ final class GetTreeQueryHandler
         }
 
         return new GetTreeQueryResult(
-            root: $tree = empty($query->searchTerm) && empty($query->narrowNodeTypeFilter)
+            root: empty($query->searchTerm) && empty($query->narrowNodeTypeFilter)
                 ? $this->loadTree($rootNode, $query, $query->loadingDepth)
                 : $this->performSearch($rootNode, $query),
         );
@@ -135,9 +135,9 @@ final class GetTreeQueryHandler
         $treeBuilder->addNodeWithDescendants($node, $remainingDepth);
 
         if ($query->selectedNodeId) {
+            /** @var Node|null $selectedNode */
             $selectedNode = $node->getContext()->getNodeByIdentifier((string) $query->selectedNodeId);
             if ($selectedNode) {
-                /** @var Node $selectedNode */
                 $treeBuilder->addNodeWithSiblingsAndAncestors($selectedNode);
             }
         }

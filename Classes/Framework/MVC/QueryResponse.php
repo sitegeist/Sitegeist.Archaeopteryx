@@ -21,11 +21,11 @@ use Neos\Flow\Mvc\ActionResponse;
 #[Flow\Proxy(false)]
 final class QueryResponse
 {
-    private const STATUS_CODE_SUCCESS= 200;
-    private const STATUS_CODE_CLIENT_ERROR= 400;
-    private const STATUS_CODE_SERVER_ERROR= 500;
+    private const STATUS_CODE_SUCCESS = 200;
+    private const STATUS_CODE_CLIENT_ERROR = 400;
+    private const STATUS_CODE_SERVER_ERROR = 500;
 
-    private const DISCRIMINATOR_SUCCESS= 'success';
+    private const DISCRIMINATOR_SUCCESS = 'success';
     private const DISCRIMINATOR_ERROR = 'error';
 
     /**

@@ -4,7 +4,7 @@ import {IconButton} from '@neos-project/react-ui-components';
 
 import {useEditorTransactions} from '@sitegeist/archaeopteryx-core';
 import {useI18n} from '@sitegeist/archaeopteryx-neos-bridge';
-import { ILinkOptions } from '@sitegeist/archaeopteryx-core/lib/domain';
+import { ILinkOptions } from '@sitegeist/archaeopteryx-core/src/domain';
 
 interface Props {
     inlineEditorOptions?: {

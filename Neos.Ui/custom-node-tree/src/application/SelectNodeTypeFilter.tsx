@@ -7,7 +7,7 @@
  */
 import * as React from "react";
 import { useAsync } from "react-use";
-import { VError } from "verror";
+import { VError } from "@sitegeist/archaeopteryx-error-handling";
 
 import { SelectBox } from "@neos-project/react-ui-components";
 import { useI18n } from "@sitegeist/archaeopteryx-neos-bridge";
