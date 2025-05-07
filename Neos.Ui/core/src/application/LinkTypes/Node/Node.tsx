@@ -95,7 +95,7 @@ export const Node = makeLinkType<NodeLinkModel, NodeLinkOptions>(
         isSuitableFor,
 
         useResolvedModel: (link: ILink) => {
-            const match = /node:\/\/(.*)/.exec(link.href);
+            const match = /node:\/\/([^#]*)(#.*)?/.exec(link.href);
 
             if (!match) {
                 throw createError(`Cannot handle href "${link.href}".`);
