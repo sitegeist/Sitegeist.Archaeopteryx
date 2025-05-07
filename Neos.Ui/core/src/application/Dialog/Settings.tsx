@@ -13,7 +13,7 @@ export const Settings: React.FC<{
         anchor?: string
         title?: string
         targetBlank?: boolean
-        relNoFollow?: boolean
+        relNofollow?: boolean
     }
 }> = props => {
     const i18n = useI18n();
@@ -69,8 +69,8 @@ export const Settings: React.FC<{
                     {props.enabledLinkOptions.includes('relNofollow') ? (
                         <Field<boolean>
                             type="checkbox"
-                            name="options.relNoFollow"
-                            initialValue={Boolean(props.initialValue?.relNoFollow)}
+                            name="options.relNofollow"
+                            initialValue={Boolean(props.initialValue?.relNofollow)}
                             >
                             {({input}) => (
                                 <label>
