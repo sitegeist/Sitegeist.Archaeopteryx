@@ -4,7 +4,8 @@ import {SynchronousRegistry} from '@neos-project/neos-ui-extensibility';
 import {INeosContextProperties, NeosContext} from '@sitegeist/archaeopteryx-neos-bridge';
 import {EditorContext, IEditor} from '@sitegeist/archaeopteryx-core';
 
-import {createInspectorEditor, LinkDataType} from './InspectorEditor';
+import {createInspectorEditor} from './InspectorEditor';
+import {LinkDataType} from "./serialisation";
 
 export function registerInspectorEditors(
     neosContextProperties: INeosContextProperties,
