@@ -79,7 +79,7 @@ final class Link implements \JsonSerializable
         array $rel
     ): self {
         $relMap = [];
-        foreach ($rel ?? [] as $value) {
+        foreach ($rel as $value) {
             $relMap[trim(strtolower($value))] = true;
         }
         $trimmedTarget = $target !== null ? trim($target) : '';
@@ -92,7 +92,7 @@ final class Link implements \JsonSerializable
     }
 
     /**
-     * @param array<string, string> $array
+     * @param array<string, mixed> $array
      */
     public static function fromArray(array $array): self
     {
@@ -147,10 +147,7 @@ final class Link implements \JsonSerializable
         );
     }
 
-    /**
-     * @return array<string, string>
-     */
-    public function jsonSerialize(): array
+    public function jsonSerialize(): mixed
     {
         return [
             'href' => $this->href->__toString(),
