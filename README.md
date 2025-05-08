@@ -332,14 +332,17 @@ Use the preset in your link property, mixin or node type
   <img src="./Docs/Link Options.png">
 </p>
 
-In RTE context, Sitegeist.Archaeopteryx allows you to set some additional link options. These are:
+Sitegeist.Archaeopteryx allows you to set some additional link options. These are:
 
 * **Anchor:** This will add a string to the hash-section of the URL (the part after `#`)
 * **Title:** This will set the `title` attribute of the resulting `<a>`-Tag
 * **Open in new window:** This will set the `target` attribute of the resulting `<a>`-Tag to `_blank`
 * **rel="nofollow":** This will set the `rel` attribute of the resulting `<a>`-Tag to `nofollow`
 
-Not all Link Types support all of these options however. Here's an overview of what Link Type supports which options:
+Based on the context they might not be available. A simple inspector editor (`type: string`) for example cannot encode the "Title" option but only the "Anchor" by appending that to the link.
+The RTE supports all options and the inspector object `type: Sitegeist\Archaeopteryx\Link` too.
+
+Further, not all Link Types support all of these options. Here's an overview of what Link Type supports which options:
 
 | Link Type     | Supported Link Options                              |
 | ------------- | --------------------------------------------------- |
@@ -408,6 +411,8 @@ It is possible to disable one or more link type editors via the configuration fo
 
 ### Inspector Editor Configuration
 
+Using the basic `string` type:
+
 ```yaml
 'Vendor.Site:MyAwesomeNodeTypeWithALinkProperty':
   # ...
@@ -434,6 +439,38 @@ It is possible to disable one or more link type editors via the configuration fo
                 enabled: true
               'Sitegeist.Archaeopteryx:CustomLink':
                 enabled: false
+```
+
+Advanced usage with `Sitegeist\Archaeopteryx\Link` value object type:
+
+```yaml
+'Vendor.Site:MyAwesomeNodeTypeWithALinkValueObjectProperty':
+  # ...
+  properties:
+    link:
+      type: Sitegeist\Archaeopteryx\Link
+      ui:
+        inspector:
+          # ...
+          editorOptions:
+            # optionally enable link options, which will be encoded into the value object.
+            anchor: true
+            title: true
+            relNofollow: true
+            targetBlank: true
+```
+
+As the value object can serialize more than just the `href` we can also edit other link related options like `title` and the `target`.
+
+The link value object can be queried as usual. An example rendering would look the following:
+
+```
+link = ${q(node).property("link")}
+renderer = afx`
+    <a href={props.link.href} title={props.link.title} target={props.link.target} rel={props.link.rel} rel.@if={props.link.rel != []}>
+        My Text
+    </a>
+`
 ```
 
 ## Contribution

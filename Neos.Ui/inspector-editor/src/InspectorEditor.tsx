@@ -1,69 +1,68 @@
 import * as React from 'react';
 import styled from 'styled-components';
-
 import {Button, Icon} from '@neos-project/react-ui-components';
-
 import {useI18n} from '@sitegeist/archaeopteryx-neos-bridge';
 import {ILinkType, useLinkTypeForHref, useEditorTransactions, Deletable} from '@sitegeist/archaeopteryx-core';
 import {ErrorBoundary, decodeError} from '@sitegeist/archaeopteryx-error-handling';
-import {ILink, ILinkOptions} from "@sitegeist/archaeopteryx-core/src/domain";
+import {ILink} from '@sitegeist/archaeopteryx-core/src/domain';
+import {ILinkOptions} from '@sitegeist/archaeopteryx-core/src/domain';
+import {
+    convertILinkToSerializedLinkValue,
+    LinkDataType,
+    resolveSerializedLinkFromValue,
+    serializedLinkToILink
+} from "./serialisation";
 
-interface Props {
-    neos: unknown
-    nodeTypesRegistry: unknown
-    validatorRegistry: unknown
-    editorRegistry: unknown
-    i18nRegistry: unknown
-    className: unknown
-
-    id: string
-    label: string
-    editor: string
-    options: {
-        linkTypes?: Record<string, unknown>
+export type EditorProps = {
+    options?: {
+        linkTypes?: Record<string, unknown>,
         anchor?: boolean
-    }
-    helpMessage: string
-    helpThumbnail: string
-    highlight: boolean
-    identifier: string
-    value: any
-    hooks: null | any
-    commit: (value: any) => void
-}
-
-const serializedLinkToILink = (value: null | string): ILink | null => {
-    if (value === null) {
-        return null;
-    }
-    const [baseHref, hash] = value.split('#', 2);
-    return {
-        href: baseHref,
-        options: {
-            anchor: hash || undefined,
-        }
+        title?: boolean
+        relNofollow?: boolean
+        targetBlank?: boolean
     };
-}
+    value: any;
+    commit(value: any): void;
+};
 
-const convertILinkToSerializedLinkValue = (link: ILink): any => {
-    if (link.options?.anchor) {
-        return `${link.href}#${link.options?.anchor}`;
-    } else {
-        return link.href;
-    }
-}
+export const createInspectorEditor = (dataType: LinkDataType) => (props: EditorProps) => {
 
-export const InspectorEditor: React.FC<Props> = props => {
+    const reset = () => props.commit('');
+
     const i18n = useI18n();
     const tx = useEditorTransactions();
-    const value = typeof props.value === 'string' ? (props.value || null) : null;
-    const linkType = useLinkTypeForHref(value ?? null);
+
+    const serializedLink = resolveSerializedLinkFromValue(props.value, dataType);
+
+    const linkType = useLinkTypeForHref(
+        serializedLink.dataType === LinkDataType.valueObject ? serializedLink.value?.href ?? null : serializedLink.value
+    );
 
     const enabledLinkOptions = React.useMemo(() => {
         const enabledLinkOptions: (keyof ILinkOptions)[] = [];
 
+        if (serializedLink.dataType === LinkDataType.string) {
+            // the simple type only allows the anchor
+            if (props.options?.anchor) {
+                enabledLinkOptions.push('anchor');
+            }
+            return enabledLinkOptions;
+        }
+
         if (props.options?.anchor) {
             enabledLinkOptions.push('anchor');
+        }
+
+        if (props.options?.title) {
+            enabledLinkOptions.push('title');
+        }
+
+        if (props.options?.relNofollow) {
+            enabledLinkOptions.push('relNofollow');
+        }
+
+        if (props.options?.targetBlank) {
+            enabledLinkOptions.push('targetBlank');
         }
 
         return enabledLinkOptions;
@@ -71,34 +70,37 @@ export const InspectorEditor: React.FC<Props> = props => {
 
     const editLink = React.useCallback(async () => {
         const result = await tx.editLink(
-            serializedLinkToILink(value),
+            serializedLinkToILink(serializedLink),
             enabledLinkOptions,
             props.options ?? {}
         );
 
         if (result.change) {
-            if (result.value === null) {
-                props.commit('');
-            } else {
-                props.commit(convertILinkToSerializedLinkValue(result.value));
+            if (!result.value) {
+                reset();
+                return;
             }
+
+            props.commit(
+                convertILinkToSerializedLinkValue(result.value, serializedLink.dataType)
+            );
         }
-    }, [value, tx.editLink, props.options, props.commit, enabledLinkOptions]);
+    }, [serializedLink, enabledLinkOptions, tx.editLink, props.options, props.commit, reset]);
 
     if (linkType) {
         return (
             <ErrorBoundary>
                 <InspectorEditorWithLinkType
                     key={linkType.id}
-                    value={value!}
+                    link={serializedLinkToILink(serializedLink)!}
                     linkType={linkType}
                     options={props.options?.linkTypes?.[linkType.id] ?? {}}
                     editLink={editLink}
-                    commit={props.commit}
+                    reset={reset}
                 />
             </ErrorBoundary>
         );
-    } else if (Boolean(value) === false) {
+    } else if (serializedLink.value === null) {
         return (
             <Button onClick={editLink}>
                 <Icon icon="plus"/>
@@ -110,7 +112,7 @@ export const InspectorEditor: React.FC<Props> = props => {
         return (
             <div>
                 {i18n('Sitegeist.Archaeopteryx:Main:inspector.notfound', undefined, {
-                    href: JSON.stringify(value)
+                    href: JSON.stringify(serializedLink.value)
                 })}
                 <br/>
                 <br/>
@@ -153,15 +155,14 @@ const SeamlessButton = styled.button`
 `;
 
 const InspectorEditorWithLinkType: React.FC<{
-    value: string
+    link: ILink
     linkType: ILinkType
     options: any
     editLink: () => Promise<void>
-    commit: (value: any) => void
+    reset: () => void
 }> = props => {
     const i18n = useI18n();
-    const link = {href: props.value};
-    const {busy, error, result: model} = props.linkType.useResolvedModel(link);
+    const {busy, error, result: model} = props.linkType.useResolvedModel(props.link);
     const {Preview, LoadingPreview} = props.linkType;
 
     if (error) {
@@ -169,7 +170,7 @@ const InspectorEditorWithLinkType: React.FC<{
     }
 
     return (
-        <Deletable onDelete={() => props.commit('')}>
+        <Deletable onDelete={props.reset}>
             <SeamlessButton
                 title={i18n('Sitegeist.Archaeopteryx:Main:inspector.edit')}
                 type="button"
@@ -177,13 +178,13 @@ const InspectorEditorWithLinkType: React.FC<{
             >
                 {busy ? (
                     <LoadingPreview
-                        link={link}
+                        link={props.link}
                         options={props.options}
                     />
                 ) : (
                     <Preview
                         model={model}
-                        link={link}
+                        link={props.link}
                         options={props.options}
                     />
                 )}
