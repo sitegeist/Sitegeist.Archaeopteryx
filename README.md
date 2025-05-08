@@ -332,14 +332,17 @@ Use the preset in your link property, mixin or node type
   <img src="./Docs/Link Options.png">
 </p>
 
-In RTE context, Sitegeist.Archaeopteryx allows you to set some additional link options. These are:
+Sitegeist.Archaeopteryx allows you to set some additional link options. These are:
 
 * **Anchor:** This will add a string to the hash-section of the URL (the part after `#`)
 * **Title:** This will set the `title` attribute of the resulting `<a>`-Tag
 * **Open in new window:** This will set the `target` attribute of the resulting `<a>`-Tag to `_blank`
 * **rel="nofollow":** This will set the `rel` attribute of the resulting `<a>`-Tag to `nofollow`
 
-Not all Link Types support all of these options however. Here's an overview of what Link Type supports which options:
+Based on the context they might not be available. A simple inspector editor (`type: string`) for example cannot encode the "Title" option but only the "Anchor" by appending that to the link.
+The RTE supports all options and the inspector object `type: Sitegeist\Archaeopteryx\Link` too.
+
+Further, not all Link Types support all of these options. Here's an overview of what Link Type supports which options:
 
 | Link Type     | Supported Link Options                              |
 | ------------- | --------------------------------------------------- |
