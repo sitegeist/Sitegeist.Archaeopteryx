@@ -28,12 +28,12 @@ describe('LinkType: Node', () => {
         equal(isSuitableFor(link), true);
     });
 
-    it('is not satisfied by node:// links with a hash', () => {
+    it('is satisfied by node:// links with a hash', () => {
         const link = {
             href: 'node://97c9a6e3-4b50-4559-9f60-b5ad68f25758#section'
         };
 
-        equal(isSuitableFor(link), false);
+        equal(isSuitableFor(link), true);
     });
 
     it('is not satisfied by asset:// links', () => {

@@ -6,6 +6,7 @@ import {Button, Icon} from '@neos-project/react-ui-components';
 import {useI18n} from '@sitegeist/archaeopteryx-neos-bridge';
 import {ILinkType, useLinkTypeForHref, useEditorTransactions, Deletable} from '@sitegeist/archaeopteryx-core';
 import {ErrorBoundary, decodeError} from '@sitegeist/archaeopteryx-error-handling';
+import {ILink, ILinkOptions} from "@sitegeist/archaeopteryx-core/src/domain";
 
 interface Props {
     neos: unknown
@@ -20,6 +21,7 @@ interface Props {
     editor: string
     options: {
         linkTypes?: Record<string, unknown>
+        anchor?: boolean
     }
     helpMessage: string
     helpThumbnail: string
@@ -30,24 +32,58 @@ interface Props {
     commit: (value: any) => void
 }
 
+const serializedLinkToILink = (value: null | string): ILink | null => {
+    if (value === null) {
+        return null;
+    }
+    const [baseHref, hash] = value.split('#', 2);
+    return {
+        href: baseHref,
+        options: {
+            anchor: hash || undefined,
+        }
+    };
+}
+
+const convertILinkToSerializedLinkValue = (link: ILink): any => {
+    if (link.options?.anchor) {
+        return `${link.href}#${link.options?.anchor}`;
+    } else {
+        return link.href;
+    }
+}
+
 export const InspectorEditor: React.FC<Props> = props => {
     const i18n = useI18n();
     const tx = useEditorTransactions();
-    const value = typeof props.value === 'string' ? (props.value || undefined) : undefined;
+    const value = typeof props.value === 'string' ? (props.value || null) : null;
     const linkType = useLinkTypeForHref(value ?? null);
+
+    const enabledLinkOptions = React.useMemo(() => {
+        const enabledLinkOptions: (keyof ILinkOptions)[] = [];
+
+        if (props.options?.anchor) {
+            enabledLinkOptions.push('anchor');
+        }
+
+        return enabledLinkOptions;
+    }, [props.options]);
 
     const editLink = React.useCallback(async () => {
         const result = await tx.editLink(
-            value === undefined ? null : {href: value},
-            [],
+            serializedLinkToILink(value),
+            enabledLinkOptions,
             props.options ?? {}
         );
 
-
         if (result.change) {
-            props.commit(result.value?.href ?? '');
+            if (result.value === null) {
+                props.commit('');
+            } else {
+                props.commit(convertILinkToSerializedLinkValue(result.value));
+            }
         }
-    }, [value, tx.editLink, props.options, props.commit]);
+    }, [value, tx.editLink, props.options, props.commit, enabledLinkOptions]);
 
     if (linkType) {
         return (
