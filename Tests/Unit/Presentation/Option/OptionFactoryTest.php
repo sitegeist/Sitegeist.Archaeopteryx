@@ -96,8 +96,8 @@ final class OptionFactoryTest extends TestCase
         );
 
         Assert::assertEquals(
-            expected: $expectedOption,
-            actual: $optionFactory->forNodeTreePreset($nodeTreePreset),
+            $expectedOption,
+            $optionFactory->forNodeTreePreset($nodeTreePreset),
         );
     }
 
@@ -155,8 +155,8 @@ final class OptionFactoryTest extends TestCase
         );
 
         Assert::assertEquals(
-            expected: $expectedOption,
-            actual: $optionFactory->forNodeType($nodeType),
+            $expectedOption,
+            $optionFactory->forNodeType($nodeType),
         );
     }
 }

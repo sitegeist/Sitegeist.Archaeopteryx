@@ -87,8 +87,8 @@ final class IconLabelFactoryTest extends TestCase
         $iconLabelFactory = new IconLabelFactory();
 
         Assert::assertEquals(
-            expected: $expectedIconLabel,
-            actual: $iconLabelFactory->forNodeTreePreset($nodeTreePreset),
+            $expectedIconLabel,
+            $iconLabelFactory->forNodeTreePreset($nodeTreePreset),
         );
     }
 
@@ -177,8 +177,8 @@ final class IconLabelFactoryTest extends TestCase
         $iconLabelFactory = new IconLabelFactory();
 
         Assert::assertEquals(
-            expected: $expectedIconLabel,
-            actual: $iconLabelFactory->forNodeType($nodeType),
+            $expectedIconLabel,
+            $iconLabelFactory->forNodeType($nodeType),
         );
     }
 }
