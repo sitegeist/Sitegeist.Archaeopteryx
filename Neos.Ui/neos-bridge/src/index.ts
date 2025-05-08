@@ -13,9 +13,7 @@ export type {
 } from "./domain";
 export {
     NeosContext,
-    ContextPath,
-    useSiteNodeContextPath,
-    useDocumentNodeContextPath,
+    useSiteNodeAggregateId,
     useAssetSummary,
     useDimensionValues,
     usePersonalWorkspaceName,

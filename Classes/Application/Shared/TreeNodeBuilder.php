@@ -12,8 +12,7 @@ declare(strict_types=1);
 
 namespace Sitegeist\Archaeopteryx\Application\Shared;
 
-use Neos\ContentRepository\Domain\Model\Node;
-use Neos\ContentRepository\Domain\NodeAggregate\NodeAggregateIdentifier;
+use Neos\ContentRepository\Core\SharedModel\Node\NodeAggregateId;
 use Neos\Flow\Annotations as Flow;
 
 /**
@@ -23,46 +22,36 @@ use Neos\Flow\Annotations as Flow;
 final class TreeNodeBuilder
 {
     /** @var array<string,TreeNodeBuilder> */
-    private array $childrenByIdentifier;
+    private array $childrenByIdentifier = [];
 
-    /**
-     * @param TreeNodeBuilder[] $children
-     */
-    private function __construct(
-        public readonly int $sortingIndex,
-        private NodeAggregateIdentifier $nodeAggregateIdentifier,
-        private string $icon,
-        private string $label,
-        private string $nodeTypeLabel,
+    /** @var list<TreeNodeBuilder> $children */
+    private array $children = [];
+
+    public function __construct(
+        private readonly NodeAggregateId $nodeAggregateId,
+        private readonly string $icon,
+        private readonly string $label,
+        private readonly string $nodeTypeLabel,
         private bool $isMatchedByFilter,
         private bool $isLinkable,
-        private bool $isDisabled,
-        private bool $isHiddenInMenu,
-        private bool $hasScheduledDisabledState,
+        private readonly bool $isDisabled,
+        private readonly bool $isHiddenInMenu,
+        private readonly bool $hasScheduledDisabledState,
         private bool $hasUnloadedChildren,
-        private array $children
     ) {
     }
 
-    public static function forNode(Node $node): self
+    public function containsNodeTreeByNodeAggregateId(NodeAggregateId $nodeAggregateId): bool
     {
-        return new self(
-            // @phpstan-ignore-next-line
-            sortingIndex: $node->getIndex() ?? 0,
-            nodeAggregateIdentifier: $node->getNodeAggregateIdentifier(),
-            icon: $node->getNodeType()->getConfiguration('ui.icon') ?? 'questionmark',
-            label: $node->getLabel(),
-            nodeTypeLabel: $node->getNodeType()->getLabel(),
-            isMatchedByFilter: false,
-            isLinkable: false,
-            isDisabled: !$node->isVisible(),
-            isHiddenInMenu: $node->isHiddenInIndex(),
-            hasScheduledDisabledState:
-                $node->getHiddenBeforeDateTime() !== null
-                || $node->getHiddenAfterDateTime() !== null,
-            hasUnloadedChildren: false,
-            children: [],
-        );
+        if ($this->nodeAggregateId->equals($nodeAggregateId)) {
+            return true;
+        }
+        foreach ($this->children as $child) {
+            if ($child->containsNodeTreeByNodeAggregateId($nodeAggregateId)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public function setIsMatchedByFilter(bool $value): self
@@ -85,9 +74,9 @@ final class TreeNodeBuilder
 
     public function addChild(TreeNodeBuilder $childBuilder): self
     {
-        if (!isset($this->childrenByIdentifier[(string) $childBuilder->nodeAggregateIdentifier])) {
+        if (!isset($this->childrenByIdentifier[$childBuilder->nodeAggregateId->value])) {
             $this->children[] = $childBuilder;
-            $this->childrenByIdentifier[(string) $childBuilder->nodeAggregateIdentifier] = $childBuilder;
+            $this->childrenByIdentifier[$childBuilder->nodeAggregateId->value] = $childBuilder;
         }
 
         return $this;
@@ -96,7 +85,7 @@ final class TreeNodeBuilder
     public function build(): TreeNode
     {
         return new TreeNode(
-            nodeAggregateIdentifier: $this->nodeAggregateIdentifier,
+            nodeAggregateIdentifier: $this->nodeAggregateId,
             icon: $this->icon,
             label: $this->label,
             nodeTypeLabel: $this->nodeTypeLabel,
@@ -113,12 +102,6 @@ final class TreeNodeBuilder
     private function buildChildren(): TreeNodes
     {
         $items = [];
-
-        usort(
-            $this->children,
-            fn (TreeNodeBuilder $a, TreeNodeBuilder $b) =>
-                $a->sortingIndex <=> $b->sortingIndex
-        );
 
         foreach ($this->children as $childBuilder) {
             $items[] = $childBuilder->build();

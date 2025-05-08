@@ -10,24 +10,24 @@
 
 declare(strict_types=1);
 
-namespace Sitegeist\Archaeopteryx\Infrastructure\ContentRepository;
+namespace Sitegeist\Archaeopteryx\Presentation\IconLabel;
 
-use Neos\ContentRepository\Domain\Model\Node;
 use Neos\Flow\Annotations as Flow;
 
 /**
  * @internal
  */
 #[Flow\Proxy(false)]
-final class LinkableNodeSpecification
+final class IconLabel implements \JsonSerializable
 {
     public function __construct(
-        public readonly NodeTypeFilter $linkableNodeTypes,
+        public readonly string $icon,
+        public readonly string $label,
     ) {
     }
 
-    public function isSatisfiedByNode(Node $node): bool
+    public function jsonSerialize(): mixed
     {
-        return $this->linkableNodeTypes->isSatisfiedByNode($node);
+        return get_object_vars($this);
     }
 }

@@ -12,11 +12,13 @@ declare(strict_types=1);
 
 namespace Sitegeist\Archaeopteryx\Application\GetTree;
 
-use Neos\ContentRepository\Domain\ContentSubgraph\NodePath;
-use Neos\ContentRepository\Domain\NodeAggregate\NodeAggregateIdentifier;
-use Neos\ContentRepository\Domain\NodeType\NodeTypeName;
+use Neos\ContentRepository\Core\DimensionSpace\DimensionSpacePoint;
+use Neos\ContentRepository\Core\NodeType\NodeTypeNames;
+use Neos\ContentRepository\Core\Projection\ContentGraph\AbsoluteNodePath;
+use Neos\ContentRepository\Core\SharedModel\ContentRepository\ContentRepositoryId;
+use Neos\ContentRepository\Core\SharedModel\Node\NodeAggregateId;
+use Neos\ContentRepository\Core\SharedModel\Workspace\WorkspaceName;
 use Neos\Flow\Annotations as Flow;
-use Sitegeist\Archaeopteryx\Application\Shared\NodeTypeNames;
 
 /**
  * @internal
@@ -24,20 +26,21 @@ use Sitegeist\Archaeopteryx\Application\Shared\NodeTypeNames;
 #[Flow\Proxy(false)]
 final class GetTreeQuery
 {
-    /**
-     * @param array<string,array<int,string>> $dimensionValues
-     */
     public function __construct(
-        public readonly string $workspaceName,
-        public readonly array $dimensionValues,
-        public readonly NodePath $startingPoint,
+        public readonly ContentRepositoryId $contentRepositoryId,
+        public readonly WorkspaceName $workspaceName,
+        public readonly DimensionSpacePoint $dimensionSpacePoint,
+        public readonly NodeAggregateId|AbsoluteNodePath $startingPoint,
         public readonly int $loadingDepth,
         public readonly string $baseNodeTypeFilter,
         public readonly NodeTypeNames $linkableNodeTypes,
         public readonly string $narrowNodeTypeFilter,
         public readonly string $searchTerm,
-        public readonly ?NodeAggregateIdentifier $selectedNodeId,
+        public readonly ?NodeAggregateId $selectedNodeId,
     ) {
+        if ($this->loadingDepth < 0) {
+            throw new \InvalidArgumentException(sprintf('Loading depth must not be negative, got %d', $this->loadingDepth), 1745164594);
+        }
     }
 
     /**
@@ -45,6 +48,11 @@ final class GetTreeQuery
      */
     public static function fromArray(array $array): self
     {
+        isset($array['contentRepositoryId'])
+            or throw new \InvalidArgumentException('Content Repository Id must be set');
+        is_string($array['contentRepositoryId'])
+            or throw new \InvalidArgumentException('Content Repository Id must be a string');
+
         isset($array['workspaceName'])
             or throw new \InvalidArgumentException('Workspace name must be set');
         is_string($array['workspaceName'])
@@ -79,31 +87,18 @@ final class GetTreeQuery
             or throw new \InvalidArgumentException('Selected node id term must be a string');
 
         return new self(
-            workspaceName: $array['workspaceName'],
-            dimensionValues: $array['dimensionValues'] ?? [],
-            startingPoint: NodePath::fromString($array['startingPoint']),
+            contentRepositoryId: ContentRepositoryId::fromString($array['contentRepositoryId']),
+            workspaceName: WorkspaceName::fromString($array['workspaceName']),
+            dimensionSpacePoint: DimensionSpacePoint::fromLegacyDimensionArray($array['dimensionValues'] ?? []),
+            startingPoint: NodeAggregateId::tryFromString($array['startingPoint']) ?? AbsoluteNodePath::fromString($array['startingPoint']),
             loadingDepth: $array['loadingDepth'],
             baseNodeTypeFilter: $array['baseNodeTypeFilter'] ?? '',
-            linkableNodeTypes: NodeTypeNames::fromArray($array['linkableNodeTypes'] ?? []),
+            linkableNodeTypes: NodeTypeNames::fromStringArray($array['linkableNodeTypes'] ?? []),
             narrowNodeTypeFilter: $array['narrowNodeTypeFilter'] ?? '',
             searchTerm: $array['searchTerm'] ?? '',
             selectedNodeId: isset($array['selectedNodeId'])
-                ? NodeAggregateIdentifier::fromString($array['selectedNodeId'])
+                ? NodeAggregateId::fromString($array['selectedNodeId'])
                 : null,
         );
-    }
-
-    /**
-     * @return array<string,string>
-     */
-    public function getTargetDimensionValues(): array
-    {
-        $result = [];
-
-        foreach ($this->dimensionValues as $dimensionName => $fallbackChain) {
-            $result[$dimensionName] = $fallbackChain[0] ?? '';
-        }
-
-        return $result;
     }
 }

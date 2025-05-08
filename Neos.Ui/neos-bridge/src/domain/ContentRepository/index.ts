@@ -5,7 +5,7 @@
  * information, please view the LICENSE file which was distributed with this
  * source code.
  */
-export {ContextPath, useSiteNodeContextPath, useDocumentNodeContextPath} from './ContextPath';
+export {useSiteNodeAggregateId} from './NodeAggregateId';
 
 export {useDimensionValues} from './Dimensions';
 

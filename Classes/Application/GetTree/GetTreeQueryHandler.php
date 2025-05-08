@@ -12,17 +12,17 @@ declare(strict_types=1);
 
 namespace Sitegeist\Archaeopteryx\Application\GetTree;
 
-use Neos\ContentRepository\Domain\Model\Node;
-use Neos\ContentRepository\Domain\NodeType\NodeTypeConstraintFactory;
-use Neos\ContentRepository\Domain\Service\NodeTypeManager;
+use Neos\ContentRepository\Core\Projection\ContentGraph\AbsoluteNodePath;
+use Neos\ContentRepository\Core\Projection\ContentGraph\Node;
+use Neos\ContentRepository\Core\SharedModel\Node\NodeAggregateId;
 use Neos\Flow\Annotations as Flow;
-use Neos\Neos\Domain\Service\ContentContextFactory;
 use Sitegeist\Archaeopteryx\Application\Shared\TreeNode;
-use Sitegeist\Archaeopteryx\Infrastructure\ContentRepository\LinkableNodeSpecification;
-use Sitegeist\Archaeopteryx\Infrastructure\ContentRepository\NodeSearchService;
-use Sitegeist\Archaeopteryx\Infrastructure\ContentRepository\NodeSearchSpecification;
-use Sitegeist\Archaeopteryx\Infrastructure\ContentRepository\NodeTypeFilter;
-use Sitegeist\Archaeopteryx\Infrastructure\ContentRepository\TreeBuilder;
+use Sitegeist\Archaeopteryx\Infrastructure\ESCR\LinkableNodeSpecification;
+use Sitegeist\Archaeopteryx\Infrastructure\ESCR\NodeSearchSpecification;
+use Sitegeist\Archaeopteryx\Infrastructure\ESCR\NodeService;
+use Sitegeist\Archaeopteryx\Infrastructure\ESCR\NodeServiceFactory;
+use Sitegeist\Archaeopteryx\Infrastructure\ESCR\NodeTypeService;
+use Sitegeist\Archaeopteryx\Infrastructure\ESCR\NodeTypeServiceFactory;
 
 /**
  * @internal
@@ -31,103 +31,106 @@ use Sitegeist\Archaeopteryx\Infrastructure\ContentRepository\TreeBuilder;
 final class GetTreeQueryHandler
 {
     #[Flow\Inject]
-    protected ContentContextFactory $contentContextFactory;
+    protected NodeServiceFactory $nodeServiceFactory;
 
     #[Flow\Inject]
-    protected NodeTypeManager $nodeTypeManager;
-
-    #[Flow\Inject]
-    protected NodeSearchService $nodeSearchService;
-
-    #[Flow\Inject]
-    protected NodeTypeConstraintFactory $nodeTypeConstraintFactory;
+    protected NodeTypeServiceFactory $nodeTypeServiceFactory;
 
     public function handle(GetTreeQuery $query): GetTreeQueryResult
     {
-        $contentContext = $this->contentContextFactory->create([
-            'workspaceName' => $query->workspaceName,
-            'dimensions' => $query->dimensionValues,
-            'targetDimensions' => $query->getTargetDimensionValues(),
-            'invisibleContentShown' => true,
-            'removedContentShown' => false,
-            'inaccessibleContentShown' => true
-        ]);
+        $nodeService = $this->nodeServiceFactory->create(
+            contentRepositoryId: $query->contentRepositoryId,
+            workspaceName: $query->workspaceName,
+            dimensionSpacePoint: $query->dimensionSpacePoint,
+        );
+        $nodeTypeService = $this->nodeTypeServiceFactory->create(
+            contentRepositoryId: $query->contentRepositoryId,
+        );
 
-        $rootNode = $contentContext->getNode((string) $query->startingPoint);
-        if (!$rootNode instanceof Node) {
-            throw StartingPointWasNotFound::becauseNodeWithGivenPathDoesNotExistInContext(
+        $rootNode = match ($query->startingPoint::class) {
+            NodeAggregateId::class => $nodeService->findNodeById($query->startingPoint) ?? throw StartingPointWasNotFound::becauseNodeWithGivenIdNotExistInCurrentSubgraph(
+                nodeAggregateId: $query->startingPoint,
+                subgraph: $nodeService->subgraph,
+            ),
+            AbsoluteNodePath::class => $nodeService->findNodeByAbsoluteNodePath($query->startingPoint) ?? throw StartingPointWasNotFound::becauseNodeWithGivenPathDoesNotExistInCurrentSubgraph(
                 nodePath: $query->startingPoint,
-                contentContext: $contentContext,
-            );
-        }
+                subgraph: $nodeService->subgraph,
+            ),
+        };
 
         return new GetTreeQueryResult(
             root: empty($query->searchTerm) && empty($query->narrowNodeTypeFilter)
-                ? $this->loadTree($rootNode, $query, $query->loadingDepth)
-                : $this->performSearch($rootNode, $query),
+                ? $this->loadTree($nodeService, $nodeTypeService, $rootNode, $query, $query->loadingDepth)
+                : $this->performSearch($nodeService, $nodeTypeService, $rootNode, $query),
         );
     }
 
-    private function performSearch(Node $rootNode, GetTreeQuery $query): TreeNode
-    {
-        $baseNodeTypeFilter = NodeTypeFilter::fromFilterString(
-            $query->baseNodeTypeFilter,
-            $this->nodeTypeConstraintFactory,
-            $this->nodeTypeManager,
+    private function performSearch(
+        NodeService $nodeService,
+        NodeTypeService $nodeTypeService,
+        Node $rootNode,
+        GetTreeQuery $query,
+    ): TreeNode {
+        $baseNodeTypeFilter = $nodeTypeService->createNodeTypeFilterFromFilterString(
+            filterString: $query->baseNodeTypeFilter,
         );
-        $narrowNodeTypeFilter = NodeTypeFilter::fromFilterString(
-            $query->narrowNodeTypeFilter,
-            $this->nodeTypeConstraintFactory,
-            $this->nodeTypeManager,
-        );
-
-        $matchingNodes = $this->nodeSearchService->search(
-            $query->searchTerm,
-            $narrowNodeTypeFilter,
-            $rootNode
+        $narrowNodeTypeFilter = $nodeTypeService->createNodeTypeFilterFromFilterString(
+            filterString: $query->narrowNodeTypeFilter,
         );
 
-        $treeBuilder = TreeBuilder::forRootNode(
+        $matchingNodes = $nodeService->search(
+            rootNode: $rootNode,
+            searchTerm: $query->searchTerm,
+            nodeTypeFilter: $narrowNodeTypeFilter,
+        );
+
+        $treeBuilder = $nodeService->createTreeBuilderForRootNode(
             rootNode: $rootNode,
             nodeSearchSpecification: new NodeSearchSpecification(
                 baseNodeTypeFilter: $baseNodeTypeFilter,
                 narrowNodeTypeFilter: $narrowNodeTypeFilter,
                 searchTerm: $query->searchTerm,
+                nodeService: $nodeService,
             ),
             linkableNodeSpecification: new LinkableNodeSpecification(
-                linkableNodeTypes: NodeTypeFilter::fromNodeTypeNames(
+                linkableNodeTypes: $nodeTypeService->createNodeTypeFilterFromNodeTypeNames(
                     nodeTypeNames: $query->linkableNodeTypes,
-                    nodeTypeManager: $this->nodeTypeManager,
                 ),
             ),
         );
 
         foreach ($matchingNodes as $matchingNode) {
-            $treeBuilder->addNodeWithAncestors($matchingNode);
+            $treeBuilder->addNodeWithAncestors(
+                node: $matchingNode,
+                ancestors: $nodeService->findAncestorNodes($matchingNode),
+            );
         }
 
         return $treeBuilder->build();
     }
 
-    private function loadTree(Node $node, GetTreeQuery $query, int $remainingDepth): TreeNode
-    {
-        $baseNodeTypeFilter = NodeTypeFilter::fromFilterString(
-            $query->baseNodeTypeFilter,
-            $this->nodeTypeConstraintFactory,
-            $this->nodeTypeManager,
+    private function loadTree(
+        NodeService $nodeService,
+        NodeTypeService $nodeTypeService,
+        Node $node,
+        GetTreeQuery $query,
+        int $remainingDepth,
+    ): TreeNode {
+        $baseNodeTypeFilter = $nodeTypeService->createNodeTypeFilterFromFilterString(
+            filterString: $query->baseNodeTypeFilter,
         );
 
-        $treeBuilder = TreeBuilder::forRootNode(
+        $treeBuilder = $nodeService->createTreeBuilderForRootNode(
             rootNode: $node,
             nodeSearchSpecification: new NodeSearchSpecification(
                 baseNodeTypeFilter: $baseNodeTypeFilter,
                 narrowNodeTypeFilter: null,
                 searchTerm: null,
+                nodeService: $nodeService,
             ),
             linkableNodeSpecification: new LinkableNodeSpecification(
-                linkableNodeTypes: NodeTypeFilter::fromNodeTypeNames(
+                linkableNodeTypes: $nodeTypeService->createNodeTypeFilterFromNodeTypeNames(
                     nodeTypeNames: $query->linkableNodeTypes,
-                    nodeTypeManager: $this->nodeTypeManager,
                 ),
             ),
         );
@@ -135,10 +138,11 @@ final class GetTreeQueryHandler
         $treeBuilder->addNodeWithDescendants($node, $remainingDepth);
 
         if ($query->selectedNodeId) {
-            /** @var Node|null $selectedNode */
-            $selectedNode = $node->getContext()->getNodeByIdentifier((string) $query->selectedNodeId);
-            if ($selectedNode) {
-                $treeBuilder->addNodeWithSiblingsAndAncestors($selectedNode);
+            if ($treeBuilder->containsNodeTreeByNodeAggregateId($query->selectedNodeId) === false) {
+                $selectedNode = $nodeService->findNodeById($query->selectedNodeId);
+                if ($selectedNode) {
+                    $treeBuilder->addNodeWithSiblingsAndAncestors($selectedNode);
+                }
             }
         }
 

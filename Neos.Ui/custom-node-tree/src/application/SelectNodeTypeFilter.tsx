@@ -43,8 +43,9 @@ export const SelectNodeTypeFilter: React.FC<Props> = (props) => {
 
         if ("success" in result) {
             return result.success.options.map((option) => ({
-                ...option,
-                label: i18n(option.label)
+                value: option.value,
+                icon: option.label.icon,
+                label: i18n(option.label.label)
             }));
         }
 

@@ -10,9 +10,11 @@
 
 declare(strict_types=1);
 
-namespace Sitegeist\Archaeopteryx\Infrastructure\ContentRepository;
+namespace Sitegeist\Archaeopteryx\Infrastructure\ESCR;
 
-use Neos\ContentRepository\Domain\Model\Node;
+use Neos\ContentRepository\Core\Projection\ContentGraph\Node;
+use Neos\ContentRepository\Core\Projection\ContentGraph\Nodes;
+use Neos\ContentRepository\Core\SharedModel\Node\NodeAggregateId;
 use Neos\Flow\Annotations as Flow;
 use Sitegeist\Archaeopteryx\Application\Shared\TreeNode;
 use Sitegeist\Archaeopteryx\Application\Shared\TreeNodeBuilder;
@@ -26,26 +28,19 @@ final class TreeBuilder
     /** @var array<string,TreeNodeBuilder> */
     private array $treeNodeBuildersByNodeAggregateIdentifier;
 
-    private function __construct(
+    public function __construct(
         Node $rootNode,
+        private readonly NodeService $nodeService,
         private readonly TreeNodeBuilder $rootTreeNodeBuilder,
         private readonly NodeSearchSpecification $nodeSearchSpecification,
         private readonly LinkableNodeSpecification $linkableNodeSpecification,
     ) {
-        $this->treeNodeBuildersByNodeAggregateIdentifier[(string) $rootNode->getNodeAggregateIdentifier()] = $rootTreeNodeBuilder;
+        $this->treeNodeBuildersByNodeAggregateIdentifier[$rootNode->aggregateId->value] = $rootTreeNodeBuilder;
     }
 
-    public static function forRootNode(
-        Node $rootNode,
-        NodeSearchSpecification $nodeSearchSpecification,
-        LinkableNodeSpecification $linkableNodeSpecification,
-    ): self {
-        return new self(
-            rootNode: $rootNode,
-            rootTreeNodeBuilder: TreeNodeBuilder::forNode($rootNode),
-            nodeSearchSpecification: $nodeSearchSpecification,
-            linkableNodeSpecification: $linkableNodeSpecification,
-        );
+    public function containsNodeTreeByNodeAggregateId(NodeAggregateId $nodeAggregateId): bool
+    {
+        return $this->rootTreeNodeBuilder->containsNodeTreeByNodeAggregateId($nodeAggregateId);
     }
 
     public function addNodeWithDescendants(Node $node, int $loadingDepth): self
@@ -55,10 +50,15 @@ final class TreeBuilder
 
             if ($loadingDepth === 0) {
                 $treeNodeBuilder->setHasUnloadedChildren(
-                    $node->getNumberOfChildNodes($this->nodeSearchSpecification->baseNodeTypeFilter->toFilterString()) > 0,
+                    $this->nodeService->getNumberOfChildNodes($node, $this->nodeSearchSpecification->baseNodeTypeFilter->nodeTypeCriteria) > 0,
                 );
             } else {
-                foreach ($node->getChildNodes($this->nodeSearchSpecification->baseNodeTypeFilter->toFilterString()) as $childNode) {
+                $childNodes = $this->nodeService->findChildNodes(
+                    $node,
+                    $this->nodeSearchSpecification->baseNodeTypeFilter->nodeTypeCriteria
+                );
+
+                foreach ($childNodes as $childNode) {
                     /** @var Node $childNode */
                     $treeNodeBuilder->addChild(
                         $addNodeWithChildrenRecursively($childNode, $loadingDepth - 1)
@@ -73,21 +73,15 @@ final class TreeBuilder
         return $this;
     }
 
-    public function addNodeWithAncestors(Node $node): self
+    public function addNodeWithAncestors(Node $node, Nodes $ancestors): self
     {
-        $addNodeAndParentRecursively = function (Node $node) use (&$addNodeAndParentRecursively): TreeNodeBuilder {
-            $treeNodeBuilder = $this->addNode($node);
+        $treeNodeBuilder = $this->addNode($node);
+        foreach ($ancestors as $parentNode) {
+            $parentTreeNodeBuilder = $this->addNode($parentNode);
+            $parentTreeNodeBuilder->addChild($treeNodeBuilder);
+            $treeNodeBuilder = $parentTreeNodeBuilder;
+        }
 
-            if ($parentNode = $node->getParent()) {
-                /** @var Node $parentNode */
-                $parentTreeNodeBuilder = $addNodeAndParentRecursively($parentNode);
-                $parentTreeNodeBuilder->addChild($treeNodeBuilder);
-            }
-
-            return $treeNodeBuilder;
-        };
-
-        $addNodeAndParentRecursively($node);
         return $this;
     }
 
@@ -95,16 +89,16 @@ final class TreeBuilder
     {
         $addNodeWithSiblingsAndParentRecursively = function (Node $node) use (&$addNodeWithSiblingsAndParentRecursively): TreeNodeBuilder {
             $treeNodeBuilder = $this->addNode($node);
-            if ($parentNode = $node->getParent()) {
+            if ($parentNode = $this->nodeService->findParentNode($node)) {
                 /** @var Node $parentNode */
                 $parentTreeNodeBuilder = $addNodeWithSiblingsAndParentRecursively($parentNode);
 
-                foreach ($parentNode->findChildNodes()->previousAll($node)->toArray() as $siblingNode) {
+                foreach ($this->nodeService->findPrecedingSiblingNodes($node) as $siblingNode) {
                     /** @var Node $siblingNode */
                     if ($this->nodeSearchSpecification->baseNodeTypeFilter->isSatisfiedByNode($siblingNode)) {
                         $siblingTreeNodeBuilder = $this->addNode($siblingNode);
                         $siblingTreeNodeBuilder->setHasUnloadedChildren(
-                            $siblingNode->getNumberOfChildNodes($this->nodeSearchSpecification->baseNodeTypeFilter->toFilterString()) > 0,
+                            $this->nodeService->getNumberOfChildNodes($siblingNode, $this->nodeSearchSpecification->baseNodeTypeFilter->nodeTypeCriteria) > 0,
                         );
 
                         $parentTreeNodeBuilder->addChild($siblingTreeNodeBuilder);
@@ -113,12 +107,12 @@ final class TreeBuilder
 
                 $parentTreeNodeBuilder->addChild($treeNodeBuilder);
 
-                foreach ($parentNode->findChildNodes()->nextAll($node)->toArray() as $siblingNode) {
+                foreach ($this->nodeService->findSucceedingSiblingNodes($node) as $siblingNode) {
                     /** @var Node $siblingNode */
                     if ($this->nodeSearchSpecification->baseNodeTypeFilter->isSatisfiedByNode($siblingNode)) {
                         $siblingTreeNodeBuilder = $this->addNode($siblingNode);
                         $siblingTreeNodeBuilder->setHasUnloadedChildren(
-                            $siblingNode->getNumberOfChildNodes($this->nodeSearchSpecification->baseNodeTypeFilter->toFilterString()) > 0,
+                            $this->nodeService->getNumberOfChildNodes($siblingNode, $this->nodeSearchSpecification->baseNodeTypeFilter->nodeTypeCriteria) > 0,
                         );
 
                         $parentTreeNodeBuilder->addChild($siblingTreeNodeBuilder);
@@ -133,7 +127,7 @@ final class TreeBuilder
 
         $leafTreeNodeBuilder = $addNodeWithSiblingsAndParentRecursively($node);
         $leafTreeNodeBuilder->setHasUnloadedChildren(
-            $node->getNumberOfChildNodes($this->nodeSearchSpecification->baseNodeTypeFilter->toFilterString()) > 0,
+            $this->nodeService->getNumberOfChildNodes($node, $this->nodeSearchSpecification->baseNodeTypeFilter->nodeTypeCriteria) > 0,
         );
 
         return $this;
@@ -147,8 +141,8 @@ final class TreeBuilder
     private function addNode(Node $node): TreeNodeBuilder
     {
         $treeNodeBuilder = $this->treeNodeBuildersByNodeAggregateIdentifier[
-            (string) $node->getNodeAggregateIdentifier()
-        ] ??= TreeNodeBuilder::forNode($node);
+            $node->aggregateId->value
+        ] ??= $this->nodeService->createTreeNodeBuilderForNode($node);
 
         $treeNodeBuilder->setIsMatchedByFilter(
             $this->nodeSearchSpecification->isSatisfiedByNode($node)

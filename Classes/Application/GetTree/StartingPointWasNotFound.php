@@ -12,8 +12,9 @@ declare(strict_types=1);
 
 namespace Sitegeist\Archaeopteryx\Application\GetTree;
 
-use Neos\ContentRepository\Domain\ContentSubgraph\NodePath;
-use Neos\ContentRepository\Domain\Service\Context as ContentContext;
+use Neos\ContentRepository\Core\Projection\ContentGraph\AbsoluteNodePath;
+use Neos\ContentRepository\Core\Projection\ContentGraph\ContentSubgraphInterface;
+use Neos\ContentRepository\Core\SharedModel\Node\NodeAggregateId;
 use Neos\Flow\Annotations as Flow;
 
 /**
@@ -27,15 +28,37 @@ final class StartingPointWasNotFound extends \Exception
         parent::__construct($message, $code);
     }
 
-    public static function becauseNodeWithGivenPathDoesNotExistInContext(
-        NodePath $nodePath,
-        ContentContext $contentContext,
+    public static function becauseNodeWithGivenIdNotExistInCurrentSubgraph(
+        NodeAggregateId $nodeAggregateId,
+        ContentSubgraphInterface $subgraph,
     ): self {
         return new self(
             sprintf(
-                'The starting point at path "%s" does not exist in context: %s',
-                (string) $nodePath,
-                json_encode($contentContext->getProperties(), JSON_PRETTY_PRINT),
+                'The starting point node id "%s" does not exist in subgraph: %s',
+                $nodeAggregateId->value,
+                json_encode([
+                    'contentRepositoryId' => $subgraph->getContentRepositoryId(),
+                    'workspaceName' => $subgraph->getWorkspaceName(),
+                    'dimensionSpacePoint' => $subgraph->getDimensionSpacePoint(),
+                ], JSON_PRETTY_PRINT),
+            ),
+            1745436877
+        );
+    }
+
+    public static function becauseNodeWithGivenPathDoesNotExistInCurrentSubgraph(
+        AbsoluteNodePath $nodePath,
+        ContentSubgraphInterface $subgraph,
+    ): self {
+        return new self(
+            sprintf(
+                'The starting point at path "%s" does not exist in subgraph: %s',
+                $nodePath->serializeToString(),
+                json_encode([
+                    'contentRepositoryId' => $subgraph->getContentRepositoryId(),
+                    'workspaceName' => $subgraph->getWorkspaceName(),
+                    'dimensionSpacePoint' => $subgraph->getDimensionSpacePoint(),
+                ], JSON_PRETTY_PRINT),
             ),
             1715082893
         );

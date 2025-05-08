@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Sitegeist\Archaeopteryx\Application\GetNodeTypeFilterOptions;
 
+use Neos\ContentRepository\Core\Projection\ContentGraph\Filter\NodeType\NodeTypeCriteria;
+use Neos\ContentRepository\Core\SharedModel\ContentRepository\ContentRepositoryId;
 use Neos\Flow\Annotations as Flow;
 
 /**
@@ -21,7 +23,8 @@ use Neos\Flow\Annotations as Flow;
 final class GetNodeTypeFilterOptionsQuery
 {
     public function __construct(
-        public readonly string $baseNodeTypeFilter,
+        public readonly ContentRepositoryId $contentRepositoryId,
+        public readonly NodeTypeCriteria $baseNodeTypeFilter,
     ) {
     }
 
@@ -30,13 +33,19 @@ final class GetNodeTypeFilterOptionsQuery
      */
     public static function fromArray(array $array): self
     {
+        isset($array['contentRepositoryId'])
+            or throw new \InvalidArgumentException('Content Repository Id must be set');
+        is_string($array['contentRepositoryId'])
+            or throw new \InvalidArgumentException('Content Repository Id must be a string');
+
         isset($array['baseNodeTypeFilter'])
             or throw new \InvalidArgumentException('Base node type filter must be set');
         is_string($array['baseNodeTypeFilter'])
             or throw new \InvalidArgumentException('Base node type filter must be a string');
 
         return new self(
-            baseNodeTypeFilter: $array['baseNodeTypeFilter'],
+            contentRepositoryId: ContentRepositoryId::fromString($array['contentRepositoryId']),
+            baseNodeTypeFilter: NodeTypeCriteria::fromFilterString($array['baseNodeTypeFilter']),
         );
     }
 }

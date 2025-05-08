@@ -13,11 +13,10 @@ declare(strict_types=1);
 namespace Sitegeist\Archaeopteryx\Application\GetNodeSummary;
 
 use GuzzleHttp\Psr7\Uri;
-use Neos\ContentRepository\Domain\Model\Node;
-use Neos\ContentRepository\Domain\Service\NodeTypeManager;
+use Neos\ContentRepository\Core\Projection\ContentGraph\Node;
 use Neos\Flow\Annotations as Flow;
-use Neos\Neos\Domain\Service\ContentContextFactory;
-use Sitegeist\Archaeopteryx\Application\Shared\NodeWasNotFound;
+use Sitegeist\Archaeopteryx\Infrastructure\ESCR\NodeService;
+use Sitegeist\Archaeopteryx\Infrastructure\ESCR\NodeServiceFactory;
 
 /**
  * @internal
@@ -26,59 +25,50 @@ use Sitegeist\Archaeopteryx\Application\Shared\NodeWasNotFound;
 final class GetNodeSummaryQueryHandler
 {
     #[Flow\Inject]
-    protected ContentContextFactory $contentContextFactory;
-
-    #[Flow\Inject]
-    protected NodeTypeManager $nodeTypeManager;
+    protected NodeServiceFactory $nodeServiceFactory;
 
     public function handle(GetNodeSummaryQuery $query): GetNodeSummaryQueryResult
     {
-        $contentContext = $this->contentContextFactory->create([
-            'workspaceName' => $query->workspaceName,
-            'dimensions' => $query->dimensionValues,
-            'targetDimensions' => $query->getTargetDimensionValues(),
-            'invisibleContentShown' => true,
-            'removedContentShown' => false,
-            'inaccessibleContentShown' => true
-        ]);
+        $nodeService = $this->nodeServiceFactory->create(
+            contentRepositoryId: $query->contentRepositoryId,
+            workspaceName: $query->workspaceName,
+            dimensionSpacePoint: $query->dimensionSpacePoint,
+        );
 
-        $node = $contentContext->getNodeByIdentifier((string) $query->nodeId);
-        if (!$node instanceof Node) {
-            throw NodeWasNotFound::becauseNodeWithGivenIdentifierDoesNotExistInContext(
-                nodeAggregateIdentifier: $query->nodeId,
-                contentContext: $contentContext,
-            );
-        }
+        $node = $nodeService->requireNodeById($query->nodeId);
+        $nodeType = $nodeService->requireNodeTypeByName($node->nodeTypeName);
 
         return new GetNodeSummaryQueryResult(
-            icon: $node->getNodeType()->getConfiguration('ui.icon'),
-            label: $node->getLabel(),
-            uri: new Uri('node://' . $node->getNodeAggregateIdentifier()),
-            breadcrumbs: $this->createBreadcrumbsForNode($node)
+            icon: $nodeType->getConfiguration('ui.icon') ?? 'questionmark',
+            label: $nodeService->getLabelForNode($node),
+            uri: new Uri('node://' . $node->aggregateId->value),
+            breadcrumbs: $this->createBreadcrumbsForNode($nodeService, $node),
         );
     }
 
-    private function createBreadcrumbsForNode(Node $node): Breadcrumbs
+    private function createBreadcrumbsForNode(NodeService $nodeService, Node $node): Breadcrumbs
     {
         $items = [];
 
         while ($node) {
             /** @var Node $node */
-            $items[] = $this->createBreadcrumbForNode($node);
-            $node = $node->getParent();
+            $items[] = $this->createBreadcrumbForNode($nodeService, $node);
+            $node = $nodeService->findParentNode($node);
         }
 
-        $items = array_slice($items, 0, -2);
+        $items = array_slice($items, 0, -1);
         $items = array_reverse($items);
 
         return new Breadcrumbs(...$items);
     }
 
-    private function createBreadcrumbForNode(Node $node): Breadcrumb
+    private function createBreadcrumbForNode(NodeService $nodeService, Node $node): Breadcrumb
     {
+        $nodeType = $nodeService->requireNodeTypeByName($node->nodeTypeName);
+
         return new Breadcrumb(
-            icon: $node->getNodeType()->getConfiguration('ui.icon') ?? 'questionmark',
-            label: $node->getLabel(),
+            icon: $nodeType->getConfiguration('ui.icon') ?? 'questionmark',
+            label: $nodeService->getLabelForNode($node),
         );
     }
 }

@@ -12,8 +12,9 @@ declare(strict_types=1);
 
 namespace Sitegeist\Archaeopteryx\Framework\MVC;
 
+use GuzzleHttp\Psr7\Response;
 use Neos\Flow\Annotations as Flow;
-use Neos\Flow\Mvc\ActionResponse;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * @internal
@@ -76,12 +77,14 @@ final class QueryResponse
         );
     }
 
-    public function applyToActionResponse(ActionResponse $actionResponse): void
+    public function toHttpResponse(): ResponseInterface
     {
-        $actionResponse->setContentType('application/json');
-        $actionResponse->setStatusCode($this->statusCode);
-        $actionResponse->setContent(
-            json_encode(
+        return new Response(
+            status: $this->statusCode,
+            headers: [
+                'Content-Type' => 'application/json'
+            ],
+            body: json_encode(
                 [$this->discriminator => $this->payload],
                 JSON_THROW_ON_ERROR
             )
