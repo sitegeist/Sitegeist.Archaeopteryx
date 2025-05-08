@@ -65,7 +65,6 @@ const serializedLinkToILink = (serializedLink: SerializeableLink): ILink | null 
     }
     switch (serializedLink.dataType) {
         case LinkDataType.valueObject:
-            // downcastFromLinkValueObject
             const linkValueObject = serializedLink.value;
 
             const [baseHref, hash] = linkValueObject.href.split('#', 2);
@@ -80,8 +79,13 @@ const serializedLinkToILink = (serializedLink: SerializeableLink): ILink | null 
                 }
             };
         case LinkDataType.string:
+            const [baseHref2, hash2] = serializedLink.value.split('#', 2);
+
             return {
-                href: serializedLink.value
+                href: baseHref2,
+                options: {
+                    anchor: hash2 || undefined,
+                }
             };
     }
 }
@@ -93,21 +97,20 @@ const serializedLinkToILink = (serializedLink: SerializeableLink): ILink | null 
  * Counterpart of {@see serializedLinkToILink}
  */
 const convertILinkToSerializedLinkValue = (link: ILink, dataType: LinkDataType): any => {
+    const href = link.options?.anchor
+        ? `${link.href}#${link.options.anchor}`
+        : link.href;
+
     switch (dataType) {
         case LinkDataType.valueObject:
-            // upcastToLinkValueObject
-            const href = link.options?.anchor
-                ? `${link.href}#${link.options.anchor}`
-                : link.href;
-
             return {
-                href: href.toString(),
+                href: href,
                 title: link.options?.title,
                 target: link.options?.targetBlank ? '_blank' : undefined,
                 rel: link.options?.relNofollow ? ['nofollow'] : [],
             };
         case LinkDataType.string:
-            return link.href;
+            return href;
     }
 }
 
@@ -133,37 +136,40 @@ export const createInspectorEditor = (dataType: LinkDataType) => (props: EditorP
     const serializedLink = resolveCurrentSerializedLink(props.value, dataType);
 
     const linkType = useLinkTypeForHref(
-        (serializedLink.dataType === LinkDataType.valueObject ? serializedLink.value?.href : serializedLink.value) ?? null
+        serializedLink.dataType === LinkDataType.valueObject ? serializedLink.value?.href ?? null : serializedLink.value
     );
 
-    const editLink = React.useCallback(async () => {
-        const enabledLinkOptions = (() => {
-            const enabledLinkOptions: (keyof ILinkOptions)[] = [];
+    const enabledLinkOptions = React.useMemo(() => {
+        const enabledLinkOptions: (keyof ILinkOptions)[] = [];
 
-            if (serializedLink.dataType === LinkDataType.string) {
-                // the simple type doesn't allow any options, as they cannot be encoded.
-                return enabledLinkOptions;
-            }
-
+        if (serializedLink.dataType === LinkDataType.string) {
+            // the simple type only allows the anchor
             if (props.options?.anchor) {
                 enabledLinkOptions.push('anchor');
             }
-
-            if (props.options?.title) {
-                enabledLinkOptions.push('title');
-            }
-
-            if (props.options?.relNofollow) {
-                enabledLinkOptions.push('relNofollow');
-            }
-
-            if (props.options?.targetBlank) {
-                enabledLinkOptions.push('targetBlank');
-            }
-
             return enabledLinkOptions;
-        })();
+        }
 
+        if (props.options?.anchor) {
+            enabledLinkOptions.push('anchor');
+        }
+
+        if (props.options?.title) {
+            enabledLinkOptions.push('title');
+        }
+
+        if (props.options?.relNofollow) {
+            enabledLinkOptions.push('relNofollow');
+        }
+
+        if (props.options?.targetBlank) {
+            enabledLinkOptions.push('targetBlank');
+        }
+
+        return enabledLinkOptions;
+    }, [props.options]);
+
+    const editLink = React.useCallback(async () => {
         const result = await tx.editLink(
             serializedLinkToILink(serializedLink),
             enabledLinkOptions,
@@ -180,7 +186,7 @@ export const createInspectorEditor = (dataType: LinkDataType) => (props: EditorP
                 convertILinkToSerializedLinkValue(result.value, serializedLink.dataType)
             );
         }
-    }, [serializedLink, tx.editLink, props.options, props.commit, reset]);
+    }, [serializedLink, enabledLinkOptions, tx.editLink, props.options, props.commit, reset]);
 
     if (linkType) {
         return (
