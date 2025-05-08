@@ -28,7 +28,7 @@ jobs:
         run: |
           set -ex
 
-          if [ "$GITHUB_REF" != 'refs/heads/main' ]; then
+          if [[ "$GITHUB_REF" != 'refs/heads/main' && "$GITHUB_REF" != 'refs/heads/1.0' && "$GITHUB_REF" != 'refs/heads/2.0' ]]; then
               echo "not pushing because ref is $GITHUB_REF"
               exit 0
           fi
