@@ -25,22 +25,27 @@ jobs:
       - name: Run build
         run: yarn build
       - name: Push build files to GitHub
+        shell: bash
         run: |
           set -ex
 
-          if [[ "$GITHUB_REF" != 'refs/heads/main' && "$GITHUB_REF" != 'refs/heads/1.0' && "$GITHUB_REF" != 'refs/heads/2.0' ]]; then
+          BASE_BRANCH_PATTERN="^refs\/heads\/(main|[0-9]+\.[0-9])$"
+          if ! [[ "$GITHUB_REF" =~ $BASE_BRANCH_PATTERN ]]; then
               echo "not pushing because ref is $GITHUB_REF"
               exit 0
           fi
 
+          set +e
           git status -s | grep Resources/Public/JavaScript
           if [ $? -eq 0 ]; then
+              set -e
               git config --global user.name "github-actions[bot]"
               git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
               git add -f Resources/Public/JavaScript
-              git commit -m "Update: Build frontend files"
+              git commit -m "Update: Build frontend files for $GITHUB_SHA on $GITHUB_REF_NAME"
               git push
           else
+              set -e
               echo "No changes since last run"
           fi
 
