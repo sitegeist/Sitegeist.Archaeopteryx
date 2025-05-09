@@ -35,7 +35,9 @@ jobs:
               exit 0
           fi
 
+          set +e
           git status -s | grep Resources/Public/JavaScript
+          set -e
           if [ $? -eq 0 ]; then
               git config --global user.name "github-actions[bot]"
               git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
