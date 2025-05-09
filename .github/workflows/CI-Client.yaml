@@ -25,9 +25,10 @@ jobs:
       - name: Run build
         run: yarn build
       - name: Push build files to GitHub
+        shell: bash
         run: |
-
-          if [[ "$GITHUB_REF" != 'refs/heads/main' && "$GITHUB_REF" != 'refs/heads/1.0' && "$GITHUB_REF" != 'refs/heads/2.0' ]]; then
+          BASE_BRANCH_PATTERN="^refs\/heads\/(main|[0-9]+\.[0-9])$"
+          if ! [[ "$GITHUB_REF" =~ $BASE_BRANCH_PATTERN ]]; then
               echo "not pushing because ref is $GITHUB_REF"
               exit 0
           fi
