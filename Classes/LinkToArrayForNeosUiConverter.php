@@ -29,7 +29,7 @@ class LinkToArrayForNeosUiConverter extends AbstractTypeConverter
     /**
      * @param array<string,mixed> $convertedChildProperties
      */
-    public function convertFrom($source, $targetType, array $convertedChildProperties = [], PropertyMappingConfigurationInterface $configuration = null)
+    public function convertFrom($source, $targetType, array $convertedChildProperties = [], ?PropertyMappingConfigurationInterface $configuration = null)
     {
         if (!$source instanceof Link) {
             throw new \InvalidArgumentException('Expected argument $source to be of type Link, got: ' . get_debug_type($source), 1697972165);
