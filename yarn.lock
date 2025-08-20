@@ -568,7 +568,7 @@ __metadata:
     "@sitegeist/archaeopteryx-error-handling": "workspace:*"
     "@sitegeist/archaeopteryx-neos-bridge": "workspace:*"
     final-form: ^4.20.2
-    libphonenumber-js: ^1.9.52
+    libphonenumber-js: ^1.12.12
     react-final-form: ^6.5.3
     react-use: ^17.2.4
     rxjs: ^6.6.7
@@ -1403,10 +1403,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"libphonenumber-js@npm:^1.9.52":
-  version: 1.11.18
-  resolution: "libphonenumber-js@npm:1.11.18"
-  checksum: f03b4a287e853d82e07363c010afa4ab2930528a6d79dbe951649adfc3f0daf15bae0891d881baa16a6b5da891fa119d40816401d782171080529c9c42e88c48
+"libphonenumber-js@npm:^1.12.12":
+  version: 1.12.12
+  resolution: "libphonenumber-js@npm:1.12.12"
+  checksum: 3b83541b6759bc5c56d17fca0b81c595ecd9170af2d288be4c9c702dd011590015a14743c93f94fcc1357760b20070d6306cf9407aa682d67d741d5817469424
   languageName: node
   linkType: hard
 

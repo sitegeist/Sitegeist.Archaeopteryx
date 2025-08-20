@@ -4,7 +4,7 @@ import {useForm} from 'react-final-form';
 
 import {SelectBox} from '@neos-project/react-ui-components';
 import {useI18n} from "@sitegeist/archaeopteryx-neos-bridge";
-import {getCountries, getCountryCallingCode, parsePhoneNumber, AsYouType, CountryCode} from 'libphonenumber-js/max'
+import {getCountries, getCountryCallingCode, parsePhoneNumber, AsYouType, CountryCode} from 'libphonenumber-js/min'
 
 import {ILink, makeLinkType} from "../../../domain";
 import {Process, Field, EditorEnvelope} from '../../../framework';
