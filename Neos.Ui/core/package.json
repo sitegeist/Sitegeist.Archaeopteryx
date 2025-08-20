@@ -10,7 +10,7 @@
         "@sitegeist/archaeopteryx-error-handling": "workspace:*",
         "@sitegeist/archaeopteryx-neos-bridge": "workspace:*",
         "final-form": "^4.20.2",
-        "libphonenumber-js": "^1.9.52",
+        "libphonenumber-js": "^1.12.12",
         "react-final-form": "^6.5.3",
         "react-use": "^17.2.4",
         "rxjs": "^6.6.7",
