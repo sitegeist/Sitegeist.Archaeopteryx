@@ -40,7 +40,17 @@ export const Tree: React.FC<Props> = (props) => {
     );
     const [narrowNodeTypeFilter, setNarrowNodeTypeFilter] =
         React.useState<string>(props.initialNarrowNodeTypeFilter ?? "");
+
+    const abortControllerRef = React.useRef<AbortController | null>(null);
+
     const fetch__getTree = useAsync(async () => {
+        if (abortControllerRef.current) {
+            abortControllerRef.current.abort();
+        }
+
+        const abortController = new AbortController();
+        abortControllerRef.current = abortController;
+
         const result = await getTree({
             workspaceName: props.workspaceName,
             dimensionValues: props.dimensionValues,
@@ -51,9 +61,11 @@ export const Tree: React.FC<Props> = (props) => {
             selectedNodeId: props.selectedTreeNodeId,
             narrowNodeTypeFilter,
             searchTerm,
+            signal: abortController.signal,
         });
 
         if ("success" in result) {
+            console.log("result", result.success);
             return result.success;
         }
 
@@ -72,6 +84,7 @@ export const Tree: React.FC<Props> = (props) => {
         narrowNodeTypeFilter,
         searchTerm,
     ]);
+
     const handleTreeNodeClick = React.useCallback((treeNodeId: string) => {
         props.onSelect(treeNodeId);
     }, []);
@@ -88,12 +101,24 @@ export const Tree: React.FC<Props> = (props) => {
         []
     );
 
+    React.useEffect(() => {
+        return () => {
+            if (abortControllerRef.current) {
+                abortControllerRef.current.abort();
+            }
+        };
+    }, []);
+
     let main;
     if (fetch__getTree.error) {
-        throw new VError(
-            "NodeTree could not be loaded.",
-            decodeError(fetch__getTree.error),
-        );
+        if (fetch__getTree.error instanceof Error && fetch__getTree.error.name === 'AbortError') {
+            main = <div>Loading...</div>;
+        } else {
+            throw new VError(
+                "NodeTree could not be loaded.",
+                decodeError(fetch__getTree.error),
+            );
+        }
     } else if (fetch__getTree.loading || !fetch__getTree.value) {
         main = <div>Loading...</div>;
     } else {
