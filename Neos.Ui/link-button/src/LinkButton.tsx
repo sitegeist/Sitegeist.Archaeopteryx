@@ -5,6 +5,13 @@ import {IconButton} from '@neos-project/react-ui-components';
 import {useEditorTransactions} from '@sitegeist/archaeopteryx-core';
 import {useI18n} from '@sitegeist/archaeopteryx-neos-bridge';
 import { ILinkOptions } from '@sitegeist/archaeopteryx-core/src/domain';
+import styled from 'styled-components';
+import { LinkButtonPreview } from './LinkButtonPreview';
+
+
+const Container = styled.div`
+    position: relative;
+`;
 
 interface Props {
     inlineEditorOptions?: {
@@ -33,6 +40,7 @@ interface Props {
 export const LinkButton: React.FC<Props> = props => {
     const i18n = useI18n();
     const tx = useEditorTransactions();
+
     const editorOptions = {
         ...props.inlineEditorOptions?.linking?.['Sitegeist.Archaeopteryx'],
         linkTypes: {
@@ -114,11 +122,16 @@ export const LinkButton: React.FC<Props> = props => {
     }, [props.executeCommand, props.formattingUnderCursor.link, tx, editorOptions]);
 
     return (
-        <IconButton
-            title={i18n('Sitegeist.Archaeopteryx:Main:linkButton.title')}
-            isActive={Boolean(props.formattingUnderCursor.link)}
-            icon={Boolean(props.formattingUnderCursor.link) ? 'unlink' : 'link'}
-            onClick={handleLinkButtonClick}
-        />
+        <Container>
+            <IconButton
+                title={i18n('Sitegeist.Archaeopteryx:Main:linkButton.title')}
+                isActive={Boolean(props.formattingUnderCursor.link)}
+                icon={Boolean(props.formattingUnderCursor.link) ? 'unlink' : 'link'}
+                onClick={handleLinkButtonClick}
+            />
+            <LinkButtonPreview cursorLink={props.formattingUnderCursor.link} onClick={handleLinkButtonClick} />
+        </Container>
     );
 };
+
+
