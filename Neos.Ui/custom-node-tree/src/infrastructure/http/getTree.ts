@@ -19,6 +19,7 @@ type GetTreeQuery = {
     narrowNodeTypeFilter: string;
     searchTerm: string;
     selectedNodeId?: string;
+    signal?: AbortSignal;
 };
 
 type GetTreeQueryResultEnvelope =
@@ -78,11 +79,16 @@ export async function getTree(
                     "X-Flow-Csrftoken": csrfToken,
                     "Content-Type": "application/json",
                 },
+                signal: query.signal,
             })
         );
 
         return fetchWithErrorHandling.parseJson(response);
     } catch (error) {
+        // Don't handle AbortError as a general error
+        if (error instanceof Error && error.name === 'AbortError') {
+            throw error;
+        }
         fetchWithErrorHandling.generalErrorHandler(error as any);
         throw error;
     }
