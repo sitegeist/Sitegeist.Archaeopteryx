@@ -24,7 +24,7 @@
             </trans-unit>
             <trans-unit id="phoneNumber.validation.numbersOnly" xml:space="preserve" approved="yes">
                 <source>Please enter only number values</source>
-                <target>Proszę wpisać tylko wartości liczbowe</target>
+                <target>Wprowadź tylko wartości liczbowe</target>
             </trans-unit>
         </body>
     </file>
