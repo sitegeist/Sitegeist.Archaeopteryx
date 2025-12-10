@@ -44,7 +44,7 @@ use Psr\Http\Message\UriInterface;
  *
  * @Flow\Proxy(false)
  */
-final class Link implements \JsonSerializable
+final class Link implements \JsonSerializable, \Stringable
 {
     /**
      * A selection of frequently used target attribute values
@@ -155,5 +155,10 @@ final class Link implements \JsonSerializable
             'target' => $this->target,
             'rel' => $this->rel,
         ];
+    }
+
+    public function __toString(): string
+    {
+        return \json_encode($this);
     }
 }
