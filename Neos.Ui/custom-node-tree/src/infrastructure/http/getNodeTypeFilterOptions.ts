@@ -11,6 +11,7 @@ import { NodeTypeFilterOptionDTO } from "../../domain";
 
 type GetNodeTypeFilterOptionsQuery = {
     baseNodeTypeFilter: string;
+    signal?: AbortSignal;
 };
 
 type GetNodeTypeFilterOptionsQueryResultEnvelope =
@@ -46,11 +47,15 @@ export async function getNodeTypeFilterOptions(
                     "X-Flow-Csrftoken": csrfToken,
                     "Content-Type": "application/json",
                 },
+                signal: query.signal,
             })
         );
 
         return fetchWithErrorHandling.parseJson(response);
     } catch (error) {
+        if (error instanceof Error && error.name === 'AbortError') {
+            throw error;
+        }
         fetchWithErrorHandling.generalErrorHandler(error as any);
         throw error;
     }

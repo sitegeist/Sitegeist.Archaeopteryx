@@ -23,6 +23,7 @@ export const Search: React.FC<Props> = (props) => {
 
     useDebounce(
         () => {
+            if (value.length !== 0 && value.length < 2) return
             props.onChange(value);
         },
         300,

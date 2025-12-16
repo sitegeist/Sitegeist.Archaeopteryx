@@ -14,7 +14,8 @@ type GetChildrenForTreeNodeQuery = {
     dimensionValues: Record<string, string[]>;
     treeNodeId: string;
     nodeTypeFilter: string;
-    linkableNodeTypes?: string[]
+    linkableNodeTypes?: string[];
+    signal?: AbortSignal;
 };
 
 type GetChildrenForTreeNodeQueryResultEnvelope =
@@ -53,7 +54,7 @@ export async function getChildrenForTreeNode(
     for (const linkableNodeType of query.linkableNodeTypes ?? []) {
         searchParams.append(`linkableNodeTypes[]`, linkableNodeType);
     }
-    
+
     try {
         const response = await fetchWithErrorHandling.withCsrfToken(
             (csrfToken) => ({
@@ -66,11 +67,15 @@ export async function getChildrenForTreeNode(
                     "X-Flow-Csrftoken": csrfToken,
                     "Content-Type": "application/json",
                 },
+                signal: query.signal,
             })
         );
 
         return fetchWithErrorHandling.parseJson(response);
     } catch (error) {
+        if (error instanceof Error && error.name === 'AbortError') {
+            throw error;
+        }
         fetchWithErrorHandling.generalErrorHandler(error as any);
         throw error;
     }

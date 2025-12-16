@@ -106,7 +106,7 @@ export const PhoneNumber = makeLinkType<PhoneNumberLinkModel, PhoneNumberLinkOpt
                 };
             }
         })
-        const checkRegex = /^[1-9][0-9]*$/;
+        const checkRegex = /^[0-9]*$/;
 
         return (
             <div>
