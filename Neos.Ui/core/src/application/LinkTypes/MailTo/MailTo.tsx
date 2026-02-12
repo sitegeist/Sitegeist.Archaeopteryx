@@ -49,7 +49,11 @@ export const MailTo = makeLinkType<MailToLinkModel, MailToOptions>('Sitegeist.Ar
     },
 
     convertModelToLink: (email:MailToLinkModel) => {
-        let href = `mailto:${email.recipient}?`
+        let href = `mailto:${email.recipient}`
+
+        if (email.subject || email.cc || email.bcc || email.body) {
+            href += '?';
+        }
 
         if (email.subject) {
             href += `subject=${email.subject}`
