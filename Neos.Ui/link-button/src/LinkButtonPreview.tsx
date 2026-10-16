@@ -27,7 +27,7 @@ const StyledIconButton = styled(IconButton)`
 const getModelByLinkType = (linkType: string, cursorLink: string) => {
     if(linkType === 'Sitegeist.Archaeopteryx:Node') {
         return {nodeId: cursorLink.startsWith('node://')
-            ? cursorLink.slice('node://'.length)
+            ? cursorLink.slice('node://'.length).split('#')[0]
             : undefined};
     }
 
